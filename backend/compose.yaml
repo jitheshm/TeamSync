@@ -1,0 +1,30 @@
+
+services:
+  
+  userservice:
+    build: ./services/userService
+    container_name: team-sync-user-service
+    image: jitheshmjithooz/team-sync-user-service
+    restart: unless-stopped
+    env_file:
+      - ./services/userService/.env
+    ports:
+      - 3000:3000
+    networks: 
+      - team_sync-network
+    develop:
+      watch:
+        - action: sync
+          path: ./services/userService
+          target: /app/
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/userService/package.json
+
+  
+
+
+networks:
+  team_sync-network:
+    driver: bridge
