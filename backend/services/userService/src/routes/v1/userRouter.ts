@@ -1,5 +1,5 @@
 import { Router } from "express";
-import signupController from "../../controllers/signupController";
+import signupController from "../../controllers/v1/signupController";
 import { checkSchema } from "express-validator";
 import signupValidator from "../../validators/signupValidator";
 

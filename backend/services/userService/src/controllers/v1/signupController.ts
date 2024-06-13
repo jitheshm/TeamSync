@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import UserRepository from "../repository/implementations/UserRepository";
-import { IUsers } from "../entities/UserEntity";
-import bcrypt from "../utils/bcrypt";
+import UserRepository from "../../repository/implementations/UserRepository";
+import { IUsers } from "../../entities/UserEntity";
+import bcrypt from "../../utils/bcrypt";
 import { validationResult } from "express-validator";
 
 export default async (req: Request, res: Response) => {
