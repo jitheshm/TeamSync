@@ -6,7 +6,7 @@ export default class UserRepository implements IUserRepository {
 
     async create(user: IUsers) {
         try {
-            const userModel = switchDb('TeamSync', 'users')
+            const userModel = switchDb('main', 'users')
             const newUser = new userModel(user)
             await newUser.save()
             return
@@ -21,7 +21,7 @@ export default class UserRepository implements IUserRepository {
 
     async fetchUserByEmail(email: string): Promise<IUsers | null> {
         try {
-            const userModel = switchDb('TeamSync', 'users')
+            const userModel = switchDb('main', 'users')
             return await userModel.findOne({ email: email })
         } catch (error) {
             console.log('Error in UserRepository fetchUserByEmail method');

@@ -16,7 +16,7 @@ app.use(cors())
 connect() //connect to db
   
 app.use('/', router)
-
+ 
 
 
 app.listen(port, () => {

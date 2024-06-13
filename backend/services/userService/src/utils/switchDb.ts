@@ -6,7 +6,7 @@ import { IUsers } from "../entities/UserEntity";
 export default (dbname: string, modelName: string): Model<IUsers & Document> => {
     let schema: Schema;
 
-    if (dbname === 'TeamSync') {
+    if (dbname === 'main') {
         switch (modelName) {
             case 'users':
                 schema = UsersSchema
