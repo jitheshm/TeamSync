@@ -11,7 +11,7 @@ services:
     ports:
       - 3000:3000
     networks: 
-      - team_sync-network
+      - team_sync_network
     develop:
       watch:
         - action: sync
@@ -26,5 +26,5 @@ services:
 
 
 networks:
-  team_sync-network:
+  team_sync_network:
     driver: bridge
