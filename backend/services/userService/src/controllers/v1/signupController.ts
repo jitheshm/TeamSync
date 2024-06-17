@@ -3,6 +3,8 @@ import UserRepository from "../../repository/implementations/UserRepository";
 import { IUsers } from "../../entities/UserEntity";
 import bcrypt from "../../utils/bcrypt";
 import { validationResult } from "express-validator";
+import { KafkaConnection } from "../../config/kafka/KafkaConnection";
+import UserProducer from "../../events/kafka/producers/UserProducer";
 
 export default async (req: Request, res: Response) => {
 
@@ -25,6 +27,16 @@ export default async (req: Request, res: Response) => {
         user.user_id = '#user' + new Date().getTime() + Math.floor(Math.random() * 1000)
 
         await userRepo.create(user)
+
+        // send message to kafka
+        
+        let kafkaConnection = new KafkaConnection()
+        let producer = await kafkaConnection.getProducerInstance()
+        let userProducer = new UserProducer(producer, 'main', 'users')
+        userProducer.sendMessage('create', user)
+
+
+
         res.status(201).json({ message: "user registered successfully" })
     } catch (error) {
         console.log(error);
