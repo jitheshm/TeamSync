@@ -78,6 +78,29 @@ services:
         - action: rebuild
           path: ./services/userService/package.json
 
+  notificationservice:
+    build: ./services/notificationService
+    container_name: team-sync-notification-service
+    image: jitheshmjithooz/team-sync-notification-service
+    restart: unless-stopped
+    env_file:
+      - ./services/notificationService/.env
+    depends_on:
+      - redpanda-0
+    ports:
+      - 3001:3001
+    networks: 
+      - team_sync_network
+    develop:
+      watch:
+        - action: sync
+          path: ./services/notificationService
+          target: /app/
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/notificationService/package.json
+
 networks:
   team_sync_network:
     driver: bridge
