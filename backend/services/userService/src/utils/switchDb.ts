@@ -6,7 +6,7 @@ import { IUsers } from "../entities/UserEntity";
 export default (dbname: string, modelName: string): Model<IUsers & Document> => {
     let schema: Schema;
 
-    if (dbname === 'user_main') {
+    if (dbname === `${process.env.SERVICE}_main`) {
         switch (modelName) {
             case 'users':
                 schema = UsersSchema

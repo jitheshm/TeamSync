@@ -32,7 +32,7 @@ export default async (req: Request, res: Response) => {
         
         let kafkaConnection = new KafkaConnection()
         let producer = await kafkaConnection.getProducerInstance()
-        let userProducer = new UserProducer(producer, 'user_main', 'users')
+        let userProducer = new UserProducer(producer, 'main', 'users')
         userProducer.sendMessage('create', user)
 
 
