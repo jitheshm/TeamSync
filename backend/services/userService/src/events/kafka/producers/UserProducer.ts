@@ -18,7 +18,7 @@ export default class UserProducer implements IUserProducer {
     async sendMessage(eventType: string,user?: IUsers) {
         try {
             await this.producer.send({
-                topic: 'user',
+                topic: 'newUser',
                 messages: [
                     {
                         value: JSON.stringify({

@@ -9,7 +9,7 @@ const kafkaInstance = new Kafka({
 export class KafkaConnection implements IKafkaConnection {
 
     private static producer: Producer;
-    private static consumer: Consumer
+    private consumer?: Consumer
 
     // constructor(){}
 
@@ -20,26 +20,26 @@ export class KafkaConnection implements IKafkaConnection {
                 KafkaConnection.producer = kafkaInstance.producer()
                 await KafkaConnection.producer.connect()
                 console.log('Producer connected');
-                
+
             }
             return KafkaConnection.producer
 
         } catch (error) {
             console.log('Error in KafkaConnection getProducerInstance method');
-            
+
             console.log(error);
             throw error
 
         }
     }
 
-    async getConsumerInstance() {
+    async getConsumerInstance(groupId: string) {
         try {
-            if (!KafkaConnection.consumer) {
-                KafkaConnection.consumer = kafkaInstance.consumer({ groupId: 'user-service-group' })
-                await KafkaConnection.consumer.connect()
-            }
-            return KafkaConnection.consumer
+
+            this.consumer = kafkaInstance.consumer({ groupId: groupId })
+            await this.consumer.connect()
+
+            return this.consumer
         } catch (error) {
             console.log(error);
             throw error
