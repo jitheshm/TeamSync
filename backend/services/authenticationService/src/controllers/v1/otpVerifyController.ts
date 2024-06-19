@@ -2,6 +2,8 @@ import { validationResult } from "express-validator";
 import OtpRepository from "../../repository/implementations/OtpRepository";
 import { Request, Response } from "express";
 import UserRepository from "../../repository/implementations/UserRepository";
+import { KafkaConnection } from "../../config/kafka/KafkaConnection";
+import UserProducer from "../../events/kafka/producers/UserProducer";
 
 
 export default async (req: Request, res: Response) => {
@@ -24,15 +26,20 @@ export default async (req: Request, res: Response) => {
             return res.status(401).json({ error: "Invalid or expired OTP." });
         } else {
             const userRepository = new UserRepository()
-            await userRepository.verifyUser(email)
-            
+            const userObj=await userRepository.verifyUser(email)
+
+
+            let kafkaConnection = new KafkaConnection()
+            let producer = await kafkaConnection.getProducerInstance()
+            let userProducer = new UserProducer(producer, 'main', 'users')
+            userProducer.sendMessage('update', userObj)
             res.status(200).json({ message: "User verified successfully" });
         }
 
 
-    } catch (error :any) {
+    } catch (error: any) {
         console.log(error);
-        if(error.statusCode){
+        if (error.statusCode) {
             return res.status(error.statusCode).json({ error: error.message });
         }
         res.status(500).json({ error: "An unexpected error occurred. Please try again later." });

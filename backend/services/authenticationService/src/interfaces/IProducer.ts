@@ -1,3 +1,3 @@
 export default interface IProducer<T> {
-    sendMessage(eventType: string, data: T): Promise<void>
+    sendMessage(eventType: string, dataObj: T): Promise<void>
 }

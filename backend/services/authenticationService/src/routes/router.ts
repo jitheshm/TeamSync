@@ -5,4 +5,4 @@ const router = Router();
 
 router.use('/api/auth-service/v1/',v1UserRouter)
 
-export default router
+export default router 

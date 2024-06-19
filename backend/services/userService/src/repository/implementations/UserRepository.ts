@@ -1,3 +1,4 @@
+import { Document } from "mongoose";
 import { IUsers } from "../../entities/UserEntity";
 import switchDb from "../../utils/switchDb";
 import { IUserRepository } from "../interface/IUserRepository";
@@ -25,6 +26,18 @@ export default class UserRepository implements IUserRepository {
             return await userModel.findOne({ email: email })
         } catch (error) {
             console.log('Error in UserRepository fetchUserByEmail method');
+
+            throw error
+        }
+    }
+
+    async updateUser(data: IUsers & Document): Promise<void> {
+        try {
+            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
+            await userModel.updateOne({ email: data.email }, data)
+            return
+        } catch (error) {
+            console.log('Error in UserRepository updateUser method');
 
             throw error
         }

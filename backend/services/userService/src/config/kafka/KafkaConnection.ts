@@ -33,10 +33,10 @@ export class KafkaConnection implements IKafkaConnection {
         }
     }
 
-    async getConsumerInstance() {
+    async getConsumerInstance(groupId: string) {
         try {
             if (!KafkaConnection.consumer) {
-                KafkaConnection.consumer = kafkaInstance.consumer({ groupId: 'user-service-group' })
+                KafkaConnection.consumer = kafkaInstance.consumer({ groupId: groupId })
                 await KafkaConnection.consumer.connect()
             }
             return KafkaConnection.consumer

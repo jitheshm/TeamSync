@@ -1,7 +1,8 @@
 import { Router } from "express";
-import signupController from "../../controllers/v1/signupController";
 import { checkSchema } from "express-validator";
-import signupValidator from "../../validators/signupValidator";
+import otpVerifyController from "../../controllers/v1/otpVerifyController";
+import otpValidator from "../../validators/otpValidator";
+
 
 
 const router = Router();

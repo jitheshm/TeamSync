@@ -23,11 +23,11 @@ export default class UserRepository implements IUserRepository {
     async verifyUser(email: string) {
         try {
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
-            const resObj=await userModel.updateOne({ email: email }, { is_verified: true })
-            if(resObj.modifiedCount==0){
+            const resObj=await userModel.findOneAndUpdate({ email: email }, { is_verified: true },{new:true})
+            if(!resObj){
                 throw new CustomError('User not found', 404)
             }
-            return
+            return resObj
             
         } catch (error) {
             console.log('Error in UserRepository verifyUser method');
