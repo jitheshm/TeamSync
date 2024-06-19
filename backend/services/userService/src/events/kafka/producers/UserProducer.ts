@@ -1,8 +1,8 @@
 import { Producer } from "kafkajs";
 import { IUsers } from "../../../entities/UserEntity";
-import IUserProducer from "../../../interfaces/IUserProducer";
+import IProducer from "../../../interfaces/IProducer";
 
-export default class UserProducer implements IUserProducer {
+export default class UserProducer implements IProducer<IUsers> {
     private producer: Producer;
     private dbName: string;
     private modelName: string;
@@ -15,10 +15,10 @@ export default class UserProducer implements IUserProducer {
     }
 
 
-    async sendMessage(eventType: string,user?: IUsers) {
+    async sendMessage(eventType: string,user: IUsers) {
         try {
             await this.producer.send({
-                topic: 'newUser',
+                topic: 'user-events',
                 messages: [
                     {
                         value: JSON.stringify({

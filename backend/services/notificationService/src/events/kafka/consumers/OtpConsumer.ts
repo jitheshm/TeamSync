@@ -1,15 +1,15 @@
 
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import IOtpConsumer from "../../../interfaces/IOtpConsumer";
+import IConsumer from "../../../interfaces/IConsumer";
 import { sendMail } from "../../../services/mailService";
 
 
-export default class OtpConsumer implements IOtpConsumer {
+export default class OtpConsumer implements IConsumer {
 
-    async newOtp() {
+    async consume() {
         let kafkaConnection = new KafkaConnection()
         let consumer = await kafkaConnection.getConsumerInstance('notification_otp_mail_group')
-        consumer.subscribe({ topic: 'newOtp' })
+        consumer.subscribe({ topic: 'otp-events' })
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
                 try {

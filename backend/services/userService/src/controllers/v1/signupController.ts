@@ -26,14 +26,14 @@ export default async (req: Request, res: Response) => {
         user.password = bcrypt(user.password)
         user.user_id = '#user' + new Date().getTime() + Math.floor(Math.random() * 1000)
 
-        await userRepo.create(user)
+        const newUser=await userRepo.create(user)
 
         // send message to kafka
         
         let kafkaConnection = new KafkaConnection()
         let producer = await kafkaConnection.getProducerInstance()
         let userProducer = new UserProducer(producer, 'main', 'users')
-        userProducer.sendMessage('create', user)
+        userProducer.sendMessage('create', newUser)
 
 
 

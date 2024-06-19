@@ -18,7 +18,7 @@ export default class OtpProducer implements IProducer<IOtp> {
     async sendMessage(eventType: string,dataObj: IOtp) {
         try {
             await this.producer.send({
-                topic: 'newOtp',
+                topic: 'Otp-events',
                 messages: [
                     {
                         value: JSON.stringify({

@@ -9,7 +9,7 @@ export default class UserRepository implements IUserRepository {
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
             const newUser = new userModel(user)
             await newUser.save()
-            return
+            return newUser
         } catch (error) {
             console.log('Error in UserRepository create method');
 
