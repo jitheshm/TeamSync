@@ -101,6 +101,31 @@ services:
         - action: rebuild
           path: ./services/notificationService/package.json
 
+  authenticationservice:
+    build: ./services/authenticationService
+    container_name: team-sync-authentication-service
+    image: jitheshmjithooz/team-sync-authentication-service
+    restart: unless-stopped
+    env_file:
+      - ./services/authenticationService/.env
+    depends_on:
+      - redpanda-0
+    ports:
+      - 3002:3002
+    networks: 
+      - team_sync_network
+    develop:
+      watch:
+        - action: sync
+          path: ./services/authenticationService
+          target: /app/
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/authenticationService/package.json
+
+
+
 networks:
   team_sync_network:
     driver: bridge
