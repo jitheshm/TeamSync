@@ -6,7 +6,7 @@ export default class UserRepository implements IUserRepository {
 
     async create(user: IUsers) {
         try {
-            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
+            const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
             const newUser = new userModel(user)
             await newUser.save()
             return
