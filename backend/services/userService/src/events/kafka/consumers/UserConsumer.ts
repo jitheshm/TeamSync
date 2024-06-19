@@ -10,7 +10,7 @@ export default class UserConsumer implements IConsumer {
     async consume() {
         try {
             let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance('authservice_new_user_group')
+            let consumer = await kafkaConnection.getConsumerInstance('userService_user_group')
             consumer.subscribe({ topic: 'user-events' })
             await consumer.run({
                 eachMessage: async ({ topic, partition, message }) => {
