@@ -20,4 +20,17 @@ export default class OtpRepository implements IOtpRepository {
         }
     }
 
+    async fetchOtp(email: string) {
+        try {
+            const otpModel = switchDb<IOtp>(`${process.env.SERVICE}_main`, 'otps')
+            return await otpModel.findOne({ email: email })
+        } catch (error) {
+            console.log('Error in OtpRepository fetchOtp method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
 }

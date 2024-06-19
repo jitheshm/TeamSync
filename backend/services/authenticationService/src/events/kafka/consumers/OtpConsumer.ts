@@ -24,7 +24,8 @@ export default class OtpConsumer implements IOtpConsumer {
                         let otpRepository = new OtpRepository()
                         let otpObj = {
                             email: dataObj.data.email,
-                            otp: `${otp}`
+                            otp: `${otp}`,
+                            context: 'signup'
                         }
                         await otpRepository.create(otpObj, dataObj.data.email)
 
