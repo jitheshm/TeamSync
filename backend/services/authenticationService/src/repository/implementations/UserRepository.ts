@@ -51,4 +51,17 @@ export default class UserRepository implements IUserRepository {
         }
     }
 
+    async updateUser(data: Partial<IUsers & Document>): Promise<IUsers & Document |null>{
+        try {
+            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
+            return await userModel.findOneAndUpdate({ email: data.email }, data, { new: true })
+        } catch (error) {
+            console.log('Error in UserRepository updateUser method');
+
+            throw error
+        }
+    }
+
+
+
 }
