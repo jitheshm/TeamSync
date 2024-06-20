@@ -2,7 +2,7 @@
 import UserRepository from "../../../repository/implementations/UserRepository";
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
-import { generateOtp } from "../../../services/otpService";
+import { generateOtp } from "../../../utils/otp";
 import OtpRepository from "../../../repository/implementations/OtpRepository";
 import OtpProducer from "../producers/OtpProducer";
 
