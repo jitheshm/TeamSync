@@ -4,6 +4,8 @@ import otpVerifyController from "../../controllers/v1/otpVerifyController";
 import otpValidator from "../../validators/otpValidator";
 import loginController from "../../controllers/v1/loginController";
 import loginValidator from "../../validators/loginValidator";
+import forgetValidator from "../../validators/forgetValidator";
+import forgetPasswordController from "../../controllers/v1/forgetPasswordController";
 
 
 
@@ -11,5 +13,6 @@ const router = Router();
 
 router.post('/verify-otp', checkSchema(otpValidator()), otpVerifyController)
 router.post('/login', checkSchema(loginValidator()), loginController)
+router.post('/forget-password', checkSchema(forgetValidator()), forgetPasswordController)
 
 export default router
