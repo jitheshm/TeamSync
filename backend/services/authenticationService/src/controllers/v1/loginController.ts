@@ -3,6 +3,9 @@ import { validationResult } from "express-validator";
 import UserRepository from "../../repository/implementations/UserRepository";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { IUserRepository } from "../../repository/interface/IUserRepository";
+
+const userRepository:IUserRepository=new UserRepository();
 
 export default async (req:Request,res:Response)=>{
     try {
@@ -14,7 +17,6 @@ export default async (req:Request,res:Response)=>{
 
 
         const {email,password}:{email:string,password:string} = req.body;
-        const userRepository=new UserRepository();
         const userData=await userRepository.fetchUser(email);
 
 

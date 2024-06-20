@@ -3,6 +3,9 @@ import { validationResult } from "express-validator";
 import AdminRepository from "../../repository/implementations/adminRepository";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { IAdminRepository } from "../../repository/interface/IAdminRepository";
+
+let adminRepo:IAdminRepository=new AdminRepository()
 
 export default async (req: Request, res: Response) => {
     try {
@@ -12,7 +15,7 @@ export default async (req: Request, res: Response) => {
         }
 
         const { user_name, password }: { user_name: string, password: string } = req.body;
-        let adminRepo=new AdminRepository()
+        
         const adminObj=await adminRepo.fetchUser(user_name)
         if(!adminObj){
             return res.status(404).json({error:"User not found"});

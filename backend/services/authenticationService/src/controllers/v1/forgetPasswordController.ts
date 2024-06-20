@@ -5,6 +5,14 @@ import { generateOtp } from "../../utils/otp";
 import OtpRepository from "../../repository/implementations/OtpRepository";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import OtpProducer from "../../events/kafka/producers/OtpProducer";
+import { IUserRepository } from "../../repository/interface/IUserRepository";
+import { IOtpRepository } from "../../repository/interface/IOtpRepository";
+import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+
+const userRepository:IUserRepository = new UserRepository();
+const otpRepository:IOtpRepository = new OtpRepository()
+const kafkaConnection:IKafkaConnection = new KafkaConnection()
+
 
 export default async (req: Request, res: Response) => {
 
@@ -16,7 +24,7 @@ export default async (req: Request, res: Response) => {
         }
 
         const { email }: { email: string } = req.body;
-        const userRepository = new UserRepository();
+
         const userData = await userRepository.fetchUser(email);
         if (!userData) {
             return res.status(404).json({ error: "User not found" });
@@ -31,11 +39,9 @@ export default async (req: Request, res: Response) => {
             otp: `${otp}`,
             context: 'forget_password'
         }
-        const otpRepository = new OtpRepository()
         await otpRepository.create(otpObj, email)
 
 
-        const kafkaConnection = new KafkaConnection()
         let producer = await kafkaConnection.getProducerInstance()
         let otpProducer = new OtpProducer(producer, 'main', 'otps')
         otpProducer.sendMessage('create', otpObj)
