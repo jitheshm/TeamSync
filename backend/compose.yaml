@@ -124,6 +124,29 @@ services:
         - action: rebuild
           path: ./services/authenticationService/package.json
 
+  subscriptionservice:
+    build: ./services/subscriptionService
+    container_name: team-sync-subscription-service
+    image: jitheshmjithooz/team-sync-subscription-service
+    restart: unless-stopped
+    env_file:
+      - ./services/subscriptionService/.env
+    depends_on:
+      - redpanda-0
+    ports:
+      - 3003:3003
+    networks: 
+      - team_sync_network
+    develop:
+      watch:
+        - action: sync
+          path: ./services/subscriptionService
+          target: /app/
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/subscriptionService/package.json
+
 
 
 networks:
