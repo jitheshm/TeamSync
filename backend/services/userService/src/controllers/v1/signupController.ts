@@ -5,6 +5,12 @@ import bcrypt from "../../utils/bcrypt";
 import { validationResult } from "express-validator";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import UserProducer from "../../events/kafka/producers/UserProducer";
+import { IUserRepository } from "../../repository/interface/IUserRepository";
+import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+
+let userRepo:IUserRepository = new UserRepository()
+let kafkaConnection:IKafkaConnection = new KafkaConnection()
+
 
 export default async (req: Request, res: Response) => {
 
@@ -16,7 +22,6 @@ export default async (req: Request, res: Response) => {
         }
 
         let user: IUsers = req.body;
-        let userRepo = new UserRepository()
         let userExist = await userRepo.fetchUserByEmail(user.email)
         if (userExist) {
             return res.status(409).json({ error: "Email address already exists." })
@@ -30,7 +35,6 @@ export default async (req: Request, res: Response) => {
 
         // send message to kafka
         
-        let kafkaConnection = new KafkaConnection()
         let producer = await kafkaConnection.getProducerInstance()
         let userProducer = new UserProducer(producer, 'main', 'users')
         userProducer.sendMessage('create', newUser)
