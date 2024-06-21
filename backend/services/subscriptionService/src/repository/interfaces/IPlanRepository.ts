@@ -4,5 +4,5 @@ import IPlan from "../../entities/PlanEntity";
 export interface IPlanRepository {
     create(user: Partial<IPlan>): Promise<void>
     update(data: Partial<IPlan>, id: mongoose.Types.ObjectId): Promise<UpdateWriteOpResult>
-    
+    fetchAll(): Promise<IPlan[]>
 }

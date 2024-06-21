@@ -23,14 +23,28 @@ export default class PlanRepository implements IPlanRepository {
         }
     }
 
-    async update(data:Partial<IPlan>, id: mongoose.Types.ObjectId) {
+    async update(data: Partial<IPlan>, id: mongoose.Types.ObjectId) {
         try {
             const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
-            let resObj=await PlanModel.updateOne({ _id: id }, data)
+            let resObj = await PlanModel.updateOne({ _id: id }, data)
             return resObj
 
         } catch (error) {
             console.log('Error in PlanRepository create method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
+    async fetchAll() {
+        try {
+            const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
+            let data = await PlanModel.find()
+            return data
+        } catch (error) {
+            console.log('Error in PlanRepository fetchAll method');
 
             console.log(error);
 
