@@ -5,6 +5,7 @@ import logger from 'morgan';
 import cors from 'cors'
 // import router from './routes/router';
 import connect from './config/db/connect';
+import router from './routes/router';
 // import { connectConsumers } from './events/kafka/consumerStart';
 //For env File 
 dotenv.config();
@@ -19,7 +20,7 @@ connect().then(()=>{
 
 }) //connect to db
   
-// app.use('/', router)
+app.use('/', router)
  
 
 
