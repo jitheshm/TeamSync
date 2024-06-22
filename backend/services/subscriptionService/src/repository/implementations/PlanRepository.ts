@@ -26,7 +26,7 @@ export default class PlanRepository implements IPlanRepository {
     async update(data: Partial<IPlan>, id: mongoose.Types.ObjectId) {
         try {
             const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
-            let resObj = await PlanModel.updateOne({ _id: id }, data)
+            let resObj = await PlanModel.findOneAndUpdate({ _id: id }, data,{new:true})
             return resObj
 
         } catch (error) {

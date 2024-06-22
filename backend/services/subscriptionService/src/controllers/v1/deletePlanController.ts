@@ -13,7 +13,7 @@ export default async (req: Request, res: Response) => {
 
         const id = new mongoose.Types.ObjectId(req.params.planId);
         let resObj = await planRepository.update({ is_deleted: true }, id);
-        if (resObj.modifiedCount === 0)
+        if (!resObj)
             return res.status(404).json({ message: "Plan not found" });
 
         res.status(200).json({ message: "Plan deleted successfully" });

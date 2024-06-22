@@ -19,13 +19,15 @@ const createStripePlan = async (plan: IPlan) => {
         },
         currency: 'usd',
     });
-    return stripePlan.id
+    console.log(stripePlan); 
+    
+    return stripePlan.product
 
 }
 
 export default async (req: Request & Partial<{ user: string | jwt.JwtPayload }>, res: Response) => {
     try {
-
+ 
         const result = validationResult(req);
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() });
@@ -33,7 +35,7 @@ export default async (req: Request & Partial<{ user: string | jwt.JwtPayload }>,
         const bodyObj: IPlan = req.body;
         bodyObj.plan_id = '#plan' + new Date().getTime() + Math.floor(Math.random() * 1000)
         const stripePlanId =await createStripePlan(bodyObj)
-        bodyObj.stripe_plan_id=stripePlanId
+        bodyObj.stripe_plan_id=stripePlanId as string
         await planRepository.create(bodyObj);
 
         res.status(201).json({ message: "Plan created successfully" });
