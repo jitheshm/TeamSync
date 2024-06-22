@@ -6,18 +6,20 @@ import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import UserProducer from "../../events/kafka/producers/UserProducer";
 import { IUserRepository } from "../../repository/interface/IUserRepository";
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+import jwt from 'jsonwebtoken';
 
 const userRepository:IUserRepository = new UserRepository();
 let kafkaConnection:IKafkaConnection = new KafkaConnection()
 
 
-export default async (req: Request, res: Response) => {
+export default async (req:  Request & Partial<{ user:jwt.JwtPayload }>, res: Response) => {
     try {
         const result = validationResult(req);
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() });
         }
-        const { email, new_password }: { email: string, new_password: string } = req.body;
+        const { new_password }: { new_password: string } = req.body;
+        const email = req.user?.email;
         const password = bcrypt(new_password)
         const updateUserObj = await userRepository.updateUser({ email: email, password: password })
 

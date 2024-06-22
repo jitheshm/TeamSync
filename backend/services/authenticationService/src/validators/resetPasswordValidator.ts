@@ -2,11 +2,6 @@ import { Schema } from 'express-validator';
 
 export default (): Schema => {
     return {
-        email: {
-            isEmail: {
-                errorMessage: 'Invalid Email'
-            }
-        },
         new_password: {
             trim: true,
             isEmpty: {
@@ -17,6 +12,6 @@ export default (): Schema => {
                 errorMessage: 'Password should be at least 6 characters long',
                 options: { min: 6 }
             }
-        }
+        } 
     }
 }

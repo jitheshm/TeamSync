@@ -37,7 +37,7 @@ export default async (req: Request, res: Response) => {
         const otpObj = {
             email: email,
             otp: `${otp}`,
-            context: 'forget_password'
+            context: 'forgot-password'
         }
         await otpRepository.create(otpObj, email)
 

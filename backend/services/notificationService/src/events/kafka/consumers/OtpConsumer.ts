@@ -22,7 +22,7 @@ export default class OtpConsumer implements IConsumer {
                         let dataObj = JSON.parse(data)
                         console.log(data)
 
-                        sendMail(dataObj.data.email, dataObj.data.email)
+                        sendMail(dataObj.data.email, dataObj.data.otp)
                     }
                 } catch (error) {
                     console.log(error);
