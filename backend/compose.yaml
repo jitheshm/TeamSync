@@ -147,6 +147,29 @@ services:
         - action: rebuild
           path: ./services/subscriptionService/package.json
 
+  tenantservice:
+    build: ./services/tenantService
+    container_name: team-sync-tenant-service
+    image: jitheshmjithooz/team-sync-tenant-service
+    restart: unless-stopped
+    env_file:
+      - ./services/tenantService/.env
+    depends_on:
+      - redpanda-0
+    ports:
+      - 3004:3004
+    networks: 
+      - team_sync_network
+    develop:
+      watch:
+        - action: sync
+          path: ./services/tenantService
+          target: /app/
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/tenantService/package.json
+
 
 
 networks:
