@@ -7,14 +7,14 @@ interface IFeatures {
 }
 
 interface IPlan {
-    _id: ObjectId
     plan_id: string;
+    stripe_plan_id: string;
     description: string;
-    bill_cycle: 'monthly' | 'yearly';
+    bill_cycle: 'month' | 'year';
     features: IFeatures;
     price: string;
     name: string;
-    currency: 'indian' | 'dollar';
+    currency: 'usd';
     created_at: Date;
     active: boolean;
     is_deleted: boolean;

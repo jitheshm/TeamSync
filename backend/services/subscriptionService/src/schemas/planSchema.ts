@@ -8,6 +8,12 @@ const planSchema: Schema<IPlan> = new Schema<IPlan>({
         unique: true,
         trim: true 
     },
+    stripe_plan_id: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
+    },
     description: { 
         type: String, 
         required: true,
@@ -17,7 +23,7 @@ const planSchema: Schema<IPlan> = new Schema<IPlan>({
     bill_cycle: { 
         type: String, 
         required: true,
-        enum: ['monthly', 'yearly'],
+        enum: ['month', 'year'],
         trim: true 
     },
     features: {
@@ -62,7 +68,7 @@ const planSchema: Schema<IPlan> = new Schema<IPlan>({
     currency: { 
         type: String, 
         required: true,
-        enum: ['indian', 'dollar'],
+        enum: ['usd'],
         trim: true
     },
     is_deleted: { 

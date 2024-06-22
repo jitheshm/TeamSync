@@ -21,7 +21,7 @@ export default (): Schema => {
                 errorMessage: 'Bill Cycle cannot be empty'
             },
             isIn: {
-                options: [['monthly', 'yearly']],
+                options: [['month', 'year']],
                 errorMessage: 'Bill Cycle must be either "monthly" or "yearly"'
             }
         },
@@ -84,7 +84,7 @@ export default (): Schema => {
                 errorMessage: 'Currency cannot be empty'
             },
             isIn: {
-                options: [['indian', 'dollar']],
+                options: [['usd']],
                 errorMessage: 'Currency must be either "indian" or "dollar"'
             }
         }
