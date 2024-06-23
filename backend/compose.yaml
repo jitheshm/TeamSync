@@ -170,6 +170,17 @@ services:
         - action: rebuild
           path: ./services/tenantService/package.json
 
+  nginx:
+    build: ./gateway
+    container_name: team-sync-nginx-gateway
+    image: jitheshmjithooz/team-sync-nginx-gateway
+    ports:
+      - 8000:80
+    networks:
+      - team_sync_network
+    depends_on:
+      - authenticationservice
+
 
 
 networks:
