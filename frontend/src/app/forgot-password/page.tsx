@@ -5,6 +5,7 @@ import ForgotPassword from '@/components/Login/ForgotPassword';
 import Otp from '@/components/Login/Otp';
 import LoginLanding from '@/components/Login';
 import NewPassword from '@/components/Login/NewPassword';
+import UserLayout from '@/components/Layout/UserLayout';
 
 
 const Page: React.FC = () => {
@@ -12,9 +13,11 @@ const Page: React.FC = () => {
     const [passwordPage, setPasswordPage] = useState(false)
 
     return (
-        <LoginLanding>
-            {otpVisible ? <Otp /> : passwordPage ? <NewPassword /> : <ForgotPassword />}
-        </LoginLanding>
+        <UserLayout>
+            <LoginLanding>
+                {otpVisible ? <Otp /> : passwordPage ? <NewPassword /> : <ForgotPassword />}
+            </LoginLanding>
+        </UserLayout>
     );
 };
 

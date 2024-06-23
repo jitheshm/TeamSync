@@ -1,12 +1,15 @@
 import SignUp from '@/components/Login/SignUp'
 import LoginLanding from '@/components/Login'
 import React from 'react'
+import UserLayout from '@/components/Layout/UserLayout'
 
 function page() {
     return (
-        <LoginLanding>
-            <SignUp />
-        </LoginLanding>
+        <UserLayout>
+            <LoginLanding>
+                <SignUp />
+            </LoginLanding>
+        </UserLayout>
     )
 }
 
