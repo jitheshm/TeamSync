@@ -180,6 +180,9 @@ services:
       - team_sync_network
     depends_on:
       - authenticationservice
+      - subscriptionservice
+      - tenantservice
+      - userservice
 
 
 
