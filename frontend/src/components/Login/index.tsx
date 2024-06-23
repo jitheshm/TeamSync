@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 
-interface LandingProps {
+interface LoginProps {
     children: ReactNode;
 }
 
-function Landing({ children }: LandingProps) {
+function index({ children }: LoginProps) {
     return (
         <div className='grid sm:grid-cols-12 flex items-center justify-center gap-12 bg-[#F9FAFB] h-screen'>
             <div className='col-span-6 md:col-span-5 ms-32 lg:col-span-6 hidden md:block'>
@@ -17,4 +17,4 @@ function Landing({ children }: LandingProps) {
     );
 }
 
-export default Landing;
+export default index;

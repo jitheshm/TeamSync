@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import ForgotPassword from '@/components/Login/ForgotPassword';
 import Otp from '@/components/Login/Otp';
-import LoginLanding from '@/components/Login/landing';
+import LoginLanding from '@/components/Login';
 import NewPassword from '@/components/Login/NewPassword';
 
 

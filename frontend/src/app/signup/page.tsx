@@ -1,5 +1,5 @@
 import SignUp from '@/components/Login/SignUp'
-import LoginLanding from '@/components/Login/landing'
+import LoginLanding from '@/components/Login'
 import React from 'react'
 
 function page() {
