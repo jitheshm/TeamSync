@@ -11,11 +11,12 @@ import UserLayout from '@/components/Layout/UserLayout';
 const Page: React.FC = () => {
     const [otpVisible, setOtpVisible] = useState(false);
     const [passwordPage, setPasswordPage] = useState(false)
+    const [email, setEmail] = useState('');
 
     return (
         <UserLayout>
             <LoginLanding>
-                {otpVisible ? <Otp /> : passwordPage ? <NewPassword /> : <ForgotPassword />}
+                {otpVisible ? <Otp setOtpVisible={setOtpVisible} setPasswordPage={setPasswordPage} email={email} /> : passwordPage ? <NewPassword email={email} /> : <ForgotPassword setOtpVisible={setOtpVisible} setEmail={setEmail} />}
             </LoginLanding>
         </UserLayout>
     );
