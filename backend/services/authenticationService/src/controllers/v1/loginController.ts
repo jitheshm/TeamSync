@@ -41,7 +41,7 @@ export default async (req:Request,res:Response)=>{
 
 
         const token = jwt.sign({email:userData.email,name:userData.first_name,id:userData._id},process.env.JWT_SECRET_KEY ,{expiresIn:'1h'});
-        res.status(200).json({message:"User verified",verified:true,token:token});
+        res.status(200).json({message:"User verified",verified:true,token:token,name:userData.first_name});
         
 
 
