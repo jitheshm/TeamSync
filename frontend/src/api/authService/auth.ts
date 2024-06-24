@@ -1,6 +1,7 @@
 import instance from "@/axios";
 import { ForgotPasswordFormData } from "@/components/Login/ForgotPassword";
 import { LoginFormData } from "@/components/Login/Login";
+import { ResetFormData } from "@/components/Login/NewPassword";
 import { OtpFormData } from "@/components/Login/Otp";
 import Cookies from 'js-cookie';
 
@@ -36,10 +37,23 @@ export const forgetPassword = async (formData: ForgotPasswordFormData) => {
     }
 }
 
-export const verifyOtp = async (formData: OtpFormData, email:string) => {
+export const verifyOtp = async (formData: OtpFormData, email: string) => {
     try {
         const otp = `${formData.otp1}${formData.otp2}${formData.otp3}${formData.otp4}${formData.otp5}${formData.otp6}`
-        const response = await instance.post('/auth-service/v1/verify-otp', {email, otp,context:"forgot-password"})
+        const response = await instance.post('/auth-service/v1/verify-otp', { email, otp, context: "forgot-password" })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const passwordReset = async (formData: ResetFormData) => {
+    try {
+        const response = await instance.post('/auth-service/v1/reset-password', formData, {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+        })
         return response.data
     } catch (error) {
         throw error
