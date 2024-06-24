@@ -1,5 +1,6 @@
 "use client"
 import { signup } from '@/api/userService/user';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { z } from 'zod';
@@ -168,7 +169,7 @@ const SignUp: React.FC = () => {
                     Create account
                 </button>
                 <div className="text-sm font-medium text-gray-500 dark:text-dark-300 text-center">
-                    Have an account? <a href="#" className="text-blue-700 hover:underline dark:text-blue-500">Login</a>
+                    Have an account? <Link href={'/login'} className="text-blue-700 hover:underline dark:text-blue-500">Login</Link>
                 </div>
             </form>
         </div>

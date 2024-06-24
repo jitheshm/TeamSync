@@ -6,7 +6,8 @@ import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { verify } from '@/features/user/userSlice';
 import { useRouter } from "next/navigation"
-// Define the Zod schema
+import Link from 'next/link';
+
 const loginSchema = z.object({
     email: z.string().min(1, "Email is required").email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
@@ -53,6 +54,7 @@ const Login: React.FC = () => {
             try {
                 const data = await login(formData);
                 Cookies.set('team-sync-user-token', data.token, { expires: 1 })
+                dispatch(verify({ name: data.user }))
                 router.push('/')
             } catch (error: any) {
                 if (error.response) {
@@ -113,7 +115,7 @@ const Login: React.FC = () => {
                     <i className="fab fa-google" style={{ color: "#000000", fontSize: "25px" }} />
                 </div>
                 <div className="text-sm font-medium text-gray-500 dark:text-dark-300 text-center">
-                    Not registered? <a href="#" className="text-blue-700 hover:underline dark:text-blue-500">Create account</a>
+                    Not registered? <Link href={'/signup'} className="text-blue-700 hover:underline dark:text-blue-500">Create account</Link>
                 </div>
             </form>
         </div>
