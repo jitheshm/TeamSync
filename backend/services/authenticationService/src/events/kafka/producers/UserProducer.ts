@@ -27,7 +27,8 @@ export default class UserProducer implements IProducer<IUsers> {
                             modelName: this.modelName,
                             eventType: eventType,
                             data: dataObj
-                        })
+                        }),
+                        headers: { origin: process.env.SERVICE} 
                     }
                 ]
             })

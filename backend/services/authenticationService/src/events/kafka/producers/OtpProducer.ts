@@ -26,7 +26,8 @@ export default class OtpProducer implements IProducer<IOtp> {
                             modelName: this.modelName,
                             eventType: eventType,
                             data: dataObj
-                        })
+                        }),
+                        headers: { origin: process.env.SERVICE} 
                     }
                 ]
             })

@@ -6,8 +6,8 @@ import { IKafkaConnection } from "../../../interfaces/IKafkaConnection";
 import { IUserRepository } from "../../../repository/interface/IUserRepository";
 
 
-let kafkaConnection:IKafkaConnection = new KafkaConnection()
-let userRepository:IUserRepository = new UserRepository()
+let kafkaConnection: IKafkaConnection = new KafkaConnection()
+let userRepository: IUserRepository = new UserRepository()
 
 
 export default class UserConsumer implements IConsumer {
@@ -27,11 +27,13 @@ export default class UserConsumer implements IConsumer {
                         let dataObj = JSON.parse(data)
                         console.log(data)
 
-
-                        switch (dataObj.eventType) {
-                            case 'update':
-                                await userRepository.updateUser(dataObj.data)
-                                break;
+                        const origin = message.headers?.origin?.toString();
+                        if (origin != process.env.SERVICE) {
+                            switch (dataObj.eventType) {
+                                case 'update':
+                                    await userRepository.updateUser(dataObj.data)
+                                    break;
+                            }
                         }
 
                     }

@@ -25,25 +25,30 @@ export default class UserConsumer implements IConsumer {
                     if (data) {
                         let dataObj = JSON.parse(data)
                         console.log(data)
+                        const origin = message.headers?.origin?.toString();
+                        if (origin != process.env.SERVICE) {
+                            switch (dataObj.eventType) {
+                                case 'create':
+                                   
+
+                                    await userRepository.create(dataObj.data)
+                                    let otp = generateOtp()
+                                    let otpRepository = new OtpRepository()
+                                    let otpObj = {
+                                        email: dataObj.data.email,
+                                        otp: `${otp}`,
+                                        context: 'signup'
+                                    }
+                                    await otpRepository.create(otpObj, dataObj.data.email)
 
 
-                        switch (dataObj.eventType) {
-                            case 'create':
-                                await userRepository.create(dataObj.data)
-                                let otp = generateOtp()
-                                let otpRepository = new OtpRepository()
-                                let otpObj = {
-                                    email: dataObj.data.email,
-                                    otp: `${otp}`,
-                                    context: 'signup'
-                                }
-                                await otpRepository.create(otpObj, dataObj.data.email)
+                                    let producer = await kafkaConnection.getProducerInstance()
+                                    let otpProducer = new OtpProducer(producer, 'main', 'otps')
+                                    otpProducer.sendMessage('create', otpObj)
 
 
-                                let producer = await kafkaConnection.getProducerInstance()
-                                let otpProducer = new OtpProducer(producer, 'main', 'otps')
-                                otpProducer.sendMessage('create', otpObj)
-                                break;
+                                    break;
+                            }
                         }
 
                     }

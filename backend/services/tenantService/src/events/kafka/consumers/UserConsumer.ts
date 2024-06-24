@@ -23,15 +23,18 @@ export default class UserConsumer implements IConsumer {
                     if (data) {
                         let dataObj = JSON.parse(data)
                         console.log(data)
+                        const origin = message.headers?.origin?.toString();
 
+                        if (origin != process.env.SERVICE) {
+                            switch (dataObj.eventType) {
+                                case 'create':
 
-                        switch (dataObj.eventType) {
-                            case 'create':
-                                await userRepository.create(dataObj.data)
-                                break;
-                            case 'update':
-                                await userRepository.updateUser(dataObj.data)
-                                break;
+                                    await userRepository.create(dataObj.data)
+                                    break;
+                                case 'update':
+                                    await userRepository.updateUser(dataObj.data)
+                                    break;
+                            }
                         }
 
                     }
