@@ -1,6 +1,7 @@
 import { Connection, Document, Model, Schema } from "mongoose";
 import { dbInstance } from "../config/db/connect";
 import planSchema from "../schemas/planSchema";
+import UsersSchema from "../schemas/userSchema";
 
 
 
@@ -14,7 +15,10 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
             case 'plans':
                 schema = planSchema;
                 break;
-            
+            case 'users':
+                schema = UsersSchema;
+                break;
+
             default:
                 throw new Error('Model not found');
         }

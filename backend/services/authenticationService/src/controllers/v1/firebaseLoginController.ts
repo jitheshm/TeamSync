@@ -8,6 +8,7 @@ import UserProducer from "../../events/kafka/producers/UserProducer";
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import jwt from 'jsonwebtoken';
+import Stripe from "stripe";
 
 const firebaseConfig = {
     apiKey: process.env.APIKEY,
@@ -18,6 +19,8 @@ const firebaseConfig = {
     appId: process.env.APPID,
     measurementId: process.env.MEASUREMENTID
 };
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 const app = initializeApp(firebaseConfig);
 
@@ -53,6 +56,14 @@ export default async (req: Request, res: Response) => {
                     is_verified: true
                 };
 
+                const customer = await stripe.customers.create({
+                    email: newUser.email,
+                    name: newUser.first_name,
+                });
+
+                newUser.stripe_customer_id = customer.id
+
+
                 userExist = await userRepository.create(newUser)
 
                 let producer = await kafkaConnection.getProducerInstance()
@@ -68,7 +79,7 @@ export default async (req: Request, res: Response) => {
         if (!process.env.JWT_SECRET_KEY) {
             return res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
         }
-        const token = jwt.sign({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id  }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+        const token = jwt.sign({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
         res.status(200).json({ message: "User verified", verified: true, token: token, name: decodedToken.name });
 
 

@@ -9,7 +9,7 @@ const kafkaConnection:IKafkaConnection = new KafkaConnection()
 export default class OtpConsumer implements IConsumer {
 
     async consume() {
-        let consumer = await kafkaConnection.getConsumerInstance('notification_otp_mail_group')
+        let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_otp_mail_group`)
         await consumer.subscribe({ topic: 'otp-events' ,fromBeginning: true})
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {

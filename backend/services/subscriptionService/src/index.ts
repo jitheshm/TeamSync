@@ -6,6 +6,7 @@ import cors from 'cors'
 // import router from './routes/router';
 import connect from './config/db/connect';
 import router from './routes/router';
+import { connectConsumers } from './events/kafka/consumerStart';
 // import { connectConsumers } from './events/kafka/consumerStart';
 //For env File 
 dotenv.config();
@@ -16,7 +17,7 @@ app.use(logger('dev'));
 app.use(express.json()); 
 app.use(cors())
 connect().then(()=>{
-// connectConsumers()
+connectConsumers()
 
 }) //connect to db
   

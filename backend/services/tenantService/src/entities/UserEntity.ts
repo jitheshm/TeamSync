@@ -9,6 +9,7 @@ export interface IUsers {
     email: string;
     authentication_id: string;
     authentication_provider: string;
+    stripe_customer_id: string;
     created_at: Date;
     phone_no: string | null;
     is_blocked: boolean;

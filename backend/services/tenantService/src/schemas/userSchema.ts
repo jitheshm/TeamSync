@@ -11,6 +11,7 @@ const UsersSchema: Schema = new Schema<IUsers>({
     email: { type: String, unique: true },
     authentication_id: { type: String, unique: true},
     authentication_provider: { type: String },
+    stripe_customer_id: { type: String ,required:true},
     created_at: { type: Date, required: true, default: Date.now },
     phone_no: { type: String },
     is_blocked: { type: Boolean, required: true, default: false },

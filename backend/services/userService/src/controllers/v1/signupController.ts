@@ -7,9 +7,12 @@ import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import UserProducer from "../../events/kafka/producers/UserProducer";
 import { IUserRepository } from "../../repository/interface/IUserRepository";
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+import Stripe from "stripe";
 
-let userRepo:IUserRepository = new UserRepository()
-let kafkaConnection:IKafkaConnection = new KafkaConnection()
+let userRepo: IUserRepository = new UserRepository()
+let kafkaConnection: IKafkaConnection = new KafkaConnection()
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 
 export default async (req: Request, res: Response) => {
@@ -31,10 +34,20 @@ export default async (req: Request, res: Response) => {
         user.password = bcrypt(user.password)
         user.user_id = '#user' + new Date().getTime() + Math.floor(Math.random() * 1000)
 
-        const newUser=await userRepo.create(user)
+        const customer = await stripe.customers.create({
+            email: user.email,
+            name: user.first_name,
+            
+
+        });
+
+        user.stripe_customer_id = customer.id
+
+        const newUser = await userRepo.create(user)
+
 
         // send message to kafka
-        
+
         let producer = await kafkaConnection.getProducerInstance()
         let userProducer = new UserProducer(producer, 'main', 'users')
         userProducer.sendMessage('create', newUser)
