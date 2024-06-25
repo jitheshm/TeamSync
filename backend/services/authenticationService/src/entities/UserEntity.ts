@@ -7,6 +7,8 @@ export interface IUsers {
     last_name: string;
     password: string;
     email: string;
+    authentication_id: string;
+    authentication_provider: string;
     created_at: Date;
     phone_no: string | null;
     is_blocked: boolean;
