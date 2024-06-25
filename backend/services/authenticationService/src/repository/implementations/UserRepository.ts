@@ -6,12 +6,12 @@ import { IUserRepository } from "../interface/IUserRepository";
 
 export default class UserRepository implements IUserRepository {
 
-    async create(user: IUsers) {
+    async create(user: Partial<IUsers>): Promise<IUsers & Document> {
         try {
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
             const newUser = new userModel(user)
             await newUser.save()
-            return
+            return newUser
         } catch (error) {
             console.log('Error in UserRepository create method');
 
@@ -24,12 +24,12 @@ export default class UserRepository implements IUserRepository {
     async verifyUser(email: string) {
         try {
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
-            const resObj=await userModel.findOneAndUpdate({ email: email }, { is_verified: true },{new:true})
-            if(!resObj){
+            const resObj = await userModel.findOneAndUpdate({ email: email }, { is_verified: true }, { new: true })
+            if (!resObj) {
                 throw new CustomError('User not found', 404)
             }
             return resObj
-            
+
         } catch (error) {
             console.log('Error in UserRepository verifyUser method');
 
@@ -52,7 +52,20 @@ export default class UserRepository implements IUserRepository {
         }
     }
 
-    async updateUser(data: Partial<IUsers & Document>): Promise<IUsers & Document |null>{
+    async fetchUserByAuthId(authentication_id: string) {
+        try {
+            const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
+            return await userModel.findOne({ authentication_id: authentication_id })
+        } catch (error) {
+            console.log('Error in UserRepository fetchUser method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
+    async updateUser(data: Partial<IUsers & Document>): Promise<IUsers & Document | null> {
         try {
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
             return await userModel.findOneAndUpdate({ email: data.email }, data, { new: true })

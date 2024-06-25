@@ -33,6 +33,9 @@ export default class UserConsumer implements IConsumer {
                                 case 'update':
                                     await userRepository.updateUser(dataObj.data)
                                     break;
+                                case 'create':
+                                    await userRepository.create(dataObj.data)
+                                    break;
                             }
                         }
 

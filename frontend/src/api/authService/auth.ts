@@ -59,3 +59,13 @@ export const passwordReset = async (formData: ResetFormData) => {
         throw error
     }
 }
+
+
+export const firebaseLogin = async (token: string) => {
+    try {
+        const response = await instance.post('/auth-service/v1/login/firebase', { token })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

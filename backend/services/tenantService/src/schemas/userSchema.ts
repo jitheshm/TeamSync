@@ -9,7 +9,7 @@ const UsersSchema: Schema = new Schema<IUsers>({
     last_name: { type: String },
     password: { type: String },
     email: { type: String, unique: true },
-    authentication_id: { type: String, unique: true },
+    authentication_id: { type: String, unique: true},
     authentication_provider: { type: String },
     created_at: { type: Date, required: true, default: Date.now },
     phone_no: { type: String },
