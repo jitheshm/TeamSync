@@ -35,7 +35,13 @@ interface Errors {
     general?: string;
 }
 
-const SignUp: React.FC = () => {
+interface SignUpProps {
+    setOtpPage: React.Dispatch<React.SetStateAction<boolean>>;
+    setEmail: React.Dispatch<React.SetStateAction<string>>;
+
+}
+
+const SignUp: React.FC<SignUpProps> = ({ setOtpPage,setEmail }) => {
 
 
     const [formData, setFormData] = useState<SignupFormData>({
@@ -66,7 +72,9 @@ const SignUp: React.FC = () => {
             setErrors({});
             try {
                 const data = await signup(formData);
-                router.push('/')
+                setEmail(formData.email)
+                // router.push('/')
+                setOtpPage(true);
             } catch (error: any) {
                 if (error.response) {
 

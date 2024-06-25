@@ -9,11 +9,14 @@ import { verifyToken } from '@/api/authService/auth'
 import { verify } from '@/features/user/userSlice'
 import Cookies from 'js-cookie'
 import Loading from '@/components/Loading/Loading'
+import Otp from '@/components/Login/Otp'
 
 function Page() {
     const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const router = useRouter()
+    const [otpPage, setOtpPage] = useState(false)
+    const [email, setEmail] = useState('')
     useEffect(() => {
         const token = Cookies.get('team-sync-user-token')
         if (token) {
@@ -38,7 +41,9 @@ function Page() {
             {
                 loading ? <Loading /> :
                     <LoginLanding>
-                        <SignUp />
+                        {
+                            otpPage ? <Otp context='signup' email={email} /> : <SignUp setOtpPage={setOtpPage} setEmail={setEmail}/>
+                        }
                     </LoginLanding>
             }
         </UserLayout>

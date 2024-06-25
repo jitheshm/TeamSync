@@ -2,6 +2,8 @@ import { verifyOtp } from '@/api/authService/auth';
 import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
 import { z } from 'zod';
 import Cookie from 'js-cookie';
+import { set } from 'firebase/database';
+import { useRouter } from 'next/navigation';
 
 const otpSchema = z.object({
     otp1: z.string().regex(/^\d$/, "Each OTP digit must be exactly 1 digit"),
@@ -25,9 +27,10 @@ interface OtpProps {
     setOtpVisible: React.Dispatch<React.SetStateAction<boolean>>;
     setPasswordPage: React.Dispatch<React.SetStateAction<boolean>>;
     email: string;
+    context: string;
 }
 
-const Otp: React.FC<OtpProps> = ({ setOtpVisible, setPasswordPage, email }) => {
+const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, email, context }) => {
     const [formData, setFormData] = useState<OtpFormData>({
         otp1: '',
         otp2: '',
@@ -35,8 +38,8 @@ const Otp: React.FC<OtpProps> = ({ setOtpVisible, setPasswordPage, email }) => {
         otp4: '',
         otp5: '',
         otp6: '',
-    });
-
+    })
+    const router = useRouter();
     const [errors, setErrors] = useState(false);
     const refs = {
         otp1: useRef<HTMLInputElement>(null),
@@ -67,10 +70,16 @@ const Otp: React.FC<OtpProps> = ({ setOtpVisible, setPasswordPage, email }) => {
         const result = otpSchema.safeParse(formData);
         if (result.success) {
             try {
-                const response = await verifyOtp(formData, email);
-                Cookie.set('team-sync-user-token', response.token, { expires: 1 });
-                setOtpVisible(false)
-                setPasswordPage(true);
+                const response = await verifyOtp(formData, email as string, context as string);
+                if (context === "forgot-password" && setOtpVisible && setPasswordPage) {
+                    Cookie.set('team-sync-user-token', response.token, { expires: 1 });
+                    setOtpVisible(false)
+                    setPasswordPage(true);
+                } else {
+                    // Redirect to home page   
+                    router.push('/')
+
+                }
             } catch (error) {
                 setErrors(true);
             }

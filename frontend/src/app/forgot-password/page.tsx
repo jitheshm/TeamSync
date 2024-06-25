@@ -16,7 +16,7 @@ const Page: React.FC = () => {
     return (
         <UserLayout>
             <LoginLanding>
-                {otpVisible ? <Otp setOtpVisible={setOtpVisible} setPasswordPage={setPasswordPage} email={email} /> : passwordPage ? <NewPassword email={email} /> : <ForgotPassword setOtpVisible={setOtpVisible} setEmail={setEmail} />}
+                {otpVisible ? <Otp setOtpVisible={setOtpVisible} setPasswordPage={setPasswordPage} email={email} context='forgot-password'/> : passwordPage ? <NewPassword email={email} /> : <ForgotPassword setOtpVisible={setOtpVisible} setEmail={setEmail} />}
             </LoginLanding>
         </UserLayout>
     );

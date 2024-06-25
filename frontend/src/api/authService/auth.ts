@@ -37,10 +37,10 @@ export const forgetPassword = async (formData: ForgotPasswordFormData) => {
     }
 }
 
-export const verifyOtp = async (formData: OtpFormData, email: string) => {
+export const verifyOtp = async (formData: OtpFormData, email: string,context:string) => {
     try {
         const otp = `${formData.otp1}${formData.otp2}${formData.otp3}${formData.otp4}${formData.otp5}${formData.otp6}`
-        const response = await instance.post('/auth-service/v1/verify-otp', { email, otp, context: "forgot-password" })
+        const response = await instance.post('/auth-service/v1/verify-otp', { email, otp, context: context })
         return response.data
     } catch (error) {
         throw error
