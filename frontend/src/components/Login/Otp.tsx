@@ -4,6 +4,8 @@ import { z } from 'zod';
 import Cookie from 'js-cookie';
 import { set } from 'firebase/database';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { verify } from '@/features/user/userSlice';
 
 const otpSchema = z.object({
     otp1: z.string().regex(/^\d$/, "Each OTP digit must be exactly 1 digit"),
@@ -40,6 +42,7 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
         otp6: '',
     })
     const router = useRouter();
+    const dispatch = useDispatch();
     const [errors, setErrors] = useState(false);
     const refs = {
         otp1: useRef<HTMLInputElement>(null),
@@ -76,8 +79,10 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                     setOtpVisible(false)
                     setPasswordPage(true);
                 } else {
+                    Cookie.set('team-sync-user-token', response.token, { expires: 1 })
+                    dispatch(verify({ name: response.user }))
                     // Redirect to home page   
-                    router.push('/')
+                    router.push('/subscription-plans')
 
                 }
             } catch (error) {
