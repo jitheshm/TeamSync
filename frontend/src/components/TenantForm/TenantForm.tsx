@@ -56,7 +56,7 @@ interface Errors {
     general?: string;
 }
 
-const TenantForm: React.FC = () => {
+const TenantForm: React.FC <{planId:string}>= ({planId}) => {
     const [formData, setFormData] = useState<TenantFormData>({
         company_name: '',
         company_type: '',
@@ -105,7 +105,7 @@ const TenantForm: React.FC = () => {
                 const data = await register(formData);
                 console.log(data);
                 // router.push('/');
-                const response = await subscription(data.tenantId,"")
+                const response = await subscription(data.tenantId,planId)
                 setClientSecret(response.latest_invoice.payment_intent.client_secret)
                 setPaymentForm(true)
 
