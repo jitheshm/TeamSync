@@ -25,6 +25,20 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
         }
     }
 
-    
+    async update(data: ISubscriptions) {
+        try {
+            const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
+            const res = await SubscriptionModel.updateOne({ stripe_subscription_id: data.stripe_subscription_id }, data)
+            
+        } catch (error) {
+            console.log('Error in SubscriptionRepository update method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
+
 
 }
