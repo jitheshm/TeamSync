@@ -16,3 +16,13 @@ export const subscription = async (tenantId:string,planId:string) => {
         throw error
     }
 }
+
+
+export const fetchPlans=async()=>{
+    try {
+        const response=await instance.get('/subscription-service/v1/subscription-plans')
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
