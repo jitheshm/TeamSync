@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 import Stripe from "stripe";
+import createSubscriptionController from "./createSubscriptionController";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Response) => {
     let customerId = req.user?.stripe_customer_id
     let planId = req.body.plan_id
+    let tenantId=req.body.tenantId
 
 
     try {
@@ -23,6 +25,7 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
             expand: ['latest_invoice.payment_intent'],
         });
         console.log(subscription);
+        await createSubscriptionController(subscription,planId,tenantId)
         
         res.json(subscription);
 

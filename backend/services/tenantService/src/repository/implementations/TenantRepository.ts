@@ -14,6 +14,7 @@ export default class TenantRepository implements ITenantRepository {
             const TenantModel = switchDb<ITenants>(`${process.env.SERVICE}_main`, 'tenants')
             const newTenant = new TenantModel(data)
             await newTenant.save()
+            return newTenant._id
         } catch (error) {
             console.log('Error in PlanRepository create method');
 

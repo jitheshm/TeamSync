@@ -9,7 +9,7 @@ import { Document } from "mongoose";
 
 const tenantRepository: ITenantRepository = new TenantRepository();
 
-export default async(req: Request & Partial<{ user:IUsers&Document}>, res: Response) => {
+export default async (req: Request & Partial<{ user: IUsers & Document }>, res: Response) => {
     try {
         const result = validationResult(req);
         if (!result.isEmpty()) {
@@ -18,8 +18,8 @@ export default async(req: Request & Partial<{ user:IUsers&Document}>, res: Respo
         const bodyObj: Partial<ITenants> = req.body;
         bodyObj.user_id = req.user?._id;
         bodyObj.tenant_id = '#tenant' + new Date().getTime() + Math.floor(Math.random() * 1000)
-        await tenantRepository.create(bodyObj);
-        res.status(201).json({ message: "Tenant created successfully" });
+        const tenantId = await tenantRepository.create(bodyObj);
+        res.status(201).json({ message: "Tenant created successfully", tenantId: tenantId });
 
     } catch (error) {
         console.log(error);

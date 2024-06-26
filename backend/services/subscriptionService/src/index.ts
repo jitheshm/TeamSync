@@ -14,6 +14,7 @@ dotenv.config();
 const app: Application = express();
 const port = process.env.PORT || 3003;
 app.use(logger('dev'));
+app.use('/api/subscription-service/v1/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json()); 
 app.use(cors())
 connect().then(()=>{

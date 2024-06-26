@@ -54,6 +54,16 @@ services:
       - team_sync_network
     depends_on:
       - redpanda-0
+
+
+  stripe-cli:
+    image: stripe/stripe-cli
+    container_name: stripe-cli
+    command: "listen --api-key ${STRIPE_API_KEY} --forward-to nginx:80/api/subscription-service/v1/webhook"
+    env_file:
+      - .env
+    networks:
+      - team_sync_network
   
   userservice:
     build: ./services/userService
