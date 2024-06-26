@@ -4,11 +4,31 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
-export default async (req: Request & Partial<{ user: string | jwt.JwtPayload }>, res: Response) => {
+export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Response) => {
+    let customerId = req.user?.stripe_customer_id
+    let planId = req.body.plan_id
 
 
+    try {
+        // Create the subscription. Note we're expanding the Subscription's
+        // latest invoice and that invoice's payment_intent
+        // so we can pass it to the front end to confirm the payment
+        const subscription = await stripe.subscriptions.create({
+            customer: customerId,
+            items: [{
+                price: planId,
+            }],
+            payment_behavior: 'default_incomplete',
+            payment_settings: { save_default_payment_method: 'on_subscription' },
+            expand: ['latest_invoice.payment_intent'],
+        });
+        console.log(subscription);
+        
+        res.json(subscription);
 
-
+    } catch (error: any) {
+        return res.status(400).send({ error: { message: error.message } });
+    }
 
 
 

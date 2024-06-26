@@ -21,7 +21,7 @@ const createStripePlan = async (plan: IPlan) => {
     });
     console.log(stripePlan); 
     
-    return stripePlan.product
+    return stripePlan.id
 
 }
 

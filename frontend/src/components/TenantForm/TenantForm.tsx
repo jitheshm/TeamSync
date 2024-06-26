@@ -1,9 +1,12 @@
 "use client";
 import { register } from '@/api/tenantService/tenant';
+import instance from '@/axios';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { z } from 'zod';
-
+import Cookies from 'js-cookie';
+import { subscription } from '@/api/subscriptionService/subscription';
+import Payment from '../Stripe/Payment';
 
 const addressSchema = z.object({
     building_no: z.string().min(1, 'Building number is required'),
@@ -70,6 +73,8 @@ const TenantForm: React.FC = () => {
     });
     const [errors, setErrors] = useState<Errors>({});
     const router = useRouter();
+    const [paymentForm, setPaymentForm] = useState(false)
+    const [clientSecret, setClientSecret] = useState("");
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -99,7 +104,11 @@ const TenantForm: React.FC = () => {
             try {
                 const data = await register(formData);
                 console.log(data);
-                router.push('/');
+                // router.push('/');
+                const response = await subscription("")
+                setClientSecret(response.latest_invoice.payment_intent.client_secret)
+                setPaymentForm(true)
+
             } catch (error: any) {
                 if (error.response) {
                     const { status, data } = error.response;
@@ -207,6 +216,9 @@ const TenantForm: React.FC = () => {
                     <button type="submit" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
                 </div>
             </form>
+            {
+                paymentForm && <Payment clientSecret={clientSecret}/>
+            }
         </div>
     );
 };
