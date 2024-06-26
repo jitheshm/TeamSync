@@ -9,7 +9,7 @@ const UsersSchema: Schema = new Schema<IUsers>({
     last_name: { type: String },
     password: { type: String },
     email: { type: String, unique: true },
-    authentication_id: { type: String, unique: true},
+    authentication_id: { type: String},
     authentication_provider: { type: String },
     stripe_customer_id: { type: String ,required:true},
     created_at: { type: Date, required: true, default: Date.now },
