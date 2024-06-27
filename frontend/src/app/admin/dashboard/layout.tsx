@@ -31,7 +31,7 @@ export default function DashboardLayout({
         if (verified) {
             setLoading(false)
         } else {
-            const token = Cookies.get('team-sync-user-token')
+            const token = Cookies.get('team-sync-admin-token')
             if (token) {
                 verifyAdminToken(token).then((data) => {
                     dispatch(verify())
