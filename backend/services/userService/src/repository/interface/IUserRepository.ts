@@ -6,4 +6,5 @@ export interface IUserRepository {
     fetchUserByEmail(email: string): Promise<IUsers | null>
     updateUser(data: IUsers & Document): Promise<void>
     fetchAllUsers(): Promise<IUsers[]>
+    updateUserById(data: Partial<IUsers & Document>): Promise<void>
 }

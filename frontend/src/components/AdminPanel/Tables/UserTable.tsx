@@ -1,5 +1,5 @@
 "use client"
-import { fetchUsers } from '@/api/userService/user';
+import { blockUser, fetchUsers, unBlockUser } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
 import React, { useEffect, useState } from 'react';
 
@@ -21,14 +21,31 @@ interface IUsers {
 
 const UserTable: React.FC = () => {
     const [users, setUsers] = useState<IUsers[]>([]);
+    const [toogle, setToogle] = useState<boolean>(true);
 
     useEffect(() => {
         fetchUsers().then((result) => {
             console.log(result);
-            
+
             setUsers(result.data);
-        });
-    }, []);
+        }).catch(() => {
+            console.log("error");
+
+        })
+    }, [toogle]);
+
+
+    const handleBlock = (id: string) => {
+        blockUser(id).then(() => {
+            setToogle(!toogle)
+        })
+    }
+
+    const handleUnBlock = (id: string) => {
+        unBlockUser(id).then(() => {
+            setToogle(!toogle)
+        })
+    }
 
     return (
         <div className="bg-gray-900 p-8 rounded-md w-11/12 mt-20 mx-auto">
@@ -93,7 +110,16 @@ const UserTable: React.FC = () => {
                                                             <p className="text-gray-100 whitespace-no-wrap text-center">{user.is_blocked ? 'Blocked' : user.is_verified ? 'Active' : 'Inactive'}</p>
                                                         </td>
                                                         <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">Action</p>
+                                                            <p className="text-gray-100 whitespace-no-wrap text-center">
+                                                                <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">view</button>
+                                                                {
+                                                                    user.is_blocked ?
+                                                                        <button type="button" onClick={() => handleUnBlock(user._id)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Unblock</button>
+                                                                        :
+                                                                        <button type="button" onClick={() => handleBlock(user._id)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Block</button>
+                                                                }
+                                                                <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                                            </p>
                                                         </td>
                                                     </tr>
                                                 ))

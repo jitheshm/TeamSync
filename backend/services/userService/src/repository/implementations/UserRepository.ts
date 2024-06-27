@@ -46,10 +46,24 @@ export default class UserRepository implements IUserRepository {
     async fetchAllUsers(): Promise<IUsers[]> {
         try {
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.find({},{password:0})
+            return await userModel.find({}, { password: 0 })
         } catch (error: any) {
             console.log('Error in UserRepository fetchAllUsers method');
             throw error
         }
     }
+
+    async updateUserById(data: Partial<IUsers & Document>): Promise<void> {
+        try {
+            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
+            await userModel.updateOne({ _id: data._id }, data)
+            return
+        } catch (error) {
+            console.log('Error in UserRepository updateUser method');
+
+            throw error
+        }
+    }
+
+
 }

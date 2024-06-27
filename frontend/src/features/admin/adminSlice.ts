@@ -9,7 +9,7 @@ export const adminSlice = createSlice({
     name: 'admin',
     initialState,
     reducers: {
-        verify: (state) => {
+        verify: (state  ) => {
             
             state.verified = true
         },
