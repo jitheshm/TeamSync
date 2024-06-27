@@ -24,7 +24,9 @@ const UserTable: React.FC = () => {
 
     useEffect(() => {
         fetchUsers().then((result) => {
-            setUsers(result);
+            console.log(result);
+            
+            setUsers(result.data);
         });
     }, []);
 
@@ -79,7 +81,7 @@ const UserTable: React.FC = () => {
                                                 users.map((user, index) => (
                                                     <tr key={index}>
                                                         <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{user._id}</p>
+                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{user.user_id}</p>
                                                         </td>
                                                         <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
                                                             <p className="text-gray-100 whitespace-no-wrap text-center">{`${user.first_name} ${user?.last_name}`}</p>
