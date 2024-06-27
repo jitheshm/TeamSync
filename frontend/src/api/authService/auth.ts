@@ -1,4 +1,5 @@
 import instance from "@/axios";
+import { AdminFormValues } from "@/components/AdminPanel/Login";
 import { ForgotPasswordFormData } from "@/components/Login/ForgotPassword";
 import { LoginFormData } from "@/components/Login/Login";
 import { ResetFormData } from "@/components/Login/NewPassword";
@@ -37,7 +38,7 @@ export const forgetPassword = async (formData: ForgotPasswordFormData) => {
     }
 }
 
-export const verifyOtp = async (formData: OtpFormData, email: string,context:string) => {
+export const verifyOtp = async (formData: OtpFormData, email: string, context: string) => {
     try {
         const otp = `${formData.otp1}${formData.otp2}${formData.otp3}${formData.otp4}${formData.otp5}${formData.otp6}`
         const response = await instance.post('/auth-service/v1/verify-otp', { email, otp, context: context })
@@ -64,6 +65,29 @@ export const passwordReset = async (formData: ResetFormData) => {
 export const firebaseLogin = async (token: string) => {
     try {
         const response = await instance.post('/auth-service/v1/login/firebase', { token })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const adminLogin = async (formData: AdminFormValues) => {
+    try {
+        const response = await instance.post('/auth-service/v1/admin/login', formData)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const verifyAdminToken = async (token: string) => {
+    try {
+        const response = await instance.get('/auth-service/v1/admin/token/verify', {
+            headers: {
+                Authorization: token
+            }
+        })
+
         return response.data
     } catch (error) {
         throw error
