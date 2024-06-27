@@ -42,4 +42,14 @@ export default class UserRepository implements IUserRepository {
             throw error
         }
     }
+
+    async fetchAllUsers(): Promise<IUsers[]> {
+        try {
+            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
+            return await userModel.find({},{password:0})
+        } catch (error: any) {
+            console.log('Error in UserRepository fetchAllUsers method');
+            throw error
+        }
+    }
 }
