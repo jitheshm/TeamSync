@@ -28,7 +28,7 @@ export const fetchUsers = async () => {
 
 export const blockUser = async (id:string) => {
     try {
-        const response = await instance.patch(`/user-service/v1/admin/users/block/${id}`, {
+        const response = await instance.patch(`/user-service/v1/admin/users/block/${id}`,{}, {
             headers: {
                 Authorization: Cookies.get('team-sync-admin-token')
             }
@@ -41,7 +41,7 @@ export const blockUser = async (id:string) => {
 }
 export const unBlockUser = async (id:string) => {
     try {
-        const response = await instance.patch(`/user-service/v1/admin/users/unblock/${id}`, {
+        const response = await instance.patch(`/user-service/v1/admin/users/unblock/${id}`,{}, {
             headers: {
                 Authorization: Cookies.get('team-sync-admin-token')
             }

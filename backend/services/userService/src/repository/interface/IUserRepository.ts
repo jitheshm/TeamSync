@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, UpdateWriteOpResult } from "mongoose";
 import { IUsers } from "../../entities/UserEntity";
 
 export interface IUserRepository {
@@ -6,5 +6,5 @@ export interface IUserRepository {
     fetchUserByEmail(email: string): Promise<IUsers | null>
     updateUser(data: IUsers & Document): Promise<void>
     fetchAllUsers(): Promise<IUsers[]>
-    updateUserById(data: Partial<IUsers & Document>): Promise<void>
+    updateUserById(data: Partial<IUsers & Document>): Promise<UpdateWriteOpResult> 
 }

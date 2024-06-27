@@ -2,6 +2,7 @@ import { Document } from "mongoose";
 import { IUsers } from "../../entities/UserEntity";
 import switchDb from "../../utils/switchDb";
 import { IUserRepository } from "../interface/IUserRepository";
+import { UpdateWriteOpResult } from 'mongoose';
 
 export default class UserRepository implements IUserRepository {
 
@@ -53,11 +54,13 @@ export default class UserRepository implements IUserRepository {
         }
     }
 
-    async updateUserById(data: Partial<IUsers & Document>): Promise<void> {
+    async updateUserById(data: Partial<IUsers & Document>): Promise<UpdateWriteOpResult> {
         try {
+           
+            
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            await userModel.updateOne({ _id: data._id }, data)
-            return
+            return  await userModel.updateOne({ _id: data._id }, data)
+            
         } catch (error) {
             console.log('Error in UserRepository updateUser method');
 

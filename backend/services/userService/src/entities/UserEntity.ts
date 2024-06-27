@@ -1,7 +1,7 @@
-import { ObjectId } from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
 export interface IUsers {
-    _id: ObjectId;
+    _id: mongoose.Types.ObjectId
     first_name: string;
     user_id: string;
     last_name: string;
