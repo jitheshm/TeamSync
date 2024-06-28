@@ -3,6 +3,7 @@ import { dbInstance } from "../config/db/connect";
 import planSchema from "../schemas/planSchema";
 import UsersSchema from "../schemas/userSchema";
 import SubscriptionSchema from "../schemas/subscriptionSchema";
+import TenantsSchema from "../schemas/tenantSchema";
 
 
 
@@ -21,6 +22,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
                 break;
             case 'subscriptions':
                 schema = SubscriptionSchema;
+                break;
+            case 'tenants':
+                schema = TenantsSchema;
                 break;
 
             default:

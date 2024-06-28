@@ -6,8 +6,13 @@ import TenantRepository from "../../repository/implementations/TenantRepository"
 import jwt from 'jsonwebtoken';
 import { IUsers } from "../../entities/UserEntity";
 import { Document } from "mongoose";
+import { KafkaConnection } from "../../config/kafka/KafkaConnection";
+import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+import TenantProducer from "../../events/kafka/producers/TenantProducer";
 
 const tenantRepository: ITenantRepository = new TenantRepository();
+let kafkaConnection: IKafkaConnection = new KafkaConnection()
+
 
 export default async (req: Request & Partial<{ user: IUsers & Document }>, res: Response) => {
     try {
@@ -18,8 +23,11 @@ export default async (req: Request & Partial<{ user: IUsers & Document }>, res: 
         const bodyObj: Partial<ITenants> = req.body;
         bodyObj.user_id = req.user?._id;
         bodyObj.tenant_id = '#tenant' + new Date().getTime() + Math.floor(Math.random() * 1000)
-        const tenantId = await tenantRepository.create(bodyObj);
-        res.status(201).json({ message: "Tenant created successfully", tenantId: tenantId });
+        const tenant = await tenantRepository.create(bodyObj);
+        let producer = await kafkaConnection.getProducerInstance()
+        let tenantProducer = new TenantProducer(producer, 'main', 'tenants')
+        tenantProducer.sendMessage('create', tenant)
+        res.status(201).json({ message: "Tenant created successfully", tenantId: tenant._id });
 
     } catch (error) {
         console.log(error);
