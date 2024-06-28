@@ -1,6 +1,35 @@
-import React from 'react'
+"use client"
+import { fetchUser } from '@/api/userService/user'
+import React, { useEffect, useState } from 'react'
 
-function UserDetails() {
+const UserDetails: React.FC<{ userId: string }> = ({ userId }) => {
+
+    interface IUserDetails {
+        _id: string
+        first_name: string;
+        user_id: string;
+        last_name: string;
+        email: string;
+        authentication_id: string;
+        authentication_provider: string;
+        stripe_customer_id: string;
+        created_at: string;
+        phone_no: string | null;
+        is_blocked: boolean;
+        is_deleted: boolean;
+        is_verified: boolean;
+
+    }
+
+    const [userDetails, setUserDetails] = useState<IUserDetails>()
+
+    useEffect(() => {
+
+        fetchUser(userId).then((res) => {
+            setUserDetails(res.data)
+        })
+    }, [])
+
     return (
         <div className="container mx-auto my-5 p-5">
             <div className="md:flex no-wrap md:-mx-2 ">
@@ -9,16 +38,19 @@ function UserDetails() {
                     {/* Profile Card */}
                     <div className="bg-gray-700 p-3 border-t-4 border-green-400">
 
-                        <h1 className="text-gray-100 font-bold text-xl leading-8 my-1">Jane Doe</h1>
+                        <h1 className="text-gray-100 font-bold text-xl leading-8 my-1">{userDetails?.first_name}</h1>
                         <h3 className="text-gray-100 font-lg text-semibold leading-6">Owner at Her Company Inc.</h3>
                         <ul className="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
                             <li className="flex items-center py-3">
                                 <span>Status</span>
-                                <span className="ml-auto"><span className="bg-green-500 py-1 px-2 rounded text-white text-sm">Active</span></span>
+                                {
+                                    userDetails?.is_deleted ? <span className="ml-auto"><span className="bg-red-500 py-1 px-2 rounded text-white text-sm">Deleted</span></span> : userDetails?.is_blocked ? <span className="ml-auto"><span className="bg-red-500 py-1 px-2 rounded text-white text-sm">Blocked</span></span> : userDetails?.is_verified ? <span className="ml-auto"><span className="bg-green-500 py-1 px-2 rounded text-white text-sm">Active</span></span> : <span className="ml-auto"><span className="bg-red-500 py-1 px-2 rounded text-white text-sm">Not verified</span></span>
+                                }
+
                             </li>
                             <li className="flex items-center py-3">
                                 <span>Member since</span>
-                                <span className="ml-auto">Nov 07, 2016</span>
+                                <span className="ml-auto">{userDetails ? new Date(userDetails.created_at).toLocaleDateString() : ""}</span>
                             </li>
                         </ul>
                     </div>
@@ -47,39 +79,52 @@ function UserDetails() {
                         <div className="text-gray-100">
                             <div className="grid md:grid-cols-2 text-sm">
                                 <div className="grid grid-cols-2">
-                                    <div className="px-4 py-2 font-semibold">First Name</div>
-                                    <div className="px-4 py-2">Jane</div>
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <div className="px-4 py-2 font-semibold">Last Name</div>
-                                    <div className="px-4 py-2">Doe</div>
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <div className="px-4 py-2 font-semibold">Gender</div>
-                                    <div className="px-4 py-2">Female</div>
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <div className="px-4 py-2 font-semibold">Contact No.</div>
-                                    <div className="px-4 py-2">+11 998001001</div>
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <div className="px-4 py-2 font-semibold">Current Address</div>
-                                    <div className="px-4 py-2">Beech Creek, PA, Pennsylvania</div>
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <div className="px-4 py-2 font-semibold">Permanant Address</div>
-                                    <div className="px-4 py-2">Arlington Heights, IL, Illinois</div>
-                                </div>
-                                <div className="grid grid-cols-2">
-                                    <div className="px-4 py-2 font-semibold">Email.</div>
+                                    <div className="px-4 py-2 font-semibold">User id :</div>
                                     <div className="px-4 py-2">
-                                        <a className="text-blue-300" href="mailto:jane@example.com">jane@example.com</a>
+                                        <a className="text-blue-300" href="mailto:jane@example.com">{userDetails?.user_id}</a>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2">
-                                    <div className="px-4 py-2 font-semibold">Birthday</div>
-                                    <div className="px-4 py-2">Feb 06, 1998</div>
+                                    <div className="px-4 py-2 font-semibold">First Name :</div>
+                                    <div className="px-4 py-2">{userDetails?.first_name}</div>
                                 </div>
+                                <div className="grid grid-cols-2">
+                                    <div className="px-4 py-2 font-semibold">Last Name :</div>
+                                    <div className="px-4 py-2">{userDetails?.last_name} </div>
+                                </div>
+                                <div className="grid grid-cols-2">
+                                    <div className="px-4 py-2 font-semibold">Contact No :</div>
+                                    <div className="px-4 py-2">{userDetails?.phone_no} </div>
+                                </div>
+                                <div className="grid grid-cols-2">
+                                    <div className="px-4 py-2 font-semibold">Email :</div>
+                                    <div className="px-4 py-2">
+                                        <a className="text-blue-300" href={`mailto:${userDetails?.email}`}>{userDetails?.email}</a>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2">
+                                    <div className="px-4 py-2 font-semibold">Authentication id :</div>
+                                    <div className="px-4 py-2">
+                                        <a className="text-blue-300" href="mailto:jane@example.com">{userDetails?.authentication_id}</a>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2">
+                                    <div className="px-4 py-2 font-semibold">Authentication Provider :</div>
+                                    <div className="px-4 py-2">
+                                        <a className="text-blue-300" href="mailto:jane@example.com">{userDetails?.authentication_provider}</a>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2">
+                                    <div className="px-4 py-2 font-semibold">Stripe Customer id :</div>
+                                    <div className="px-4 py-2">
+                                        <a className="text-blue-300" href="mailto:jane@example.com">{userDetails?.stripe_customer_id}</a>
+                                    </div>
+                                </div>
+
+
+
                             </div>
                         </div>
 

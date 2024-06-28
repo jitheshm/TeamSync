@@ -66,3 +66,17 @@ export const deleteUser = async (id:string) => {
         throw error
     }
 }
+
+export const fetchUser = async (id:string) => {
+    try {
+        const response = await instance.get(`/user-service/v1/admin/users/${id}`,{
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

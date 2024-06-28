@@ -1,9 +1,9 @@
 import UserDetails from '@/components/UserDetails/UserDetails'
 import React from 'react'
 
-function page() {
+function page({ params }: { params: { userId: string } }) {
     return (
-       <UserDetails/>
+       <UserDetails userId={params.userId}/>
 
     )
 }
