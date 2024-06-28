@@ -54,12 +54,12 @@ export default class UserRepository implements IUserRepository {
         }
     }
 
-    async updateUserById(data: Partial<IUsers & Document>): Promise<UpdateWriteOpResult> {
+    async updateUserById(data: Partial<IUsers & Document>): Promise<IUsers | null> {
         try {
 
 
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.updateOne({ _id: data._id }, data)
+            return await userModel.findOneAndUpdate({ _id: data._id }, data,{new:true})
 
         } catch (error) {
             console.log('Error in UserRepository updateUser method');
@@ -68,11 +68,11 @@ export default class UserRepository implements IUserRepository {
         }
     }
 
-    async deleteUserById(userId: mongoose.Types.ObjectId): Promise<UpdateWriteOpResult> {
+    async deleteUserById(userId: mongoose.Types.ObjectId): Promise<IUsers | null> {
         try {
-            
+
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.updateOne({ _id: userId }, { is_deleted: true })
+            return await userModel.findOneAndUpdate({ _id: userId }, { is_deleted: true },{new:true})
 
         } catch (error) {
             console.log('Error in UserRepository updateUser method');

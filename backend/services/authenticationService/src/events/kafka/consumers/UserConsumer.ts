@@ -29,7 +29,7 @@ export default class UserConsumer implements IConsumer {
                         if (origin != process.env.SERVICE) {
                             switch (dataObj.eventType) {
                                 case 'create':
-                                   
+
 
                                     await userRepository.create(dataObj.data)
                                     let otp = generateOtp()
@@ -47,6 +47,9 @@ export default class UserConsumer implements IConsumer {
                                     otpProducer.sendMessage('create', otpObj)
 
 
+                                    break;
+                                case 'update':
+                                    await userRepository.updateUser(dataObj.data)
                                     break;
                             }
                         }
