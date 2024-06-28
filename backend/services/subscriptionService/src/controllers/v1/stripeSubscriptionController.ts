@@ -9,6 +9,7 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
     let customerId = req.user?.stripe_customer_id
     let planId = req.body.plan_id
     let tenantId=req.body.tenantId
+    let userId=req.user?._id
 
 
     try {
@@ -25,7 +26,7 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
             expand: ['latest_invoice.payment_intent'],
         });
         console.log(subscription);
-        await createSubscriptionController(subscription,planId,tenantId)
+        await createSubscriptionController(subscription,planId,tenantId,userId)
         
         res.json(subscription);
 

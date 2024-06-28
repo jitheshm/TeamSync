@@ -7,6 +7,7 @@ export default interface ISubscriptions extends Document {
     tenant_id: mongoose.Types.ObjectId;
     start_date: Date;
     plan_id: string;
+    user_id:mongoose.Types.ObjectId;
     stripe_latest_invoice:string;
     stripe_customer_id:string
     stripe_payment_intent:string

@@ -6,6 +6,7 @@ import adminAuth from "../../middlewares/adminAuth";
 import updatePlanController from "../../controllers/v1/updatePlanController";
 import deletePlanController from "../../controllers/v1/deletePlanController";
 import getAllPlansController from "../../controllers/v1/getAllPlansController";
+import getUserSubscriptionController from "../../controllers/v1/getUserSubscriptionController";
 
 
 const router = Router();
@@ -14,5 +15,8 @@ router.post('/subscription-plans', adminAuth, checkSchema(planValidator()), plan
 router.get('/subscription-plans',adminAuth, getAllPlansController)
 router.put('/subscription-plans/:planId', adminAuth, checkSchema(planValidator()), updatePlanController)
 router.delete('/subscription-plans/:planId', adminAuth, deletePlanController)
+
+
+router.get('/subscriptions/users/:userId',adminAuth, getUserSubscriptionController)
 
 export default router
