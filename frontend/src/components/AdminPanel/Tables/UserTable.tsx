@@ -1,7 +1,8 @@
 "use client"
-import { blockUser, fetchUsers, unBlockUser } from '@/api/userService/user';
+import { blockUser, deleteUser, fetchUsers, unBlockUser } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 interface IUsers {
     _id: string;
@@ -45,6 +46,37 @@ const UserTable: React.FC = () => {
         unBlockUser(id).then(() => {
             setToogle(!toogle)
         })
+    }
+
+    const handleDelete = (id: string) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteUser(id).then(() => {
+
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                    setToogle(!toogle)
+
+                }).catch(() => {
+                    console.log("error");
+
+                })
+
+            }
+        });
+
+
     }
 
     return (
@@ -118,7 +150,7 @@ const UserTable: React.FC = () => {
                                                                         :
                                                                         <button type="button" onClick={() => handleBlock(user._id)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Block</button>
                                                                 }
-                                                                <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                                                <button type="button" onClick={() => handleDelete(user._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                                             </p>
                                                         </td>
                                                     </tr>

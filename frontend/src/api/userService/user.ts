@@ -52,3 +52,17 @@ export const unBlockUser = async (id:string) => {
         throw error
     }
 }
+
+export const deleteUser = async (id:string) => {
+    try {
+        const response = await instance.delete(`/user-service/v1/admin/users/${id}`,{
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { IUsers } from "../../entities/UserEntity";
 import switchDb from "../../utils/switchDb";
 import { IUserRepository } from "../interface/IUserRepository";
@@ -47,7 +47,7 @@ export default class UserRepository implements IUserRepository {
     async fetchAllUsers(): Promise<IUsers[]> {
         try {
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.find({}, { password: 0 })
+            return await userModel.find({is_deleted:false}, { password: 0 })
         } catch (error: any) {
             console.log('Error in UserRepository fetchAllUsers method');
             throw error
@@ -56,11 +56,24 @@ export default class UserRepository implements IUserRepository {
 
     async updateUserById(data: Partial<IUsers & Document>): Promise<UpdateWriteOpResult> {
         try {
-           
+
+
+            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
+            return await userModel.updateOne({ _id: data._id }, data)
+
+        } catch (error) {
+            console.log('Error in UserRepository updateUser method');
+
+            throw error
+        }
+    }
+
+    async deleteUserById(userId: mongoose.Types.ObjectId): Promise<UpdateWriteOpResult> {
+        try {
             
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return  await userModel.updateOne({ _id: data._id }, data)
-            
+            return await userModel.updateOne({ _id: userId }, { is_deleted: true })
+
         } catch (error) {
             console.log('Error in UserRepository updateUser method');
 
