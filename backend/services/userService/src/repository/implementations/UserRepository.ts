@@ -47,7 +47,7 @@ export default class UserRepository implements IUserRepository {
     async fetchAllUsers(): Promise<IUsers[]> {
         try {
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.find({is_deleted:false}, { password: 0 })
+            return await userModel.find({ is_deleted: false }, { password: 0 })
         } catch (error: any) {
             console.log('Error in UserRepository fetchAllUsers method');
             throw error
@@ -59,7 +59,7 @@ export default class UserRepository implements IUserRepository {
 
 
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.findOneAndUpdate({ _id: data._id }, data,{new:true})
+            return await userModel.findOneAndUpdate({ _id: data._id }, data, { new: true })
 
         } catch (error) {
             console.log('Error in UserRepository updateUser method');
@@ -72,7 +72,7 @@ export default class UserRepository implements IUserRepository {
         try {
 
             const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.findOneAndUpdate({ _id: userId }, { is_deleted: true },{new:true})
+            return await userModel.findOneAndUpdate({ _id: userId }, { is_deleted: true }, { new: true })
 
         } catch (error) {
             console.log('Error in UserRepository updateUser method');
@@ -80,6 +80,14 @@ export default class UserRepository implements IUserRepository {
             throw error
         }
     }
-
+    async fetchSpecificUser(userId: mongoose.Types.ObjectId): Promise<IUsers | null> {
+        try {
+            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
+            return await userModel.findOne({ _id: userId}, { password: 0 })
+        } catch (error: any) {
+            console.log('Error in UserRepository fetchAllUsers method');
+            throw error
+        }
+    }
 
 }
