@@ -1,6 +1,9 @@
 "use client"
 import { fetchUser } from '@/api/userService/user'
 import React, { useEffect, useState } from 'react'
+import SubscriptionDetails from './SubscriptionDetails'
+import { ISubscriptionDetails } from '@/interfaces/subscription'
+import Empty from '../Empty/Empty'
 
 const UserDetails: React.FC<{ userId: string }> = ({ userId }) => {
 
@@ -21,7 +24,10 @@ const UserDetails: React.FC<{ userId: string }> = ({ userId }) => {
 
     }
 
+
+
     const [userDetails, setUserDetails] = useState<IUserDetails>()
+    const [subscriptionDetails, setSubscriptionDetails] = useState<ISubscriptionDetails | null>(null)
 
     useEffect(() => {
 
@@ -34,7 +40,7 @@ const UserDetails: React.FC<{ userId: string }> = ({ userId }) => {
         <div className="container mx-auto my-5 p-5">
             <div className="md:flex no-wrap md:-mx-2 ">
                 {/* Left Side */}
-                <div className="w-full md:w-3/12 md:mx-2">
+                <div className="w-full md:w-4/12 md:mx-2">
                     {/* Profile Card */}
                     <div className="bg-gray-700 p-3 border-t-4 border-green-400">
 
@@ -58,9 +64,7 @@ const UserDetails: React.FC<{ userId: string }> = ({ userId }) => {
                     <div className="my-4" />
                     {/* Friends card */}
 
-                    <div className="bg-gray-700 p-3 hover:shadow">
-                        <p>Subscription Details</p>
-                    </div>
+                    <SubscriptionDetails userId={userId} subscriptionDetails={subscriptionDetails} setSubscriptionDetails={setSubscriptionDetails} />
                     {/* End of friends card */}
                 </div>
                 {/* Right Side */}
@@ -134,7 +138,10 @@ const UserDetails: React.FC<{ userId: string }> = ({ userId }) => {
                     {/* Experience and education */}
                     <div className="bg-gray-700 p-3 shadow-sm rounded-sm">
                         <p>Transactions</p>
+                        {
 
+                            subscriptionDetails?.transactions?.length?"":<Empty/>
+                        }
                         {/* End of Experience and education grid */}
                     </div>
                 </div></div></div>

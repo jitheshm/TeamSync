@@ -14,7 +14,7 @@ function Empty() {
                             </svg>
                         </div>
                         <h1 className="mt-3 text-lg text-gray-800 dark:text-white">No data found</h1>
-                        <p className="mt-2 text-gray-500 dark:text-gray-400">Create new user or  try again later.</p>
+                        <p className="mt-2 text-gray-500 dark:text-gray-400">try again later.</p>
                         {/* <div className="flex items-center mt-4 sm:mx-auto gap-x-3">
                             <button className="w-1/2 px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
                                 Clear Search
