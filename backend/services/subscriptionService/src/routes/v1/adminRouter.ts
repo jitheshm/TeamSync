@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkSchema } from "express-validator";
+import { check, checkSchema } from "express-validator";
 import planValidator from "../../validators/planValidator";
 import planController from "../../controllers/v1/planController";
 import adminAuth from "../../middlewares/adminAuth";
@@ -12,11 +12,12 @@ import getUserSubscriptionController from "../../controllers/v1/getUserSubscript
 const router = Router();
 
 router.post('/subscription-plans', adminAuth, checkSchema(planValidator()), planController)
-router.get('/subscription-plans',adminAuth, getAllPlansController)
+router.get('/subscription-plans', adminAuth, getAllPlansController)
 router.put('/subscription-plans/:planId', adminAuth, checkSchema(planValidator()), updatePlanController)
+router.patch('/subscription-plans/:planId', adminAuth, check('active').isBoolean().withMessage('active must be a boolean value (true or false)'), updatePlanController)
 router.delete('/subscription-plans/:planId', adminAuth, deletePlanController)
 
 
-router.get('/subscriptions/users/:userId',adminAuth, getUserSubscriptionController)
+router.get('/subscriptions/users/:userId', adminAuth, getUserSubscriptionController)
 
 export default router

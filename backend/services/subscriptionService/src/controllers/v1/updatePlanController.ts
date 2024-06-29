@@ -34,7 +34,7 @@ export default async (req: Request, res: Response) => {
         if (!resObj)
             return res.status(404).json({ message: "Plan not found" });
 
-        updateStripePlan(resObj) 
+        // updateStripePlan(resObj) 
 
         res.status(200).json({ message: "Plan updated successfully" });
 

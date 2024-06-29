@@ -27,13 +27,41 @@ export const fetchPlans = async () => {
     }
 }
 
-export const fetchSubscriptionDetails = async (userId:string) => {
+export const fetchSubscriptionDetails = async (userId: string) => {
     try {
-        const response = await instance.get(`subscription-service/v1/admin/subscriptions/users/${userId}`,{
+        const response = await instance.get(`subscription-service/v1/admin/subscriptions/users/${userId}`, {
             headers: {
                 Authorization: Cookies.get('team-sync-admin-token')
             }
-        
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const blockPlan = async (planId: string) => {
+    try {
+        const response = await instance.patch(`subscription-service/v1/admin/subscription-plans/${planId}`, { active: false }, {
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const unBlockPlan = async (planId: string) => {
+    try {
+        const response = await instance.patch(`subscription-service/v1/admin/subscription-plans/${planId}`, { active: true }, {
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
+
         })
         return response.data
     } catch (error) {
