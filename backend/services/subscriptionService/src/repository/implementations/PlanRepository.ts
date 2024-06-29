@@ -41,7 +41,7 @@ export default class PlanRepository implements IPlanRepository {
     async fetchAll() {
         try {
             const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
-            let data = await PlanModel.find()
+            let data = await PlanModel.find({is_deleted:false})
             return data
         } catch (error) {
             console.log('Error in PlanRepository fetchAll method');

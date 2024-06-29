@@ -1,4 +1,5 @@
 import instance from "@/axios";
+import { PlanFormData } from "@/components/AdminPanel/Forms/PlanForm";
 import { TenantFormData } from "@/components/TenantForm/TenantForm";
 import Cookies from 'js-cookie';
 
@@ -58,6 +59,34 @@ export const blockPlan = async (planId: string) => {
 export const unBlockPlan = async (planId: string) => {
     try {
         const response = await instance.patch(`subscription-service/v1/admin/subscription-plans/${planId}`, { active: true }, {
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const deletePlan = async (planId: string) => {
+    try {
+        const response = await instance.delete(`subscription-service/v1/admin/subscription-plans/${planId}`, {
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const createPlan = async (formData: PlanFormData) => {
+    try {
+        const response = await instance.post('/subscription-service/v1/admin/subscription-plans', formData, {
             headers: {
                 Authorization: Cookies.get('team-sync-admin-token')
             }

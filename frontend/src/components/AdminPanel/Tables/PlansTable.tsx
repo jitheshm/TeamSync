@@ -1,5 +1,5 @@
 "use client"
-import { blockPlan, fetchPlans, unBlockPlan } from '@/api/subscriptionService/subscription';
+import { blockPlan, deletePlan, fetchPlans, unBlockPlan } from '@/api/subscriptionService/subscription';
 import { blockUser, deleteUser, fetchUsers, unBlockUser } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
 import Link from 'next/link';
@@ -57,32 +57,32 @@ const PlansTable: React.FC = () => {
     }
 
     const handleDelete = (id: string) => {
-        // Swal.fire({
-        //     title: "Are you sure?",
-        //     text: "You won't be able to revert this!",
-        //     icon: "warning",
-        //     showCancelButton: true,
-        //     confirmButtonColor: "#3085d6",
-        //     cancelButtonColor: "#d33",
-        //     confirmButtonText: "Yes, delete it!"
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         deletePlan(id).then(() => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deletePlan(id).then(() => {
 
-        //             Swal.fire({
-        //                 title: "Deleted!",
-        //                 text: "Your file has been deleted.",
-        //                 icon: "success"
-        //             });
-        //             setToogle(!toogle)
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                    setToogle(!toogle)
 
-        //         }).catch(() => {
-        //             console.log("error");
+                }).catch(() => {
+                    console.log("error");
 
-        //         })
+                })
 
-        //     }
-        // });
+            }
+        });
 
 
     }
@@ -101,7 +101,7 @@ const PlansTable: React.FC = () => {
                         <input className="bg-gray-50 outline-none ml-1 block" type="text" name="search" id="search" placeholder="search..." />
                     </div>
                     <div className="lg:ml-40 ml-10 space-x-8">
-                        <Link href={'/admin/dashboard/users/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
+                        <Link href={'/admin/dashboard/plans/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
                     </div>
                 </div>
             </div>
