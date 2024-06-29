@@ -10,7 +10,7 @@ export default class TenantConsumer implements IConsumer {
     async consume() {
         try {
             let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_group`)
+            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenants_group`)
             await consumer.subscribe({ topic: 'tenants-events', fromBeginning: true })
             await consumer.run({
                 eachMessage: async ({ topic, partition, message }) => {
@@ -18,7 +18,7 @@ export default class TenantConsumer implements IConsumer {
                     let tenantRepository = new TenantRepository()
                     let data = message.value?.toString()
                     console.log(data);
-                    console.log("iam new tenant consumer");
+                    console.log("iam new tenant consumer>>>>>>>>>>>>>>>");
 
                     if (data) {
                         let dataObj = JSON.parse(data)

@@ -1,3 +1,4 @@
+import { RegisterFormData } from "@/app/admin/dashboard/users/register/page";
 import instance from "@/axios";
 import { SignupFormData } from "@/components/Login/SignUp";
 import Cookies from 'js-cookie'
@@ -74,6 +75,20 @@ export const fetchUser = async (id:string) => {
                 Authorization: Cookies.get('team-sync-admin-token')
             }
 
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+
+export const register = async (formData: RegisterFormData) => {
+    try {
+        const response = await instance.post('/user-service/v1/admin/users', formData,{
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
         })
         return response.data
     } catch (error) {

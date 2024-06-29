@@ -1,11 +1,11 @@
 
 import IConsumer from "../../interfaces/IConsumer"
-import TenantConsumer from "./consumers/TenanConsumer"
+import TenantConsumer from "./consumers/TenantConsumer"
 import UserConsumer from "./consumers/UserConsumer"
 
 export const connectConsumers = () => {
-    let userConsumer:IConsumer = new UserConsumer()
-    let tenantConsumer:IConsumer = new TenantConsumer()
-    userConsumer.consume()
+    let userConsumer:UserConsumer = new UserConsumer()
+    let tenantConsumer:TenantConsumer = new TenantConsumer()
     tenantConsumer.consume()
+    userConsumer.consume()
 } 
