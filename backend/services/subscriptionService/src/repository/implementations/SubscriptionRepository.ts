@@ -44,8 +44,8 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
             const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
             const res = await SubscriptionModel.aggregate([
                 {
-                    $match:{
-                        user_id:userId
+                    $match: {
+                        user_id: userId
                     }
                 },
                 {
@@ -70,10 +70,10 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
                 {
                     $unwind: '$tenant'
                 }
-                
+
             ]).exec()
             console.log(res);
-            
+
             return res[0]
         } catch (error) {
             console.log('Error in SubscriptionRepository findSubscriptionByUserId method');
@@ -85,5 +85,19 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
 
 
 
+    }
+
+    async fetchAllSubscriptions() {
+        try {
+            const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
+            const res = await SubscriptionModel.find()
+            return res
+        } catch (error) {
+            console.log('Error in SubscriptionRepository update method');
+
+            console.log(error);
+
+            throw error
+        }
     }
 }
