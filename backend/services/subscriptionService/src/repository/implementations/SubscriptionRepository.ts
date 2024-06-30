@@ -130,6 +130,7 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
                         _id: 1,
                         subscription_id: 1,
                         user: {
+                            _id:1,
                             email: 1
                         },
                         plan: {
