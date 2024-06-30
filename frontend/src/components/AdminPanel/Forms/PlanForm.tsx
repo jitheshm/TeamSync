@@ -139,7 +139,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             value={formData.name}
                                             onChange={handleChange}
-                                            readOnly={viewOnly}
+                                            disabled={viewOnly}
                                         />
                                         {errors['name'] && <p className="text-red-500">{errors['name']}</p>}
                                     </div>
@@ -154,7 +154,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             value={formData.price}
                                             onChange={handleChange}
-                                            readOnly={viewOnly}
+                                            disabled={viewOnly}
                                         />
                                         {errors['price'] && <p className="text-red-500">{errors['price']}</p>}
                                     </div>
@@ -169,7 +169,8 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             value={formData.features.meetings}
                                             onChange={handleChange}
-                                            readOnly={viewOnly}
+                                            
+                                            disabled={viewOnly}
                                         />
                                         {errors['features.meetings'] && <p className="text-red-500">{errors['features.meetings']}</p>}
                                     </div>
@@ -184,7 +185,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             value={formData.features.branches}
                                             onChange={handleChange}
-                                            readOnly={viewOnly}
+                                            disabled={viewOnly}
                                         />
                                         {errors['features.branches'] && <p className="text-red-500">{errors['features.branches']}</p>}
                                     </div>
@@ -198,7 +199,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                             value={formData.features.support}
                                             onChange={handleChange}
-                                            readOnly={viewOnly}
+                                            disabled={viewOnly}
                                         >
                                             <option value={'basic'}>Basic</option>
                                             <option value={'expert'}>Expert</option>
@@ -215,7 +216,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             value={formData.description}
                                             onChange={handleChange}
-                                            readOnly={viewOnly}
+                                            disabled={viewOnly}
                                         />
                                         {errors['description'] && <p className="text-red-500">{errors['description']}</p>}
                                     </div>
@@ -229,7 +230,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                             value={formData.currency}
                                             onChange={handleChange}
-                                            readOnly={viewOnly}
+                                            disabled={viewOnly}
                                         >
                                             <option value={'usd'}>Dollar</option>
                                         </select>
@@ -245,7 +246,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                             value={formData.bill_cycle}
                                             onChange={handleChange}
-                                            readOnly={viewOnly}
+                                            disabled={viewOnly}
                                         >
                                             <option value={'month'}>Monthly</option>
                                         </select>

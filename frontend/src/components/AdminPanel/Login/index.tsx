@@ -84,7 +84,7 @@ const router=useRouter()
                     onChange={handleChange}
                     required
                   />
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.user_name._errors[0]}</p>}
+                  {errors.user_name && <p className="text-red-500 text-xs mt-1">{errors.user_name._errors[0]}</p>}
                 </div>
                 <div>
                   <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>

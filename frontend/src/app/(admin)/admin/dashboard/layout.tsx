@@ -49,9 +49,17 @@ export default function DashboardLayout({
             }
         }
     }, [verified])
-    return <AdminLayout>
-        {
-            loading ? <Loading background="bg-dark" /> : children
-        }
-    </AdminLayout>
+
+    return (
+        <>
+            {
+                loading ? <Loading background="bg-dark" /> : <AdminLayout>
+                    {
+                        children
+                    }
+                </AdminLayout>
+            }
+        </>
+    )
+
 }

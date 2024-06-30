@@ -6,7 +6,7 @@ import { ISubscriptionDetails } from '@/interfaces/subscription';
 interface SubscriptionDetailsProps {
     userId: string;
     subscriptionDetails: ISubscriptionDetails | null;
-    setSubscriptionDetails: React.Dispatch<React.SetStateAction<ISubscriptionDetails>>;
+    setSubscriptionDetails: React.Dispatch<React.SetStateAction<ISubscriptionDetails | null>>;
 }
 
 const SubscriptionDetails: React.FC<SubscriptionDetailsProps> = ({ userId, subscriptionDetails, setSubscriptionDetails }) => {

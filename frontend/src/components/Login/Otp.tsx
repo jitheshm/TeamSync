@@ -130,7 +130,7 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                                                 value={formData[`otp${index}` as keyof OtpFormData]}
                                                 onChange={handleChange}
                                                 maxLength={1}
-                                                className={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700 text-gray-900 ${errors[`otp${index}`] ? 'border-red-500' : 'border-gray-300'}`}
+                                                className={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700 text-gray-900}`}
                                                 placeholder=""
                                                 required
                                             />
@@ -148,7 +148,7 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                                         </button>
                                     </div>
                                     <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
-                                        <p>Didn't receive code?</p>
+                                        <p>Didnt receive code?</p>
                                         <a href="#" className="flex flex-row items-center text-blue-600">Resend</a>
                                     </div>
                                 </div>
