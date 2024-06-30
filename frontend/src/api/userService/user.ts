@@ -1,4 +1,4 @@
-import { RegisterFormData } from "@/app/admin/dashboard/users/register/page";
+import { RegisterFormData } from "@/app/(admin)/admin/dashboard/users/register/page";
 import instance from "@/axios";
 import { SignupFormData } from "@/components/Login/SignUp";
 import Cookies from 'js-cookie'
