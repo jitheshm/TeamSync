@@ -90,7 +90,62 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
     async fetchAllSubscriptions() {
         try {
             const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
-            const res = await SubscriptionModel.find()
+            const res = await SubscriptionModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'plans',
+                        localField: 'plan_id',
+                        foreignField: 'stripe_plan_id',
+                        as: 'plan'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenants',
+                        localField: 'tenant_id',
+                        foreignField: '_id',
+                        as: 'tenant'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'user_id',
+                        foreignField: '_id',
+                        as: 'user'
+
+                    }
+                },
+                {
+                    $unwind: '$plan'
+                },
+                {
+                    $unwind: '$tenant'
+                },
+                {
+                    $unwind: '$user'
+
+                }, {
+                    $project: {
+                        _id: 1,
+                        subscription_id: 1,
+                        user: {
+                            email: 1
+                        },
+                        plan: {
+                            name: 1
+                        },
+                        tenant: {
+                            company_name: 1
+                        },
+
+                    }
+                }
+
+            ]).exec()
+            console.log(res);
+
+
             return res
         } catch (error) {
             console.log('Error in SubscriptionRepository update method');

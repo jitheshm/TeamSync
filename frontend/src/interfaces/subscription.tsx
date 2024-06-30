@@ -4,7 +4,7 @@ interface IFeatures {
     support: string;
 }
 
-interface IPlan {
+export interface IPlan {
     plan_id: string;
     stripe_plan_id: string;
     description: string;
@@ -28,7 +28,7 @@ interface IAddress {
     street: string;
 }
 
-interface ITenants {
+export interface ITenants {
     _id: string;
     tenant_id: string;
     register_date: Date;
@@ -40,7 +40,7 @@ interface ITenants {
     user_id: string;
 }
 
- export interface ISubscriptionDetails {
+export interface ISubscriptionDetails {
     _id: string;
     subscription_id: String;
     stripe_subscription_id: string;

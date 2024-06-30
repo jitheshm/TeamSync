@@ -111,3 +111,17 @@ export const fetchPlanDetails = async (id: string) => {
         throw error
     }
 }
+
+export const fetchSubscription = async () => {
+    try {
+        const response = await instance.get(`/subscription-service/v1/admin/subscriptions`, {
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
