@@ -32,7 +32,7 @@ function TenantAdminSidebar() {
 
 
 
-        <div className="absolute left-0 flex h-screen w-72 flex-col overflow-hidden rounded-r-2xl bg-sky-950 text-white">
+        <div className="absolute left-0 flex h-screen w-72 flex-col overflow-hidden rounded-r-2xl bg-gray-950 border-e-2 text-white">
             <h1 className="mt-10 ml-10 text-xl font-bold">TeamSync</h1>
             <ul className="mt-20 space-y-3">
                 <li className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-gray-300 hover:bg-slate-600">
