@@ -1,10 +1,13 @@
 "use client"
 import { fetchSubscription } from '@/api/subscriptionService/subscription';
 import Empty from '@/components/Empty/Empty';
+import { logout } from '@/features/admin/adminSlice';
 import { IUserDetails } from '@/interfaces/User';
 import { IPlan, ITenants } from '@/interfaces/subscription';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 
 interface ISubscriptions {
@@ -37,15 +40,20 @@ interface ISubscriptions {
 const SubscriptionTable: React.FC = () => {
     const [subscription, setSubscription] = useState<ISubscriptions[]>([]);
     const [toogle, setToogle] = useState<boolean>(true);
+    const router = useRouter();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fetchSubscription().then((result) => {
             console.log(result);
 
             setSubscription(result.data);
-        }).catch(() => {
-            console.log("error");
+        }).catch((err) => {
+            if(err.response.status===401){
+                dispatch(logout())
 
+                router.push('/admin/login')
+            }
         })
     }, [toogle]);
 

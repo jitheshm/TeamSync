@@ -1,7 +1,9 @@
 "use client"
 import { register } from '@/api/userService/user';
+import { logout } from '@/features/admin/adminSlice';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useDispatch } from 'react-redux';
 import { z, ZodError } from 'zod';
 
 // Define the Zod schema
@@ -38,6 +40,7 @@ function Page() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const router=useRouter();
+  const dispatch=useDispatch();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,6 +58,12 @@ function Page() {
       register(formData).then((res) => {
         console.log(res);
         router.push('/admin/dashboard/users')
+      }).catch((err)=>{
+        if(err.response.status===401){
+          dispatch(logout())
+
+          router.push('/admin/login')
+      }
       })
     } catch (err) {
       if (err instanceof ZodError) {

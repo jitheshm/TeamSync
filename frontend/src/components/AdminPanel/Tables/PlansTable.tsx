@@ -2,8 +2,11 @@
 import { blockPlan, deletePlan, fetchPlans, unBlockPlan } from '@/api/subscriptionService/subscription';
 import { blockUser, deleteUser, fetchUsers, unBlockUser } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
+import { logout } from '@/features/admin/adminSlice';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 
 interface IFeatures {
@@ -31,15 +34,20 @@ interface IPlans {
 const PlansTable: React.FC = () => {
     const [plans, setPlans] = useState<IPlans[]>([]);
     const [toogle, setToogle] = useState<boolean>(true);
+    const router = useRouter();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fetchPlans().then((result) => {
             console.log(result);
 
             setPlans(result.data);
-        }).catch(() => {
-            console.log("error");
+        }).catch((err) => {
+            if(err.response.status===401){
+                dispatch(logout())
 
+                router.push('/admin/login')
+            }
         })
     }, [toogle]);
 
@@ -47,12 +55,24 @@ const PlansTable: React.FC = () => {
     const handleBlock = (id: string) => {
         blockPlan(id).then(() => {
             setToogle(!toogle)
+        }).catch((err) => {
+            if(err.response.status===401){
+                dispatch(logout())
+
+                router.push('/admin/login')
+            }
         })
     }
 
     const handleUnBlock = (id: string) => {
         unBlockPlan(id).then(() => {
             setToogle(!toogle)
+        }).catch((err) => {
+            if(err.response.status===401){
+                dispatch(logout())
+
+                router.push('/admin/login')
+            }
         })
     }
 
@@ -76,9 +96,12 @@ const PlansTable: React.FC = () => {
                     });
                     setToogle(!toogle)
 
-                }).catch(() => {
-                    console.log("error");
+                }).catch((err) => {
+                    if(err.response.status===401){
+                        dispatch(logout())
 
+                        router.push('/admin/login')
+                    }
                 })
 
             }

@@ -56,6 +56,12 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
         if (viewOnly) {
             fetchPlanDetails(id as string).then((res) => {
                 setFormData(res.data)
+            }).catch((err) => {
+                if(err.response.status===401){
+                    dispatch(logout())
+
+                    router.push('/admin/login')
+                }
             })
         }
     },[])

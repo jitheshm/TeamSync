@@ -5,6 +5,9 @@ import SubscriptionDetails from './SubscriptionDetails'
 import { ISubscriptionDetails } from '@/interfaces/subscription'
 import Empty from '../Empty/Empty'
 import { IUserDetails } from '@/interfaces/User'
+import { useRouter } from 'next/navigation'
+import { logout } from '@/features/admin/adminSlice'
+import { useDispatch } from 'react-redux'
 
 const UserDetails: React.FC<{ userId: string }> = ({ userId }) => {
 
@@ -14,11 +17,19 @@ const UserDetails: React.FC<{ userId: string }> = ({ userId }) => {
 
     const [userDetails, setUserDetails] = useState<IUserDetails>()
     const [subscriptionDetails, setSubscriptionDetails] = useState<ISubscriptionDetails | null>(null)
+    const router = useRouter()
+    const dispatch = useDispatch()
 
     useEffect(() => {
 
         fetchUser(userId).then((res) => {
             setUserDetails(res.data)
+        }).catch((err)=>{
+            if(err.response.status===401){
+                dispatch(logout())
+
+                router.push('/admin/login')
+            }
         })
     }, [])
 
