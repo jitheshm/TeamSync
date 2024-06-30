@@ -97,3 +97,17 @@ export const createPlan = async (formData: PlanFormData) => {
         throw error
     }
 }
+
+export const fetchPlanDetails = async (id: string) => {
+    try {
+        const response = await instance.get(`/subscription-service/v1/admin/subscription-plans/${id}`, {
+            headers: {
+                Authorization: Cookies.get('team-sync-admin-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

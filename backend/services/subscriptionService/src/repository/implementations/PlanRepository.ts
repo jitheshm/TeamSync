@@ -52,4 +52,18 @@ export default class PlanRepository implements IPlanRepository {
         }
     }
 
+    async fetchById(id: mongoose.Types.ObjectId){
+        try {
+            const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
+            let data = await PlanModel.findOne({_id:id})
+            return data
+        } catch (error) {
+            console.log('Error in PlanRepository fetchById method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
 }
