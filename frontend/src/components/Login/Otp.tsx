@@ -130,7 +130,7 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                                                 value={formData[`otp${index}` as keyof OtpFormData]}
                                                 onChange={handleChange}
                                                 maxLength={1}
-                                                className={`w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700 text-gray-900}`}
+                                                className="w-full h-full flex flex-col items-center justify-center text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700 text-gray-900"
                                                 placeholder=""
                                                 required
                                             />
