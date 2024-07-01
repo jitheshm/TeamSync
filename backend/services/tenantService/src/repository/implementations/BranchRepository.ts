@@ -24,6 +24,23 @@ export default class BranchRepository implements IBranchRepository {
             throw error
         }
     }
+    async fetchBranches(dbId: string) {
+        try {
+            console.log(dbId);
+
+            const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
+            const data = await BranchModel.find()
+            console.log(data);
+            
+            return data
+        } catch (error) {
+            console.log('Error in Branch Repository fetchUser method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
 
 
 }
