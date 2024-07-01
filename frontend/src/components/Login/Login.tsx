@@ -58,7 +58,7 @@ const Login: React.FC = () => {
                 Cookies.set('team-sync-user-token', data.token, { expires: 1 })
                 console.log(data);
 
-                dispatch(verify({ name: data.name }))
+                dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '' }))
                 router.push('/')
             } catch (error: any) {
                 if (error.response) {
@@ -95,8 +95,8 @@ const Login: React.FC = () => {
                 const data = await firebaseLogin(token);
                 Cookies.set('team-sync-user-token', data.token, { expires: 1 })
                 console.log(data);
-                
-                dispatch(verify({ name: data.name }))
+
+                dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '' }))
                 router.push('/')
 
             }

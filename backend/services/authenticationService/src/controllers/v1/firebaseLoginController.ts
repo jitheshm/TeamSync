@@ -66,6 +66,7 @@ export default async (req: Request, res: Response) => {
 
                 userExist = await userRepository.create(newUser)
 
+
                 let producer = await kafkaConnection.getProducerInstance()
                 let userProducer = new UserProducer(producer, 'main', 'users')
                 userProducer.sendMessage('create', userExist)
@@ -79,8 +80,8 @@ export default async (req: Request, res: Response) => {
         if (!process.env.JWT_SECRET_KEY) {
             return res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
         }
-        const token = jwt.sign({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-        res.status(200).json({ message: "User verified", verified: true, token: token, name: decodedToken.name });
+        const token = jwt.sign({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id, tenantId: userExist?.tenant?.[0]?._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+        res.status(200).json({ message: "User verified", verified: true, token: token, name: decodedToken.name, tenantId: userExist?.tenant?.[0]?._id });
 
 
     } catch (error) {

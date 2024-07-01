@@ -42,7 +42,21 @@ export default class UserRepository implements IUserRepository {
     async fetchUser(email: string) {
         try {
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.findOne({ email: email })
+            const userdata = await userModel.aggregate([
+                {
+                    $match: { email: email }
+                },
+                {
+                    $lookup: {
+                        from: "tenants",
+                        localField: "_id",
+                        foreignField: "user_id",
+                        as: "tenant"
+
+                    }
+                }
+            ]).exec()
+            return userdata[0]
         } catch (error) {
             console.log('Error in UserRepository fetchUser method');
 
@@ -55,7 +69,23 @@ export default class UserRepository implements IUserRepository {
     async fetchUserByAuthId(authentication_id: string) {
         try {
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.findOne({ authentication_id: authentication_id })
+            const userdata = await userModel.aggregate([
+                {
+                    $match: { authentication_id: authentication_id }
+                },
+                {
+                    $lookup: {
+                        from: "tenants",
+                        localField: "_id",
+                        foreignField: "user_id",
+                        as: "tenant"
+
+                    }
+                }
+            ]).exec()
+            
+            return userdata[0]
+
         } catch (error) {
             console.log('Error in UserRepository fetchUser method');
 
