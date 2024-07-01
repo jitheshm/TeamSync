@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import UserRepository from "../repository/implementations/UserRepository";
+import { IUserRepository } from "../repository/interface/IUserRepository";
 import { IUsers } from "../entities/UserEntity";
 import { Document } from "mongoose";
-import { IUserRepository } from "../repository/interface/IUserRepository";
+import decodedUser from "../interfaces/IDecodeUser";
+
 
 const userRepository: IUserRepository = new UserRepository()
-export default async (req: Request & Partial<{ user:IUsers & Document}>, res: Response, next: NextFunction) => {
+export default async (req: Request & Partial<{ user: decodedUser }>, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization');
 
@@ -15,24 +17,28 @@ export default async (req: Request & Partial<{ user:IUsers & Document}>, res: Re
             if (!process.env.JWT_SECRET_KEY)
                 throw new Error('JWT_SECRET_KEY not found in .env file');
 
-            const decode= jwt.verify(token, process.env.JWT_SECRET_KEY) as JwtPayload;
+            const decode = jwt.verify(token, process.env.JWT_SECRET_KEY) as JwtPayload;
 
             console.log(decode);
 
 
             if (decode) {
-                const userObj =await userRepository.fetchUser(decode.email)
+                const userObj = await userRepository.fetchUser(decode.email)
                 if (!userObj) {
                     return res.status(401).json({ error: "unauthorised" })
                 }
-                if(userObj.is_blocked)
+                if (userObj.is_blocked)
                     return res.status(401).json({ error: "user is blocked" })
-                if(userObj.is_deleted)
+                if (userObj.is_deleted)
                     return res.status(401).json({ error: "user is deleted" })
-                if(!userObj.is_verified)
+                if (!userObj.is_verified)
                     return res.status(401).json({ error: "user is not verified" })
-                
-                req.user = userObj
+
+                req.user = {
+                    ...userObj,
+                    decode
+                }
+
                 next()
             } else {
                 res.status(401).json({ error: "unauthorised" })
@@ -44,7 +50,7 @@ export default async (req: Request & Partial<{ user:IUsers & Document}>, res: Re
     }
     catch (error: any) {
         console.log(error);
-        if (error.message === 'jwt expired' || error.message === 'jwt malformed'||error.message==='invalid signature')
+        if (error.message === 'jwt expired' || error.message === 'jwt malformed')
             return res.status(401).json({ error: "Token expired or Invalid" });
 
         res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
