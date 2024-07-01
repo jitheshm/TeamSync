@@ -1,27 +1,30 @@
+// features/user/userSlice.ts
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { createSlice } from '@reduxjs/toolkit'
-
-const initialState = {
-    name: '',
-    verified: false
+interface UserState {
+  name: string;
+  verified: boolean;
 }
 
+const initialState: UserState = {
+  name: '',
+  verified: false,
+};
+
 export const userSlice = createSlice({
-    name: 'user',
-    initialState,
-    reducers: {
-        verify: (state, action) => {
-            console.log(action.payload);
-            state.name = action.payload.name 
-            state.verified = true
-        },
-        logout:(state)=>{
-            state.name="",
-            state.verified=false
-        },
+  name: 'user',
+  initialState,
+  reducers: {
+    verify: (state, action: PayloadAction<{ name: string }>) => {
+      state.name = action.payload.name;
+      state.verified = true;
+    },
+    logout: (state) => {
+      state.name = '';
+      state.verified = false;
+    },
+  },
+});
 
-    }
-})
-
-export const { verify,logout} = userSlice.actions
-export default userSlice.reducer
+export const { verify, logout } = userSlice.actions;
+export default userSlice.reducer;

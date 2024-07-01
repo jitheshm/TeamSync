@@ -31,22 +31,23 @@ export default function DashboardLayout({
         if (verified) {
             setLoading(false)
         } else {
-            const token = Cookies.get('team-sync-admin-token')
-            if (token) {
-                verifyAdminToken(token).then((data) => {
-                    dispatch(verify())
-                    setLoading(false)
+            // const token = Cookies.get('team-sync-admin-token')
+            // if (token) {
+            //     verifyAdminToken(token).then((data) => {
+            //         dispatch(verify())
+            //         setLoading(false)
 
-                }).catch((error) => {
-                    console.log(error);
-                    router.push('/admin/login')
+            //     }).catch((error) => {
+            //         console.log(error);
+            //         router.push('/admin/login')
 
 
 
-                })
-            } else {
-                router.push('/admin/login')
-            }
+            //     })
+            // } else {
+            //     router.push('/admin/login')
+            // }
+            router.push('/admin/login')
         }
     }, [verified])
 
