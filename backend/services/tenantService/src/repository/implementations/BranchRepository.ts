@@ -29,7 +29,7 @@ export default class BranchRepository implements IBranchRepository {
             console.log(dbId);
 
             const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
-            const data = await BranchModel.find()
+            const data = await BranchModel.find({ is_deleted: false })
             console.log(data);
 
             return data
@@ -41,11 +41,26 @@ export default class BranchRepository implements IBranchRepository {
             throw error
         }
     }
-    
+
     async update(data: IBranches, dbId: string, branchId: mongoose.Types.ObjectId) {
         try {
             const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
-            const res: IBranches | null = await BranchModel.findOneAndUpdate({ _id: branchId }, data, { new: true })
+            const res: IBranches | null = await BranchModel.findOneAndUpdate({ _id: branchId, is_deleted: false }, data, { new: true })
+            return res
+
+        } catch (error) {
+            console.log('Error in Branch Repository create method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
+    async delete(dbId: string, branchId: mongoose.Types.ObjectId) {
+        try {
+            const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
+            const res: IBranches | null = await BranchModel.findOneAndUpdate({ _id: branchId }, { is_deleted: true }, { new: true })
             return res
 
         } catch (error) {

@@ -6,6 +6,7 @@ import userAuth from "../../middlewares/userAuth";
 import createBranchController from "../../controllers/v1/createBranchController";
 import getAllBranchController from "../../controllers/v1/getAllBranchController";
 import updateBranchController from "../../controllers/v1/updateBranchController";
+import deleteBranchController from "../../controllers/v1/deleteBranchController";
 
 
 
@@ -15,6 +16,7 @@ router.post('/tenants', userAuth, checkSchema(tenantValidator()), createTenantCo
 router.post('/tenants/branches', userAuth, createBranchController)
 router.get('/tenants/branches', userAuth, getAllBranchController)
 router.put('/tenants/branches/:branchId', userAuth, updateBranchController)
+router.delete('/tenants/branches/:branchId', userAuth, deleteBranchController)
 
 
 
