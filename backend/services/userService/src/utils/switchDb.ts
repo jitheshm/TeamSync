@@ -1,9 +1,9 @@
 import { Connection, Document, Model, Models, Schema } from "mongoose"
 import { dbInstance } from "../config/db/connect"
 import UsersSchema from "../schemas/userSchema";
-import { IUsers } from "../entities/UserEntity";
 import TenantsSchema from "../schemas/tenantSchema";
 import BranchesSchema from "../schemas/branchSchema";
+import TenantUserSchema from "../schemas/tenantUserSchema";
 
 export default function <T>(dbname: string, modelName: string): Model<T & Document> {
     let schema: Schema;
@@ -24,6 +24,9 @@ export default function <T>(dbname: string, modelName: string): Model<T & Docume
         switch (modelName) {
             case 'branches':
                 schema = BranchesSchema;
+                break;
+            case 'tenant_users':
+                schema = TenantUserSchema;
                 break;
             default:
                 throw new Error('Model not found');
