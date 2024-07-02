@@ -22,6 +22,11 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         if (!req.user?.decode?.tenantId) {
             return res.status(400).json({ error: "Tenant ID not found" });
         }
+        const locExist = await branchRepository.fetchBranchByLocation(req.user?.decode?.tenantId, req.body.location)
+
+        if (locExist) {
+            return res.status(409).json({ error: "Branch with this location already exist" });
+        }
 
         const bodyObj: Partial<IBranches> = req.body as Partial<IBranches>;
         bodyObj.branch_id = '#branch' + new Date().getTime() + Math.floor(Math.random() * 1000)

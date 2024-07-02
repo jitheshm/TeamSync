@@ -1,7 +1,7 @@
 
 import mongoose, { ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
-import { IBranchRepository } from "../interfaces/IBranchRepository";
+import { IBranchRepository } from "../interface/IBranchRepository";
 import { IBranches } from "../../entities/BranchEntity";
 
 
@@ -15,7 +15,7 @@ export default class BranchRepository implements IBranchRepository {
             const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
             const newBranch = new BranchModel(data)
             await newBranch.save()
-            return newBranch
+            return
         } catch (error) {
             console.log('Error in Branch Repository create method');
 
@@ -63,20 +63,6 @@ export default class BranchRepository implements IBranchRepository {
             const res: IBranches | null = await BranchModel.findOneAndUpdate({ _id: branchId }, { is_deleted: true }, { new: true })
             return res
 
-        } catch (error) {
-            console.log('Error in Branch Repository create method');
-
-            console.log(error);
-
-            throw error
-        }
-    }
-
-    async fetchBranchByLocation(dbId: string, branchLocation: string) {
-        try {
-            const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
-            const res: IBranches | null = await BranchModel.findOne({ location: branchLocation })
-            return res
         } catch (error) {
             console.log('Error in Branch Repository create method');
 

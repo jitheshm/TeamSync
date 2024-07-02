@@ -22,7 +22,7 @@ export default class UserRepository implements IUserRepository {
 
     async updateUser(data: IUsers & Document): Promise<void> {
         try {
-            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
+            const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
             await userModel.updateOne({ email: data.email }, data)
             return
         } catch (error) {
