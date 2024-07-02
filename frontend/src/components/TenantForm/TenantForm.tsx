@@ -7,6 +7,8 @@ import { z } from 'zod';
 import Cookies from 'js-cookie';
 import { subscription } from '@/api/subscriptionService/subscription';
 import Payment from '../Stripe/Payment';
+import { logout } from '@/features/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 const addressSchema = z.object({
     building_no: z.string().min(1, 'Building number is required'),
@@ -56,7 +58,7 @@ interface Errors {
     general?: string;
 }
 
-const TenantForm: React.FC <{planId:string}>= ({planId}) => {
+const TenantForm: React.FC<{ planId: string }> = ({ planId }) => {
     const [formData, setFormData] = useState<TenantFormData>({
         company_name: '',
         company_type: '',
@@ -75,6 +77,7 @@ const TenantForm: React.FC <{planId:string}>= ({planId}) => {
     const router = useRouter();
     const [paymentForm, setPaymentForm] = useState(false)
     const [clientSecret, setClientSecret] = useState("");
+    const dispatch = useDispatch();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -105,17 +108,22 @@ const TenantForm: React.FC <{planId:string}>= ({planId}) => {
                 const data = await register(formData);
                 console.log(data);
                 // router.push('/');
-                const response = await subscription(data.tenantId,planId)
+                const response = await subscription(data.tenantId, planId)
                 setClientSecret(response.latest_invoice.payment_intent.client_secret)
                 setPaymentForm(true)
 
             } catch (error: any) {
-                if (error.response) {
-                    const { status, data } = error.response;
-                    setErrors({ general: data.error });
-                } else {
-                    setErrors({ general: "An unexpected error occurred. Please try again later." });
+                if (error.response.status === 401) {
+                    dispatch(logout())
+
+                    router.push('/login')
                 }
+                // if (error.response) {
+                //     const { status, data } = error.response;
+                //     setErrors({ general: data.error });
+                // } else {
+                //     setErrors({ general: "An unexpected error occurred. Please try again later." });
+                // }
             }
             console.log('Form data:', formData);
         } else {
@@ -217,7 +225,7 @@ const TenantForm: React.FC <{planId:string}>= ({planId}) => {
                 </div>
             </form>
             {
-                paymentForm && <Payment clientSecret={clientSecret}/>
+                paymentForm && <Payment clientSecret={clientSecret} />
             }
         </div>
     );

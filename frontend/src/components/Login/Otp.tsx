@@ -80,7 +80,9 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                     setPasswordPage(true);
                 } else {
                     Cookie.set('team-sync-user-token', response.token, { expires: 1 })
-                    dispatch(verify({ name: response.user }))
+
+                    dispatch(verify({ name: response.data.name, tenantId: response.data.tenantId ?? '' }))
+
                     // Redirect to home page   
                     router.push('/subscription-plans')
 

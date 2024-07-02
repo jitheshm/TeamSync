@@ -6,30 +6,32 @@ import UserLayout from '@/components/Layout/UserLayout'
 import Cookies from 'js-cookie';
 import instance from '@/axios';
 import { verifyToken } from '@/api/authService/auth';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { verify } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
 import Loading from '@/components/Loading/Loading';
+
+interface UserState {
+    name: string
+    verified: boolean
+    tenantId: string
+}
+
+interface RootState {
+    user: UserState
+}
 
 
 function Page() {
     const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const router = useRouter()
+    const { name, verified, tenantId } = useSelector((state: RootState) => state.user)
+
     useEffect(() => {
-        const token = Cookies.get('team-sync-user-token')
-        if (token) {
-            verifyToken(token).then((data) => {
-                dispatch(verify({ name: data.user }))
-                router.push('/')
 
-            }).catch((error) => {
-                console.log(error);
-
-                setLoading(false)
-                Cookies.remove('team-sync-user-token')
-
-            })
+        if (verified) {
+            router.push('/')
         } else {
             setLoading(false)
         }

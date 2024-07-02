@@ -10,6 +10,7 @@ import { verify } from '@/features/user/userSlice'
 interface UserState {
     name: string
     verified: boolean
+    tenantId: string
 }
 
 interface RootState {
@@ -20,24 +21,7 @@ function Navbar() {
     const { name, verified } = useSelector((state: RootState) => state.user)
     const dispatch = useDispatch()
 
-    useEffect(() => {
 
-        if (!verified) {
-            const token = Cookies.get('team-sync-user-token')
-            if (token) {
-                verifyToken(token).then((data) => {
-                    dispatch(verify({ name: data.user }))
-
-                }).catch((error) => {
-                    console.log(error);
-
-
-
-                })
-            }
-        }
-
-    }, [verified])
     return (
         <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">

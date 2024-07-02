@@ -13,6 +13,7 @@ import Loading from '../Loading/Loading';
 interface UserState {
     name: string
     verified: boolean
+    tenantId: string
 }
 
 interface RootState {
@@ -25,7 +26,7 @@ interface AuthProps {
 
 function Auth({ children }: AuthProps) {
     const [loading, setLoading] = useState<boolean>(true)
-    const { name, verified } = useSelector((state: RootState) => state.user)
+    const { name, verified, tenantId } = useSelector((state: RootState) => state.user)
     const dispatch = useDispatch()
     const router = useRouter()
 
@@ -33,28 +34,29 @@ function Auth({ children }: AuthProps) {
         if (verified) {
             setLoading(false)
         } else {
-            const token = Cookies.get('team-sync-user-token')
-            if (token) {
-                verifyToken(token).then((data) => {
-                    dispatch(verify({ name: data.user }))
-                    setLoading(false)
+            // const token = Cookies.get('team-sync-user-token')
+            // if (token) {
+            //     verifyToken(token).then((data) => {
+            //         dispatch(verify({ name: data.user }))
+            //         setLoading(false)
 
-                }).catch((error) => {
-                    console.log(error);
-                    router.push('/login')
+            //     }).catch((error) => {
+            //         console.log(error);
+            //         router.push('/login')
 
 
 
-                })
-            } else {
-                router.push('/login')
-            }
+            //     })
+            // } else {
+            //     router.push('/login')
+            // }
+            router.push('/login')
         }
     }, [verified])
 
     return (
         <>
-            {loading ? <Loading/> : children}
+            {loading ? <Loading /> : children}
         </>
     )
 }

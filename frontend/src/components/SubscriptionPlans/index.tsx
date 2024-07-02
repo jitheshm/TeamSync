@@ -2,12 +2,23 @@
 import React, { useEffect, useState } from 'react'
 import PriceCard from './PriceCard'
 import { fetchPlans } from '@/api/subscriptionService/subscription'
+import { logout } from '@/features/user/userSlice'
+import { useRouter } from 'next/navigation'
+import { useDispatch } from 'react-redux'
 
 function Index() {
     const [plans, setPlans] = useState([])
+    const router = useRouter()
+    const dispatch = useDispatch()
     useEffect(() => {
         fetchPlans().then((result) => {
             setPlans(result.data)
+        }).catch((error: any) => {
+            if (error.response.status === 401) {
+                dispatch(logout())
+
+                router.push('/login')
+            }
         })
     }, [])
     return (
@@ -20,13 +31,13 @@ function Index() {
             <div className="mt-24 container space-y-12 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-x-8 mx-auto">
 
                 {
-                    plans.map((ele,index)=>{
-                        return(
-                            <PriceCard plan={ele} key={index}/>
+                    plans.map((ele, index) => {
+                        return (
+                            <PriceCard plan={ele} key={index} />
                         )
                     })
                 }
-                
+
 
 
             </div>

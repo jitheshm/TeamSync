@@ -12,6 +12,7 @@ import { verify } from "@/features/user/userSlice"
 interface UserState {
     name: string
     verified: boolean
+    tenantId: string
 }
 
 interface RootState {
@@ -33,23 +34,25 @@ export default function DashboardLayout({
         if (verified) {
             setLoading(false)
         } else {
-            const token = Cookies.get('team-sync-user-token')
-            if (token) {
-                verifyToken(token).then((res) => {
-                    console.log(res);
-                    dispatch(verify({ name: res.user }))
-                    setLoading(false)
+            // const token = Cookies.get('team-sync-user-token')
+            // if (token) {
+            //     verifyToken(token).then((res) => {
+            //         console.log(res);
+            //         dispatch(verify({ name: res.user }))
+            //         setLoading(false)
 
-                }).catch((error) => {
-                    console.log(error);
-                    router.push('/login')
+            //     }).catch((error) => {
+            //         console.log(error);
+            //         router.push('/login')
 
 
 
-                })
-            } else {
-                router.push('/login')
-            }
+            //     })
+            // } else {
+            //     router.push('/login')
+            // }
+
+            router.push('/login')
         }
     }, [verified])
 
