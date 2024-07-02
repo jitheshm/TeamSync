@@ -23,12 +23,18 @@ export default class TenantUserRepository implements ITenantUserRepository {
             throw error
         }
     }
-    async fetchTenantUsers(dbId: string) {
+    async fetchTenantUsers(dbId: string, role: string | null) {
         try {
             console.log(dbId);
 
             const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
-            const data = await TenantUserModel.find({ is_deleted: false })
+            let data = null
+            if (role) {
+                data = await TenantUserModel.find({ role: role, is_deleted: false })
+            }
+            else {
+                data = await TenantUserModel.find({ is_deleted: false })
+            }
             console.log(data);
 
             return data

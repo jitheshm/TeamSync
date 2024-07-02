@@ -7,6 +7,7 @@ import createTenantUserController from "../../controllers/v1/createTenantUserCon
 import tenantUserValidator from "../../validators/tenantUserValidator";
 import updateTenantUserController from "../../controllers/v1/updateTenantUserController";
 import deleteTenantUserController from "../../controllers/v1/deleteTenantUserController";
+import fetchTenantUsersController from "../../controllers/v1/fetchTenantUsersController";
 
 
 const router = Router();
@@ -15,5 +16,6 @@ router.post('/register', checkSchema(signupValidator()), signupController)
 router.post('/tenants/users', userAuth, checkSchema(tenantUserValidator()), createTenantUserController)
 router.put('/tenants/users/:userId', userAuth, checkSchema(tenantUserValidator()), updateTenantUserController)
 router.delete('/tenants/users/:userId', userAuth, deleteTenantUserController)
+router.get('/tenants/users', userAuth, fetchTenantUsersController)
 
 export default router
