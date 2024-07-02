@@ -75,10 +75,10 @@ export default class TenantUserRepository implements ITenantUserRepository {
         }
     }
 
-    async delete(dbId: string, userId: mongoose.Types.ObjectId) {
+    async delete(data: Partial<ITenantUsers>, dbId: string, userId: mongoose.Types.ObjectId) {
         try {
             const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
-            const res: ITenantUsers | null = await TenantUserModel.findOneAndUpdate({ _id: userId }, { is_deleted: true }, { new: true })
+            const res: ITenantUsers | null = await TenantUserModel.findOneAndUpdate({ _id: userId, branch_id: data.branch_id, role: data.role }, { is_deleted: true }, { new: true })
             return res
 
         } catch (error) {

@@ -6,6 +6,7 @@ import userAuth from "../../middlewares/userAuth";
 import createTenantUserController from "../../controllers/v1/createTenantUserController";
 import tenantUserValidator from "../../validators/tenantUserValidator";
 import updateTenantUserController from "../../controllers/v1/updateTenantUserController";
+import deleteTenantUserController from "../../controllers/v1/deleteTenantUserController";
 
 
 const router = Router();
@@ -13,5 +14,6 @@ const router = Router();
 router.post('/register', checkSchema(signupValidator()), signupController)
 router.post('/tenants/users', userAuth, checkSchema(tenantUserValidator()), createTenantUserController)
 router.put('/tenants/users/:userId', userAuth, checkSchema(tenantUserValidator()), updateTenantUserController)
+router.delete('/tenants/users/:userId', userAuth, deleteTenantUserController)
 
 export default router
