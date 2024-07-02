@@ -7,9 +7,12 @@ import { IBranchRepository } from "../../repository/interfaces/IBranchRepository
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import BranchProducer from "../../events/kafka/producers/BranchProducer";
+import { ITenantRepository } from "../../repository/interfaces/ITenantRepository";
+import TenantRepository from "../../repository/implementations/TenantRepository";
 
 let branchRepository: IBranchRepository = new BranchRepository()
 let kafkaConnection: IKafkaConnection = new KafkaConnection()
+let tenantRepository:ITenantRepository=new TenantRepository()
 
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
@@ -22,6 +25,13 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         }
         if (!tenantId) {
             return res.status(400).json({ error: "Tenant ID not found" });
+        }
+
+        const tenant = await tenantRepository.getTenantById(req.user?.decode?.tenantId)
+        console.log(tenant);
+
+        if (!tenant) {
+            return res.status(404).json({ error: "Tenant not found" });
         }
 
         const datas = await branchRepository.fetchBranches(tenantId);

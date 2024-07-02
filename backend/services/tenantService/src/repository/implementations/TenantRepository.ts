@@ -1,5 +1,5 @@
 
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { ObjectId, Types } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import { ITenants } from "../../entities/TenantEntity";
 import { ITenantRepository } from "../interfaces/ITenantRepository";
@@ -23,6 +23,15 @@ export default class TenantRepository implements ITenantRepository {
             throw error
         }
     }
-
+    async getTenantById(tenantId: Types.ObjectId): Promise<ITenants | null> {
+        try {
+            const TenantModel = switchDb<ITenants>(`${process.env.SERVICE}_main`, 'tenants');
+            return await TenantModel.findOne({_id:tenantId,is_deleted:false})
+        } catch (error) {
+            console.log('Error in TenantRepository getTenantById method');
+            console.log(error);
+            throw error;
+        }
+    }
 
 }
