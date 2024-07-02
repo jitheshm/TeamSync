@@ -5,11 +5,13 @@ import signupValidator from "../../validators/signupValidator";
 import userAuth from "../../middlewares/userAuth";
 import createTenantUserController from "../../controllers/v1/createTenantUserController";
 import tenantUserValidator from "../../validators/tenantUserValidator";
+import updateTenantUserController from "../../controllers/v1/updateTenantUserController";
 
 
 const router = Router();
 
 router.post('/register', checkSchema(signupValidator()), signupController)
 router.post('/tenants/users', userAuth, checkSchema(tenantUserValidator()), createTenantUserController)
+router.put('/tenants/users/:userId', userAuth, checkSchema(tenantUserValidator()), updateTenantUserController)
 
 export default router

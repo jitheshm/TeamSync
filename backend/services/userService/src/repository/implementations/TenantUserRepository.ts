@@ -63,7 +63,7 @@ export default class TenantUserRepository implements ITenantUserRepository {
     async update(data: ITenantUsers, dbId: string, userId: mongoose.Types.ObjectId) {
         try {
             const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
-            const res: ITenantUsers | null = await TenantUserModel.findOneAndUpdate({ _id: userId, is_deleted: false }, data, { new: true })
+            const res: ITenantUsers | null = await TenantUserModel.findOneAndUpdate({ _id: userId, branch_id: data.branch_id, is_deleted: false }, data, { new: true })
             return res
 
         } catch (error) {
