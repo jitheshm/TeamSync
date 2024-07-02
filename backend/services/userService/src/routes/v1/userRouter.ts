@@ -8,14 +8,15 @@ import tenantUserValidator from "../../validators/tenantUserValidator";
 import updateTenantUserController from "../../controllers/v1/updateTenantUserController";
 import deleteTenantUserController from "../../controllers/v1/deleteTenantUserController";
 import fetchTenantUsersController from "../../controllers/v1/fetchTenantUsersController";
+import tenantAuth from "../../middlewares/tenantAuth";
 
 
 const router = Router();
 
 router.post('/register', checkSchema(signupValidator()), signupController)
-router.post('/tenants/users', userAuth, checkSchema(tenantUserValidator()), createTenantUserController)
-router.put('/tenants/users/:userId', userAuth, checkSchema(tenantUserValidator()), updateTenantUserController)
-router.delete('/tenants/users/:userId', userAuth, deleteTenantUserController)
-router.get('/tenants/users', userAuth, fetchTenantUsersController)
+router.post('/tenants/users', userAuth, tenantAuth, checkSchema(tenantUserValidator()), createTenantUserController)
+router.put('/tenants/users/:userId', userAuth, tenantAuth, checkSchema(tenantUserValidator()), updateTenantUserController)
+router.delete('/tenants/users/:userId', userAuth, tenantAuth, deleteTenantUserController)
+router.get('/tenants/users', userAuth, tenantAuth, fetchTenantUsersController)
 
 export default router

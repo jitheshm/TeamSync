@@ -12,12 +12,7 @@ let tenantRepository: ITenantRepository = new TenantRepository()
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
 
-        const tenant = await tenantRepository.getTenantById(req.user?.decode?.tenantId)
-        console.log(tenant);
-
-        if (!tenant) {
-            return res.status(404).json({ error: "Tenant not found" });
-        }
+     
 
         if (req.user?.decode?.role !== 'Tenant_Admin' && req.query.role !== 'Manager') {
             return res.status(401).json({ error: "Unauthorized" });
