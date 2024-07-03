@@ -4,18 +4,16 @@ import UserRepository from "../repository/implementations/UserRepository";
 import { IUserRepository } from "../repository/interfaces/IUserRepository";
 import { IUsers } from "../entities/UserEntity";
 import { Document } from "mongoose";
+import IDecodedUser from "../interfaces/IDecodeUser";
 
 
 
-interface decodedUser extends IUsers {
-    decode: jwt.JwtPayload
 
-}
 
 
 
 const userRepository: IUserRepository = new UserRepository()
-export default async (req: Request & Partial<{ user: Partial<decodedUser>}>, res: Response, next: NextFunction) => {
+export default async (req: Request & Partial<{ user: Partial<IDecodedUser>}>, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization');
 

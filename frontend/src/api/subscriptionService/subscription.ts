@@ -125,3 +125,17 @@ export const fetchSubscription = async () => {
         throw error
     }
 }
+
+export const fetchSubscriptionForUser = async () => {
+    try {
+        const response = await instance.get(`subscription-service/v1/subscription`, {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
