@@ -59,11 +59,12 @@ export default function DashboardLayout({
     return (
         <>
             {
-                loading ? <Loading background="bg-white" /> : <TenantAdminLayout>
-                    {
-                        children
-                    }
-                </TenantAdminLayout>
+                loading ? <Loading background="bg-dark" /> :
+                    <TenantAdminLayout>
+                        {
+                            children
+                        }
+                    </TenantAdminLayout>
             }
         </>
     )
