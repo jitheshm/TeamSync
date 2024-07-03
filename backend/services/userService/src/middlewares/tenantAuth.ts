@@ -19,12 +19,15 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
         if (!tenant) {
             return res.status(404).json({ error: "Tenant not found" });
         }
-
-        if (!req.body.branchId) {
+        console.log(req.params.branchId);
+        
+        if (!req.body.branch_id) {
             if (req.params.branchId) {
-                req.body.branchId = req.params.branchId
+                req.body.branch_id = req.params.branchId
             }
         }
+        console.log(req.body);
+        
 
         if (req.body.branch_id) {
             const branch = await branchRepository.fetchBranchById(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.body.branch_id))

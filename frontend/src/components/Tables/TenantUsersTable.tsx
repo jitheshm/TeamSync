@@ -10,14 +10,14 @@ import Swal from 'sweetalert2';
 
 export interface ITenantUsers {
     _id: string;
-    email: String;
+    email: string;
     created_at: string;
-    name: String;
-    tenant_user_id: String;
-    role: String;
+    name: string;
+    tenant_user_id: string;
+    role: string;
     branch_id: string;
     branch_location: string
-    phone_no: String;
+    phone_no: string;
 
 }
 
@@ -40,7 +40,7 @@ const TenantUsersTable: React.FC = () => {
         });
     }, [toogle]);
 
-    const handleDelete = (branchId: string, id: string) => {
+    const handleDelete = (branchId: string, id: string,role:string) => {
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -51,7 +51,7 @@ const TenantUsersTable: React.FC = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                tenantUserDelete(branchId, id).then(() => {
+                tenantUserDelete(branchId, id,role).then(() => {
                     Swal.fire({
                         title: "Deleted!",
                         text: "The user has been deleted.",
@@ -149,7 +149,7 @@ const TenantUsersTable: React.FC = () => {
                                                         <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
                                                             <p className="text-gray-100 whitespace-no-wrap text-center">
                                                                 <Link type="button" href={`/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-                                                                <button type="button" onClick={() => handleDelete(user.branch_id, user._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                                                <button type="button" onClick={() => handleDelete(user.branch_id, user._id,user.role as string)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                                             </p>
                                                         </td>
                                                     </tr>

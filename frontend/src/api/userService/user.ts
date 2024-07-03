@@ -123,11 +123,14 @@ export const tenantUserUpdate = async (formData: TenantRegisterFormData, id: str
     }
 }
 
-export const tenantUserDelete = async (branchId: string, id: string) => {
+export const tenantUserDelete = async (branchId: string, id: string, role: string) => {
     try {
         const response = await instance.delete(`/user-service/v1/tenants/branches/${branchId}/users/${id}`, {
             headers: {
                 Authorization: Cookies.get('team-sync-user-token')
+            },
+            data: {
+                role: role
             }
         })
         return response.data
@@ -150,7 +153,7 @@ export const fetchTenantUsers = async () => {
     }
 }
 
-export const fetchTenantSpecificUser = async (userId:string) => {
+export const fetchTenantSpecificUser = async (userId: string) => {
     try {
         const response = await instance.get(`/user-service/v1/tenants/users/${userId}`, {
             headers: {
