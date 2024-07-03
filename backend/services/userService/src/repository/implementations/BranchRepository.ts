@@ -72,5 +72,19 @@ export default class BranchRepository implements IBranchRepository {
         }
     }
 
+    async fetchBranchById(dbId: string, branchId: mongoose.Types.ObjectId) {
+        try {
+            const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
+            const res: IBranches | null = await BranchModel.findOne({ _id: branchId, is_deleted: false })
+            return res
+        } catch (error) {
+            console.log('Error in Branch Repository create method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
 
 }
