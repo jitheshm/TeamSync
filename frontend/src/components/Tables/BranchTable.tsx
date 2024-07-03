@@ -113,7 +113,7 @@ const BranchTable: React.FC = () => {
                         <input className="bg-gray-50 outline-none ml-1 block" type="text" name="search" id="search" placeholder="search..." />
                     </div>
                     <div className="lg:ml-40 ml-10 space-x-8">
-                        <Link href={'/admin/dashboard/plans/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
+                        <Link href={'/dashboard/branches/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
                     </div>
                 </div>
             </div>

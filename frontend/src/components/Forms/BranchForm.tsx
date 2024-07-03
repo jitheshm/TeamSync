@@ -1,7 +1,9 @@
 "use client"
 import { createBranch, fetchBranch, updateBranch } from '@/api/tenantService/tenant';
+import { logout } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { boolean, z, ZodError } from 'zod';
 
 const branchSchema = z.object({
@@ -20,6 +22,7 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
     const [location, setLocation] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const router = useRouter()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (edit && id) {
@@ -27,6 +30,12 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
                 setLocation(result.data.location)
             }).catch((err) => {
                 console.log(err);
+
+                if (err.response.status === 401) {
+                    dispatch(logout())
+
+                    router.push('/login')
+                }
             })
         }
     }, [])
@@ -46,8 +55,14 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
                 updateBranch(location, id).then(() => {
                     console.log('Branch updated successfully');
                     router.push('/dashboard/branches')
-                }).catch(() => {
-                    console.log('Branch update failed');
+                }).catch((err) => {
+                    console.log(err);
+
+                    if (err.response.status === 401) {
+                        dispatch(logout())
+
+                        router.push('/login')
+                    }
 
                 })
             } else {
@@ -55,8 +70,14 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
                     console.log('Branch created successfully');
                     router.push('/dashboard/branches')
 
-                }).catch(() => {
-                    console.log('Branch creation failed');
+                }).catch((err) => {
+                    console.log(err);
+
+                    if (err.response.status === 401) {
+                        dispatch(logout())
+
+                        router.push('/login')
+                    }
                 })
 
             }

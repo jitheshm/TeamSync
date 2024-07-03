@@ -16,7 +16,7 @@ const router = Router();
 router.post('/register', checkSchema(signupValidator()), signupController)
 router.post('/tenants/users', userAuth, tenantAuth, checkSchema(tenantUserValidator()), createTenantUserController)
 router.put('/tenants/users/:userId', userAuth, tenantAuth, checkSchema(tenantUserValidator()), updateTenantUserController)
-router.delete('/tenants/users/:userId', userAuth, tenantAuth, deleteTenantUserController)
+router.delete('/tenants/branches/:branchId/users/:userId', userAuth, tenantAuth, deleteTenantUserController)
 router.get('/tenants/users', userAuth, tenantAuth, fetchTenantUsersController)
 
 export default router
