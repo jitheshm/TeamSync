@@ -32,10 +32,10 @@ export default class UserRepository implements IUserRepository {
         }
     }
 
-    async fetchUser(id: string) {
+    async fetchUser(email: string) {
         try {
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.findById(id)
+            return await userModel.findOne({ email: email })
         } catch (error) {
             console.log('Error in UserRepository fetchUser method');
 
@@ -44,6 +44,8 @@ export default class UserRepository implements IUserRepository {
             throw error
         }
     }
+
+
 
 
 

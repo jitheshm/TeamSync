@@ -14,18 +14,22 @@ const tenantRepository: ITenantRepository = new TenantRepository();
 let kafkaConnection: IKafkaConnection = new KafkaConnection()
 
 
-export default async (req: Request & Partial<{ user: IUsers & Document }>, res: Response) => {
+export default async (req: Request & Partial<{ user: IUsers }>, res: Response) => {
     try {
         const result = validationResult(req);
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() });
         }
         const bodyObj: Partial<ITenants> = req.body;
+        
+        console.log(req.user);
+        
         bodyObj.user_id = req.user?._id;
+        console.log(bodyObj)
         bodyObj.tenant_id = '#tenant' + new Date().getTime() + Math.floor(Math.random() * 1000)
         const tenant = await tenantRepository.create(bodyObj);
         let producer = await kafkaConnection.getProducerInstance()
-        let tenantProducer = new TenantProducer(producer, 'main', 'tenants')
+        let tenantProducer = new TenantProducer(producer, 'main', 'tenants') 
         tenantProducer.sendMessage('create', tenant)
         res.status(201).json({ message: "Tenant created successfully", tenantId: tenant._id });
 

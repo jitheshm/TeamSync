@@ -10,7 +10,8 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
     let planId = req.body.plan_id
     let tenantId=req.body.tenantId
     let userId=req.user?._id
-
+    console.log(customerId,planId,tenantId,userId);
+    
 
     try {
         // Create the subscription. Note we're expanding the Subscription's

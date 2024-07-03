@@ -8,7 +8,7 @@ import decodedUser from "../interfaces/IDecodeUser";
 
 
 const userRepository: IUserRepository = new UserRepository()
-export default async (req: Request & Partial<{ user: decodedUser }>, res: Response, next: NextFunction) => {
+export default async (req: Request & Partial<{ user: Partial<decodedUser>}>, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization');
 
@@ -34,10 +34,9 @@ export default async (req: Request & Partial<{ user: decodedUser }>, res: Respon
                 if (!userObj.is_verified)
                     return res.status(401).json({ error: "user is not verified" })
 
-                req.user = {
-                    ...userObj,
-                    decode
-                }
+                req.user=userObj
+                req.user.decode = decode
+                
 
                 next()
             } else {
