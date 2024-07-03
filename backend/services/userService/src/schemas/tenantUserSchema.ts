@@ -6,7 +6,7 @@ const TenantUserSchema: Schema = new Schema({
     name: { type: String, required: true },
     tenant_user_id: { type: String, required: true, unique: true },
     role: { type: String, required: true },
-    branch_id: { type: Schema.Types.ObjectId, required: true, unique: true },
+    branch_id: { type: Schema.Types.ObjectId, required: true },
     phone_no: { type: String, required: true },
     image: { type: String },
     is_deleted: { type: Boolean, required: true,default:false },

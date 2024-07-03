@@ -1,5 +1,6 @@
 import { RegisterFormData } from "@/app/(admin)/admin/dashboard/users/register/page";
 import instance from "@/axios";
+import { TenantRegisterFormData } from "@/components/Forms/UserForm";
 import { SignupFormData } from "@/components/Login/SignUp";
 import Cookies from 'js-cookie'
 
@@ -96,7 +97,7 @@ export const register = async (formData: RegisterFormData) => {
     }
 }
 
-export const tenantUserRegisster = async (formData: TenantUserRegister) => {
+export const tenantUserRegister = async (formData: TenantRegisterFormData) => {
     try {
         const response = await instance.post('/user-service/v1/tenants/users', formData, {
             headers: {

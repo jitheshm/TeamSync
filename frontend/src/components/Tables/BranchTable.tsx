@@ -4,18 +4,14 @@ import { deleteBranch, fetchBranches } from '@/api/tenantService/tenant';
 import { blockUser, deleteUser, fetchUsers, unBlockUser } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
+import { IBranches } from '@/interfaces/Branches';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 
-export interface IBranches {
-    _id: string;
-    branch_id: string;
-    location: string;
-    is_deleted: boolean;
-}
+
 
 
 const BranchTable: React.FC = () => {
@@ -154,7 +150,7 @@ const BranchTable: React.FC = () => {
 
                                                         <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
                                                             <p className="text-gray-100 whitespace-no-wrap text-center">
-                                                                <Link type="button" href={`/dashboard/branches/${branch._id}`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                                                <Link type="button" href={`/dashboard/branches/${branch._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
 
                                                                 <button type="button" onClick={() => handleDelete(branch._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                                             </p>
