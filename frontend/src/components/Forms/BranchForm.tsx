@@ -1,8 +1,8 @@
 "use client"
-import { createBranch } from '@/api/tenantService/tenant';
+import { createBranch, fetchBranch, updateBranch } from '@/api/tenantService/tenant';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
-import { z, ZodError } from 'zod';
+import React, { useEffect, useState } from 'react';
+import { boolean, z, ZodError } from 'zod';
 
 const branchSchema = z.object({
     location: z.string()
@@ -11,10 +11,25 @@ const branchSchema = z.object({
         .nonempty("Location is required"),
 });
 
-function BranchForm() {
+interface BranchFormProps {
+    edit?: boolean;
+    id?: string
+}
+
+const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
     const [location, setLocation] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const router = useRouter()
+
+    useEffect(() => {
+        if (edit && id) {
+            fetchBranch(id).then((result) => {
+                setLocation(result.data.location)
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+    }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLocation(e.target.value);
@@ -26,16 +41,27 @@ function BranchForm() {
             branchSchema.parse({ location });
             console.log('Form data is valid:', { location });
             setErrors({});
-            createBranch(location).then(() => {
-                console.log('Branch created successfully');
-                router.push('/dashboard/branch')
+            if (edit && id) {
+                // Update the branch here
+                updateBranch(location, id).then(() => {
+                    console.log('Branch updated successfully');
+                    router.push('/dashboard/branches')
+                }).catch(() => {
+                    console.log('Branch update failed');
 
-            }).catch(() => {
-                console.log('Branch creation failed');
-            })
+                })
+            } else {
+                createBranch(location).then(() => {
+                    console.log('Branch created successfully');
+                    router.push('/dashboard/branches')
+
+                }).catch(() => {
+                    console.log('Branch creation failed');
+                })
+
+            }
 
 
-            // Submit the form data to the server here
 
         } catch (err) {
             if (err instanceof ZodError) {

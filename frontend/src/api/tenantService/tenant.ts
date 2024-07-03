@@ -58,3 +58,30 @@ export const deleteBranch = async (id: string) => {
         throw error
     }
 }
+
+export const fetchBranch = async (id: string) => {
+    try {
+        const response = await instance.get(`/tenant-service/v1/tenants/branches/${id}`, {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const updateBranch = async (location: string, id: string) => {
+    try {
+        const response = await instance.put(`/tenant-service/v1/tenants/branches/${id}`, { location }, {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
