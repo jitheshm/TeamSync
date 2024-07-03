@@ -11,7 +11,15 @@ let tenantRepository: ITenantRepository = new TenantRepository()
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
+        if (!req.user?.decode?.tenantId) {
+            return res.status(400).json({ error: "Tenant ID not found" });
+        }
+        const tenant = await tenantRepository.getTenantById(req.user?.decode?.tenantId)
+        console.log(tenant);
 
+        if (!tenant) {
+            return res.status(404).json({ error: "Tenant not found" });
+        }
      
 
         if (req.user?.decode?.role !== 'Tenant_Admin' && req.query.role !== 'Manager') {
