@@ -1,6 +1,6 @@
 import { fetchSubscriptionDetails } from '@/api/subscriptionService/subscription'
 import React, { useEffect } from 'react'
-import Empty from '../Empty/Empty';
+import Empty from '../../Empty/Empty';
 import { ISubscriptionDetails } from '@/interfaces/subscription';
 
 interface SubscriptionDetailsProps {
