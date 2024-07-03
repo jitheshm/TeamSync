@@ -162,5 +162,23 @@ export default class TenantUserRepository implements ITenantUserRepository {
         }
     }
 
+    async fetchTenantSpecificUser(dbId: string, userId: mongoose.Types.ObjectId){
+        try {
+            console.log(dbId);
+
+            const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
+            const data = await TenantUserModel.findOne({ _id: userId, is_deleted: false })
+            console.log(data);
+
+            return data
+        } catch (error) {
+            console.log('Error in Tenant User  Repository fetchUser method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
 }
 

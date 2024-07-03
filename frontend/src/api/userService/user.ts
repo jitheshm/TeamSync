@@ -1,5 +1,5 @@
-import { RegisterFormData } from "@/app/(admin)/admin/dashboard/users/register/page";
 import instance from "@/axios";
+import { RegisterFormData } from "@/components/AdminPanel/Forms/UserForm";
 import { TenantRegisterFormData } from "@/components/Forms/UserForm";
 import { SignupFormData } from "@/components/Login/SignUp";
 import Cookies from 'js-cookie'
@@ -110,7 +110,7 @@ export const tenantUserRegister = async (formData: TenantRegisterFormData) => {
     }
 }
 
-export const tenantUserUpdate = async (formData: TenantUserRegister, id: string) => {
+export const tenantUserUpdate = async (formData: TenantRegisterFormData, id: string) => {
     try {
         const response = await instance.put(`/user-service/v1/tenants/users/${id}`, formData, {
             headers: {
@@ -139,6 +139,20 @@ export const tenantUserDelete = async (branchId: string, id: string) => {
 export const fetchTenantUsers = async () => {
     try {
         const response = await instance.get('/user-service/v1/tenants/users', {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const fetchTenantSpecificUser = async (userId:string) => {
+    try {
+        const response = await instance.get(`/user-service/v1/tenants/users/${userId}`, {
             headers: {
                 Authorization: Cookies.get('team-sync-user-token')
             }

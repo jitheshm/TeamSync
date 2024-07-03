@@ -1,6 +1,6 @@
 "use client"
 import { fetchBranches } from '@/api/tenantService/tenant';
-import { tenantUserRegister } from '@/api/userService/user';
+import { fetchTenantSpecificUser, fetchTenantUsers, tenantUserRegister, tenantUserUpdate } from '@/api/userService/user';
 import { logout } from '@/features/user/userSlice';
 import { IBranches } from '@/interfaces/Branches';
 import { useRouter } from 'next/navigation';
@@ -38,7 +38,7 @@ interface FormErrors {
 const roles = ['Manager', 'Project_Manager', 'Developer', 'Tester'];
 
 
-function UserForm() {
+function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     const [formData, setFormData] = useState<TenantRegisterFormData>({
         name: '',
         email: '',
@@ -63,6 +63,21 @@ function UserForm() {
         })
     }, [])
 
+    useEffect(() => {
+        if (edit && userId) {
+            fetchTenantSpecificUser(userId).then((res) => {
+                setFormData(res.data)
+            }).catch((err) => {
+                if (err.response.status === 401) {
+                    dispatch(logout())
+
+                    router.push('/login')
+                }
+
+            })
+        }
+    }, [])
+
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -75,16 +90,29 @@ function UserForm() {
             userSchema.parse(formData);
             console.log('Form data is valid:', formData);
             setErrors({});
-            tenantUserRegister(formData).then((res) => {
-                console.log(res);
-                router.push('/dashboard/users')
-            }).catch((err) => {
-                if (err.response.status === 401) {
-                    dispatch(logout())
+            if (edit && userId) {
+                tenantUserUpdate(formData, userId).then((res) => {
+                    console.log(res);
+                    router.push('/dashboard/users')
+                }).catch((err) => {
+                    if (err.response.status === 401) {
+                        dispatch(logout())
 
-                    router.push('/login')
-                }
-            })
+                        router.push('/login')
+                    }
+                })
+            } else {
+                tenantUserRegister(formData).then((res) => {
+                    console.log(res);
+                    router.push('/dashboard/users')
+                }).catch((err) => {
+                    if (err.response.status === 401) {
+                        dispatch(logout())
+
+                        router.push('/login')
+                    }
+                })
+            }
         } catch (err) {
             if (err instanceof ZodError) {
                 // Set validation errors
@@ -107,7 +135,11 @@ function UserForm() {
             <div className="w-full">
                 <div className="bg-gray-900 p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
                     <form onSubmit={handleSubmit}>
-                        <h1 className="text-center text-gray-200 font-bold text-2xl mb-10">Register New User</h1>
+                        <h1 className="text-center text-gray-200 font-bold text-2xl mb-10">
+                            {
+                                edit ? 'Edit User' : 'Register User'
+                            }
+                        </h1>
                         <div className="mb-5">
                             <label htmlFor="name" className="block mb-2 font-bold text-gray-100">Name</label>
                             <input
