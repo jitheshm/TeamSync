@@ -12,6 +12,8 @@ import otpAuth from "../../middlewares/otpAuth";
 import userAuth from "../../middlewares/userAuth";
 import tokenVerifyController from "../../controllers/v1/tokenVerifyController";
 import firebaseLoginController from "../../controllers/v1/firebaseLoginController";
+import tenantLoginValidator from "../../validators/tenantLoginValidator";
+import tenantLoginController from "../../controllers/v1/tenantLoginController";
 
 
 
@@ -22,6 +24,7 @@ router.post('/login', checkSchema(loginValidator()), loginController)
 router.post('/forget-password', checkSchema(forgetValidator()), forgetPasswordController)
 router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), resetPasswordController)
 router.get('/token/verify', userAuth, tokenVerifyController)
-router.post('/login/firebase',  firebaseLoginController)
+router.post('/login/firebase', firebaseLoginController)
+router.post('/tenant/login', checkSchema(tenantLoginValidator()), tenantLoginController)
 
 export default router
