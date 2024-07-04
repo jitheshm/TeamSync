@@ -10,12 +10,14 @@ import deleteBranchController from "../../controllers/v1/deleteBranchController"
 import branchValidator from "../../validator/branchValidator";
 import tenantAuth from "../../middlewares/tenantAuth";
 import getSpecificBranchController from "../../controllers/v1/getSpecificBranchController";
+import getSpecificTenantController from "../../controllers/v1/getSpecificTenantController";
 
 
 
 const router = Router();
 
 router.post('/tenants', userAuth, checkSchema(tenantValidator()), createTenantController)
+router.get('/tenants/:name', getSpecificTenantController)
 router.post('/tenants/branches', userAuth, tenantAuth, checkSchema(branchValidator()), createBranchController)
 router.get('/tenants/branches', userAuth, tenantAuth, getAllBranchController)
 router.get('/tenants/branches/:branchId', userAuth, tenantAuth, getSpecificBranchController)

@@ -4,6 +4,7 @@ import { ForgotPasswordFormData } from "@/components/Login/ForgotPassword";
 import { LoginFormData } from "@/components/Login/Login";
 import { ResetFormData } from "@/components/Login/NewPassword";
 import { OtpFormData } from "@/components/Login/Otp";
+import { LoginFormValues } from "@/components/TenantUserPanel/Login/Login";
 import Cookies from 'js-cookie';
 
 export const login = async (formData: LoginFormData) => {
@@ -88,6 +89,27 @@ export const verifyAdminToken = async (token: string) => {
             }
         })
 
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const tenantLogin = async (formData:LoginFormValues ) => {
+    try {
+        const response = await instance.post('/auth-service/v1/tenant/login', formData)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const verifyTenantOtp = async (formData: OtpFormData, email: string, context: string,tenantId:string) => {
+    try {
+        console.log(tenantId);
+        
+        const otp = `${formData.otp1}${formData.otp2}${formData.otp3}${formData.otp4}${formData.otp5}${formData.otp6}`
+        const response = await instance.post('/auth-service/v1/verify-otp', { email, otp, context: context,tenantId:tenantId })
         return response.data
     } catch (error) {
         throw error

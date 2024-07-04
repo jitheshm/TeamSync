@@ -85,3 +85,16 @@ export const updateBranch = async (location: string, id: string) => {
         throw error;
     }
 };
+
+export const fetchTenantByName = async (name: string) => {
+    try {
+        const response = await instance.get(`/tenant-service/v1/tenants/${name}`, {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
