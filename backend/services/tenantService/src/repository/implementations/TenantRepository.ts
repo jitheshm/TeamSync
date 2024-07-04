@@ -34,4 +34,15 @@ export default class TenantRepository implements ITenantRepository {
         }
     }
 
+    async getTenantByName(tenantName:string): Promise<ITenants | null> {
+        try {
+            const TenantModel = switchDb<ITenants>(`${process.env.SERVICE}_main`, 'tenants');
+            return await TenantModel.findOne({company_name:tenantName,is_deleted:false})
+        } catch (error) {
+            console.log('Error in TenantRepository getTenantById method');
+            console.log(error);
+            throw error;
+        }
+    }
+
 }
