@@ -81,7 +81,7 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                 } else {
                     Cookie.set('team-sync-user-token', response.token, { expires: 1 })
 
-                    dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '' }))
+                    dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '', role: response.role }))
 
                     // Redirect to home page   
                     router.push('/subscription-plans')
@@ -89,7 +89,7 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                 }
             } catch (error) {
                 console.log(error);
-                
+
                 setErrors(true);
             }
         }

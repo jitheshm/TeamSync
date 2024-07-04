@@ -48,7 +48,7 @@ export default async (req: Request, res: Response) => {
                 }
 
                 const token = jwt.sign({ email: userObj.email, name: userObj.first_name, id: userObj._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-                res.status(200).json({ message: "User verified successfully", verified: true, token: token, name: userObj.first_name });
+                res.status(200).json({ message: "User verified successfully", verified: true, token: token, name: userObj.first_name, role: 'Tenant_admin' });
 
             } else if (context === 'forgot-password') {
 

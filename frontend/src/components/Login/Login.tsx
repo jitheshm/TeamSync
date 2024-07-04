@@ -58,7 +58,7 @@ const Login: React.FC = () => {
                 Cookies.set('team-sync-user-token', data.token, { expires: 1 })
                 console.log(data);
 
-                dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '' }))
+                dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '',role:data.role }))
                 router.push('/')
             } catch (error: any) {
                 if (error.response) {
@@ -96,7 +96,7 @@ const Login: React.FC = () => {
                 Cookies.set('team-sync-user-token', data.token, { expires: 1 })
                 console.log(data);
 
-                dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '' }))
+                dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '',role:data.role }))
                 router.push('/')
 
             }

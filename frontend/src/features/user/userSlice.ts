@@ -5,22 +5,25 @@ interface UserState {
   name: string;
   tenantId: string
   verified: boolean;
+  role: string;
 }
 
 const initialState: UserState = {
   name: '',
   tenantId: '',
   verified: false,
+  role: ''
 };
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    verify: (state, action: PayloadAction<{ name: string, tenantId: string | null }>) => {
+    verify: (state, action: PayloadAction<{ name: string, tenantId: string | null, role: string }>) => {
       state.name = action.payload.name;
       state.tenantId = action.payload.tenantId ?? '';
       state.verified = true;
+      state.role = action.payload.role ;
     },
     logout: (state) => {
       state.name = '';

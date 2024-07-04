@@ -76,7 +76,7 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
 
                 Cookie.set('team-sync-user-token', response.token, { expires: 1 })
 
-                dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '' }))
+                dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '',role:response.role }))
 
                 // Redirect to home page   
                 router.push('/employee/dashboard')
