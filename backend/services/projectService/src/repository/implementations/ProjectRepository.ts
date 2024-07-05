@@ -51,7 +51,7 @@ export default class ProjectRepository implements IProjectRepository {
             return res
 
         } catch (error) {
-            console.log('Error in tenant project Repository create method');
+            console.log('Error in tenant project Repository update method');
 
             console.log(error);
 

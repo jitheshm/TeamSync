@@ -4,6 +4,7 @@ import tenantAuth from "../../middlewares/tenantAuth";
 import projectController from "../../controllers/projectController";
 import { checkSchema } from "express-validator";
 import projectValidator from "../../validators/projectValidator";
+import projectUpdateController from "../../controllers/projectUpdateController";
 
 
 
@@ -11,6 +12,7 @@ import projectValidator from "../../validators/projectValidator";
 const router = Router();
 
 router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), projectController)
+router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), projectUpdateController)
 
 
 export default router
