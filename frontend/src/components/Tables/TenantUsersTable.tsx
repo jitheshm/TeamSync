@@ -18,29 +18,28 @@ export interface ITenantUsers {
     branch_id: string;
     branch_location: string
     phone_no: string;
-
 }
 
-const TenantUsersTable: React.FC = () => {
+const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin }) => {
     const [users, setUsers] = useState<ITenantUsers[]>([]);
-    const [toogle, setToogle] = useState<boolean>(true);
+    const [toggle, setToggle] = useState<boolean>(true);
     const router = useRouter();
     const dispatch = useDispatch();
+    const [role, setRole] = useState(admin ? '' : 'Tester');
 
     useEffect(() => {
-        fetchTenantUsers().then((result: any) => {
-            console.log(result);
+        fetchTenantUsers(role).then((result: any) => {
             setUsers(result.data);
         }).catch((err: any) => {
-            console.log(err);
             if (err.response.status === 401) {
                 dispatch(logout());
-                router.push('/login');
+                router.push('/employee/login');
+
             }
         });
-    }, [toogle]);
+    }, [toggle, role]);
 
-    const handleDelete = (branchId: string, id: string,role:string) => {
+    const handleDelete = (branchId: string, id: string, role: string) => {
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -51,17 +50,17 @@ const TenantUsersTable: React.FC = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                tenantUserDelete(branchId, id,role).then(() => {
+                tenantUserDelete(branchId, id, role).then(() => {
                     Swal.fire({
                         title: "Deleted!",
                         text: "The user has been deleted.",
                         icon: "success"
                     });
-                    setToogle(!toogle);
+                    setToggle(!toggle);
                 }).catch((err) => {
                     if (err.response.status === 401) {
                         dispatch(logout());
-                        router.push('/login');
+                        router.push('/employee/login');
                     }
                 });
             }
@@ -85,6 +84,21 @@ const TenantUsersTable: React.FC = () => {
                         <Link href={'/dashboard/users/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
                     </div>
                 </div>
+            </div>
+            <div className="pb-6">
+                <label htmlFor="role" className="text-gray-100 font-semibold mr-4">Role:</label>
+                <select
+                    id="role"
+                    className="bg-gray-50 outline-none p-2 rounded-md text-gray-950"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                >
+                    <option value="">All</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Project_Manager">Project_Manager</option>
+                    <option value="Developer">Developer</option>
+                    <option value="Tester">Tester</option>
+                </select>
             </div>
             <div className=''>
                 <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
@@ -148,8 +162,8 @@ const TenantUsersTable: React.FC = () => {
                                                         </td>
                                                         <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
                                                             <p className="text-gray-100 whitespace-no-wrap text-center">
-                                                                <Link type="button" href={`/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-                                                                <button type="button" onClick={() => handleDelete(user.branch_id, user._id,user.role as string)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                                                <Link type="button" href={`/employee/manager/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                                                <button type="button" onClick={() => handleDelete(user.branch_id, user._id, user.role as string)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                                             </p>
                                                         </td>
                                                     </tr>

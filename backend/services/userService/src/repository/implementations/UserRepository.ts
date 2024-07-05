@@ -83,9 +83,20 @@ export default class UserRepository implements IUserRepository {
     async fetchSpecificUser(userId: mongoose.Types.ObjectId): Promise<IUsers | null> {
         try {
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.findOne({ _id: userId}, { password: 0 })
+            return await userModel.findOne({ _id: userId }, { password: 0 })
         } catch (error: any) {
             console.log('Error in UserRepository fetchAllUsers method');
+            throw error
+        }
+    }
+
+    async fetchTenantUserByEmail(email: string, dbId: string): Promise<IUsers | null> {
+        try {
+            const userModel = switchDb<IUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
+            return await userModel.findOne({ email: email })
+        } catch (error) {
+            console.log('Error in UserRepository fetchUserByEmail method');
+
             throw error
         }
     }

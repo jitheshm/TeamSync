@@ -8,7 +8,7 @@ import decodedUser from "../interfaces/IDecodeUser";
 
 
 const userRepository: IUserRepository = new UserRepository()
-export default async (req: Request & Partial<{ user: Partial<decodedUser>}>, res: Response, next: NextFunction) => {
+export default async (req: Request & Partial<{ user: Partial<decodedUser> }>, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization');
 
@@ -22,7 +22,7 @@ export default async (req: Request & Partial<{ user: Partial<decodedUser>}>, res
             console.log(decode);
 
 
-            if (decode) {
+            if (decode.role === 'Tenant_Admin') {
                 const userObj = await userRepository.fetchUserByEmail(decode.email)
                 if (!userObj) {
                     return res.status(401).json({ error: "unauthorised" })
@@ -34,12 +34,28 @@ export default async (req: Request & Partial<{ user: Partial<decodedUser>}>, res
                 if (!userObj.is_verified)
                     return res.status(401).json({ error: "user is not verified" })
 
-                req.user=userObj
+                req.user = userObj
                 req.user.decode = decode
-                
+
 
                 next()
-            } else {
+            } else if (decode) {
+                const userObj = await userRepository.fetchTenantUserByEmail(decode.email, decode.tenantId)
+                console.log(userObj,"jjjjj");
+                
+                if (!userObj) {
+                    return res.status(401).json({ error: "unauthorised" })
+                }
+                
+                if (userObj.is_deleted)
+                    return res.status(401).json({ error: "user is deleted" })
+               
+
+                req.user = userObj
+                req.user.decode = decode
+                next()
+            }
+            else {
                 res.status(401).json({ error: "unauthorised" })
             }
         } else {

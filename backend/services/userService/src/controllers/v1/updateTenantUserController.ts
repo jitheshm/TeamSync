@@ -22,7 +22,7 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() });
         }
-        
+
 
         if (req.user?.decode?.role !== 'Tenant_Admin') {
             if (req.body.role === 'Manager') {
@@ -31,6 +31,7 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
             if (req.user?.decode?.role !== 'Manager') {
                 return res.status(401).json({ error: "Unauthorized" });
             }
+            console.log(req.body.branch_id, req.user?.decode?.branchId);
 
             if (!req.body.branch_id) {
                 return res.status(400).json({ errors: "Branch id must needed" });

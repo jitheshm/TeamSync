@@ -9,6 +9,8 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
         if (!req.user?.decode?.tenantId) {
             return res.status(400).json({ error: "Tenant ID not found" });
         }
+        console.log(req.user?.decode?.tenantId);
+        
         const tenant = await tenantRepository.getTenantById(req.user?.decode?.tenantId)
         console.log(tenant);
 

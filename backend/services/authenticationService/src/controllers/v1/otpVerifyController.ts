@@ -77,7 +77,7 @@ export default async (req: Request, res: Response) => {
                     return res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
                 }
 
-                const token = jwt.sign({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+                const token = jwt.sign({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role,branchId:userObj.branch_id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
                 res.status(200).json({ message: "User verified", verified: true, token: token, name: userObj.name, tenantId: tenantId, role: userObj.role });
             }
 

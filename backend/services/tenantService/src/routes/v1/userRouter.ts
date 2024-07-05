@@ -17,9 +17,9 @@ import getSpecificTenantController from "../../controllers/v1/getSpecificTenantC
 const router = Router();
 
 router.post('/tenants', userAuth, checkSchema(tenantValidator()), createTenantController)
-router.get('/tenants/:name', getSpecificTenantController)
 router.post('/tenants/branches', userAuth, tenantAuth, checkSchema(branchValidator()), createBranchController)
 router.get('/tenants/branches', userAuth, tenantAuth, getAllBranchController)
+router.get('/tenants/:name', getSpecificTenantController)
 router.get('/tenants/branches/:branchId', userAuth, tenantAuth, getSpecificBranchController)
 router.put('/tenants/branches/:branchId', userAuth, tenantAuth, checkSchema(branchValidator()), updateBranchController)
 router.delete('/tenants/branches/:branchId', userAuth, tenantAuth, deleteBranchController)

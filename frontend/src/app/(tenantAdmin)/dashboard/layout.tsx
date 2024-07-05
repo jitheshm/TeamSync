@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from "react-redux"
 import Cookies from "js-cookie"
 import Loading from "@/components/Loading/Loading"
 import TenantAdminLayout from "@/components/Layout/TenantAdminLayout"
-import { verify } from "@/features/user/userSlice"
+import { logout, verify } from "@/features/user/userSlice"
 
 interface UserState {
     name: string
     verified: boolean
     tenantId: string
+    role:string
 }
 
 interface RootState {
@@ -26,12 +27,12 @@ export default function DashboardLayout({
 }) {
     const [loading, setLoading] = useState<boolean>(true)
 
-    const { verified } = useSelector((state: RootState) => state.user)
+    const { verified,role } = useSelector((state: RootState) => state.user)
     const dispatch = useDispatch()
     const router = useRouter()
 
     useEffect(() => {
-        if (verified) {
+        if (verified && role ==='Tenant_Admin') {
             setLoading(false)
         } else {
             // const token = Cookies.get('team-sync-user-token')
@@ -51,7 +52,7 @@ export default function DashboardLayout({
             // } else {
             //     router.push('/login')
             // }
-
+            dispatch(logout())
             router.push('/login')
         }
     }, [verified])

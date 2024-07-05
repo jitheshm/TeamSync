@@ -22,10 +22,14 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         }
      
 
-        if (req.user?.decode?.role !== 'Tenant_Admin' && req.query.role !== 'Manager') {
+        if (req.user?.decode?.role !== 'Tenant_Admin' && req.user?.decode?.role !== 'Manager') {
+            console.log("first");
+            
             return res.status(401).json({ error: "Unauthorized" });
         }
         if (req.user?.decode?.role === 'Manager' && (req.query.role === 'Manager' || !req.query.role)) {
+            console.log("second");
+
             return res.status(401).json({ error: "Unauthorized" });
         }
 

@@ -8,5 +8,7 @@ export interface IUserRepository {
     fetchAllUsers(): Promise<IUsers[]>
     updateUserById(data: Partial<IUsers & Document>): Promise<IUsers | null>
     deleteUserById(userId: mongoose.Types.ObjectId): Promise<IUsers | null>
-    fetchSpecificUser(userId: mongoose.Types.ObjectId): Promise<IUsers | null> 
+    fetchSpecificUser(userId: mongoose.Types.ObjectId): Promise<IUsers | null>
+    fetchTenantUserByEmail(email: string, dbId: string): Promise<IUsers | null>
+
 }

@@ -139,9 +139,14 @@ export const tenantUserDelete = async (branchId: string, id: string, role: strin
     }
 }
 
-export const fetchTenantUsers = async () => {
+export const fetchTenantUsers = async (role: string) => {
     try {
-        const response = await instance.get('/user-service/v1/tenants/users', {
+        if (role === '') {
+            var url = '/user-service/v1/tenants/users'
+        } else {
+            url = `/user-service/v1/tenants/users?role=${role}`
+        }
+        const response = await instance.get(url, {
             headers: {
                 Authorization: Cookies.get('team-sync-user-token')
             }
@@ -166,3 +171,4 @@ export const fetchTenantSpecificUser = async (userId: string) => {
         throw error
     }
 }
+
