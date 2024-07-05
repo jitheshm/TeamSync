@@ -58,3 +58,17 @@ export const updateProject = async (formData: ProjectFormData,id:string) => {
         throw error
     }
 }
+
+export const projectDelete = async (id:string) => {
+    try {
+        const response = await instance.delete(`/project-service/v1/projects/${id}`, {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

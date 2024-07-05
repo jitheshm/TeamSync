@@ -1,5 +1,5 @@
 "use client";
-import { fetchAllProjects } from '@/api/projectService/project';
+import { fetchAllProjects, projectDelete } from '@/api/projectService/project';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
@@ -45,19 +45,19 @@ const ProjectTable: React.FC = () => {
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                // projectDelete(projectId).then(() => {
-                //     Swal.fire({
-                //         title: "Deleted!",
-                //         text: "The project has been deleted.",
-                //         icon: "success"
-                //     });
-                //     setToggle(!toggle);
-                // }).catch((err) => {
-                //     if (err.response.status === 401) {
-                //         dispatch(logout());
-                //         router.push('/employee/login');
-                //     }
-                // });
+                projectDelete(projectId).then(() => {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "The project has been deleted.",
+                        icon: "success"
+                    });
+                    setToggle(!toggle);
+                }).catch((err) => {
+                    if (err.response.status === 401) {
+                        dispatch(logout());
+                        router.push('/employee/login');
+                    }
+                });
             }
         });
     }
@@ -76,7 +76,7 @@ const ProjectTable: React.FC = () => {
                         <input className="bg-gray-50 outline-none ml-1 block" type="text" name="search" id="search" placeholder="search..." />
                     </div>
                     <div className="lg:ml-40 ml-10 space-x-8">
-                        <Link href={'/employee/manager/dashboard/projects/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
+                        <Link href={'/employee/manager/dashboard/projects/create'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
                     </div>
                 </div>
             </div>
