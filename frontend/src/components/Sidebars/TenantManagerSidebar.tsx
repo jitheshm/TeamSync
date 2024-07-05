@@ -26,7 +26,7 @@ function TenantManagerSidebar() {
         cookie.remove('team-sync-user-token')
         dispatch(logout())
 
-        router.push('/login')
+        router.push('/employee/login')
     }
     return (
 
