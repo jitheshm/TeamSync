@@ -93,6 +93,91 @@ export default class ProjectRepository implements IProjectRepository {
     }
 
 
+    async fetchSpecificProjectDetails(dbId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId) {
+        try {
+            console.log(dbId);
+
+            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
+            const data = await ProjectModel.aggregate([
+                {
+                    $match: {
+                        _id: projectId,
+                        branch_id: branchId,
+                        is_deleted: false
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'manager_id',
+                        foreignField: '_id',
+                        as: 'manager'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$developer_id',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },  
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'developers_id',
+                        foreignField: '_id',
+                        as: 'developer_details'
+                    }
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        name: { $first: '$name' },
+                        description: { $first: '$description' },
+                        project_id: { $first: '$project_id' },
+                        start_date: { $first: '$start_date' },
+                        end_date: { $first: '$end_date' },
+                        stage: { $first: '$stage' },
+                        client_name: { $first: '$client_name' },
+                        created_at:{ $first: '$created_at'},
+                        branch_id: { $first: '$branch_id' },
+                        manager: { $first: '$manager' },
+                        developer: { $push: { $arrayElemAt: ['$developer_details', 0] } },
+                        tester_id: { $first: '$tester_id' },
+                        project_manager_id: { $first: '$project_manager_id' },
+                        is_deleted: { $first: '$is_deleted' }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'tester_id',
+                        foreignField: '_id',
+                        as: 'tester'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'project_manager_id',
+                        foreignField: '_id',
+                        as: 'project_manager'
+                    }
+                }
+            ]).exec()
+            console.log(data); 
+
+            return data[0]   
+        } catch (error) {
+            console.log('Error in project Repository fetch method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
+
 
 }
 
+ 

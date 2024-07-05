@@ -8,6 +8,7 @@ import projectUpdateController from "../../controllers/projectUpdateController";
 import projectDeleteController from "../../controllers/projectDeleteController";
 import getSpecificProjectController from "../../controllers/getSpecificProjectController";
 import getAllProjectController from "../../controllers/getAllProjectController";
+import getProjectDetails from "../../controllers/getProjectDetails";
 
 
 
@@ -19,6 +20,7 @@ router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectVali
 router.delete('/projects/:projectId', userAuth, tenantAuth, projectDeleteController)
 router.get('/projects', userAuth, tenantAuth, getAllProjectController)
 router.get('/projects/:projectId', userAuth, tenantAuth, getSpecificProjectController)
+router.get('/projects/:projectId/details', userAuth, tenantAuth, getProjectDetails)
 
 
 export default router

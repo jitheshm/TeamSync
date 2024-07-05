@@ -72,3 +72,17 @@ export const projectDelete = async (id:string) => {
         throw error
     }
 }
+
+export const fetchSpecificProjectDetails = async (id: string) => {
+    try {
+        const response = await instance.get(`/project-service/v1/projects/${id}/details`, {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

@@ -8,5 +8,7 @@ export interface IProjectRepository {
     update(data: Partial<IProjects>, dbId: string, projectId: mongoose.Types.ObjectId): Promise<IProjects | null>
     delete(data: Partial<IProjects>, dbId: string, projectId: mongoose.Types.ObjectId): Promise<IProjects | null>
     fetchAllProject(dbId: string, branchId: mongoose.Types.ObjectId): Promise<(IProjects & Document)[]>
+    fetchSpecificProjectDetails(dbId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<(IProjects & Document) | null>
+    
 
 }

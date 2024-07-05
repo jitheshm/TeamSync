@@ -76,10 +76,23 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
 
                 Cookie.set('team-sync-user-token', response.token, { expires: 1 })
 
-                dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '',role:response.role }))
+                dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '', role: response.role }))
 
-                // Redirect to home page   
-                router.push('/employee/dashboard')
+                switch (response.role) {
+                    case 'Manager':
+                        router.push('/employee/manager/dashboard')
+                        break
+                    case 'Project Manager':
+                        router.push('/employee/project-manager/dashboard')
+                        break
+                    case 'Developer':
+                        router.push('/employee/developer/dashboard')
+                        break
+                    case 'Tester':
+                        router.push('/employee/tester/dashboard')
+                        break
+                    
+                }
 
 
             } catch (error) {
