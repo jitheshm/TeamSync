@@ -74,7 +74,23 @@ export default class ProjectRepository implements IProjectRepository {
         }
     }
 
+    async fetchAllProject(dbId: string, branchId: mongoose.Types.ObjectId) {
+        try {
+            console.log(dbId);
 
+            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
+            const data = await ProjectModel.find({ branch_id: branchId, is_deleted: false })
+            console.log(data);
+
+            return data
+        } catch (error) {
+            console.log('Error in project Repository fetch method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
 
 
 
