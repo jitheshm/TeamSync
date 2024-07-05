@@ -1,7 +1,7 @@
 
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
-import BranchRepository from "../../../repository/implementation/BranchRepository";
+import BranchRepository from "../../../repository/implementations/BranchRepository";
 
 
 let kafkaConnection = new KafkaConnection()

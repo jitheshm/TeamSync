@@ -1,5 +1,5 @@
 
-import UserRepository from "../../../repository/implementation/UserRepository";
+import UserRepository from "../../../repository/implementations/UserRepository";
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
 

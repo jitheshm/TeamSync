@@ -4,6 +4,7 @@ import UsersSchema from "../schemas/userSchema";
 import TenantsSchema from "../schemas/tenantSchema";
 import BranchesSchema from "../schemas/branchSchema";
 import TenantUserSchema from "../schemas/tenantUserSchema";
+import ProjectsSchema from "../schemas/projectSchema";
 
 // Define a generic function type
 export default function getModel<T>(dbname: string, modelName: string): Model<T & Document> {
@@ -28,6 +29,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
             case 'tenant_users':
                 schema = TenantUserSchema;
                 break;
+            case 'projects':
+                schema = ProjectsSchema;
+                break
             default:
                 throw new Error('Model not found');
         }

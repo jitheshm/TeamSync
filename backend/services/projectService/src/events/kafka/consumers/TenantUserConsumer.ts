@@ -1,7 +1,7 @@
 
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
-import TenantUserRepository from "../../../repository/implementation/TenantUserRepository";
+import TenantUserRepository from "../../../repository/implementations/TenantUserRepository";
 
 
 let kafkaConnection = new KafkaConnection()

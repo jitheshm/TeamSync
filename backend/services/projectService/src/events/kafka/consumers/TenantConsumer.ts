@@ -1,7 +1,7 @@
 
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
-import TenantRepository from "../../../repository/implementation/TenantRepository";
+import TenantRepository from "../../../repository/implementations/TenantRepository";
 
 
 
