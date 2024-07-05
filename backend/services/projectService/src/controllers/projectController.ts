@@ -34,7 +34,7 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
 
         const bodyObj: Partial<IProjects> = req.body as Partial<IProjects>;
         bodyObj.project_id = '#project' + new Date().getTime() + Math.floor(Math.random() * 1000)
-        bodyObj.project_manager_id = new mongoose.Types.ObjectId(req.user._id)
+        // bodyObj.project_manager_id = new mongoose.Types.ObjectId(req.user._id)
 
         const newProject = await projectRepository.create(bodyObj as IProjects, req.user?.decode?.tenantId);
 

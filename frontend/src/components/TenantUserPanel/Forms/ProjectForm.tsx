@@ -6,7 +6,7 @@ import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { z, ZodError } from 'zod';
 import Select from 'react-select';
-import { createProject } from '@/api/projectService/project';
+import { createProject, fetchSpecificProject, updateProject } from '@/api/projectService/project';
 
 const projectSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
@@ -42,7 +42,7 @@ interface FormErrors {
 }
 
 
-function ProjectForm() {
+function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     const [formData, setFormData] = useState<ProjectFormData>({
         name: '',
         description: '',
@@ -83,12 +83,22 @@ function ProjectForm() {
     }, []);
 
     useEffect(() => {
+        if (edit) {
+            fetchSpecificProject(id).then((res) => {
+                console.log(res.data);
+
+                setFormData(res.data);
+            })
+        }
+    }, [])
+
+    useEffect(() => {
         setDeveloper((prevState) => {
             return prevState.filter((dev) => !formData.developers_id.includes(dev._id))
         })
         console.log(formData);
 
-    },[formData.developers_id])
+    }, [formData.developers_id])
 
     const handleApiError = (err: any) => {
         if (err.response && err.response.status === 401) {
@@ -110,13 +120,24 @@ function ProjectForm() {
             projectSchema.parse(formData);
             console.log('Form data is valid:', formData);
             setErrors({});
-            // Uncomment the createProject function call and router.push once implemented
-            createProject(formData).then((res) => {
+            if (!edit) {
+                // Uncomment the createProject function call and router.push once implemented
+                createProject(formData).then((res) => {
+                    console.log(res);
+                    router.push('/employee/manager/dashboard/projects');
+                }).catch((err) => {
+                    handleApiError(err);
+                });
+            }
+            else{
+                // Uncomment the createProject function call and router.push once implemented
+            updateProject(formData,id).then((res) => {
                 console.log(res);
                 router.push('/employee/manager/dashboard/projects');
             }).catch((err) => {
                 handleApiError(err);
             });
+            }
         } catch (err) {
             if (err instanceof ZodError) {
                 const formattedErrors: FormErrors = {};
@@ -234,7 +255,7 @@ function ProjectForm() {
                                     id="start_date"
                                     name="start_date"
                                     className="border border-gray-300 text-gray-950 shadow p-3 w-full rounded"
-                                    value={formData.start_date}
+                                    value={formData.start_date.split('T')[0]}
                                     onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
                                 />
                                 {errors.start_date && <p className="text-red-500">{errors.start_date}</p>}
@@ -246,13 +267,13 @@ function ProjectForm() {
                                     id="end_date"
                                     name="end_date"
                                     className="border border-gray-300 text-gray-950 shadow p-3 w-full rounded"
-                                    value={formData.end_date}
+                                    value={formData.end_date.split('T')[0]}
                                     onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                                 />
                                 {errors.end_date && <p className="text-red-500">{errors.end_date}</p>}
                             </div>
                         </div>
-                        <button type="submit" className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">Create Project</button>
+                        <button type="submit" className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">{edit?"Update":"Create Project"}</button>
                     </form>
                 </div>
             </div>
