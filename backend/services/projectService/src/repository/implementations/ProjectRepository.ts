@@ -119,7 +119,7 @@ export default class ProjectRepository implements IProjectRepository {
                         path: '$developer_id',
                         preserveNullAndEmptyArrays: true
                     }
-                },  
+                },
                 {
                     $lookup: {
                         from: 'tenant_users',
@@ -138,7 +138,7 @@ export default class ProjectRepository implements IProjectRepository {
                         end_date: { $first: '$end_date' },
                         stage: { $first: '$stage' },
                         client_name: { $first: '$client_name' },
-                        created_at:{ $first: '$created_at'},
+                        created_at: { $first: '$created_at' },
                         branch_id: { $first: '$branch_id' },
                         manager: { $first: '$manager' },
                         developer: { $push: { $arrayElemAt: ['$developer_details', 0] } },
@@ -164,9 +164,9 @@ export default class ProjectRepository implements IProjectRepository {
                     }
                 }
             ]).exec()
-            console.log(data); 
+            console.log(data);
 
-            return data[0]   
+            return data[0]
         } catch (error) {
             console.log('Error in project Repository fetch method');
 
@@ -176,8 +176,23 @@ export default class ProjectRepository implements IProjectRepository {
         }
     }
 
+    async fetchAllPManagerProjects(dbId: string, branchId: mongoose.Types.ObjectId, pManagerId: mongoose.Types.ObjectId) {
+        try {
+            console.log(dbId);
 
+            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
+            const data = await ProjectModel.find({ branch_id: branchId, project_manager_id: pManagerId, is_deleted: false })
+            console.log(data);
+
+            return data
+        } catch (error) {
+            console.log('Error in project Repository fetch method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
 
 }
 
- 

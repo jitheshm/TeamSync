@@ -1,5 +1,5 @@
 "use client";
-import { fetchAllProjects, projectDelete } from '@/api/projectService/project';
+import { fetchAllProjects, fetchAllProjectsByPManager, projectDelete } from '@/api/projectService/project';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
@@ -17,49 +17,62 @@ export interface IProject {
     end_date: string;
 }
 
-const ProjectTable: React.FC = () => {
+const ProjectTable = ({ role }: { role: string }) => {
     const [projects, setProjects] = useState<IProject[]>([]);
     const [toggle, setToggle] = useState<boolean>(true);
     const router = useRouter();
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetchAllProjects().then((result: any) => {
-            setProjects(result.data);
-        }).catch((err: any) => {
-            if (err.response.status === 401) {
-                dispatch(logout());
-                router.push('/employee/login');
-            }
-        });
+        if (role === 'Manager') {
+            fetchAllProjects().then((result: any) => {
+                setProjects(result.data);
+            }).catch((err: any) => {
+                if (err.response.status === 401) {
+                    dispatch(logout());
+                    router.push('/employee/login');
+                }
+            });
+        } else {
+            fetchAllProjectsByPManager().then((result: any) => {
+                setProjects(result.data);
+            }).catch((err: any) => {
+                if (err.response.status === 401) {
+                    dispatch(logout());
+                    router.push('/employee/login');
+                }
+            });
+        }
     }, [toggle]);
 
     const handleDelete = (projectId: string) => {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                projectDelete(projectId).then(() => {
-                    Swal.fire({
-                        title: "Deleted!",
-                        text: "The project has been deleted.",
-                        icon: "success"
+        if (role === 'Manager') {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    projectDelete(projectId).then(() => {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "The project has been deleted.",
+                            icon: "success"
+                        });
+                        setToggle(!toggle);
+                    }).catch((err) => {
+                        if (err.response.status === 401) {
+                            dispatch(logout());
+                            router.push('/employee/login');
+                        }
                     });
-                    setToggle(!toggle);
-                }).catch((err) => {
-                    if (err.response.status === 401) {
-                        dispatch(logout());
-                        router.push('/employee/login');
-                    }
-                });
-            }
-        });
+                }
+            });
+        }
     }
 
     return (
@@ -76,7 +89,10 @@ const ProjectTable: React.FC = () => {
                         <input className="bg-gray-50 outline-none ml-1 block" type="text" name="search" id="search" placeholder="search..." />
                     </div>
                     <div className="lg:ml-40 ml-10 space-x-8">
-                        <Link href={'/employee/manager/dashboard/projects/create'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
+                        {
+                            role === 'Manager' && <Link href={'/employee/manager/dashboard/projects/create'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
+                        }
+
                     </div>
                 </div>
             </div>
@@ -130,9 +146,24 @@ const ProjectTable: React.FC = () => {
                                                         </td>
                                                         <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
                                                             <p className="text-gray-100 whitespace-no-wrap text-center">
-                                                                <Link type="button" href={`/employee/manager/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">view</Link>
-                                                                <Link type="button" href={`/employee/manager/dashboard/projects/${project._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-                                                                <button type="button" onClick={() => handleDelete(project._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                                                {
+                                                                    role === 'Manager' ?
+                                                                        <>
+                                                                            <Link type="button" href={`/employee/manager/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">view</Link>
+                                                                            <Link type="button" href={`/employee/manager/dashboard/projects/${project._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                                                            <button type="button" onClick={() => handleDelete(project._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                                                        </>
+                                                                        :
+                                                                        <>
+                                                                            <Link type="button" href={`/employee/manager/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">view</Link>
+                                                                            <Link type="button" href={`/employee/manager/dashboard/projects/${project._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Create Task</Link>
+                                                                            <Link type="button" href={`/employee/manager/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-500 dark:hover:bg-blue-500 dark:focus:ring-blue-500">Show Task</Link>
+
+                                                                        </>
+
+
+
+                                                                }
                                                             </p>
                                                         </td>
                                                     </tr>

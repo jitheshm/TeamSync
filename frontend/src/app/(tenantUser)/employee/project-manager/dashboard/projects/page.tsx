@@ -3,7 +3,7 @@ import React from 'react'
 
 function page() {
     return (
-        <ProjectTable role='Manager'/>
+        <ProjectTable role='Project_Manager'/>
     )
 }
 

@@ -86,3 +86,17 @@ export const fetchSpecificProjectDetails = async (id: string) => {
         throw error
     }
 }
+
+export const fetchAllProjectsByPManager = async () => {
+    try {
+        const response = await instance.get('/project-service/v1/projects?pm=true', {
+            headers: {
+                Authorization: Cookies.get('team-sync-user-token')
+            }
+
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
