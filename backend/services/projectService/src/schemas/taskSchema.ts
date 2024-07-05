@@ -1,17 +1,16 @@
 import { Schema } from "mongoose";
 
 const TasksSchema: Schema = new Schema({
-    Task_id: { type: String, required: true, unique: true },
-    Created_at: { type: Date, required: true },
-    Project_id: { type: Schema.Types.ObjectId, required: true },
+    task_id: { type: String, required: true, unique: true },
+    created_at: { type: Date, required: true,default:Date.now },
+    project_id: { type: Schema.Types.ObjectId, required: true },
     branch_id: { type: Schema.Types.ObjectId, required: true },
-    Project_manager_id: { type: Schema.Types.ObjectId, required: true },
-    Title: { type: String, required: true },
-    Developer_id: { type: Schema.Types.ObjectId, required: true },
-    Description: { type: String, required: true },
-    Due_date: { type: Date, required: true },
-    Status: { type: String, required: true },
-    Is_deleted: { type: Boolean, required: true },
+    title: { type: String, required: true },
+    developer_id: { type: Schema.Types.ObjectId, required: true },
+    description: { type: String, required: true },
+    due_date: { type: Date, required: true },
+    status: { type: String, required: true ,default:"pending"},
+    is_deleted: { type: Boolean, required: true ,default:false},
   });
 
-  export default TasksSchema
+  export default TasksSchema 

@@ -1,16 +1,15 @@
-import { ObjectId } from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 
 export interface ITasks {
-    _id: ObjectId;
-    Task_id: String;
-    Created_at: Date;
-    Project_id: ObjectId;
-    Project_manager_id: ObjectId;
-    branch_id: ObjectId;
-    Title: String;
-    Developer_id: ObjectId;
-    Description: String;
-    Due_date: Date;
-    Status: String;
-    Is_deleted: Boolean;
+    _id: mongoose.Types.ObjectId;
+    task_id: String;
+    created_at: Date;
+    project_id: mongoose.Types.ObjectId;
+    branch_id: mongoose.Types.ObjectId;
+    title: String;
+    developer_id: mongoose.Types.ObjectId;
+    description: String;
+    due_date: Date;
+    status: String;
+    is_deleted: Boolean;
 }
