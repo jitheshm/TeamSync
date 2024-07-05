@@ -25,12 +25,12 @@ export default class ProjectRepository implements IProjectRepository {
     }
 
 
-    async fetchSpecificProject(dbId: string, projectId: mongoose.Types.ObjectId) {
+    async fetchSpecificProject(dbId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId) {
         try {
             console.log(dbId);
 
             const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
-            const data = await ProjectModel.findOne({ _id: projectId, is_deleted: false })
+            const data = await ProjectModel.findOne({ _id: projectId, branch_id: branchId, is_deleted: false })
             console.log(data);
 
             return data

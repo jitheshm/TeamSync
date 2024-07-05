@@ -31,7 +31,7 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
 
         const resultObj = await projectRepository.delete(bodyObj as IProjects, req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.params.projectId));
 
-        res.status(201).json({ message: "project deleted successfully" });
+        res.status(200).json({ message: "project deleted successfully" });
 
 
 

@@ -13,11 +13,6 @@ const projectRepository: IProjectRepository = new ProjectRepository()
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
 
-        const result = validationResult(req);
-        if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() });
-        }
-
         if (req.user?.decode?.role !== 'Tenant_Admin') {
 
             if (req.user?.decode?.role !== 'Manager') {
@@ -32,11 +27,10 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
             }
         }
 
-        const bodyObj: Partial<IProjects> = req.body as Partial<IProjects>;
 
-        const resultObj = await projectRepository.update(bodyObj as IProjects, req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.params.projectId));
+        const resultObj = await projectRepository.fetchSpecificProject(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.params.projectId), new mongoose.Types.ObjectId(req.user?.decode?.branchId as string));
 
-        res.status(200).json({ message: "project updated successfully" });
+        res.status(200).json({ message: "project fetch successfully", data: resultObj });
 
 
 
