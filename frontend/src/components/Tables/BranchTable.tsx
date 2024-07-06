@@ -1,65 +1,30 @@
-"use client"
-import { blockPlan, deletePlan, fetchPlans, unBlockPlan } from '@/api/subscriptionService/subscription';
+"use client";
 import { deleteBranch, fetchBranches } from '@/api/tenantService/tenant';
-import { blockUser, deleteUser, fetchUsers, unBlockUser } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
-import { IBranches } from '@/interfaces/Branches';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
-
-
-
+import { IBranches } from '@/interfaces/Branches';
 
 const BranchTable: React.FC = () => {
     const [branches, setBranches] = useState<IBranches[]>([]);
-    const [toogle, setToogle] = useState<boolean>(true);
+    const [toggle, setToggle] = useState<boolean>(true);
     const router = useRouter();
     const dispatch = useDispatch();
 
     useEffect(() => {
         fetchBranches().then((result) => {
-            console.log(result);
-
             setBranches(result.data);
         }).catch((err) => {
-            console.log(err);
-
             if (err.response.status === 401) {
-                dispatch(logout())
-
-                router.push('/login')
+                dispatch(logout());
+                router.push('/login');
             }
-        })
-    }, [toogle]);
-
-
-    const handleBlock = (id: string) => {
-        // blockPlan(id).then(() => {
-        //     setToogle(!toogle)
-        // }).catch((err) => {
-        //     if(err.response.status===401){
-        //         dispatch(logout())
-
-        //         router.push('/admin/login')
-        //     }
-        // })
-    }
-
-    const handleUnBlock = (id: string) => {
-        // unBlockPlan(id).then(() => {
-        //     setToogle(!toogle)
-        // }).catch((err) => {
-        //     if(err.response.status===401){
-        //         dispatch(logout())
-
-        //         router.push('/admin/login')
-        //     }
-        // })
-    }
+        });
+    }, [toggle]);
 
     const handleDelete = (id: string) => {
         Swal.fire({
@@ -73,30 +38,24 @@ const BranchTable: React.FC = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 deleteBranch(id).then(() => {
-
                     Swal.fire({
                         title: "Deleted!",
                         text: "Your file has been deleted.",
                         icon: "success"
                     });
-                    setToogle(!toogle)
-
+                    setToggle(!toggle);
                 }).catch((err) => {
                     if (err.response.status === 401) {
-                        dispatch(logout())
-
-                        router.push('/login')
+                        dispatch(logout());
+                        router.push('/login');
                     }
-                })
-
+                });
             }
         });
-
-
-    }
+    };
 
     return (
-        <div className="bg-gray-900 p-8 rounded-md w-11/12 mt-20 mx-auto">
+        <div className="p-8 rounded-md w-11/12 mt-20 mx-auto">
             <div className="flex items-center justify-between pb-6">
                 <div>
                     <h2 className="text-gray-100 font-semibold">Branches</h2>
@@ -109,78 +68,31 @@ const BranchTable: React.FC = () => {
                         <input className="bg-gray-50 outline-none ml-1 block" type="text" name="search" id="search" placeholder="search..." />
                     </div>
                     <div className="lg:ml-40 ml-10 space-x-8">
-                        <Link href={'/dashboard/branches/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
+                        <Link href="/dashboard/branches/create" className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
                     </div>
                 </div>
             </div>
-            <div className=''>
-                <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                    <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                        {
-                            branches.length > 0 ?
-                                <>
-                                    <table className="min-w-full leading-normal">
-                                        <thead>
-                                            <tr className='text-center'>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Id
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Location
-                                                </th>
-
-
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Action
-                                                </th>
-                                            </tr>
-                                        </thead>
-
-
-                                        <tbody>
-                                            {
-                                                branches.map((branch, index) => (
-                                                    <tr key={index}>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{branch.branch_id}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{`${branch.location}`}</p>
-                                                        </td>
-
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">
-                                                                <Link type="button" href={`/dashboard/branches/${branch._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-
-                                                                <button type="button" onClick={() => handleDelete(branch._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
-                                                            </p>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-
-
-                                    </table>
-                                    <div className="px-5 py-5 bg-gray-600 border-t flex flex-col xs:flex-row items-center xs:justify-between">
-                                        <span className="text-xs xs:text-sm text-gray-100">
-                                            Showing 1 to {branches.length} of {branches.length} Entries
-                                        </span>
-                                        <div className="inline-flex mt-2 xs:mt-0">
-                                            <button className="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-l">
-                                                Prev
-                                            </button>
-                                            &nbsp; &nbsp;
-                                            <button className="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-r">
-                                                Next
-                                            </button>
-                                        </div>
-                                    </div>
-                                </>
-                                :
-                                <Empty />
-                        }
+            
+            <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                <div className="space-y-6">
+                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg grid grid-cols-12 text-center font-semibold text-white">
+                        <div className="col-span-4">Id</div>
+                        <div className="col-span-4">Location</div>
+                        <div className="col-span-4">Actions</div>
                     </div>
+                    {branches.length > 0 ? branches.map((branch, index) => (
+                        <div key={index} className="bg-gray-700 p-6 rounded-lg text-center shadow-lg grid grid-cols-12">
+                            <div className="col-span-4">
+                                <p className="text-white">{branch.branch_id}</p>
+                            </div>
+                            <div className="col-span-4">
+                                <p className="text-white">{branch.location}</p>
+                            </div>
+                            <div className="col-span-4 ">
+                                <button type="button" onClick={() => handleDelete(branch.branch_id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                            </div>
+                        </div>
+                    )) : <Empty text="No Branches Found" />}
                 </div>
             </div>
         </div>

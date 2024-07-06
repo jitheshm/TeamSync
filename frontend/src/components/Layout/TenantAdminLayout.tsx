@@ -7,14 +7,15 @@ interface TenantAdminLayoutProps {
 
 const TenantAdminLayout: React.FC<TenantAdminLayoutProps> = ({ children }) => {
     return (
-        <div className="min-h-[100vh] bg-gray-950">
-            <div className='grid grid-cols-12'>
-                <div className='col-span-2'>
-                    < TenantAdminSidebar/>
-                </div>
-                <div className='col-span-10'>
-                    {children}
-                </div>
+        <div className='bg-[#0f1729] min-h-screen'>
+
+            <div className='fixed bg-[#0f1729] z-10'>
+                <TenantAdminSidebar />
+
+            </div>
+            <div className="p-4 ">
+                {children}
+
             </div>
         </div>
     )

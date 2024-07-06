@@ -16,7 +16,7 @@ export interface ITenantUsers {
     tenant_user_id: string;
     role: string;
     branch_id: string;
-    branch_location: string
+    branch_location: string;
     phone_no: string;
 }
 
@@ -34,7 +34,6 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
             if (err.response.status === 401) {
                 dispatch(logout());
                 router.push('/employee/login');
-
             }
         });
     }, [toggle, role]);
@@ -68,7 +67,7 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
     }
 
     return (
-        <div className="bg-gray-900 p-8 rounded-md w-11/12 mt-20 mx-auto">
+        <div className="p-8 rounded-md w-11/12 mt-20 mx-auto">
             <div className="flex items-center justify-between pb-6">
                 <div>
                     <h2 className="text-gray-100 font-semibold">Tenant Users</h2>
@@ -81,17 +80,11 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                         <input className="bg-gray-50 outline-none ml-1 block" type="text" name="search" id="search" placeholder="search..." />
                     </div>
                     <div className="lg:ml-40 ml-10 space-x-8">
-                        {
-                            admin ?
-                                <Link href={'/dashboard/users/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
-                                :
-                                <Link href={'/employee/manager/dashboard/users/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
-                        }
-                        {/* <Link href={'/dashboard/users/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link> */}
+                        <Link href={admin ? '/dashboard/users/register' : '/employee/manager/dashboard/users/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
                     </div>
                 </div>
             </div>
-            <div className="pb-6">
+            <div className="pb-6 mt-7 md:mt-0">
                 <label htmlFor="role" className="text-gray-100 font-semibold mr-4">Role:</label>
                 <select
                     id="role"
@@ -99,114 +92,71 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                 >
-                    {
-                        admin ?
-                            <>
-                                <option value="">All</option>
-                                <option value="Manager">Manager</option>
-                            </> : ""
-                    }
+                    {admin && <option value="">All</option>}
                     <option value="Project_Manager">Project_Manager</option>
                     <option value="Developer">Developer</option>
                     <option value="Tester">Tester</option>
                 </select>
             </div>
-            <div className=''>
-                <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                    <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                        {
-                            users.length > 0 ?
-                                <>
-                                    <table className="min-w-full leading-normal">
-                                        <thead>
-                                            <tr className='text-center'>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Id
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Name
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Email
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Phone No
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Branch
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Role
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Created At
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Action
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                users.map((user, index) => (
-                                                    <tr key={index}>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{user.tenant_user_id}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{user.name}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{user.email}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{user.phone_no}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{user.branch_location}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{user.role}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{new Date(user.created_at).toLocaleDateString()}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">
-                                                                {
-                                                                    admin ?
-                                                                        <Link type="button" href={`/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-                                                                        :
-                                                                        <Link type="button" href={`/employee/manager/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-                                                                }
-
-                                                                <button type="button" onClick={() => handleDelete(user.branch_id, user._id, user.role as string)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
-                                                            </p>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-                                    </table>
-                                    <div className="px-5 py-5 bg-gray-600 border-t flex flex-col xs:flex-row items-center xs:justify-between">
-                                        <span className="text-xs xs:text-sm text-gray-100">
-                                            Showing 1 to {users.length} of {users.length} Entries
-                                        </span>
-                                        <div className="inline-flex mt-2 xs:mt-0">
-                                            <button className="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-l">
-                                                Prev
-                                            </button>
-                                            &nbsp; &nbsp;
-                                            <button className="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-r">
-                                                Next
-                                            </button>
-                                        </div>
-                                    </div>
-                                </>
-                                :
-                                <Empty />
-                        }
+            <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                <div className="space-y-6">
+                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg grid grid-cols-8 text-center font-semibold text-white">
+                        <div className="col-span-1">Id</div>
+                        <div className="col-span-1">Name</div>
+                        <div className="col-span-1">Email</div>
+                        <div className="col-span-1">Phone No</div>
+                        <div className="col-span-1">Branch</div>
+                        <div className="col-span-1">Role</div>
+                        <div className="col-span-1">Created At</div>
+                        <div className="col-span-1">Actions</div>
                     </div>
+                    {users.length > 0 ? users.map((user, index) => (
+                        <div key={index} className="bg-gray-700 p-6 rounded-lg text-center justify-stretch shadow-lg grid grid-cols-8">
+                            <div className="col-span-1 ">
+                                <div className="tooltip-container">
+                                    <p className="text-white max-w-40  truncate">{user.tenant_user_id}</p>
+                                    <span className="tooltip-text px-5 ">{user.tenant_user_id}</span>
+                                </div>
+                            </div>
+                            <div className="col-span-1">
+                                <div className="tooltip-container">
+                                    <p className="text-white truncate">{user.name}</p>
+                                    <span className="tooltip-text">{user.name}</span>
+                                </div>
+                            </div>
+                            <div className="col-span-1">
+                                <div className="tooltip-container">
+                                    <p className="text-white truncate">{user.email}</p>
+                                    <span className="tooltip-text">{user.email}</span>
+                                </div>
+                            </div>
+                            <div className="col-span-1">
+                                <div className="tooltip-container">
+                                    <p className="text-white truncate">{user.phone_no}</p>
+                                    <span className="tooltip-text">{user.phone_no}</span>
+                                </div>
+                            </div>
+                            <div className="col-span-1">
+                                <div className="tooltip-container">
+                                    <p className="text-white truncate">{user.branch_location}</p>
+                                    <span className="tooltip-text">{user.branch_location}</span>
+                                </div>
+                            </div>
+                            <div className="col-span-1">
+                                <div className="tooltip-container">
+                                    <p className="text-white truncate">{user.role}</p>
+                                    <span className="tooltip-text">{user.role}</span>
+                                </div>
+                            </div>
+                            <div className="col-span-1">
+                                <p className="text-white">{new Date(user.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <div className="col-span-1 flex space-x-2">
+                                <Link href={admin ? `/dashboard/users/${user._id}/edit` : `/employee/manager/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                <button type="button" onClick={() => handleDelete(user.branch_id, user._id, user.role as string)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                            </div>
+                        </div>
+                    )) : <Empty text="No Users Found" />}
                 </div>
             </div>
         </div>

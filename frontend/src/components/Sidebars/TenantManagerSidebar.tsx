@@ -1,111 +1,114 @@
-"use client"
-import React from 'react'
-import cookie from 'js-cookie'
-import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { logout } from '@/features/user/userSlice'
+import React, { useState, useEffect, useRef } from 'react';
+import { GiHamburgerMenu } from "react-icons/gi";
 
+export default function TenantManagerSidebar() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const sidebarRef = useRef(null);
 
-interface UserState {
-    name: string
-    verified: boolean
-}
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-interface RootState {
-    user: UserState
-}
-
-function TenantManagerSidebar() {
-
-    const { name, verified } = useSelector((state: RootState) => state.user)
-
-    const router = useRouter()
-    const dispatch = useDispatch()
-    const handleLogout = () => {
-        cookie.remove('team-sync-user-token')
-        dispatch(logout())
-
-        router.push('/employee/login')
+  const handleClickOutside = (event) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      setIsSidebarOpen(false);
     }
-    return (
+  };
 
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isSidebarOpen]);
 
+  return (
+    <>
+      {/* <div className="min-h-screen bg-gray-900 text-gray-100"> */}
 
-        <div className="absolute left-0 flex h-screen w-72 flex-col overflow-hidden rounded-r-2xl bg-gray-800 border-e-2 text-white">
-            <h1 className="mt-10 ml-10 text-xl font-bold">TeamSync (Manager)</h1>
-            <ul className="mt-20 space-y-3">
-                <li className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-gray-300 hover:bg-slate-600">
-                    <span><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg></span><span >Dashboard</span>
-                </li>
-                <li >
-                    <Link href={'/employee/manager/dashboard/users'} className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-gray-300 font-semibold hover:bg-slate-600">
-
-
-                        <span><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg></span><span >Users</span>
-                        {/* <svg className="absolute -top-1/2 -right-1 h-32 w-8 text-gray-50" xmlns="http://www.w3.org/2000/svg" viewBox="399.349 57.696 100.163 402.081" width="1em" height="4em">
-                            <path fill="currentColor" d="M 499.289 57.696 C 499.289 171.989 399.349 196.304 399.349 257.333 C 399.349 322.485 499.512 354.485 499.512 458.767 C 499.512 483.155 499.289 57.696 499.289 57.696 Z" />
-                        </svg> */}
-                    </Link>
-                </li>
-                <li >
-                    <Link href={'/employee/manager/dashboard/projects'} className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-gray-300 hover:bg-slate-600">
-
-
-                        <span><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg></span><span >Projects</span>
-                    </Link>
-                </li>
-                
-                <li >
-                    <Link href={'/employee/manager/dashboard/meetings'} className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-gray-300 hover:bg-slate-600">
-                        <span className="text-2xl"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 36 36">
-                            <path fill="currentColor" d="M32 15h-1V9a1 1 0 0 0-1-1H6a1 1 0 0 1-1-.82v-.36A1 1 0 0 1 6 6h23.58a1 1 0 0 0 0-2H6a3 3 0 0 0-3 3a3.08 3.08 0 0 0 0 .36v20.57A4.1 4.1 0 0 0 7.13 32H30a1 1 0 0 0 1-1v-6h1a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1Zm-3 15H7.13A2.11 2.11 0 0 1 5 27.93V9.88A3.11 3.11 0 0 0 6 10h23v5h-7a5 5 0 0 0 0 10h7Zm2-7h-9a3 3 0 0 1 0-6h9Z" className="clr-i-outline clr-i-outline-path-1" />
-                            <circle cx="23.01" cy={20} r="1.5" fill="currentColor" className="clr-i-outline clr-i-outline-path-2" />
-                            <path fill="none" d="M0 0h36v36H0z" /></svg>
-                        </span>
-                        <span >Meetings</span>
-                    </Link>
-                </li>
-                <li >
-                    <Link href={'/employee/manager/dashboard/chats'} className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-gray-300 hover:bg-slate-600">
-                        <span className="text-2xl"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 36 36">
-                            <path fill="currentColor" d="M32 15h-1V9a1 1 0 0 0-1-1H6a1 1 0 0 1-1-.82v-.36A1 1 0 0 1 6 6h23.58a1 1 0 0 0 0-2H6a3 3 0 0 0-3 3a3.08 3.08 0 0 0 0 .36v20.57A4.1 4.1 0 0 0 7.13 32H30a1 1 0 0 0 1-1v-6h1a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1Zm-3 15H7.13A2.11 2.11 0 0 1 5 27.93V9.88A3.11 3.11 0 0 0 6 10h23v5h-7a5 5 0 0 0 0 10h7Zm2-7h-9a3 3 0 0 1 0-6h9Z" className="clr-i-outline clr-i-outline-path-1" />
-                            <circle cx="23.01" cy={20} r="1.5" fill="currentColor" className="clr-i-outline clr-i-outline-path-2" />
-                            <path fill="none" d="M0 0h36v36H0z" /></svg>
-                        </span>
-                        <span >Chats</span>
-                    </Link>
-                </li>
-                <li >
-                    <Link href={'/employee/manager/dashboard/profile'} className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-gray-300 hover:bg-slate-600">
-                        <span className="text-2xl"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 36 36">
-                            <path fill="currentColor" d="M32 15h-1V9a1 1 0 0 0-1-1H6a1 1 0 0 1-1-.82v-.36A1 1 0 0 1 6 6h23.58a1 1 0 0 0 0-2H6a3 3 0 0 0-3 3a3.08 3.08 0 0 0 0 .36v20.57A4.1 4.1 0 0 0 7.13 32H30a1 1 0 0 0 1-1v-6h1a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1Zm-3 15H7.13A2.11 2.11 0 0 1 5 27.93V9.88A3.11 3.11 0 0 0 6 10h23v5h-7a5 5 0 0 0 0 10h7Zm2-7h-9a3 3 0 0 1 0-6h9Z" className="clr-i-outline clr-i-outline-path-1" />
-                            <circle cx="23.01" cy={20} r="1.5" fill="currentColor" className="clr-i-outline clr-i-outline-path-2" />
-                            <path fill="none" d="M0 0h36v36H0z" /></svg>
-                        </span>
-                        <span >Profile</span>
-                    </Link>
-                </li>
-
-            </ul>
-            <div className="my-6 mt-auto flex  pl-7 ">
-                {/* <div>
-                    <img className="h-12 w-12 rounded-full" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" />
-                </div> */}
-                <div className="">
-                    <p className="font-medium cursor-pointer" onClick={handleLogout}>Logout</p>
-                    <p className="text-sm text-gray-300">{name}</p>
-                </div>
-            </div>
+      <div className="bg-gray-900 w-screen h-14  fixed top-0 ">
+        <div className='p-4 md:hidden'>
+          <GiHamburgerMenu className='text-white text-3xl cursor-pointer' onClick={toggleSidebar} />
+        </div>
+        <div className="fixed inset-x-0 mx-auto md:hidden top-3  w-32">
+          <img src="https://tailus.io/images/logo.svg" className="w-32" alt="Logo" />
         </div>
 
 
 
+      </div>
 
-    )
+      <div ref={sidebarRef} className={`sidebar fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out min-h-screen w-56 md:w-12 md:hover:w-56 overflow-hidden border-r border-gray-700 bg-inherit shadow-lg`}>
+        <div className="flex h-screen flex-col  justify-between pt-2 pb-6">
+          <div>
+            <div className="w-max p-2.5">
+              <img src="https://tailus.io/images/logo.svg" className="w-32" alt="Logo" />
+            </div>
+            <ul className="mt-6 space-y-2 tracking-wide mt-16">
+              <li className="min-w-max ">
+                <a href="#" aria-label="dashboard" className="relative flex items-center space-x-4 bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white">
+                  <svg className="-ml-1 h-6 w-6" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 8a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8ZM6 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1Z" className="fill-current text-cyan-400 dark:fill-slate-600"></path>
+                    <path d="M13 8a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2V8Z" className="fill-current text-cyan-200 group-hover:text-cyan-300"></path>
+                    <path d="M13 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1Z" className="fill-current group-hover:text-sky-300"></path>
+                  </svg>
+                  <span className="-mr-1 font-medium">Dashboard</span>
+                </a>
+              </li>
+              <li className="min-w-max">
+                <a href="#" className="group flex items-center space-x-4 rounded-full px-4 py-3 text-gray-400 hover:bg-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path className="fill-current text-gray-300 group-hover:text-cyan-300" fillRule="evenodd" d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z" clipRule="evenodd" />
+                    <path className="fill-current text-gray-600 group-hover:text-cyan-600" d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z" />
+                  </svg>
+                  <span className="group-hover:text-gray-300">Categories</span>
+                </a>
+              </li>
+              <li className="min-w-max">
+                <a href="#" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path className="fill-current text-gray-600 group-hover:text-cyan-600" fillRule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clipRule="evenodd" />
+                    <path className="fill-current text-gray-300 group-hover:text-cyan-300" d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z" />
+                  </svg>
+                  <span className="group-hover:text-gray-300">Reports</span>
+                </a>
+              </li>
+              <li className="min-w-max">
+                <a href="#" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path className="fill-current text-gray-600 group-hover:text-cyan-600" d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                    <path className="fill-current text-gray-300 group-hover:text-cyan-300" d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                  </svg>
+                  <span className="group-hover:text-gray-300">Other data</span>
+                </a>
+              </li>
+              <li className="min-w-max">
+                <a href="#" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path className="fill-current text-gray-300 group-hover:text-cyan-300" d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+                    <path className="fill-current text-gray-600 group-hover:text-cyan-600" fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h6a1 1 0 100-2H9z" clipRule="evenodd" />
+                  </svg>
+                  <span className="group-hover:text-gray-300">Finance</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="w-max -mb-3">
+            <a href="#" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path className="fill-current text-gray-300 group-hover:text-cyan-300" fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+              </svg>
+              <span className="group-hover:text-gray-300">Settings</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      {/* </div> */}
+    </>
+
+  );
 }
-
-export default TenantManagerSidebar
