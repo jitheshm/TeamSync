@@ -74,95 +74,69 @@ export default class TenantUserRepository implements ITenantUserRepository {
         }
     }
 
-    async fetchTenantUsers(dbId: string, role: string | null) {
+    async fetchTenantUsers(dbId: string, role: string | null, name: string | null) {
         try {
             console.log(dbId);
 
-            const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
-            let data = null
+            const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users');
+            let data = null;
+
+            const matchStage: any = {
+                is_deleted: false
+            };
+
             if (role) {
-                data = await TenantUserModel.aggregate([
-                    {
-                        $match: {
-                            role: role,
-                            is_deleted: false
-                        }
-
-                    },
-                    {
-                        $lookup: {
-                            from: 'branches',
-                            localField: 'branch_id',
-                            foreignField: '_id',
-                            as: 'branch'
-                        }
-                    },
-                    {
-                        $unwind: '$branch'
-                    },
-                    {
-                        $project: {
-                            _id: 1,
-                            name: 1,
-                            tenant_user_id: 1,
-                            created_at: 1,
-                            email: 1,
-                            role: 1,
-                            branch_id: 1,
-                            branch_location: '$branch.location',
-                            phone_no: 1
-                        }
-                    }
-                ]).exec()
+                matchStage.role = role;
             }
-            else {
-                data = await TenantUserModel.aggregate([
-                    {
-                        $match: {
-                            is_deleted: false
-                        }
 
-                    },
-                    {
-                        $lookup: {
-                            from: 'branches',
-                            localField: 'branch_id',
-                            foreignField: '_id',
-                            as: 'branch'
-                        }
-                    },
-                    {
-                        $unwind: '$branch'
-                    },
-                    {
-                        $project: {
-                            _id: 1,
-                            name: 1,
-                            tenant_user_id: 1,
-                            created_at: 1,
-                            email: 1,
-                            role: 1,
-                            branch_id: 1,
-                            branch_location: '$branch.location',
-                            phone_no: 1
-
-                        }
-                    }
-                ]).exec()
+            if (name) {
+                matchStage.name = { $regex: `^${name}`, $options: 'i' };
             }
+
+            const aggregationPipeline = [
+                {
+                    $match: matchStage
+                },
+                {
+                    $lookup: {
+                        from: 'branches',
+                        localField: 'branch_id',
+                        foreignField: '_id',
+                        as: 'branch'
+                    }
+                },
+                {
+                    $unwind: '$branch'
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        tenant_user_id: 1,
+                        created_at: 1,
+                        email: 1,
+                        role: 1,
+                        branch_id: 1,
+                        branch_location: '$branch.location',
+                        phone_no: 1
+                    }
+                }
+            ];
+
+            data = await TenantUserModel.aggregate(aggregationPipeline).exec();
+
             console.log(data);
 
-            return data
+            return data;
         } catch (error) {
-            console.log('Error in Tenant User  Repository fetchUser method');
-
+            console.log('Error in Tenant User Repository fetchUser method');
             console.log(error);
-
-            throw error
+            throw error;
         }
     }
 
-    async fetchTenantSpecificUser(dbId: string, userId: mongoose.Types.ObjectId){
+
+    async fetchTenantSpecificUser(dbId: string, userId: mongoose.Types.ObjectId) {
         try {
             console.log(dbId);
 

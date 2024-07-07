@@ -100,19 +100,25 @@ export const tenantUserDelete = async (branchId: string, id: string, role: strin
     }
 }
 
-export const fetchTenantUsers = async (role: string) => {
+export const fetchTenantUsers = async (role: string, name: string) => {
     try {
-        if (role === '') {
-            var url = '/user-service/v1/tenants/users'
-        } else {
-            url = `/user-service/v1/tenants/users?role=${role}`
+        let url = '/user-service/v1/tenants/users';
+        const params: any = {};
+
+        if (role) {
+            params.role = role;
         }
-        const response = await instance.get(url)
-        return response.data
+        if (name) {
+            params.name = name;
+        }
+
+        const response = await instance.get(url, { params });
+        return response.data;
     } catch (error) {
-        throw error
+        throw error;
     }
-}
+};
+
 
 export const fetchTenantSpecificUser = async (userId: string) => {
     try {

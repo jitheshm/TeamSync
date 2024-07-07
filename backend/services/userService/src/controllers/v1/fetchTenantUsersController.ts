@@ -34,7 +34,8 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         }
 
         const role = req.query.role as string | null
-        let users = await userRepo.fetchTenantUsers(req.user?.decode?.tenantId, role)
+        const name = req.query.name as string | null
+        let users = await userRepo.fetchTenantUsers(req.user?.decode?.tenantId, role,name)
         if (users) {
             res.status(200).json({ data: users })
         } else {
