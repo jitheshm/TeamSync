@@ -14,7 +14,7 @@ const BranchTable: React.FC = () => {
     const [toggle, setToggle] = useState<boolean>(true);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [page, setPage] = useState<number>(1);
-    const [limit] = useState<number>(2);
+    const [limit] = useState<number>(10);
     const [total, setTotal] = useState<number>(0);
     const router = useRouter();
     const dispatch = useDispatch();
