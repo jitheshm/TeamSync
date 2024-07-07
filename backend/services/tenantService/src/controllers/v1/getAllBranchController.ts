@@ -12,7 +12,7 @@ import TenantRepository from "../../repository/implementations/TenantRepository"
 
 let branchRepository: IBranchRepository = new BranchRepository()
 let kafkaConnection: IKafkaConnection = new KafkaConnection()
-let tenantRepository:ITenantRepository=new TenantRepository()
+let tenantRepository: ITenantRepository = new TenantRepository()
 
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
@@ -24,8 +24,10 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
             return res.status(400).json({ errors: result.array() });
         }
 
-
-        const datas = await branchRepository.fetchBranches(tenantId);
+        const name = req.query.name as string | null
+        const page = Number(req.query.page || 1)
+        const limit = Number(req.query.limit || 1000)
+        const datas = await branchRepository.fetchBranches(tenantId, name, page, limit)
 
         res.status(201).json({ message: "succesfully fetched", data: datas });
 

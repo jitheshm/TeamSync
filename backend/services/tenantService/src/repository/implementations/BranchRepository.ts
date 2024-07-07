@@ -24,15 +24,50 @@ export default class BranchRepository implements IBranchRepository {
             throw error
         }
     }
-    async fetchBranches(dbId: string) {
+    async fetchBranches(dbId: string,name: string | null, page: number, limit: number) {
         try {
             console.log(dbId);
 
             const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
-            const data = await BranchModel.find({ is_deleted: false })
-            console.log(data);
-
-            return data
+            let data = null;
+    
+            const matchStage: any = {
+                is_deleted: false
+            };
+    
+    
+            if (name) {
+                matchStage.location = { $regex: `^${name}`, $options: 'i' };
+            }
+    
+            const aggregationPipeline = [
+                {
+                    $match: matchStage
+                },
+               
+                {
+                    $skip: (page - 1) * limit
+                },
+                {
+                    $limit: limit
+                }
+            ];
+    
+            data = await BranchModel.aggregate(aggregationPipeline).exec();
+    
+            const countPipeline = [
+                {
+                    $match: matchStage
+                },
+                {
+                    $count: 'total'
+                }
+            ];
+    
+            const totalCountResult = await BranchModel.aggregate(countPipeline).exec();
+            const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+    
+            return { data, total };
         } catch (error) {
             console.log('Error in Branch Repository fetchUser method');
 

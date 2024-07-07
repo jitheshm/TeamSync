@@ -21,14 +21,16 @@ export const createBranch = async (location: string) => {
     }
 }
 
-export const fetchBranches = async () => {
+export const fetchBranches = async (searchTerm: string, page: number, limit: number) => {
     try {
-        const response = await instance.get('/tenant-service/v1/tenants/branches')
-        return response.data
+        const response = await instance.get('/tenant-service/v1/tenants/branches', {
+            params: { name: searchTerm, page, limit }
+        });
+        return response.data;
     } catch (error) {
-        throw error
+        throw error;
     }
-}
+};
 
 export const deleteBranch = async (id: string) => {
     try {
