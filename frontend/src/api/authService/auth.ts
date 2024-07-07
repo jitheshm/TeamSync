@@ -18,11 +18,7 @@ export const login = async (formData: LoginFormData) => {
 
 export const verifyToken = async (token: string) => {
     try {
-        const response = await instance.get('/auth-service/v1/token/verify', {
-            headers: {
-                Authorization: token
-            }
-        })
+        const response = await instance.get('/auth-service/v1/token/verify')
 
         return response.data
     } catch (error) {
@@ -83,11 +79,7 @@ export const adminLogin = async (formData: AdminFormValues) => {
 
 export const verifyAdminToken = async (token: string) => {
     try {
-        const response = await instance.get('/auth-service/v1/admin/token/verify', {
-            headers: {
-                Authorization: token
-            }
-        })
+        const response = await instance.get('/auth-service/v1/admin/token/verify')
 
         return response.data
     } catch (error) {

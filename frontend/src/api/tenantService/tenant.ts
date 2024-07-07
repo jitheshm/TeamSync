@@ -5,12 +5,7 @@ import Cookies from 'js-cookie';
 
 export const register = async (formData: TenantFormData) => {
     try {
-        const response = await instance.post('/tenant-service/v1/tenants', formData, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.post('/tenant-service/v1/tenants', formData)
         return response.data
     } catch (error) {
         throw error
@@ -19,12 +14,7 @@ export const register = async (formData: TenantFormData) => {
 
 export const createBranch = async (location: string) => {
     try {
-        const response = await instance.post('/tenant-service/v1/tenants/branches', { location }, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.post('/tenant-service/v1/tenants/branches', { location })
         return response.data
     } catch (error) {
         throw error
@@ -33,12 +23,7 @@ export const createBranch = async (location: string) => {
 
 export const fetchBranches = async () => {
     try {
-        const response = await instance.get('/tenant-service/v1/tenants/branches', {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.get('/tenant-service/v1/tenants/branches')
         return response.data
     } catch (error) {
         throw error
@@ -47,12 +32,7 @@ export const fetchBranches = async () => {
 
 export const deleteBranch = async (id: string) => {
     try {
-        const response = await instance.delete(`/tenant-service/v1/tenants/branches/${id}`, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.delete(`/tenant-service/v1/tenants/branches/${id}`)
         return response.data
     } catch (error) {
         throw error
@@ -61,12 +41,7 @@ export const deleteBranch = async (id: string) => {
 
 export const fetchBranch = async (id: string) => {
     try {
-        const response = await instance.get(`/tenant-service/v1/tenants/branches/${id}`, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.get(`/tenant-service/v1/tenants/branches/${id}`)
         return response.data
     } catch (error) {
         throw error
@@ -75,11 +50,7 @@ export const fetchBranch = async (id: string) => {
 
 export const updateBranch = async (location: string, id: string) => {
     try {
-        const response = await instance.put(`/tenant-service/v1/tenants/branches/${id}`, { location }, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-        });
+        const response = await instance.put(`/tenant-service/v1/tenants/branches/${id}`, { location });
         return response.data;
     } catch (error) {
         throw error;
@@ -88,11 +59,7 @@ export const updateBranch = async (location: string, id: string) => {
 
 export const fetchTenantByName = async (name: string) => {
     try {
-        const response = await instance.get(`/tenant-service/v1/tenants/${name}`, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-        });
+        const response = await instance.get(`/tenant-service/v1/tenants/${name}`);
         return response.data;
     } catch (error) {
         throw error;

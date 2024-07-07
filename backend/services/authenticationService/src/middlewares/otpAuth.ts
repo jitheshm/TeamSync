@@ -27,7 +27,7 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
     }
     catch (error: any) {
         console.log(error);
-        if (error.message === 'jwt expired' || error.message === 'jwt malformed')
+        if (error.message === 'jwt expired' || error.message === 'jwt malformed'|| error.message === 'invalid signature')
             return res.status(401).json({ error: "Token expired or Invalid" });
 
         res.status(500).json({ error: "An unexpected error occurred. Please try again later." })

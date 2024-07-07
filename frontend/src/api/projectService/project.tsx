@@ -5,12 +5,7 @@ import { string } from "zod"
 
 export const fetchAllProjects = async () => {
     try {
-        const response = await instance.get('/project-service/v1/projects', {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.get('/project-service/v1/projects')
         return response.data
     } catch (error) {
         throw error
@@ -19,12 +14,7 @@ export const fetchAllProjects = async () => {
 
 export const createProject = async (formData: ProjectFormData) => {
     try {
-        const response = await instance.post('/project-service/v1/projects', formData, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.post('/project-service/v1/projects', formData)
         return response.data
     } catch (error) {
         throw error
@@ -33,12 +23,7 @@ export const createProject = async (formData: ProjectFormData) => {
 
 export const fetchSpecificProject = async (id: string) => {
     try {
-        const response = await instance.get(`/project-service/v1/projects/${id}`, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.get(`/project-service/v1/projects/${id}`)
         return response.data
     } catch (error) {
         throw error
@@ -47,12 +32,7 @@ export const fetchSpecificProject = async (id: string) => {
 
 export const updateProject = async (formData: ProjectFormData,id:string) => {
     try {
-        const response = await instance.put(`/project-service/v1/projects/${id}`, formData, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.put(`/project-service/v1/projects/${id}`, formData)
         return response.data
     } catch (error) {
         throw error
@@ -61,12 +41,7 @@ export const updateProject = async (formData: ProjectFormData,id:string) => {
 
 export const projectDelete = async (id:string) => {
     try {
-        const response = await instance.delete(`/project-service/v1/projects/${id}`, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.delete(`/project-service/v1/projects/${id}`)
         return response.data
     } catch (error) {
         throw error
@@ -75,12 +50,7 @@ export const projectDelete = async (id:string) => {
 
 export const fetchSpecificProjectDetails = async (id: string) => {
     try {
-        const response = await instance.get(`/project-service/v1/projects/${id}/details`, {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.get(`/project-service/v1/projects/${id}/details`)
         return response.data
     } catch (error) {
         throw error
@@ -89,12 +59,7 @@ export const fetchSpecificProjectDetails = async (id: string) => {
 
 export const fetchAllProjectsByPManager = async () => {
     try {
-        const response = await instance.get('/project-service/v1/projects?pm=true', {
-            headers: {
-                Authorization: Cookies.get('team-sync-user-token')
-            }
-
-        })
+        const response = await instance.get('/project-service/v1/projects?pm=true')
         return response.data
     } catch (error) {
         throw error

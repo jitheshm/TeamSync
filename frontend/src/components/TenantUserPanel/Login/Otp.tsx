@@ -74,7 +74,7 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
             try {
                 const response = await verifyTenantOtp(formData, email as string, 'tenant_login', tenantId as string);
 
-                Cookie.set('team-sync-user-token', response.token, { expires: 1 })
+                Cookie.set('team-sync-token', response.token, { expires: 1 })
 
                 dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '', role: response.role }))
 

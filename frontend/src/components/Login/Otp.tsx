@@ -75,11 +75,11 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
             try {
                 const response = await verifyOtp(formData, email as string, context as string);
                 if (context === "forgot-password" && setOtpVisible && setPasswordPage) {
-                    Cookie.set('team-sync-user-token', response.token, { expires: 1 });
+                    Cookie.set('team-sync-token', response.token, { expires: 1 });
                     setOtpVisible(false)
                     setPasswordPage(true);
                 } else {
-                    Cookie.set('team-sync-user-token', response.token, { expires: 1 })
+                    Cookie.set('team-sync-token', response.token, { expires: 1 })
 
                     dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '', role: response.role }))
 

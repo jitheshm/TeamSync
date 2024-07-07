@@ -55,7 +55,7 @@ const Login: React.FC = () => {
             setErrors({});
             try {
                 const data = await login(formData);
-                Cookies.set('team-sync-user-token', data.token, { expires: 1 })
+                Cookies.set('team-sync-token', data.token, { expires: 1 })
                 console.log(data);
 
                 dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '',role:data.role }))
@@ -93,7 +93,7 @@ const Login: React.FC = () => {
             const token = await auth.currentUser?.getIdToken()
             if (token) {
                 const data = await firebaseLogin(token);
-                Cookies.set('team-sync-user-token', data.token, { expires: 1 })
+                Cookies.set('team-sync-token', data.token, { expires: 1 })
                 console.log(data);
 
                 dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '',role:data.role }))

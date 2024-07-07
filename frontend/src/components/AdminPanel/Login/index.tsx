@@ -45,7 +45,7 @@ const router=useRouter()
       setErrors({});
       adminLogin(formData).then((res) => {
         console.log('Form data is valid', formData);
-        Cookie.set('team-sync-admin-token', res.token);
+        Cookie.set('team-sync-token', res.token);
         dispatch(verify())
         router.push('/admin/dashboard')
         
