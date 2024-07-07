@@ -87,7 +87,7 @@ export const verifyAdminToken = async (token: string) => {
     }
 }
 
-export const tenantLogin = async (formData:LoginFormValues ) => {
+export const tenantLogin = async (formData: LoginFormValues) => {
     try {
         const response = await instance.post('/auth-service/v1/tenant/login', formData)
         return response.data
@@ -96,12 +96,21 @@ export const tenantLogin = async (formData:LoginFormValues ) => {
     }
 }
 
-export const verifyTenantOtp = async (formData: OtpFormData, email: string, context: string,tenantId:string) => {
+export const verifyTenantOtp = async (formData: OtpFormData, email: string, context: string, tenantId: string) => {
     try {
         console.log(tenantId);
-        
+
         const otp = `${formData.otp1}${formData.otp2}${formData.otp3}${formData.otp4}${formData.otp5}${formData.otp6}`
-        const response = await instance.post('/auth-service/v1/verify-otp', { email, otp, context: context,tenantId:tenantId })
+        const response = await instance.post('/auth-service/v1/verify-otp', { email, otp, context: context, tenantId: tenantId })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const resendOtp = async (data: { email: string, context: string, tenantId: string | null }) => {
+    try {
+        const response = await instance.post('/auth-service/v1/resend-otp', data)
         return response.data
     } catch (error) {
         throw error

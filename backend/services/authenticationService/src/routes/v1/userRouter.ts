@@ -14,6 +14,8 @@ import tokenVerifyController from "../../controllers/v1/tokenVerifyController";
 import firebaseLoginController from "../../controllers/v1/firebaseLoginController";
 import tenantLoginValidator from "../../validators/tenantLoginValidator";
 import tenantLoginController from "../../controllers/v1/tenantLoginController";
+import resendOtpController from "../../controllers/v1/resendOtpController";
+import resendValidator from "../../validators/resendValidator";
 
 
 
@@ -26,5 +28,6 @@ router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), r
 router.get('/token/verify', userAuth, tokenVerifyController)
 router.post('/login/firebase', firebaseLoginController)
 router.post('/tenant/login', checkSchema(tenantLoginValidator()), tenantLoginController)
+router.post('/resend-otp', checkSchema(resendValidator()), resendOtpController)
 
-export default router
+export default router 

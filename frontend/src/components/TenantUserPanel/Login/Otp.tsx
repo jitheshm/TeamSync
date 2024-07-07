@@ -1,8 +1,7 @@
-import { verifyOtp, verifyTenantOtp } from '@/api/authService/auth';
-import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
+import { resendOtp, verifyTenantOtp } from '@/api/authService/auth';
+import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from 'react';
 import { z } from 'zod';
 import Cookie from 'js-cookie';
-import { set } from 'firebase/database';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { verify } from '@/features/user/userSlice';
@@ -26,7 +25,6 @@ export interface OtpFormData {
 }
 
 interface OtpProps {
-
     email: string;
     tenantId: string;
 }
@@ -39,10 +37,12 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
         otp4: '',
         otp5: '',
         otp6: '',
-    })
+    });
     const router = useRouter();
     const dispatch = useDispatch();
     const [errors, setErrors] = useState(false);
+    const [isResendDisabled, setIsResendDisabled] = useState(true);
+    const [timer, setTimer] = useState(30);
     const refs = {
         otp1: useRef<HTMLInputElement>(null),
         otp2: useRef<HTMLInputElement>(null),
@@ -52,11 +52,24 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
         otp6: useRef<HTMLInputElement>(null),
     } as const; // Assert that refs object has fixed keys
 
+    useEffect(() => {
+        let intervalId: NodeJS.Timeout;
+        if (timer > 0 && isResendDisabled) {
+            intervalId = setInterval(() => {
+                setTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+        } else {
+            setIsResendDisabled(false);
+        }
+
+        return () => clearInterval(intervalId);
+    }, [timer, isResendDisabled]);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({
+        setFormData((prevState) => ({
             ...prevState,
-            [name]: value
+            [name]: value,
         }));
 
         if (value.length === 1 && name !== 'otp6') {
@@ -65,49 +78,58 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
         }
     };
 
+    const handleResendOtp = () => {
+        const data = {
+            email: email,
+            context: 'tenant_login',
+            tenantId: tenantId,
+        };
+
+        resendOtp(data).then((response) => {
+            Cookie.set('team-sync-token', response.token, { expires: 1 });
+            setIsResendDisabled(true);
+            setTimer(30); // Reset timer
+        }).catch((error) => {
+            console.log("An unexpected error occurred. Please try again later.");
+        });
+    };
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
 
         const result = otpSchema.safeParse(formData);
         if (result.success) {
             try {
-                const response = await verifyTenantOtp(formData, email as string, 'tenant_login', tenantId as string);
+                const response = await verifyTenantOtp(formData, email, 'tenant_login', tenantId);
 
-                Cookie.set('team-sync-token', response.token, { expires: 1 })
+                Cookie.set('team-sync-token', response.token, { expires: 1 });
 
-                dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '', role: response.role }))
+                dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '', role: response.role }));
 
                 switch (response.role) {
                     case 'Manager':
-                        router.push('/employee/manager/dashboard')
-                        break
+                        router.push('/employee/manager/dashboard');
+                        break;
                     case 'Project_Manager':
-                        router.push('/employee/project-manager/dashboard')
-                        break
+                        router.push('/employee/project-manager/dashboard');
+                        break;
                     case 'Developer':
-                        router.push('/employee/developer/dashboard')
-                        break
+                        router.push('/employee/developer/dashboard');
+                        break;
                     case 'Tester':
-                        router.push('/employee/tester/dashboard')
-                        break
-                    
+                        router.push('/employee/tester/dashboard');
+                        break;
+                    default:
+                        router.push('/'); // Default route
+                        break;
                 }
-
-
             } catch (error) {
                 console.log(error);
-
                 setErrors(true);
             }
-        }
-        else {
+        } else {
             setErrors(true);
         }
-
-
-
-
     };
 
     return (
@@ -115,24 +137,22 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
             <div className="mx-auto flex w-full max-w-md flex-col space-y-16">
                 <div className="flex flex-col items-center justify-center text-center space-y-2">
                     <div className="font-semibold text-3xl text-gray-100 dark:text-dark">
-                        <p >Email Verification</p>
+                        <p>Email Verification</p>
                     </div>
                     <div className="flex flex-row text-sm font-medium text-gray-400">
                         <p>We have sent a code to {email}</p>
                     </div>
-                    {
-                        errors && (
-                            <div className="flex flex-row items-center justify-center text-center text-sm font-medium text-red-500">
-                                <p>Invalid OTP code</p>
-                            </div>
-                        )
-                    }
+                    {errors && (
+                        <div className="flex flex-row items-center justify-center text-center text-sm font-medium text-red-500">
+                            <p>Invalid OTP code</p>
+                        </div>
+                    )}
                 </div>
                 <div>
                     <form onSubmit={handleSubmit}>
                         <div className="flex flex-col space-y-16">
                             <div className="flex flex-row items-center justify-between mx-auto w-full max-w-sm gap-3">
-                                {[1, 2, 3, 4, 5, 6].map(index => (
+                                {[1, 2, 3, 4, 5, 6].map((index) => (
                                     <div key={index} className="w-16 h-16">
                                         <input
                                             ref={refs[`otp${index}` as keyof typeof refs]}
@@ -145,7 +165,6 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
                                             placeholder=""
                                             required
                                         />
-
                                     </div>
                                 ))}
                             </div>
@@ -160,7 +179,16 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
                                 </div>
                                 <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                                     <p>Didnt receive code?</p>
-                                    <a href="#" className="flex flex-row items-center text-blue-600">Resend</a>
+                                    <button
+                                        type="button"
+                                        onClick={handleResendOtp}
+                                        disabled={isResendDisabled}
+                                        className={`flex flex-row items-center ${
+                                            isResendDisabled ? 'text-gray-400' : 'text-blue-600'
+                                        }`}
+                                    >
+                                        Resend {isResendDisabled ? `(${timer}s)` : ''}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -168,7 +196,7 @@ const Otp: React.FC<OtpProps> = ({ email, tenantId }) => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Otp
+export default Otp;

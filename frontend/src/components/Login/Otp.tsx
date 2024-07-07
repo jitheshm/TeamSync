@@ -1,8 +1,7 @@
-import { verifyOtp } from '@/api/authService/auth';
-import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
+import { resendOtp, verifyOtp } from '@/api/authService/auth';
+import React, { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import { z } from 'zod';
 import Cookie from 'js-cookie';
-import { set } from 'firebase/database';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { verify } from '@/features/user/userSlice';
@@ -40,10 +39,12 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
         otp4: '',
         otp5: '',
         otp6: '',
-    })
+    });
     const router = useRouter();
     const dispatch = useDispatch();
     const [errors, setErrors] = useState(false);
+    const [timer, setTimer] = useState(30);
+    const [isResendDisabled, setIsResendDisabled] = useState(true);
     const refs = {
         otp1: useRef<HTMLInputElement>(null),
         otp2: useRef<HTMLInputElement>(null),
@@ -53,11 +54,23 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
         otp6: useRef<HTMLInputElement>(null),
     } as const; // Assert that refs object has fixed keys
 
+    useEffect(() => {
+        if (timer > 0) {
+            const intervalId = setInterval(() => {
+                setTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+
+            return () => clearInterval(intervalId);
+        } else {
+            setIsResendDisabled(false);
+        }
+    }, [timer]);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({
+        setFormData((prevState) => ({
             ...prevState,
-            [name]: value
+            [name]: value,
         }));
 
         if (value.length === 1 && name !== 'otp6') {
@@ -66,9 +79,25 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
         }
     };
 
+    const handleResendOtp = () => {
+        const data = {
+            email: email,
+            context: context,
+            tenantId: null,
+        };
+        resendOtp(data as { email: string; context: string; tenantId: string | null })
+            .then(() => {
+                console.log("OTP sent successfully");
+                setTimer(30);
+                setIsResendDisabled(true);
+            })
+            .catch(() => {
+                console.log("An unexpected error occurred. Please try again later.");
+            });
+    };
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
 
         const result = otpSchema.safeParse(formData);
         if (result.success) {
@@ -76,30 +105,23 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                 const response = await verifyOtp(formData, email as string, context as string);
                 if (context === "forgot-password" && setOtpVisible && setPasswordPage) {
                     Cookie.set('team-sync-token', response.token, { expires: 1 });
-                    setOtpVisible(false)
+                    setOtpVisible(false);
                     setPasswordPage(true);
                 } else {
-                    Cookie.set('team-sync-token', response.token, { expires: 1 })
+                    Cookie.set('team-sync-token', response.token, { expires: 1 });
 
-                    dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '', role: response.role }))
+                    dispatch(verify({ name: response.name, tenantId: response.tenantId ?? '', role: response.role }));
 
                     // Redirect to home page   
-                    router.push('/subscription-plans')
-
+                    router.push('/subscription-plans');
                 }
             } catch (error) {
                 console.log(error);
-
                 setErrors(true);
             }
-        }
-        else {
+        } else {
             setErrors(true);
         }
-
-
-
-
     };
 
     return (
@@ -113,19 +135,17 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                         <div className="flex flex-row text-sm font-medium text-gray-400">
                             <p>We have sent a code to {email}</p>
                         </div>
-                        {
-                            errors && (
-                                <div className="flex flex-row items-center justify-center text-center text-sm font-medium text-red-500">
-                                    <p>Invalid OTP code</p>
-                                </div>
-                            )
-                        }
+                        {errors && (
+                            <div className="flex flex-row items-center justify-center text-center text-sm font-medium text-red-500">
+                                <p>Invalid OTP code</p>
+                            </div>
+                        )}
                     </div>
                     <div>
                         <form onSubmit={handleSubmit}>
                             <div className="flex flex-col space-y-16">
                                 <div className="flex flex-row items-center justify-between mx-auto w-full max-w-sm gap-3">
-                                    {[1, 2, 3, 4, 5, 6].map(index => (
+                                    {[1, 2, 3, 4, 5, 6].map((index) => (
                                         <div key={index} className="w-16 h-16">
                                             <input
                                                 ref={refs[`otp${index}` as keyof typeof refs]}
@@ -138,7 +158,6 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                                                 placeholder=""
                                                 required
                                             />
-
                                         </div>
                                     ))}
                                 </div>
@@ -153,7 +172,16 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                                     </div>
                                     <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
                                         <p>Didnt receive code?</p>
-                                        <a href="#" className="flex flex-row items-center text-blue-600">Resend</a>
+                                        <button
+                                            type="button"
+                                            onClick={handleResendOtp}
+                                            disabled={isResendDisabled}
+                                            className={`flex flex-row items-center ${
+                                                isResendDisabled ? 'text-gray-400' : 'text-blue-600'
+                                            }`}
+                                        >
+                                            Resend {isResendDisabled && `(${timer}s)`}
+                                        </button>
                                     </div>
                                 </div>
                             </div>

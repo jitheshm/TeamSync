@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import UserRepository from "../../repository/implementations/UserRepository";
-import { generateOtp } from "../../utils/otp";
+import { generateOtp, sendOtp } from "../../utils/otp";
 import OtpRepository from "../../repository/implementations/OtpRepository";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import OtpProducer from "../../events/kafka/producers/OtpProducer";
@@ -9,9 +9,9 @@ import { IUserRepository } from "../../repository/interface/IUserRepository";
 import { IOtpRepository } from "../../repository/interface/IOtpRepository";
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 
-const userRepository:IUserRepository = new UserRepository();
-const otpRepository:IOtpRepository = new OtpRepository()
-const kafkaConnection:IKafkaConnection = new KafkaConnection()
+const userRepository: IUserRepository = new UserRepository();
+const otpRepository: IOtpRepository = new OtpRepository()
+const kafkaConnection: IKafkaConnection = new KafkaConnection()
 
 
 export default async (req: Request, res: Response) => {
@@ -33,18 +33,8 @@ export default async (req: Request, res: Response) => {
             return res.status(403).json({ error: "User is blocked" });
         }
 
-        const otp = generateOtp()
-        const otpObj = {
-            email: email,
-            otp: `${otp}`,
-            context: 'forgot-password'
-        }
-        await otpRepository.create(otpObj, email)
+        sendOtp(email, 'forgot-password')
 
-
-        let producer = await kafkaConnection.getProducerInstance()
-        let otpProducer = new OtpProducer(producer, 'main', 'otps')
-        otpProducer.sendMessage('create', otpObj)
 
         res.status(200).json({ message: "OTP sent successfully" });
 
