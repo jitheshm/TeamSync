@@ -74,25 +74,24 @@ export default class TenantUserRepository implements ITenantUserRepository {
         }
     }
 
-    async fetchTenantUsers(dbId: string, role: string | null, name: string | null) {
+    async fetchTenantUsers(dbId: string, role: string | null, name: string | null, page: number, limit: number) {
         try {
-            console.log(dbId);
-
             const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users');
             let data = null;
-
+    
             const matchStage: any = {
                 is_deleted: false
             };
-
+    
             if (role) {
                 matchStage.role = role;
             }
-
+    
             if (name) {
                 matchStage.name = { $regex: `^${name}`, $options: 'i' };
             }
-
+    
+            // Aggregation pipeline to get paginated users
             const aggregationPipeline = [
                 {
                     $match: matchStage
@@ -120,20 +119,41 @@ export default class TenantUserRepository implements ITenantUserRepository {
                         branch_location: '$branch.location',
                         phone_no: 1
                     }
+                },
+                {
+                    $skip: (page - 1) * limit
+                },
+                {
+                    $limit: limit
                 }
             ];
-
+    
+            // Execute aggregation pipeline to get paginated data
             data = await TenantUserModel.aggregate(aggregationPipeline).exec();
-
-            console.log(data);
-
-            return data;
+    
+            // Aggregation pipeline to get total count
+            const countPipeline = [
+                {
+                    $match: matchStage
+                },
+                {
+                    $count: 'total'
+                }
+            ];
+    
+            // Execute aggregation pipeline to get total count
+            const totalCountResult = await TenantUserModel.aggregate(countPipeline).exec();
+            const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+    
+            return { data, total };
         } catch (error) {
             console.log('Error in Tenant User Repository fetchUser method');
             console.log(error);
             throw error;
         }
     }
+    
+    
 
 
     async fetchTenantSpecificUser(dbId: string, userId: mongoose.Types.ObjectId) {

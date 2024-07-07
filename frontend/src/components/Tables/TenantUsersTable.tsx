@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { fetchTenantUsers, tenantUserDelete } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
@@ -24,20 +24,33 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
     const [users, setUsers] = useState<ITenantUsers[]>([]);
     const [toggle, setToggle] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
+    const [page, setPage] = useState<number>(1);
+    const [limit] = useState<number>(2); // You can adjust the limit as needed
+    const [total, setTotal] = useState<number>(0); // Total count of users
     const router = useRouter();
     const dispatch = useDispatch();
     const [role, setRole] = useState(admin ? '' : 'Tester');
 
+
+
     useEffect(() => {
-        fetchTenantUsers(role,search).then((result: any) => {
-            setUsers(result.data);
+        setPage(1); // Reset page to 1 whenever search or role changes
+    }, [search, role]);
+    
+    useEffect(() => {
+        fetchTenantUsers(role, search, page, limit).then((result: any) => {
+            console.log(result);
+            
+            setUsers(result.data.data);
+            setTotal(result.data.total); // Set total count of users
         }).catch((err: any) => {
             if (err.response.status === 401) {
                 dispatch(logout());
                 router.push('/employee/login');
             }
         });
-    }, [toggle, role, search]);
+    }, [toggle, role, search, page, limit]);
+    
 
     const handleDelete = (branchId: string, id: string, role: string) => {
         Swal.fire({
@@ -65,6 +78,10 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                 });
             }
         });
+    }
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
     }
 
     return (
@@ -123,42 +140,38 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                         <div key={index} className="bg-gray-700 p-6 rounded-lg text-center justify-stretch shadow-lg grid grid-cols-8">
                             <div className="col-span-1 ">
                                 <div className="tooltip-container">
-                                    <p className="text-white max-w-40  truncate">{user.tenant_user_id}</p>
-                                    <span className="tooltip-text px-5 ">{user.tenant_user_id}</span>
+                                    <p className="text-white">{user.tenant_user_id}</p>
                                 </div>
                             </div>
                             <div className="col-span-1">
                                 <div className="tooltip-container">
-                                    <p className="text-white truncate">{user.name}</p>
-                                    <span className="tooltip-text">{user.name}</span>
+                                    <p className="text-white">{user.name}</p>
                                 </div>
                             </div>
                             <div className="col-span-1">
                                 <div className="tooltip-container">
-                                    <p className="text-white truncate">{user.email}</p>
-                                    <span className="tooltip-text">{user.email}</span>
+                                    <p className="text-white">{user.email}</p>
                                 </div>
                             </div>
                             <div className="col-span-1">
                                 <div className="tooltip-container">
-                                    <p className="text-white truncate">{user.phone_no}</p>
-                                    <span className="tooltip-text">{user.phone_no}</span>
+                                    <p className="text-white">{user.phone_no}</p>
                                 </div>
                             </div>
                             <div className="col-span-1">
                                 <div className="tooltip-container">
-                                    <p className="text-white truncate">{user.branch_location}</p>
-                                    <span className="tooltip-text">{user.branch_location}</span>
+                                    <p className="text-white">{user.branch_location}</p>
                                 </div>
                             </div>
                             <div className="col-span-1">
                                 <div className="tooltip-container">
-                                    <p className="text-white truncate">{user.role}</p>
-                                    <span className="tooltip-text">{user.role}</span>
+                                    <p className="text-white">{user.role}</p>
                                 </div>
                             </div>
                             <div className="col-span-1">
-                                <p className="text-white">{new Date(user.created_at).toLocaleDateString()}</p>
+                                <div className="tooltip-container">
+                                    <p className="text-white">{new Date(user.created_at).toLocaleDateString()}</p>
+                                </div>
                             </div>
                             <div className="col-span-1 flex space-x-2">
                                 <Link href={admin ? `/dashboard/users/${user._id}/edit` : `/employee/manager/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
@@ -167,6 +180,11 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                         </div>
                     )) : <Empty />}
                 </div>
+            </div>
+            <div className="flex justify-center gap-5 items-center py-4">
+                <button onClick={() => handlePageChange(page - 1)} disabled={page === 1} className="px-4 py-2 bg-gray-800 text-white rounded-md">Previous</button>
+                <span className="text-white">Page {page}</span>
+                <button onClick={() => handlePageChange(page + 1)} disabled={(page * limit) >= total} className="px-4 py-2 bg-gray-800 text-white rounded-md">Next</button>
             </div>
         </div>
     );

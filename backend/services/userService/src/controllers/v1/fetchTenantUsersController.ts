@@ -20,11 +20,11 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         if (!tenant) {
             return res.status(404).json({ error: "Tenant not found" });
         }
-     
+
 
         if (req.user?.decode?.role !== 'Tenant_Admin' && req.user?.decode?.role !== 'Manager') {
             console.log("first");
-            
+
             return res.status(401).json({ error: "Unauthorized" });
         }
         if (req.user?.decode?.role === 'Manager' && (req.query.role === 'Manager' || !req.query.role)) {
@@ -35,7 +35,9 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
 
         const role = req.query.role as string | null
         const name = req.query.name as string | null
-        let users = await userRepo.fetchTenantUsers(req.user?.decode?.tenantId, role,name)
+        const page = Number(req.query.page || 1)
+        const limit = Number(req.query.limit || 10)
+        let users = await userRepo.fetchTenantUsers(req.user?.decode?.tenantId, role, name, page, limit)
         if (users) {
             res.status(200).json({ data: users })
         } else {

@@ -100,10 +100,13 @@ export const tenantUserDelete = async (branchId: string, id: string, role: strin
     }
 }
 
-export const fetchTenantUsers = async (role: string, name: string) => {
+export const fetchTenantUsers = async (role: string, name: string, page: number, limit: number) => {
     try {
         let url = '/user-service/v1/tenants/users';
-        const params: any = {};
+        const params: any = {
+            page,
+            limit
+        };
 
         if (role) {
             params.role = role;
@@ -118,6 +121,7 @@ export const fetchTenantUsers = async (role: string, name: string) => {
         throw error;
     }
 };
+
 
 
 export const fetchTenantSpecificUser = async (userId: string) => {
