@@ -91,7 +91,6 @@ export default class TenantUserRepository implements ITenantUserRepository {
                 matchStage.name = { $regex: `^${name}`, $options: 'i' };
             }
     
-            // Aggregation pipeline to get paginated users
             const aggregationPipeline = [
                 {
                     $match: matchStage
@@ -128,10 +127,8 @@ export default class TenantUserRepository implements ITenantUserRepository {
                 }
             ];
     
-            // Execute aggregation pipeline to get paginated data
             data = await TenantUserModel.aggregate(aggregationPipeline).exec();
     
-            // Aggregation pipeline to get total count
             const countPipeline = [
                 {
                     $match: matchStage
@@ -141,7 +138,6 @@ export default class TenantUserRepository implements ITenantUserRepository {
                 }
             ];
     
-            // Execute aggregation pipeline to get total count
             const totalCountResult = await TenantUserModel.aggregate(countPipeline).exec();
             const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
     

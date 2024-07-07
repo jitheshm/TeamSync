@@ -25,8 +25,8 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
     const [toggle, setToggle] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
     const [page, setPage] = useState<number>(1);
-    const [limit] = useState<number>(2); // You can adjust the limit as needed
-    const [total, setTotal] = useState<number>(0); // Total count of users
+    const [limit] = useState<number>(10); 
+    const [total, setTotal] = useState<number>(0); 
     const router = useRouter();
     const dispatch = useDispatch();
     const [role, setRole] = useState(admin ? '' : 'Tester');
@@ -34,7 +34,7 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
 
 
     useEffect(() => {
-        setPage(1); // Reset page to 1 whenever search or role changes
+        setPage(1);
     }, [search, role]);
     
     useEffect(() => {
@@ -42,7 +42,7 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
             console.log(result);
             
             setUsers(result.data.data);
-            setTotal(result.data.total); // Set total count of users
+            setTotal(result.data.total); 
         }).catch((err: any) => {
             if (err.response.status === 401) {
                 dispatch(logout());
