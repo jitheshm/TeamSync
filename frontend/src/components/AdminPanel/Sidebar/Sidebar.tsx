@@ -10,7 +10,7 @@ function Sidebar() {
     const router = useRouter()
 
     const handleLogout = () => {
-        cookie.remove('team-sync-admin-token')
+        cookie.remove('team-sync-token')
         dispacth(logout())
         router.push('/admin/login')
     }

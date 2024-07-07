@@ -1,10 +1,17 @@
+import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef } from 'react';
 import { GiHamburgerMenu } from "react-icons/gi";
+import { useDispatch } from 'react-redux';
+import cookie from 'js-cookie';
+
 
 export default function TenantManagerSidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
+  const dispacth = useDispatch()
+  const router = useRouter()
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -27,6 +34,12 @@ export default function TenantManagerSidebar() {
     };
   }, [isSidebarOpen]);
 
+  const handleLogout = () => {
+    cookie.remove('team-sync-token')
+    dispacth(logout())
+    router.push('/login')
+  }
+
   return (
     <>
       {/* <div className="min-h-screen bg-gray-900 text-gray-100"> */}
@@ -35,8 +48,9 @@ export default function TenantManagerSidebar() {
         <div className='p-4 md:hidden'>
           <GiHamburgerMenu className='text-white text-3xl cursor-pointer' onClick={toggleSidebar} />
         </div>
-        <div className="fixed inset-x-0 mx-auto md:hidden top-3  w-32">
-          <img src="/logo.png" className="w-32" alt="Logo" />
+        <div className="fixed inset-x-0 mx-auto md:hidden top-3 flex justify-center gap-3  w-32">
+          <img src="/logo.png" className="w-10" alt="Logo" />
+          <h1 className='flex items-center font-semibold'>TeamSync</h1>
         </div>
 
 
@@ -50,7 +64,7 @@ export default function TenantManagerSidebar() {
               <img src="/logo.png" className="w-10" alt="Logo" />
               <h1 className='flex items-center font-semibold'>TeamSync</h1>
             </div>
-            <ul className="mt-6 space-y-2 tracking-wide mt-16">
+            <ul className=" space-y-2 tracking-wide mt-16">
               <li className="min-w-max ">
                 <Link href="/dashboard" aria-label="dashboard" className="relative flex items-center space-x-4 bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white">
                   <i className="fa-solid fa-chart-line " style={{ color: '#ffffff' }} />
@@ -60,35 +74,35 @@ export default function TenantManagerSidebar() {
               </li>
               <li className="min-w-max">
                 <Link href="/dashboard/branches" className="group flex items-center space-x-4  px-4 py-3 text-gray-400 hover:bg-gray-700">
-                  <i className="fa-solid fa-shop group-hover:text-gray-300"  />
+                  <i className="fa-solid fa-shop group-hover:text-gray-300" />
 
                   <span className="group-hover:text-gray-300">Branches</span>
                 </Link>
               </li>
               <li className="min-w-max">
                 <Link href="/dashboard/users" className="group flex items-center space-x-4  px-4 py-3 text-gray-400 hover:bg-gray-700">
-               <i className="fa-solid fa-user-group group-hover:text-gray-300"  />
+                  <i className="fa-solid fa-user-group group-hover:text-gray-300" />
 
                   <span className="group-hover:text-gray-300">Users</span>
                 </Link>
               </li>
               <li className="min-w-max">
                 <Link href="/dashboard/subscription-details" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
-               <i className="fa-solid fa-credit-card group-hover:text-gray-300"  />
+                  <i className="fa-solid fa-credit-card group-hover:text-gray-300" />
 
                   <span className="group-hover:text-gray-300">Subscriptions</span>
                 </Link>
               </li>
               <li className="min-w-max">
                 <Link href="/dashboard/meetings" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
-               <i className="fa-solid fa-video group-hover:text-gray-300"  />
+                  <i className="fa-solid fa-video group-hover:text-gray-300" />
 
                   <span className="group-hover:text-gray-300">Meetings</span>
                 </Link>
               </li>
               <li className="min-w-max">
                 <Link href="/dashboard/chats" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
-                <i className="fa-solid fa-comments group-hover:text-gray-300"/>
+                  <i className="fa-solid fa-comments group-hover:text-gray-300" />
 
                   <span className="group-hover:text-gray-300">Chats</span>
                 </Link>
@@ -96,11 +110,11 @@ export default function TenantManagerSidebar() {
             </ul>
           </div>
           <div className="w-max -mb-3">
-            <a href="#" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
+            <button onClick={handleLogout} className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
               <i className="fa-solid fa-right-from-bracket" style={{ color: '#ffffff' }} />
 
               <span className="group-hover:text-gray-300">Logout</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>

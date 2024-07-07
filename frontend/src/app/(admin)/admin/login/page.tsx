@@ -12,7 +12,7 @@ function Page() {
     const dispatch = useDispatch()
     const router = useRouter()
     useEffect(() => {
-        const token = Cookies.get('team-sync-admin-token')
+        const token = Cookies.get('team-sync-token')
         if (token) {
             verifyAdminToken(token).then(() => {
                 dispatch(verify())
@@ -22,7 +22,7 @@ function Page() {
                 console.log(error);
 
                 setLoading(false)
-                Cookies.remove('team-sync-user-token')
+                Cookies.remove('team-sync-token')
 
             })
         } else {

@@ -140,7 +140,8 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                         <div key={index} className="bg-gray-700 p-6 rounded-lg text-center justify-stretch shadow-lg grid grid-cols-8">
                             <div className="col-span-1 ">
                                 <div className="tooltip-container">
-                                    <p className="text-white">{user.tenant_user_id}</p>
+                                    <p className="text-white  max-w-40  truncate">{user.tenant_user_id}</p>
+                                    <p className="text-white tooltip-text">{user.tenant_user_id}</p>
                                 </div>
                             </div>
                             <div className="col-span-1">
