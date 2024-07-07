@@ -35,7 +35,7 @@ export default function TenantManagerSidebar() {
           <GiHamburgerMenu className='text-white text-3xl cursor-pointer' onClick={toggleSidebar} />
         </div>
         <div className="fixed inset-x-0 mx-auto md:hidden top-3  w-32">
-          <img src="https://tailus.io/images/logo.svg" className="w-32" alt="Logo" />
+          <img src="/logo.png" className="w-32" alt="Logo" />
         </div>
 
 
@@ -46,7 +46,7 @@ export default function TenantManagerSidebar() {
         <div className="flex h-screen flex-col  justify-between pt-2 pb-6">
           <div>
             <div className="w-max p-2.5">
-              <img src="https://tailus.io/images/logo.svg" className="w-32" alt="Logo" />
+              <img src="/logo.png" className="w-32" alt="Logo" />
             </div>
             <ul className="mt-6 space-y-2 tracking-wide mt-16">
               <li className="min-w-max ">
