@@ -7,7 +7,9 @@ export interface ITaskRepository {
     fetchSpecificTask(dbId: string, taskId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<(ITasks & Document) | null>
     update(data: Partial<ITasks>, dbId: string, taskId: mongoose.Types.ObjectId): Promise<ITasks | null>
     delete(data: Partial<ITasks>, dbId: string, taskId: mongoose.Types.ObjectId): Promise<ITasks | null>
-    fetchAllTask(dbId: string, branchId: mongoose.Types.ObjectId): Promise<(ITasks & Document)[]>
+    fetchProjectAllTask(dbId: string, branchId: mongoose.Types.ObjectId, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{
+        data: (ITasks & Document)[], totalCount: number
+    }>
     
     
 

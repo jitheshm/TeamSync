@@ -74,28 +74,97 @@ export default class TaskRepository implements ITaskRepository {
         }
     }
 
-    async fetchAllTask(dbId: string, branchId: mongoose.Types.ObjectId) {
+    async fetchProjectAllTask(
+        dbId: string,
+        branchId: mongoose.Types.ObjectId,
+        projectId: mongoose.Types.ObjectId,
+        search: string | null,
+        page: number,
+        limit: number
+    ) {
         try {
             console.log(dbId);
 
-            const TaskModel = switchDb<ITasks>(`${process.env.SERVICE}_${dbId}`, 'tasks')
-            const data = await TaskModel.find({ branch_id: branchId, is_deleted: false })
+            const TaskModel = switchDb<ITasks>(`${process.env.SERVICE}_${dbId}`, 'tasks');
+
+            const pipeline: any[] = [
+                {
+                    $match: {
+                        project_id: projectId,
+                        branch_id: branchId,
+                        is_deleted: false
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'developer_id',
+                        foreignField: '_id',
+                        as: 'developer'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'tester_id',
+                        foreignField: '_id',
+                        as: 'tester'
+                    }
+                },
+            ];
+
+            if (search) {
+                pipeline.push({
+                    $match: {
+                        title: { $regex: search, $options: 'i' } // Case-insensitive search
+                    }
+                });
+            }
+
+            const facetPipeline = [
+                {
+                    $facet: {
+                        totalCount: [
+                            { $count: "count" }
+                        ],
+                        data: [
+                            { $skip: (page - 1) * limit },
+                            { $limit: limit }
+                        ]
+                    }
+                },
+                {
+                    $unwind: "$totalCount"
+                },
+                {
+                    $project: {
+                        totalCount: "$totalCount.count",
+                        data: 1
+                    }
+                }
+            ];
+
+            pipeline.push(...facetPipeline);
+
+            const result = await TaskModel.aggregate(pipeline);
+
+            const totalCount = result[0]?.totalCount || 0;
+            const data = result[0]?.data || [];
+
             console.log(data);
 
-            return data
+            return { totalCount, data };
         } catch (error) {
             console.log('Error in Task Repository fetch method');
-
             console.log(error);
-
-            throw error
+            throw error;
         }
     }
 
 
-    
 
-    
+
+
 
 }
 
