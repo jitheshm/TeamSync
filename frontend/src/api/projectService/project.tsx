@@ -91,9 +91,24 @@ export const fetchAvailableProjectUsers = async (projectId: string) => {
     }
 }
 
-export const createTask = async (formData: TaskFormData, projectId:string) => {
+export const createTask = async (formData: TaskFormData, projectId: string) => {
     try {
         const response = await instance.post(`/project-service/v1/projects/${projectId}/tasks`, formData)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const fetchAllTasks = async (projectId: string, search: string, page: number, limit: number) => {
+    try {
+        const response = await instance.get(`/project-service/v1/projects/${projectId}/tasks`, {
+            params: {
+                search,
+                page,
+                limit
+            }
+        })
         return response.data
     } catch (error) {
         throw error
