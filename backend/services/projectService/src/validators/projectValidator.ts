@@ -89,15 +89,20 @@ export default (): Schema => {
                 errorMessage: 'Client Name must be a string',
             },
         },
-        tester_id: {
+        testers_id: {
             notEmpty: {
                 errorMessage: 'Tester ID cannot be empty',
             },
+            isArray: {
+                errorMessage: 'Developers ID must be an array',
+            },
             custom: {
-                options: (value: string, { req }) => {
-                    if (!mongoose.Types.ObjectId.isValid(value)) {
-                        req.body.tester_id = new mongoose.Types.ObjectId(value);
-                    }
+                options: (value: any[]) => {
+                    value.forEach((id, index, array) => {
+                        if (!mongoose.Types.ObjectId.isValid(id)) {
+                            array[index] = new mongoose.Types.ObjectId(id);
+                        }
+                    });
                     return true;
                 },
             },

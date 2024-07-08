@@ -12,7 +12,7 @@ const projectSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
     description: z.string().min(10, "Description must be at least 10 characters long").nonempty("Description is required"),
     client_name: z.string().min(3, "Client name must be at least 3 characters long").nonempty("Client name is required"),
-    tester_id: z.string().nonempty("Tester is required"),
+    testers_id:z.array(z.string()).min(1, "At least one tester is required"),
     developers_id: z.array(z.string()).min(1, "At least one developer is required"),
     project_manager_id: z.string().nonempty("Project Manager is required"),
     start_date: z.string().nonempty("Start date is required"),
@@ -23,7 +23,7 @@ export interface ProjectFormData {
     name: string;
     description: string;
     client_name: string;
-    tester_id: string;
+    testers_id: string[];
     developers_id: string[];
     project_manager_id: string;
     start_date: string;
@@ -34,7 +34,7 @@ interface FormErrors {
     name?: string;
     description?: string;
     client_name?: string;
-    tester_id?: string;
+    testers_id?: string;
     developers_id?: string;
     project_manager_id?: string;
     start_date?: string;
@@ -47,7 +47,7 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
         name: '',
         description: '',
         client_name: '',
-        tester_id: '',
+        testers_id: [],
         developers_id: [],
         project_manager_id: '',
         start_date: '',
@@ -61,11 +61,11 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // fetchAvailableTenantUsers('Tester').then((res) => {
-        //     setTesters(res.data);
-        // }).catch((err) => {
-        //     handleApiError(err);
-        // });
+        fetchAvailableTenantUsers('Tester').then((res) => {
+            setTesters(res.data);
+        }).catch((err) => {
+            handleApiError(err);
+        });
 
         fetchAvailableTenantUsers('Developer').then((res) => {
             console.log(res.data);
@@ -92,13 +92,13 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
         }
     }, [])
 
-    useEffect(() => {
-        setDeveloper((prevState) => {
-            return prevState.filter((dev) => !formData.developers_id.includes(dev._id))
-        })
-        console.log(formData);
+    // useEffect(() => {
+    //     setDeveloper((prevState) => {
+    //         return prevState.filter((dev) => !formData.developers_id.includes(dev._id))
+    //     })
+    //     console.log(formData);
 
-    }, [formData.developers_id])
+    // }, [formData.developers_id])
 
     const handleApiError = (err: any) => {
         if (err.response && err.response.status === 401) {
@@ -109,7 +109,18 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
 
     const handleChange = (selectedOptions: any) => {
         const selectedDevelopers = selectedOptions.map((option: any) => option.value);
+        console.log(selectedDevelopers);
+        
         setFormData({ ...formData, developers_id: selectedDevelopers });
+
+
+    };
+
+    const handleTesterChange = (selectedOptions: any) => {
+        const selectedDevelopers = selectedOptions.map((option: any) => option.value);
+        console.log(selectedDevelopers);
+        
+        setFormData({ ...formData, testers_id: selectedDevelopers });
 
 
     };
@@ -204,19 +215,17 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                             </div>
                             <div className="col-span-1 mb-5">
                                 <label htmlFor="tester_id" className="block mb-2 font-bold text-gray-100">Tester</label>
-                                <select
-                                    id="tester_id"
-                                    name="tester_id"
-                                    className="border border-gray-300 text-gray-950 shadow p-3 w-full rounded"
-                                    value={formData.tester_id}
-                                    onChange={(e) => setFormData({ ...formData, tester_id: e.target.value })}
-                                >
-                                    <option value="">Select Tester</option>
-                                    {testers.map((tester: any) => (
-                                        <option key={tester._id} value={tester._id} className=''>{tester.name}</option>
-                                    ))}
-                                </select>
-                                {errors.tester_id && <p className="text-red-500">{errors.tester_id}</p>}
+                                <Select
+                                    id="testers_id"
+                                    name="testers_id"
+                                    options={testers.map(dev => ({ value: dev._id, label: dev.name }))}
+                                    // value={formData.developers_id}
+                                    isMulti
+                                    onChange={handleTesterChange}
+                                    className="basic-multi-select text-gray-950"
+                                    classNamePrefix="select"
+                                />
+                                {errors.testers_id && <p className="text-red-500">{errors.testers_id}</p>}
                             </div>
                             <div className="col-span-1 mb-5">
                                 <label htmlFor="developers_id" className="block mb-2 font-bold text-gray-100">Developers</label>
@@ -224,7 +233,7 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                     id="developers_id"
                                     name="developers_id"
                                     options={developer.map(dev => ({ value: dev._id, label: dev.name }))}
-                                    value={formData.developers_id}
+                                    // value={formData.developers_id}
                                     isMulti
                                     onChange={handleChange}
                                     className="basic-multi-select text-gray-950"

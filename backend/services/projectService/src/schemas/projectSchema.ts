@@ -12,7 +12,7 @@ const ProjectsSchema: Schema = new Schema({
   created_at: { type: Date, required: true, default: Date.now },
   branch_id: { type: Schema.Types.ObjectId, required: true },
   client_name: { type: String, required: true },
-  tester_id: { type: Schema.Types.ObjectId, required: true },
+  testers_id: [{ type: Schema.Types.ObjectId, required: true, }],
   is_deleted: { type: Boolean, required: true, default: false },
 });
 
