@@ -13,6 +13,7 @@ import createTaskController from "../../controllers/createTaskController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import fetchProjectUsers from "../../controllers/fetchProjectUsers";
 import fetchProjectTasks from "../../controllers/fetchProjectTasks";
+import taskUpdateController from "../../controllers/taskUpdateController";
 
 
 
@@ -29,6 +30,7 @@ router.post('/projects/:projectId/tasks', userAuth, tenantAuth, createTaskContro
 router.get('/tenants/users/available', userAuth, fetchAvailableTenantUsersController)
 router.get('/projects/:projectId/users/available', userAuth, tenantAuth, fetchProjectUsers)
 router.get('/projects/:projectId/tasks', userAuth, tenantAuth, fetchProjectTasks)
+router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskUpdateController)
 
 
 
