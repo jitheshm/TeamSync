@@ -8,14 +8,15 @@ interface TenantProjectManagerLayoutProps {
 
 const TenantProjectManagerLayout: React.FC<TenantProjectManagerLayoutProps> = ({ children }) => {
     return (
-        <div className="min-h-[100vh] bg-gray-900">
-            <div className='grid grid-cols-12'>
-                <div className='col-span-2'>
-                    < TenantProjectManagerSidebar />
-                </div>
-                <div className='col-span-10'>
-                    {children}
-                </div>
+        <div className='bg-gray-800 min-h-screen'>
+
+            <div className='fixed bg-gray-800 z-10'>
+                <TenantProjectManagerSidebar />
+
+            </div>
+            <div className="p-4 ">
+                {children}
+
             </div>
         </div>
     )
