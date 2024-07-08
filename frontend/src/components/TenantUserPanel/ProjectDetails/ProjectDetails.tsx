@@ -15,9 +15,9 @@ const ProjectDetails = ({ projectId }: { projectId: string }) => {
     }, [projectId]);
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 mt-10">
             <h1 className="text-2xl font-bold mb-4 mt-5">Project Details</h1>
-            <div className="bg-gray-800 shadow-md rounded mt-10 p-4">
+            <div className="bg-gray-700 shadow-md rounded mt-10 p-4">
                 <div className="flex flex-wrap">
                     <div className="w-full md:w-1/2 px-2">
                         <div className="flex mb-4">
@@ -73,7 +73,7 @@ const ProjectDetails = ({ projectId }: { projectId: string }) => {
                     </div>
                 </div>
             </div>
-            <div className='bg-gray-800 shadow-md rounded mt-10 p-4 min-h-60'>
+            <div className='bg-gray-700 shadow-md rounded mt-10 p-4 min-h-60'>
                 <h1 className="text-xl font-semibold mb-4 mt-5 ">Project Description</h1>
                 <p className="text-gray-100">{project?.description}</p>
             </div>
