@@ -12,7 +12,7 @@ const projectSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
     description: z.string().min(10, "Description must be at least 10 characters long").nonempty("Description is required"),
     client_name: z.string().min(3, "Client name must be at least 3 characters long").nonempty("Client name is required"),
-    testers_id:z.array(z.string()).min(1, "At least one tester is required"),
+    testers_id: z.array(z.string()).min(1, "At least one tester is required"),
     developers_id: z.array(z.string()).min(1, "At least one developer is required"),
     project_manager_id: z.string().nonempty("Project Manager is required"),
     start_date: z.string().nonempty("Start date is required"),
@@ -53,6 +53,12 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
         start_date: '',
         end_date: '',
     });
+
+    const [defaultFormData, setDefaultFormData] = useState({
+        developers: [],
+        testers: [],
+        project_manager: ''
+    })
     const [errors, setErrors] = useState<FormErrors>({});
     const [testers, setTesters] = useState([]);
     const [developer, setDeveloper] = useState([]);
@@ -83,14 +89,25 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     }, []);
 
     useEffect(() => {
-        if (edit) {
+        if (edit && id) {
             fetchSpecificProject(id).then((res) => {
                 console.log(res.data);
+                setDefaultFormData({ developers: res.data.developers, testers: res.data.testers, project_manager: res.data.project_manager })
 
                 setFormData(res.data);
+            }).catch((err) => {
+                handleApiError(err);
+
             })
         }
     }, [])
+
+    useEffect(() => {
+        console.log("a");
+
+        console.log(defaultFormData);
+
+    }, [defaultFormData])
 
     // useEffect(() => {
     //     setDeveloper((prevState) => {
@@ -110,7 +127,7 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     const handleChange = (selectedOptions: any) => {
         const selectedDevelopers = selectedOptions.map((option: any) => option.value);
         console.log(selectedDevelopers);
-        
+
         setFormData({ ...formData, developers_id: selectedDevelopers });
 
 
@@ -119,7 +136,7 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     const handleTesterChange = (selectedOptions: any) => {
         const selectedDevelopers = selectedOptions.map((option: any) => option.value);
         console.log(selectedDevelopers);
-        
+
         setFormData({ ...formData, testers_id: selectedDevelopers });
 
 
@@ -140,14 +157,16 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                     handleApiError(err);
                 });
             }
-            else{
+            else {
                 // Uncomment the createProject function call and router.push once implemented
-            updateProject(formData,id).then((res) => {
-                console.log(res);
-                router.push('/employee/manager/dashboard/projects');
-            }).catch((err) => {
-                handleApiError(err);
-            });
+                if (id) {
+                    updateProject(formData, id).then((res) => {
+                        console.log(res);
+                        router.push('/employee/manager/dashboard/projects');
+                    }).catch((err) => {
+                        handleApiError(err);
+                    });
+                }
             }
         } catch (err) {
             if (err instanceof ZodError) {
@@ -216,14 +235,16 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                             <div className="col-span-1 mb-5">
                                 <label htmlFor="tester_id" className="block mb-2 font-bold text-gray-100">Tester</label>
                                 <Select
+                                    defaultValue={defaultFormData.testers.map(dev => ({ value: dev._id, label: dev.name}))}
                                     id="testers_id"
                                     name="testers_id"
                                     options={testers.map(dev => ({ value: dev._id, label: dev.name }))}
-                                    // value={formData.developers_id}
+                                    //  value={formData.developers_id}
                                     isMulti
                                     onChange={handleTesterChange}
                                     className="basic-multi-select text-gray-950"
                                     classNamePrefix="select"
+                                    key={defaultFormData.testers as any}
                                 />
                                 {errors.testers_id && <p className="text-red-500">{errors.testers_id}</p>}
                             </div>
@@ -232,12 +253,15 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                 <Select
                                     id="developers_id"
                                     name="developers_id"
+                                    defaultValue={defaultFormData.developers.map(dev => ({ value: dev._id, label: dev.name}))}
                                     options={developer.map(dev => ({ value: dev._id, label: dev.name }))}
                                     // value={formData.developers_id}
                                     isMulti
                                     onChange={handleChange}
                                     className="basic-multi-select text-gray-950"
                                     classNamePrefix="select"
+                                    key={defaultFormData.developers as any}
+
                                 />
                                 {errors.developers_id && <p className="text-red-500">{errors.developers_id}</p>}
                             </div>
@@ -282,7 +306,7 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                 {errors.end_date && <p className="text-red-500">{errors.end_date}</p>}
                             </div>
                         </div>
-                        <button type="submit" className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">{edit?"Update":"Create Project"}</button>
+                        <button type="submit" className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">{edit ? "Update" : "Create Project"}</button>
                     </form>
                 </div>
             </div>

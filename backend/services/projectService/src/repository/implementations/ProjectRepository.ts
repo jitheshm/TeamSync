@@ -30,10 +30,45 @@ export default class ProjectRepository implements IProjectRepository {
             console.log(dbId);
 
             const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
-            const data = await ProjectModel.findOne({ _id: projectId, branch_id: branchId, is_deleted: false })
-            console.log(data);
+            const data = await ProjectModel.aggregate([
+                {
+                    $match: {
+                        _id: projectId,
+                        branch_id: branchId,
+                        
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'developers_id',
+                        foreignField: '_id',
+                        as: 'developers'
+                    }
+                },
 
-            return data
+
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'testers_id',
+                        foreignField: '_id',
+                        as: 'testers'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'project_manager_id',
+                        foreignField: '_id',
+                        as: 'project_manager'
+                    }
+                }
+                
+            ])
+            console.log(data); 
+
+            return data[0]
         } catch (error) {
             console.log('Error in project Repository fetch method');
 
@@ -116,7 +151,7 @@ export default class ProjectRepository implements IProjectRepository {
                 },
                 {
                     $unwind: {
-                        path: '$developer_id',
+                        path: '$developers_id',
                         preserveNullAndEmptyArrays: true
                     }
                 },
@@ -126,6 +161,20 @@ export default class ProjectRepository implements IProjectRepository {
                         localField: 'developers_id',
                         foreignField: '_id',
                         as: 'developer_details'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$testers_id',
+                        preserveNullAndEmptyArrays: true
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'testers_id',
+                        foreignField: '_id',
+                        as: 'tester_details'
                     }
                 },
                 {
@@ -142,17 +191,9 @@ export default class ProjectRepository implements IProjectRepository {
                         branch_id: { $first: '$branch_id' },
                         manager: { $first: '$manager' },
                         developer: { $push: { $arrayElemAt: ['$developer_details', 0] } },
-                        tester_id: { $first: '$tester_id' },
+                        tester: { $push: { $arrayElemAt: ['$tester_details', 0] } },
                         project_manager_id: { $first: '$project_manager_id' },
                         is_deleted: { $first: '$is_deleted' }
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'tenant_users',
-                        localField: 'tester_id',
-                        foreignField: '_id',
-                        as: 'tester'
                     }
                 },
                 {
@@ -163,7 +204,7 @@ export default class ProjectRepository implements IProjectRepository {
                         as: 'project_manager'
                     }
                 }
-            ]).exec()
+            ]).exec();
             console.log(data);
 
             return data[0]
