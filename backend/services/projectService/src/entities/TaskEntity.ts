@@ -8,6 +8,7 @@ export interface ITasks {
     branch_id: mongoose.Types.ObjectId;
     title: String;
     developer_id: mongoose.Types.ObjectId;
+    tester_id: mongoose.Types.ObjectId;
     description: String;
     due_date: Date;
     status: String;

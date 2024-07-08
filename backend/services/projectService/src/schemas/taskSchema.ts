@@ -7,6 +7,7 @@ const TasksSchema: Schema = new Schema({
     branch_id: { type: Schema.Types.ObjectId, required: true },
     title: { type: String, required: true },
     developer_id: { type: Schema.Types.ObjectId, required: true },
+    tester_id: { type: Schema.Types.ObjectId, required: true },
     description: { type: String, required: true },
     due_date: { type: Date, required: true },
     status: { type: String, required: true ,default:"pending"},
