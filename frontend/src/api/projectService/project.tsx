@@ -3,14 +3,7 @@ import { ProjectFormData } from "@/components/TenantUserPanel/Forms/ProjectForm"
 import Cookies from 'js-cookie'
 import { string } from "zod"
 
-export const fetchAllProjects = async () => {
-    try {
-        const response = await instance.get('/project-service/v1/projects')
-        return response.data
-    } catch (error) {
-        throw error
-    }
-}
+
 
 export const createProject = async (formData: ProjectFormData) => {
     try {
@@ -57,11 +50,33 @@ export const fetchSpecificProjectDetails = async (id: string) => {
     }
 }
 
-export const fetchAllProjectsByPManager = async () => {
+export const fetchAllProjectsByPManager = async (search: string, page: number, limit: number) => {
     try {
-        const response = await instance.get('/project-service/v1/projects?pm=true')
-        return response.data
+        const response = await instance.get('/project-service/v1/projects', {
+            params: {
+                pm: true,
+                search,
+                page,
+                limit
+            }
+        });
+        return response.data;
     } catch (error) {
-        throw error
+        throw error;
+    }
+}
+
+export const fetchAllProjects = async (search: string, page: number, limit: number) => {
+    try {
+        const response = await instance.get('/project-service/v1/projects', {
+            params: {
+                search,
+                page,
+                limit
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
     }
 }

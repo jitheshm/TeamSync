@@ -109,21 +109,30 @@ export default class ProjectRepository implements IProjectRepository {
         }
     }
 
-    async fetchAllProject(dbId: string, branchId: mongoose.Types.ObjectId) {
+    async fetchAllProject(dbId: string, branchId: mongoose.Types.ObjectId, search: string|null, page: number, limit: number) {
         try {
             console.log(dbId);
-
-            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
-            const data = await ProjectModel.find({ branch_id: branchId, is_deleted: false })
+    
+            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects');
+            
+            const query: any = { branch_id: branchId, is_deleted: false };
+            if (search) {
+                query.name = { $regex: `^${search}`, $options: 'i' };
+            }
+    
+            const data = await ProjectModel.find(query)
+                .skip((page - 1) * limit)
+                .limit(limit);
+            
+            const totalCount = await ProjectModel.countDocuments(query);
+    
             console.log(data);
-
-            return data
+    
+            return { data, totalCount };
         } catch (error) {
             console.log('Error in project Repository fetch method');
-
             console.log(error);
-
-            throw error
+            throw error;
         }
     }
 
@@ -217,21 +226,31 @@ export default class ProjectRepository implements IProjectRepository {
         }
     }
 
-    async fetchAllPManagerProjects(dbId: string, branchId: mongoose.Types.ObjectId, pManagerId: mongoose.Types.ObjectId) {
+    async fetchAllPManagerProjects(dbId: string, branchId: mongoose.Types.ObjectId, pManagerId: mongoose.Types.ObjectId, search: string, page: number, limit: number) {
         try {
             console.log(dbId);
-
-            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
-            const data = await ProjectModel.find({ branch_id: branchId, project_manager_id: pManagerId, is_deleted: false })
+    
+            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects');
+            
+            const query: any = { branch_id: branchId, project_manager_id: pManagerId, is_deleted: false };
+            if (search) {
+                query.name = { $regex: `^${search}`, $options: 'i' };
+            }
+    
+            const data = await ProjectModel.find(query)
+                .skip((page - 1) * limit)
+                .limit(limit);
+            
+            // Get the total count for pagination purposes
+            const totalCount = await ProjectModel.countDocuments(query);
+    
             console.log(data);
-
-            return data
+    
+            return { data, totalCount };
         } catch (error) {
             console.log('Error in project Repository fetch method');
-
             console.log(error);
-
-            throw error
+            throw error;
         }
     }
 

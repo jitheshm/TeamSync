@@ -26,14 +26,18 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
                 return res.status(400).json({ errors: "Branch id must needed" });
             }
         }
-        let resultObj: (IProjects & Document)[]
+        const search = req.query.search as string | null
+        const page = Number(req.query.page || 1)
+        const limit = Number(req.query.limit || 1000)
+
+        let resultObj: ({data:(IProjects & Document)[],totalCount:number})
         if (req.query.pm) {
 
-            resultObj = await projectRepository.fetchAllPManagerProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user._id));
+            resultObj = await projectRepository.fetchAllPManagerProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user._id),search, page, limit);
 
         } else {
 
-            resultObj = await projectRepository.fetchAllProject(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string));
+            resultObj = await projectRepository.fetchAllProject(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string),search, page, limit);
         }
 
         res.status(200).json({ message: "project fetch successfully", data: resultObj });
