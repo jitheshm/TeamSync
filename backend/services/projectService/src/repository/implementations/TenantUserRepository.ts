@@ -162,7 +162,7 @@ export default class TenantUserRepository implements ITenantUserRepository {
         }
     }
 
-    async fetchTenantSpecificUser(dbId: string, userId: mongoose.Types.ObjectId){
+    async fetchTenantSpecificUser(dbId: string, userId: mongoose.Types.ObjectId) {
         try {
             console.log(dbId);
 
@@ -177,6 +177,119 @@ export default class TenantUserRepository implements ITenantUserRepository {
             console.log(error);
 
             throw error
+        }
+    }
+
+    async fetchAvailableTenantUsers(dbId: string, branchId: mongoose.Types.ObjectId, role: string) {
+        try {
+            const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users');
+            let data = null;
+
+            const matchStage: any = {
+                is_deleted: false,
+                branch_id: branchId,
+                role: role
+            };
+
+
+            const aggregationPipeline: any[] = [
+                {
+                    $match: matchStage
+                }
+            ];
+
+            if (role === 'Project_Manager') {
+                aggregationPipeline.push(
+                    {
+                        $lookup: {
+                            from: 'projects',
+                            let: { userId: '$_id' },
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr: { $eq: ['$project_manager_id', '$$userId'] },
+                                        stage: { $ne: 'completed' } 
+                                    }
+                                }
+                            ],
+                            as: 'project_manager_projects'
+                        }
+                    },
+                    {
+                        $addFields: {
+                            project_manager_project_count: { $size: '$project_manager_projects' }
+                        }
+                    },
+                    {
+                        $match: {
+                            project_manager_project_count: { $lt: 3 }
+                        }
+                    }
+                );
+            }
+            if (role === 'Developer') {
+                aggregationPipeline.push(
+                    {
+                        $lookup: {
+                            from: 'projects',
+                            let: { userId: '$_id' },
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr:  { $in: ['$$userId', '$developers_id'] } 
+                                    }
+                                },
+                                {
+                                    $match: {
+                                        stage: { $ne: 'completed | testing' } 
+                                    }
+                                }
+                            ],
+                            as: 'developer_projects'
+                        }
+                    }, {
+                        $match: {
+                            developer_projects: { $eq: [] }
+                        }
+                    }
+                );
+            }
+
+            if (role === 'Tester') {
+                aggregationPipeline.push(
+                    {
+                        $lookup: {
+                            from: 'projects',
+                            let: { userId: '$_id' },
+                            pipeline: [
+                                {
+                                    $match: {
+                                        $expr:  { $in: ['$$userId', '$testers_id'] } 
+                                    }
+                                },
+                                {
+                                    $match: {
+                                        stage: { $ne: 'completed' } 
+                                    }
+                                }
+                            ],
+                            as: 'tester_projects'
+                        }
+                    }, {
+                        $match: {
+                            tester_projects: { $eq: [] }
+                        }
+                    }
+                );
+            }
+
+            data = await TenantUserModel.aggregate(aggregationPipeline).exec();
+
+            return data;
+        } catch (error) {
+            console.log('Error in Tenant User Repository fetchUser method');
+            console.log(error);
+            throw error;
         }
     }
 

@@ -133,3 +133,22 @@ export const fetchTenantSpecificUser = async (userId: string) => {
     }
 }
 
+export const fetchAvailableTenantUsers = async (role: string) => {
+    try {
+        let url = '/project-service/v1/tenants/users/available';
+        const params: any = {
+            role
+
+        };
+
+        if (role) {
+            params.role = role;
+        }
+
+
+        const response = await instance.get(url, { params });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

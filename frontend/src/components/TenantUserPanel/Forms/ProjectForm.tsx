@@ -1,5 +1,5 @@
 "use client"
-import { fetchTenantUsers } from '@/api/userService/user';
+import { fetchAvailableTenantUsers, fetchTenantUsers } from '@/api/userService/user';
 import { logout } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
@@ -61,13 +61,13 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetchTenantUsers('Tester').then((res) => {
-            setTesters(res.data);
-        }).catch((err) => {
-            handleApiError(err);
-        });
+        // fetchAvailableTenantUsers('Tester').then((res) => {
+        //     setTesters(res.data);
+        // }).catch((err) => {
+        //     handleApiError(err);
+        // });
 
-        fetchTenantUsers('Developer').then((res) => {
+        fetchAvailableTenantUsers('Developer').then((res) => {
             console.log(res.data);
 
             setDeveloper(res.data);
@@ -75,7 +75,7 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
             handleApiError(err);
         });
 
-        fetchTenantUsers('Project_Manager').then((res) => {
+        fetchAvailableTenantUsers('Project_Manager').then((res) => {
             setProjectManager(res.data);
         }).catch((err) => {
             handleApiError(err);
