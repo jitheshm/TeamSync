@@ -11,6 +11,7 @@ import getAllProjectController from "../../controllers/getAllProjectController";
 import getProjectDetails from "../../controllers/getProjectDetails";
 import createTaskController from "../../controllers/createTaskController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
+import fetchProjectUsers from "../../controllers/fetchProjectUsers";
 
 
 
@@ -25,6 +26,8 @@ router.get('/projects/:projectId', userAuth, tenantAuth, getSpecificProjectContr
 router.get('/projects/:projectId/details', userAuth, tenantAuth, getProjectDetails)
 router.post('/projects/:projectId/tasks', userAuth, tenantAuth, createTaskController)
 router.get('/tenants/users/available', userAuth, fetchAvailableTenantUsersController)
+router.get('/projects/:projectId/users/available', userAuth, tenantAuth, fetchProjectUsers)
+
 
 
 

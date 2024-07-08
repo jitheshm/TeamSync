@@ -35,7 +35,7 @@ export default class ProjectRepository implements IProjectRepository {
                     $match: {
                         _id: projectId,
                         branch_id: branchId,
-                        
+
                     }
                 },
                 {
@@ -64,9 +64,9 @@ export default class ProjectRepository implements IProjectRepository {
                         as: 'project_manager'
                     }
                 }
-                
+
             ])
-            console.log(data); 
+            console.log(data);
 
             return data[0]
         } catch (error) {
@@ -109,25 +109,25 @@ export default class ProjectRepository implements IProjectRepository {
         }
     }
 
-    async fetchAllProject(dbId: string, branchId: mongoose.Types.ObjectId, search: string|null, page: number, limit: number) {
+    async fetchAllProject(dbId: string, branchId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number) {
         try {
             console.log(dbId);
-    
+
             const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects');
-            
+
             const query: any = { branch_id: branchId, is_deleted: false };
             if (search) {
                 query.name = { $regex: `^${search}`, $options: 'i' };
             }
-    
+
             const data = await ProjectModel.find(query)
                 .skip((page - 1) * limit)
                 .limit(limit);
-            
+
             const totalCount = await ProjectModel.countDocuments(query);
-    
+
             console.log(data);
-    
+
             return { data, totalCount };
         } catch (error) {
             console.log('Error in project Repository fetch method');
@@ -229,28 +229,88 @@ export default class ProjectRepository implements IProjectRepository {
     async fetchAllPManagerProjects(dbId: string, branchId: mongoose.Types.ObjectId, pManagerId: mongoose.Types.ObjectId, search: string, page: number, limit: number) {
         try {
             console.log(dbId);
-    
+
             const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects');
-            
+
             const query: any = { branch_id: branchId, project_manager_id: pManagerId, is_deleted: false };
             if (search) {
                 query.name = { $regex: `^${search}`, $options: 'i' };
             }
-    
+
             const data = await ProjectModel.find(query)
                 .skip((page - 1) * limit)
                 .limit(limit);
-            
+
             // Get the total count for pagination purposes
             const totalCount = await ProjectModel.countDocuments(query);
-    
+
             console.log(data);
-    
+
             return { data, totalCount };
         } catch (error) {
             console.log('Error in project Repository fetch method');
             console.log(error);
             throw error;
+        }
+    }
+
+    async fetchProjectUsers(dbId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId) {
+        try {
+            console.log(dbId);
+
+            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
+            const data = await ProjectModel.aggregate([
+                {
+                    $match: {
+                        _id: projectId,
+                        branch_id: branchId,
+                        is_deleted: false
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'developers_id',
+                        foreignField: '_id',
+                        as: 'developers'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'testers_id',
+                        foreignField: '_id',
+                        as: 'testers'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'project_manager_id',
+                        foreignField: '_id',
+                        as: 'project_manager'
+                    }
+                },
+                {
+                    $project: {
+                        developers: 1,
+                        testers: 1,
+                        project_manager: 1,
+                        _id: 0
+                    }
+                
+                }
+
+            ])
+            console.log(data);
+
+            return data[0]
+        } catch (error) {
+            console.log('Error in project Repository fetch method');
+
+            console.log(error);
+
+            throw error
         }
     }
 

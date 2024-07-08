@@ -1,5 +1,6 @@
 import instance from "@/axios"
 import { ProjectFormData } from "@/components/TenantUserPanel/Forms/ProjectForm"
+import { TaskFormData } from "@/components/TenantUserPanel/Forms/TaskForm"
 import Cookies from 'js-cookie'
 import { string } from "zod"
 
@@ -23,7 +24,7 @@ export const fetchSpecificProject = async (id: string) => {
     }
 }
 
-export const updateProject = async (formData: ProjectFormData,id:string) => {
+export const updateProject = async (formData: ProjectFormData, id: string) => {
     try {
         const response = await instance.put(`/project-service/v1/projects/${id}`, formData)
         return response.data
@@ -32,7 +33,7 @@ export const updateProject = async (formData: ProjectFormData,id:string) => {
     }
 }
 
-export const projectDelete = async (id:string) => {
+export const projectDelete = async (id: string) => {
     try {
         const response = await instance.delete(`/project-service/v1/projects/${id}`)
         return response.data
@@ -78,5 +79,23 @@ export const fetchAllProjects = async (search: string, page: number, limit: numb
         return response.data;
     } catch (error) {
         throw error;
+    }
+}
+
+export const fetchAvailableProjectUsers = async (projectId: string) => {
+    try {
+        const response = await instance.get(`/project-service/v1/projects/${projectId}/users/available`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const createTask = async (formData: TaskFormData, projectId:string) => {
+    try {
+        const response = await instance.post(`/project-service/v1/projects/${projectId}/tasks`, formData)
+        return response.data
+    } catch (error) {
+        throw error
     }
 }
