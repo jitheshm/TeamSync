@@ -203,6 +203,29 @@ services:
         - action: rebuild
           path: ./services/projectService/package.json
 
+  communicationservice:
+    build: ./services/communicationService
+    container_name: team-sync-communication-service
+    image: jitheshmjithooz/team-sync-communication-service
+    restart: unless-stopped
+    env_file:
+      - ./services/communicationService/.env
+    depends_on:
+      - redpanda-0
+    ports:
+      - 3006:3006
+    networks: 
+      - team_sync_network
+    develop:
+      watch:
+        - action: sync
+          path: ./services/communicationService
+          target: /app/
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./services/communicationService/package.json
+
   nginx:
     build: ./gateway
     container_name: team-sync-nginx-gateway
