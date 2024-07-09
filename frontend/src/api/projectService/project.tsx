@@ -151,3 +151,12 @@ export const updateProjectStatus = async (data: { stage: string }, id: string) =
         throw error
     }
 }
+
+export const updateTaskStatus = async (data: { status: string }, projectId: string, taskId: string) => {
+    try {
+        const response = await instance.put(`/project-service/v1/projects/${projectId}/tasks/${taskId}/status`, data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

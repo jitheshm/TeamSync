@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchAllTasks, taskDelete } from '@/api/projectService/project';
+import { fetchAllTasks, taskDelete, updateTaskStatus } from '@/api/projectService/project';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
@@ -54,7 +54,7 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                taskDelete(taskId,projectId).then(() => {
+                taskDelete(taskId, projectId).then(() => {
                     Swal.fire({
                         title: "Deleted!",
                         text: "The task has been deleted.",
@@ -74,6 +74,25 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
     }
+
+    const handleStatusChange = (taskId: string, newStatus: string) => {
+        const data = {
+            status: newStatus
+        }
+        updateTaskStatus(data, projectId,taskId).then(() => {
+            Swal.fire({
+                title: "Updated!",
+                text: "The task status has been updated.",
+                icon: "success"
+            });
+            setToggle(!toggle);
+        }).catch((err) => {
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/employee/login');
+            }
+        });
+    };
 
     return (
         <div className="p-8 rounded-md w-11/12 mt-20 mx-auto">
@@ -128,7 +147,15 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
                                         <p className="text-white">{task.tester[0].name}</p>
                                     </div>
                                     <div className='col-span-2'>
-                                        <p className="text-white">{task.status}</p>
+                                        <select
+                                            className="text-gray-100 bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600 dark:text-gray-100 dark:hover:bg-green-600 dark:focus:ring-green-600"
+                                            value={task.status}
+                                            onChange={(e) => handleStatusChange(task._id, e.target.value)}
+                                        >
+                                            <option value="pending">Pending</option>
+                                            <option value="in_progress">In Progress</option>
+                                            <option value="testing">Testing</option>
+                                        </select>
                                     </div>
                                     <div className="flex col-span-2 space-x-2">
                                         {role === 'Project_Manager' ? (
@@ -138,9 +165,7 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
                                                 <button type="button" onClick={() => handleDelete(task._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                             </>
                                         ) : (
-                                            <>
-                                                <Link href={`/employee/project_manager/dashboard/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
-                                            </>
+                                            <Link href={`/employee/project_manager/dashboard/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
                                         )}
                                     </div>
                                 </div>
@@ -155,17 +180,25 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
                 total > limit &&
                 <div className="flex justify-center mt-4">
                     <button
-                        className="mx-1 px-3 py-1 bg-gray-600 text-white rounded-lg"
+                        className="mx-1 px-3 py-1 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
                         onClick={() => handlePageChange(page - 1)}
                         disabled={page === 1}
                     >
                         Previous
                     </button>
-                    <span className="mx-2 text-gray-100">Page {page} of {Math.ceil(total / limit)}</span>
+                    {Array.from({ length: Math.ceil(total / limit) }, (_, i) => (
+                        <button
+                            key={i}
+                            className={`mx-1 px-3 py-1 ${page === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'} rounded-lg hover:bg-gray-400`}
+                            onClick={() => handlePageChange(i + 1)}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
                     <button
-                        className="mx-1 px-3 py-1 bg-gray-600 text-white rounded-lg"
+                        className="mx-1 px-3 py-1 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
                         onClick={() => handlePageChange(page + 1)}
-                        disabled={page >= Math.ceil(total / limit)}
+                        disabled={page === Math.ceil(total / limit)}
                     >
                         Next
                     </button>

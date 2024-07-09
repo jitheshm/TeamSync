@@ -17,6 +17,7 @@ import taskUpdateController from "../../controllers/taskUpdateController";
 import taskDeleteController from "../../controllers/taskDeleteController";
 import fetchProjectTasksDetails from "../../controllers/fetchProjectTasksDetails";
 import projectStatusUpdateController from "../../controllers/projectStatusUpdateController";
+import taskStatusUpdateController from "../../controllers/taskStatusUpdateController";
 
 
 
@@ -37,6 +38,8 @@ router.get('/projects/:projectId/tasks', userAuth, tenantAuth, fetchProjectTasks
 router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskUpdateController)
 router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskDeleteController)
 router.get('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, fetchProjectTasksDetails)
+router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth, taskStatusUpdateController)
+
 
 
 
