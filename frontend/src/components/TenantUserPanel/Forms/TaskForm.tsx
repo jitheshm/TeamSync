@@ -6,7 +6,7 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { z, ZodError } from 'zod';
 import Select from 'react-select';
-import { createTask, fetchAvailableProjectUsers } from '@/api/projectService/project';
+import { createTask, fetchAvailableProjectUsers, fetchSpecificTaskDetails, updateTask } from '@/api/projectService/project';
 // import { createTask } from '@/api/taskService/task';
 
 const taskSchema = z.object({
@@ -23,6 +23,15 @@ export interface TaskFormData {
     due_date: string;
     developer_id: string;
     tester_id: string;
+    developer: {
+        _id: string;
+        name: string;
+    }
+    tester: {
+        _id: string;
+        name: string;
+    }
+
 }
 
 interface FormErrors {
@@ -33,13 +42,21 @@ interface FormErrors {
     tester_id?: string;
 }
 
-function TaskForm({ projectId }: { projectId: string }) {
+function TaskForm({ projectId, taskId, edit = false }: { projectId: string, taskId?: string, edit?: boolean }) {
     const [formData, setFormData] = useState<TaskFormData>({
         title: '',
         description: '',
         due_date: '',
         developer_id: '',
         tester_id: '',
+        developer: {
+            _id: '',
+            name: ''
+        },
+        tester: {
+            _id: '',
+            name: ''
+        }
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
@@ -61,6 +78,22 @@ function TaskForm({ projectId }: { projectId: string }) {
 
     }, []);
 
+    useEffect(() => {
+        if (edit && taskId) {
+            fetchSpecificTaskDetails(projectId, taskId).then((res) => {
+                setFormData({
+                    title: res.data.title,
+                    description: res.data.description,
+                    due_date: res.data.due_date,
+                    developer_id: res.data.developer_id,
+                    tester_id: res.data.tester_id,
+                    developer: res.data.developer,
+                    tester: res.data.tester
+                });
+            })
+        }
+    }, [edit])
+
     const handleApiError = (err: any) => {
         if (err.response && err.response.status === 401) {
             dispatch(logout());
@@ -73,11 +106,23 @@ function TaskForm({ projectId }: { projectId: string }) {
         try {
             taskSchema.parse(formData);
             setErrors({});
-            createTask(formData, projectId).then(() => {
-                router.push(`/employee/project_manager/dashboard/projects/${projectId}/tasks/`);
-            }).catch((err: any) => {
-                handleApiError(err);
-            });
+            if (!edit) {
+                createTask(formData, projectId).then(() => {
+                    router.push(`/employee/project_manager/dashboard/projects/${projectId}/tasks/`);
+                }).catch((err: any) => {
+                    handleApiError(err);
+                });
+            }
+            else {
+                if (taskId) {
+                    
+                    updateTask(formData, projectId, taskId).then(() => {
+                        router.push(`/employee/project_manager/dashboard/projects/${projectId}/tasks/${taskId}`);
+                    }).catch((err: any) => {
+                        handleApiError(err);
+                    });
+                }
+            }
         } catch (err) {
             if (err instanceof ZodError) {
                 const formattedErrors: FormErrors = {};
@@ -99,9 +144,9 @@ function TaskForm({ projectId }: { projectId: string }) {
             <div className="w-full">
                 <div className="bg-gray-800 p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
                     <form onSubmit={handleSubmit}>
-                        <h1 className="text-center text-gray-200 font-bold text-2xl mb-10">
-                            Create Task
-                        </h1>
+                        {
+                            edit ? <h1 className="text-2xl font-bold text-gray-100 mb-5">Edit Task</h1> : <h1 className="text-2xl font-bold text-gray-100 mb-5">Create Task</h1>
+                        }
                         <div className="mb-5">
                             <label htmlFor="title" className="block mb-2 font-bold text-gray-100">Title</label>
                             <input
@@ -145,10 +190,12 @@ function TaskForm({ projectId }: { projectId: string }) {
                             <Select
                                 id="developer_id"
                                 name="developer_id"
+                                defaultValue={edit ? { value: formData.developer._id, label: formData.developer.name } : null}
                                 options={developers.map(dev => ({ value: dev._id, label: dev.name }))}
                                 onChange={(option: any) => setFormData({ ...formData, developer_id: option.value })}
                                 className="basic-single text-gray-950"
                                 classNamePrefix="select"
+                                key={formData.developer._id}
                             />
                             {errors.developer_id && <p className="text-red-500">{errors.developer_id}</p>}
                         </div>
@@ -157,14 +204,19 @@ function TaskForm({ projectId }: { projectId: string }) {
                             <Select
                                 id="tester_id"
                                 name="tester_id"
+                                defaultValue={edit ? { value: formData.tester._id, label: formData.tester.name } : null}
                                 options={testers.map(test => ({ value: test._id, label: test.name }))}
                                 onChange={(option: any) => setFormData({ ...formData, tester_id: option.value })}
                                 className="basic-single text-gray-950"
+                                key={formData.tester._id}
+
                                 classNamePrefix="select"
                             />
                             {errors.tester_id && <p className="text-red-500">{errors.tester_id}</p>}
                         </div>
-                        <button type="submit" className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">Create Task</button>
+                        {
+                            edit ? <button type="submit" className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">Update Task</button> : <button type="submit" className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">Create Task</button>
+                        }
                     </form>
                 </div>
             </div>

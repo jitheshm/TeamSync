@@ -10,6 +10,7 @@ export interface ITaskRepository {
     fetchProjectAllTask(dbId: string, branchId: mongoose.Types.ObjectId, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{
         data: (ITasks & Document)[], totalCount: number
     }>
+    fetchSpecificTaskDetails(dbId: string, taskId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<ITasks & Document>
     
     
 

@@ -17,7 +17,7 @@ export interface ITask {
     status: string;
 }
 
-const TaskTable = ({projectId,role}:{projectId:string,role:string}) => {
+const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => {
     const [tasks, setTasks] = useState<ITask[]>([]);
     const [toggle, setToggle] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
@@ -32,11 +32,11 @@ const TaskTable = ({projectId,role}:{projectId:string,role:string}) => {
     }, [search]);
 
     useEffect(() => {
-        fetchAllTasks(projectId,search, page, limit).then((result: any) => {
+        fetchAllTasks(projectId, search, page, limit).then((result: any) => {
             setTasks(result.data.data);
             setTotal(result.data.total);
         }).catch((err: any) => {
-            if (err.response.status === 401) {
+            if (err.response?.status === 401) {
                 dispatch(logout());
                 router.push('/employee/login');
             }
@@ -98,7 +98,7 @@ const TaskTable = ({projectId,role}:{projectId:string,role:string}) => {
                     </div>
                     <div className="lg:ml-40 ml-10 space-x-8">
                         {role === 'Project_Manager' && (
-                            <Link href={'/employee/manager/dashboard/tasks/create'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
+                            <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/create`} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
                                 Create
                             </Link>
                         )}
@@ -133,14 +133,13 @@ const TaskTable = ({projectId,role}:{projectId:string,role:string}) => {
                                     <div className="flex col-span-2 space-x-2">
                                         {role === 'Project_Manager' ? (
                                             <>
-                                                <Link href={`/employee/manager/dashboard/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
-                                                <Link href={`/employee/manager/dashboard/tasks/${task._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                                <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
                                                 <button type="button" onClick={() => handleDelete(task._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                             </>
                                         ) : (
                                             <>
                                                 <Link href={`/employee/project_manager/dashboard/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
-                                                <Link href={`/employee/project_manager/dashboard/tasks/${task._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
                                             </>
                                         )}
                                     </div>

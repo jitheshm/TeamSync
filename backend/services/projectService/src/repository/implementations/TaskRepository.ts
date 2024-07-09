@@ -162,6 +162,56 @@ export default class TaskRepository implements ITaskRepository {
     }
 
 
+    async fetchSpecificTaskDetails(dbId: string, taskId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId) {
+        try {
+            console.log(dbId);
+
+            const TaskModel = switchDb<ITasks>(`${process.env.SERVICE}_${dbId}`, 'tasks')
+            const data = await TaskModel.aggregate([
+                {
+                    $match: {
+                        _id: taskId,
+                        branch_id: branchId,
+                        is_deleted: false
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'developer_id',
+                        foreignField: '_id',
+                        as: 'developer'
+                    }
+                },
+                {
+                    $unwind: "$developer"
+                },
+                {
+                    $lookup: {
+                        from: 'tenant_users',
+                        localField: 'tester_id',
+                        foreignField: '_id',
+                        as: 'tester'
+                    }
+                },
+                {
+                    $unwind: "$tester"
+                },
+
+
+            ]).exec();
+            console.log(data);
+
+            return data[0]
+        } catch (error) {
+            console.log('Error in project Repository fetch method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
 
 
 

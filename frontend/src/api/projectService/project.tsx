@@ -114,3 +114,22 @@ export const fetchAllTasks = async (projectId: string, search: string, page: num
         throw error
     }
 }
+
+export const fetchSpecificTaskDetails = async (projectId: string,taskId:string) => {
+    try {
+        const response = await instance.get(`/project-service/v1/projects/${projectId}/tasks/${taskId}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const updateTask = async (formData: TaskFormData, projectId: string, taskId: string) => {
+    try {
+        const {developer, tester, ...data} = formData
+        const response = await instance.put(`/project-service/v1/projects/${projectId}/tasks/${taskId}`, data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
