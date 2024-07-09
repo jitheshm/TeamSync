@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchAllTasks } from '@/api/projectService/project';
+import { fetchAllTasks, taskDelete } from '@/api/projectService/project';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
@@ -53,21 +53,21 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!"
         }).then((result) => {
-            // if (result.isConfirmed) {
-            //     taskDelete(taskId).then(() => {
-            //         Swal.fire({
-            //             title: "Deleted!",
-            //             text: "The task has been deleted.",
-            //             icon: "success"
-            //         });
-            //         setToggle(!toggle);
-            //     }).catch((err) => {
-            //         if (err.response.status === 401) {
-            //             dispatch(logout());
-            //             router.push('/employee/login');
-            //         }
-            //     });
-            // }
+            if (result.isConfirmed) {
+                taskDelete(taskId,projectId).then(() => {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "The task has been deleted.",
+                        icon: "success"
+                    });
+                    setToggle(!toggle);
+                }).catch((err:any) => {
+                    if (err.response.status === 401) {
+                        dispatch(logout());
+                        router.push('/employee/login');
+                    }
+                });
+            }
         });
     }
 

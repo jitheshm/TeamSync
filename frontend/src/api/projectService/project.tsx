@@ -133,3 +133,12 @@ export const updateTask = async (formData: TaskFormData, projectId: string, task
         throw error
     }
 }
+
+export const taskDelete = async (taskId: string,projectId: string) => {
+    try {
+        const response = await instance.delete(`/project-service/v1/projects/${projectId}/tasks/${taskId}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
