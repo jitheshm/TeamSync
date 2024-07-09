@@ -16,6 +16,7 @@ import fetchProjectTasks from "../../controllers/fetchProjectTasks";
 import taskUpdateController from "../../controllers/taskUpdateController";
 import taskDeleteController from "../../controllers/taskDeleteController";
 import fetchProjectTasksDetails from "../../controllers/fetchProjectTasksDetails";
+import projectStatusUpdateController from "../../controllers/projectStatusUpdateController";
 
 
 
@@ -24,6 +25,7 @@ const router = Router();
 
 router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), projectController)
 router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), projectUpdateController)
+router.put('/projects/:projectId/status', userAuth, tenantAuth, projectStatusUpdateController)
 router.delete('/projects/:projectId', userAuth, tenantAuth, projectDeleteController)
 router.get('/projects', userAuth, tenantAuth, getAllProjectController)
 router.get('/projects/:projectId', userAuth, tenantAuth, getSpecificProjectController)

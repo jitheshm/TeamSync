@@ -115,7 +115,7 @@ export const fetchAllTasks = async (projectId: string, search: string, page: num
     }
 }
 
-export const fetchSpecificTaskDetails = async (projectId: string,taskId:string) => {
+export const fetchSpecificTaskDetails = async (projectId: string, taskId: string) => {
     try {
         const response = await instance.get(`/project-service/v1/projects/${projectId}/tasks/${taskId}`)
         return response.data
@@ -126,7 +126,7 @@ export const fetchSpecificTaskDetails = async (projectId: string,taskId:string) 
 
 export const updateTask = async (formData: TaskFormData, projectId: string, taskId: string) => {
     try {
-        const {developer, tester, ...data} = formData
+        const { developer, tester, ...data } = formData
         const response = await instance.put(`/project-service/v1/projects/${projectId}/tasks/${taskId}`, data)
         return response.data
     } catch (error) {
@@ -134,9 +134,18 @@ export const updateTask = async (formData: TaskFormData, projectId: string, task
     }
 }
 
-export const taskDelete = async (taskId: string,projectId: string) => {
+export const taskDelete = async (taskId: string, projectId: string) => {
     try {
         const response = await instance.delete(`/project-service/v1/projects/${projectId}/tasks/${taskId}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const updateProjectStatus = async (data: { stage: string }, id: string) => {
+    try {
+        const response = await instance.put(`/project-service/v1/projects/${id}/status`, data)
         return response.data
     } catch (error) {
         throw error
