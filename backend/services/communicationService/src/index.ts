@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 import logger from 'morgan';
 import cors from 'cors'
 import connect from './config/db/connect';
-// import { connectConsumers } from './events/kafka/consumerStart';
+import { connectConsumers } from './events/consumerStart';
+
 // import router from './routes/router';
 
 //For env File 
@@ -16,7 +17,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors())
 connect().then(() => {
-//   connectConsumers()
+  connectConsumers()
 }) 
 app.use(()=>{
     console.log('Middleware')
