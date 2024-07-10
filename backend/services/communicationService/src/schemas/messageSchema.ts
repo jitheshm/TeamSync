@@ -6,3 +6,5 @@ const messageSchema = new mongoose.Schema({
     chat_id: { type: mongoose.Schema.Types.ObjectId, required: true },
     timestamp: { type: Date, default: Date.now },
 });
+
+exports.default = messageSchema;
