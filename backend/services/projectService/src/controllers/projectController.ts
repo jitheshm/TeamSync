@@ -5,10 +5,13 @@ import mongoose from "mongoose";
 import { IProjects } from "../entities/ProjectEntity";
 import ProjectRepository from "../repository/implementations/ProjectRepository";
 import { IProjectRepository } from "../repository/interfaces/IProjectRepository";
+import { KafkaConnection } from "../config/kafka/KafkaConnection";
+import ProjectProducer from "../events/kafka/producers/ProjectProducer";
 
 
 
 const projectRepository: IProjectRepository = new ProjectRepository()
+const kafkaConnection = new KafkaConnection()
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
@@ -37,6 +40,10 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         // bodyObj.project_manager_id = new mongoose.Types.ObjectId(req.user._id)
 
         const newProject = await projectRepository.create(bodyObj as IProjects, req.user?.decode?.tenantId);
+
+        let producer = await kafkaConnection.getProducerInstance()
+        let tenantProjectProducer = new ProjectProducer(producer, req.user?.decode?.tenantId, 'projects')
+        tenantProjectProducer.sendMessage('create', newProject)
 
         res.status(201).json({ message: "project added successfully" });
 

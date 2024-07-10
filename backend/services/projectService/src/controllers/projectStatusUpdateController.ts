@@ -5,10 +5,13 @@ import mongoose from "mongoose";
 import { IProjects } from "../entities/ProjectEntity";
 import ProjectRepository from "../repository/implementations/ProjectRepository";
 import { IProjectRepository } from "../repository/interfaces/IProjectRepository";
+import ProjectProducer from "../events/kafka/producers/ProjectProducer";
+import { KafkaConnection } from "../config/kafka/KafkaConnection";
 
 
 
 const projectRepository: IProjectRepository = new ProjectRepository()
+const kafkaConnection = new KafkaConnection()
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
@@ -33,12 +36,21 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         }
 
         const bodyObj: Partial<IProjects> = req.body as Partial<IProjects>;
-        const statusData={
-            stage:bodyObj.stage,
-            branch_id:bodyObj.branch_id
+        const statusData = {
+            stage: bodyObj.stage,
+            branch_id: bodyObj.branch_id
         }
 
         const resultObj = await projectRepository.update(statusData as IProjects, req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.params.projectId));
+
+        if (!resultObj) {
+            return res.status(404).json({ error: "Project not found" });
+        }
+
+        let producer = await kafkaConnection.getProducerInstance()
+        let tenantProjectProducer = new ProjectProducer(producer, req.user?.decode?.tenantId, 'projects')
+        tenantProjectProducer.sendMessage('update', resultObj)
+
 
         res.status(200).json({ message: "project updated successfully" });
 
