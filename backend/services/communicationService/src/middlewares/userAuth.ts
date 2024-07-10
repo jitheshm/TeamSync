@@ -7,6 +7,8 @@ const userRepository: IUserRepository = new UserRepository();
 
 export default async (socket: Socket, next: (err?: Error) => void) => {
     try {
+        console.log(socket.handshake.auth.token)
+        
         const token = socket.handshake.auth.token;
 
         if (token) {

@@ -1,11 +1,28 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import MessageWindow from './MessageWindow'
+import { APIURL } from "../../constants/constant"
+import Cookies from 'js-cookie'
+import { io } from 'socket.io-client'
+
 
 function ChatUI() {
+
+    const [activeRoom, setActiveRoom] = useState(null)
+    const [recent, setRecent] = useState([])
+
+    useEffect(() => {
+        const socket = io('http://localhost:3006', {
+            auth: {
+                token: Cookies.get('team-sync-token')
+              }
+        })
+    }, [])
+
     return (
 
-        <div className="container mx-auto mt-14">
-            <div className="min-w-full border rounded lg:grid lg:grid-cols-3">
+        <div className="container mx-auto mt-14 ">
+            <div className="min-w-full min-h-[90vh] border rounded lg:grid lg:grid-cols-3">
                 <div className="border-r border-gray-300 lg:col-span-1">
                     <div className="mx-3 my-3">
                         <div className="relative text-gray-100">
@@ -44,7 +61,9 @@ function ChatUI() {
                         </li>
                     </ul>
                 </div>
-                <MessageWindow />
+                {
+                    activeRoom ? <MessageWindow /> : ""
+                }
             </div>
         </div>
 

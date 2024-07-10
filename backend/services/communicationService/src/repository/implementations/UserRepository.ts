@@ -47,6 +47,8 @@ export default class UserRepository implements IUserRepository {
 
     async fetchTenantUserByEmail(email: string, dbId: string): Promise<IUsers | null> {
         try {
+            console.log(email, dbId);
+            
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
             return await userModel.findOne({ email: email })
         } catch (error) {
