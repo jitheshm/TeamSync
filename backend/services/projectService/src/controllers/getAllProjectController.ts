@@ -15,9 +15,9 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
 
         if (req.user?.decode?.role !== 'Tenant_Admin') {
 
-            if (req.user?.decode?.role !== 'Manager' && req.user?.decode?.role !== 'Project_Manager') {
-                return res.status(401).json({ error: "Unauthorized" });
-            }
+            // if (req.user?.decode?.role !== 'Manager' && req.user?.decode?.role !== 'Project_Manager') {
+            //     return res.status(401).json({ error: "Unauthorized" });
+            // }
 
             req.body.branch_id = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string)
 
@@ -33,7 +33,10 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         let resultObj: ({data:(IProjects & Document)[],totalCount:number})
         if (req.query.pm) {
 
-            resultObj = await projectRepository.fetchAllPManagerProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user._id),search, page, limit);
+            resultObj = await projectRepository.fetchAllPManagerProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user?._id),search, page, limit);
+
+        }else if(req.query.dev){
+            resultObj = await projectRepository.fetchAllDeveloperProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user?._id),search, page, limit);
 
         } else {
 

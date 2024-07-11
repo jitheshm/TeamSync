@@ -67,6 +67,23 @@ export const fetchAllProjectsByPManager = async (search: string, page: number, l
     }
 }
 
+
+export const fetchAllProjectsDeveloper = async (search: string, page: number, limit: number) => {
+    try {
+        const response = await instance.get('/project-service/v1/projects', {
+            params: {
+                dev: true,
+                search,
+                page,
+                limit
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const fetchAllProjects = async (search: string, page: number, limit: number) => {
     try {
         const response = await instance.get('/project-service/v1/projects', {

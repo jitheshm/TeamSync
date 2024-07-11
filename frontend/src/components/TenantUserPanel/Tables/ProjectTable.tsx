@@ -1,5 +1,5 @@
 "use client";
-import { fetchAllProjects, fetchAllProjectsByPManager, projectDelete, updateProjectStatus } from '@/api/projectService/project'; // Import updateProjectStatus
+import { fetchAllProjects, fetchAllProjectsByPManager, fetchAllProjectsDeveloper, projectDelete, updateProjectStatus } from '@/api/projectService/project'; // Import updateProjectStatus
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
@@ -33,8 +33,17 @@ const ProjectTable = ({ role }: { role: string }) => {
     }, [search]);
 
     useEffect(() => {
-        const fetchProjects = role === 'Manager' ? fetchAllProjects : fetchAllProjectsByPManager;
-        fetchProjects(search, page, limit).then((result: any) => {
+        let fetchProjects = null
+
+        if (role === 'Manager') {
+            fetchProjects = fetchAllProjects
+        } else if (role === 'Project Manager') {
+            fetchProjects = fetchAllProjectsByPManager
+        }
+        else if (role === 'Developer') {
+            fetchProjects = fetchAllProjectsDeveloper
+        }
+        fetchProjects && fetchProjects(search, page, limit).then((result: any) => {
             setProjects(result.data.data);
             setTotal(result.data.total);
         }).catch((err: any) => {
@@ -162,7 +171,7 @@ const ProjectTable = ({ role }: { role: string }) => {
                                                 <Link href={`/employee/manager/dashboard/projects/${project._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
                                                 <button type="button" onClick={() => handleDelete(project._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                             </>
-                                        ) : (
+                                        ) : role === 'Project Manager' ? (
                                             <>
                                                 <select
                                                     className="text-gray-100 bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600 dark:text-gray-100 dark:hover:bg-green-600 dark:focus:ring-green-600"
@@ -176,6 +185,11 @@ const ProjectTable = ({ role }: { role: string }) => {
                                                 <Link href={`/employee/project_manager/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
                                                 <Link href={`/employee/project_manager/dashboard/projects/${project._id}/tasks/create`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Create Task</Link>
                                                 <Link href={`/employee/project_manager/dashboard/projects/${project._id}/tasks`} className="focus:outline-none text-white bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-500 dark:hover:bg-blue-500 dark:focus:ring-blue-500">Show Task</Link>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Link href={`/employee/developer/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                <Link href={`/employee/developer/dashboard/projects/${project._id}/tasks`} className="focus:outline-none text-white bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-500 dark:hover:bg-blue-500 dark:focus:ring-blue-500">Show Task</Link>
                                             </>
                                         )}
                                     </div>
