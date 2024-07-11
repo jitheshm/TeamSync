@@ -1,8 +1,22 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
+
+interface UserState {
+    name: string
+    verified: boolean
+    tenantId: string
+    id: string
+}
+
+interface RootState {
+    user: UserState
+}
 
 function MessageWindow({ name, message, socket, activeRoom }: { name: string, message: any, socket: Socket, activeRoom: string }) {
     const [newMessage, setNewMessage] = useState('')
+    const { id, verified } = useSelector((state: RootState) => state.user)
+
     const handleMessageSent = () => {
 
         socket.emit('message', {
@@ -12,8 +26,8 @@ function MessageWindow({ name, message, socket, activeRoom }: { name: string, me
         })
     }
     return (
-        <div className="hidden lg:col-span-2 lg:block">
-            <div className="w-full">
+        <div className="hidden lg:col-span-2 lg:block bg-[url('/chat.jpg')] bg-cover  ">
+            <div className="w-full bg-gray-700 bg-opacity-60 h-full">
                 <div className="relative flex items-center p-3 border-b border-gray-300">
                     <img className="object-cover w-10 h-10 rounded-full" src="https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383__340.jpg" alt="username" />
                     <span className="block ml-2 font-bold text-gray-100">{name}</span>
@@ -26,8 +40,8 @@ function MessageWindow({ name, message, socket, activeRoom }: { name: string, me
                         {
                             message.map((msg) => {
                                 return (
-                                    <li key={''} className="flex justify-end">
-                                        <div className="relative max-w-xl px-4 py-2 text-gray-100 bg-gray-400 rounded shadow">
+                                    <li key={''} className={`flex ${msg.sender===id?'justify-end':'justify-start'}`}>
+                                        <div className="relative max-w-xl px-4 py-2 text-gray-100 bg-green-600 rounded shadow">
                                             <span className="block">{msg.message}</span>
                                         </div>
                                     </li>

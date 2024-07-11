@@ -98,7 +98,7 @@ function ChatUI() {
 
     return (
 
-        <div className="container mx-auto mt-14 ">
+        <div className="container mx-auto mt-14 bg-gray-700">
             <div className="min-w-full min-h-[90vh] border rounded lg:grid lg:grid-cols-3">
                 <div className="border-r border-gray-300 lg:col-span-1">
                     <div className="mx-3 my-3">
