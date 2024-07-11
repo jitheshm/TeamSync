@@ -37,7 +37,7 @@ const ProjectTable = ({ role }: { role: string }) => {
 
         if (role === 'Manager') {
             fetchProjects = fetchAllProjects
-        } else if (role === 'Project Manager') {
+        } else if (role === 'Project_Manager') {
             fetchProjects = fetchAllProjectsByPManager
         }
         else if (role === 'Developer') {
