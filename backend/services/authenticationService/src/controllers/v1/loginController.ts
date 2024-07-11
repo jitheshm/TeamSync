@@ -41,7 +41,7 @@ export default async (req: Request, res: Response) => {
 
 
         const token = jwt.sign({ email: userData.email, name: userData.first_name, id: userData._id, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-        res.status(200).json({ message: "User verified", verified: true, token: token, name: userData.first_name, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' });
+        res.status(200).json({ message: "User verified", verified: true, token: token, name: userData.first_name, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin',id:userData._id });
 
 
 

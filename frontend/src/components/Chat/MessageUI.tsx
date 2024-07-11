@@ -3,21 +3,93 @@ import React, { useEffect, useState } from 'react'
 import MessageWindow from './MessageWindow'
 import { APIURL } from "../../constants/constant"
 import Cookies from 'js-cookie'
-import { io } from 'socket.io-client'
+import { Socket, io } from 'socket.io-client'
+import { useDispatch, useSelector } from 'react-redux'
 
+interface UserState {
+    name: string
+    verified: boolean
+    tenantId: string
+    id: string
+}
+
+interface RootState {
+    user: UserState
+}
 
 function ChatUI() {
 
-    const [activeRoom, setActiveRoom] = useState(null)
+    const [activeRoom, setActiveRoom] = useState<string | null>(null)
+    const [activeName, setActiveName] = useState<string | null>(null)
     const [recent, setRecent] = useState([])
+    const [socket, setSocket] = useState<Socket | null>(null)
+    const { id, verified } = useSelector((state: RootState) => state.user)
+
 
     useEffect(() => {
-        const socket = io('http://localhost:3006', {
+        const socketObj = io('http://localhost:3006', {
             auth: {
                 token: Cookies.get('team-sync-token')
-              }
+            }
         })
+        setSocket(socketObj)
+
+
     }, [])
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('recent_chats', (data) => {
+                console.log(data);
+                setRecent(data.data)
+            })
+
+            socket.on('previous_messages', (data) => {
+                console.log(data);
+            })
+
+            socket.on('new_message', (data) => {
+                console.log(data);
+            })
+        }
+
+        return () => {
+            socket && socket.disconnect()
+        }
+    }, [socket])
+
+    // useEffect(() => {
+    //     if (socket) {
+    //         socket.emit('join_room', )
+
+    //         return () => {
+    //             socket.emit('leave_room', activeRoom)
+    //         }
+    //     }
+    // }, [activeRoom])
+
+    const handleRoomChange = (chat: any) => {
+        if (socket) {
+            console.log(chat.id);
+            setActiveName(() => {
+                if (chat.type === 'group') {
+                    return chat.name
+                } else {
+                    let user = chat.members.filter(((member) => {
+                        return member._id !== id
+
+                    }))
+                    return user[0].name
+                }
+            })
+            activeRoom && socket.emit('leave_room', activeRoom)
+            socket.emit('join_room', { id: chat._id, type: chat.type }, (response: any) => {
+                console.log(response);
+                setActiveRoom(response.groupId)
+            })
+
+        }
+    }
 
     return (
 
@@ -37,6 +109,24 @@ function ChatUI() {
                     <ul className="overflow-auto h-[32rem]">
                         <h2 className="my-2 mb-2 ml-2 text-lg text-gray-100">Chats</h2>
                         <li>
+                            {
+                                recent.map((chat) => {
+                                    return (
+                                        <div key={''} onClick={() => handleRoomChange(chat)}>
+                                            <div className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-600 focus:outline-none">
+                                                <img className="object-cover w-10 h-10 rounded-full" src="https://cdn.pixabay.com/photo/2018/09/12/12/14/man-3672010__340.jpg" alt="username" />
+                                                <div className="w-full pb-2">
+                                                    <div className="flex justify-between">
+                                                        <span className="block ml-2 font-semibold text-gray-100">{chat.name}</span>
+                                                        <span className="block ml-2 text-sm text-gray-100">25 minutes</span>
+                                                    </div>
+                                                    <span className="block ml-2 text-sm text-gray-100">bye</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
                             <a className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-600 focus:outline-none">
                                 <img className="object-cover w-10 h-10 rounded-full" src="https://cdn.pixabay.com/photo/2018/09/12/12/14/man-3672010__340.jpg" alt="username" />
                                 <div className="w-full pb-2">
@@ -62,7 +152,7 @@ function ChatUI() {
                     </ul>
                 </div>
                 {
-                    activeRoom ? <MessageWindow /> : ""
+                    activeRoom ? <MessageWindow name={activeName} /> : ""
                 }
             </div>
         </div>

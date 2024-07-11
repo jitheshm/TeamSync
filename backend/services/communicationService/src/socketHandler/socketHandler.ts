@@ -2,16 +2,27 @@ import { Server, Socket } from 'socket.io';
 import userAuth from '../middlewares/userAuth';
 import fetchChatController from '../controllers/fetchChatController';
 import createChatController from '../controllers/createChatController';
+import fetchAllChats from '../controllers/fetchAllChats';
 
 const socketHandler = (io: Server) => {
 
     io.use(userAuth);
 
-    io.on('connection', (socket: Socket) => {
+    io.on('connection', async (socket: Socket) => {
         console.log('A user connected:', socket.id);
+        console.log(socket.data.user);
+        const recentChats = await fetchAllChats(socket.data.user.tenantId, socket.data.user.id)
+        console.log(recentChats);
+
+        socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: recentChats })
+
+
+
 
         socket.on('join_room', ({ id, type }, callback: (response: { status: string; message: string; groupId?: string }) => void) => {
             let joinId = null
+            console.log(id, type);
+            
             if (type === 'personal') {
                 const roomId = [id, socket.data.user._id].sort().join('-')
                 const chatObj = fetchChatController(socket.data.user.tenantId, roomId)
@@ -39,16 +50,11 @@ const socketHandler = (io: Server) => {
             console.log(`User ${socket.id} joined room ${joinId}`);
         });
 
-        socket.on('leave_room', ({ id, type }) => {
+        socket.on('leave_room', (id) => {
 
-            if (type === 'personal') {
-                const roomId = [id, socket.data.user._id].sort().join('-')
-                socket.leave(roomId);
-                console.log(`User ${socket.id} left room ${roomId}`);
-            } else {
-                socket.leave(id);
-                console.log(`User ${socket.id} left room ${id}`);
-            }
+            socket.leave(id);
+            console.log(`User ${socket.id} left room ${id}`);
+
 
         });
 

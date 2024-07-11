@@ -40,10 +40,13 @@ export default class ProjectConsumer implements IConsumer {
                                     
                                     const developers = dataObj.data.developers_id.map((id: any) => new mongoose.Types.ObjectId(id))
                                     const testers = dataObj.data.testers_id.map((id: any) => new mongoose.Types.ObjectId(id))
+                                    console.log(dataObj.data);
+                                    
+                                    console.log(dataObj.data.project_manager_id);
+                                    
                                     const data = {
                                         name: dataObj.data.name,
                                         group_id: dataObj.data._id,
-                                        chat_id: '#chat' + new Date().getTime() + Math.floor(Math.random() * 1000),
                                         type: 'group',
                                         members: [...developers, ...testers, new mongoose.Types.ObjectId(dataObj.data.project_manager_id)],
 
