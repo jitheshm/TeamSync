@@ -22,6 +22,7 @@ function ChatUI() {
     const [activeRoom, setActiveRoom] = useState<string | null>(null)
     const [activeName, setActiveName] = useState<string | null>(null)
     const [recent, setRecent] = useState([])
+    const [message, setMessage] = useState([])
     const [socket, setSocket] = useState<Socket | null>(null)
     const { id, verified } = useSelector((state: RootState) => state.user)
 
@@ -44,12 +45,16 @@ function ChatUI() {
                 setRecent(data.data)
             })
 
-            socket.on('previous_messages', (data) => {
-                console.log(data);
+            socket.on('previous_messages', (dataObj) => {
+                console.log(dataObj);
+                setMessage(dataObj.data)
             })
 
             socket.on('new_message', (data) => {
                 console.log(data);
+                setMessage((prev) => {
+                    return [...prev, data]
+                })
             })
         }
 
@@ -152,7 +157,7 @@ function ChatUI() {
                     </ul>
                 </div>
                 {
-                    activeRoom ? <MessageWindow name={activeName} /> : ""
+                    activeRoom ? <MessageWindow name={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} /> : ""
                 }
             </div>
         </div>

@@ -6,6 +6,7 @@ import BranchesSchema from "../schemas/branchSchema";
 import TenantUserSchema from "../schemas/tenantUserSchema";
 import ProjectsSchema from "../schemas/projectSchema";
 import ChatSchema from "../schemas/chatSchema";
+import messageSchema from "../schemas/messageSchema";
 
 export default function getModel<T>(dbname: string, modelName: string): Model<T & Document> {
     let schema: Schema | null = null;
@@ -34,6 +35,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
                 break
             case 'chats':
                 schema = ChatSchema;
+                break
+            case 'messages':
+                schema = messageSchema;
                 break
             default:
                 throw new Error('Model not found');

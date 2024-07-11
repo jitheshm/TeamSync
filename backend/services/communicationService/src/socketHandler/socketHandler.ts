@@ -3,6 +3,8 @@ import userAuth from '../middlewares/userAuth';
 import fetchChatController from '../controllers/fetchChatController';
 import createChatController from '../controllers/createChatController';
 import fetchAllChats from '../controllers/fetchAllChats';
+import createMessageController from '../controllers/createMessageController';
+import fetchAllMessages from '../controllers/fetchAllMessages';
 
 const socketHandler = (io: Server) => {
 
@@ -19,10 +21,10 @@ const socketHandler = (io: Server) => {
 
 
 
-        socket.on('join_room', ({ id, type }, callback: (response: { status: string; message: string; groupId?: string }) => void) => {
+        socket.on('join_room', async({ id, type }, callback: (response: { status: string; message: string; groupId?: string }) => void) => {
             let joinId = null
             console.log(id, type);
-            
+
             if (type === 'personal') {
                 const roomId = [id, socket.data.user._id].sort().join('-')
                 const chatObj = fetchChatController(socket.data.user.tenantId, roomId)
@@ -47,6 +49,11 @@ const socketHandler = (io: Server) => {
             socket.join(joinId);
 
             callback({ status: 'success', message: `Joined room ${joinId}`, groupId: joinId });
+
+            const prevMessages=await fetchAllMessages(socket.data.user.tenantId, joinId)
+
+            socket.emit('previous_messages', { status: 'success', message: 'Previous messages', data: prevMessages })
+
             console.log(`User ${socket.id} joined room ${joinId}`);
         });
 
@@ -61,14 +68,18 @@ const socketHandler = (io: Server) => {
 
 
         socket.on('message', (data) => {
-            const { message, sender, groupId } = data;
+            const { message, groupId } = data;
+            console.log(data);
+            data.sender = socket.data.user.id;
 
-            // Save message to MongoDB (you should implement the actual saving logic here)
-            // const newMessage = new Message({ message, sender, group: groupId });
-            // newMessage.save();
-
-            // Emit the message to the room
-            io.to(groupId).emit('message', data);
+            const dataObj = {
+                message: data.message,
+                sender: data.sender,
+                timestamp: new Date(),
+                group_id: data.groupId
+            }
+            createMessageController(socket.data.user.tenantId, dataObj);
+            io.to(groupId).emit('new_message', dataObj);
         });
 
         socket.on('disconnect', () => {
