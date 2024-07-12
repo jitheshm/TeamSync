@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import logger from 'morgan';
 import cors from 'cors'
 import { connectConsumers } from './events/kafka/consumerStart';
+import connect from './config/db/connect';
 
 //For env File 
 dotenv.config();
@@ -13,7 +14,10 @@ const port = process.env.PORT || 3001;
 app.use(logger('dev'));
 app.use(express.json());
 app.use(cors())
-connectConsumers()
+connect().then(() => {
+  connectConsumers()
+
+})
 
 
 

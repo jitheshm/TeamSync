@@ -52,8 +52,10 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetchBranches().then((res) => {
-            setBranches(res.data)
+        fetchBranches('',1,1000).then((res) => {
+            console.log(res);
+            
+            setBranches(res.data.data)
         }).catch((err) => {
             if (err.response.status === 401) {
                 dispatch(logout())
