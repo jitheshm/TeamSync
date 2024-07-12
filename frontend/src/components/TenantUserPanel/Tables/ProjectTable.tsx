@@ -171,7 +171,7 @@ const ProjectTable = ({ role }: { role: string }) => {
                                                 <Link href={`/employee/manager/dashboard/projects/${project._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
                                                 <button type="button" onClick={() => handleDelete(project._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                             </>
-                                        ) : role === 'Project Manager' ? (
+                                        ) : role === 'Project_Manager' ? (
                                             <>
                                                 <select
                                                     className="text-gray-100 bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600 dark:text-gray-100 dark:hover:bg-green-600 dark:focus:ring-green-600"

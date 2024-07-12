@@ -183,9 +183,9 @@ export default class TaskRepository implements ITaskRepository {
                         as: 'developer'
                     }
                 },
-                {
-                    $unwind: "$developer"
-                },
+                // {
+                //     $unwind: "$developer"
+                // },
                 {
                     $lookup: {
                         from: 'tenant_users',
@@ -194,9 +194,9 @@ export default class TaskRepository implements ITaskRepository {
                         as: 'tester'
                     }
                 },
-                {
-                    $unwind: "$tester"
-                },
+                // {
+                //     $unwind: "$tester"
+                // },
 
 
             ]).exec();

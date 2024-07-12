@@ -6,7 +6,7 @@ import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
 export interface ITask {
@@ -15,6 +15,19 @@ export interface ITask {
     developer: { name: string }[];
     tester: { name: string }[];
     status: string;
+    description:string
+    due_date:string
+}
+
+interface UserState {
+    name: string
+    verified: boolean
+    tenantId: string
+    id: string
+}
+
+interface RootState {
+    user: UserState
 }
 
 const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => {
@@ -26,6 +39,8 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
     const [total, setTotal] = useState<number>(0);
     const router = useRouter();
     const dispatch = useDispatch();
+    const { id, verified } = useSelector((state: RootState) => state.user)
+
 
     useEffect(() => {
         setPage(1);
@@ -135,41 +150,49 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
                             <div className='col-span-2'>Actions</div>
                         </div>
                         {tasks?.length > 0 ? (
-                            tasks.map((task, index) => (
-                                <div key={index} className="bg-gray-700 p-6 rounded-lg text-center justify-stretch shadow-lg grid grid-cols-10">
-                                    <div className='col-span-2'>
-                                        <h3 className="text-lg font-semibold text-white">{task.title}</h3>
+                            tasks.map((task, index) => {
+                                if(role==='Developer'){
+                                    if(task.developer[0]._id!=id){
+                                        return
+                                    }
+                                }
+
+                                return (
+                                    <div key={index} className="bg-gray-700 p-6 rounded-lg text-center justify-stretch shadow-lg grid grid-cols-10">
+                                        <div className='col-span-2'>
+                                            <h3 className="text-lg font-semibold text-white">{task.title}</h3>
+                                        </div>
+                                        <div className='col-span-2'>
+                                            <p className="text-white">{task.developer[0].name}</p>
+                                        </div>
+                                        <div className='col-span-2'>
+                                            <p className="text-white">{task.tester[0].name}</p>
+                                        </div>
+                                        <div className='col-span-2'>
+                                            <select
+                                                className="text-gray-100 bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600 dark:text-gray-100 dark:hover:bg-green-600 dark:focus:ring-green-600"
+                                                value={task.status}
+                                                onChange={(e) => handleStatusChange(task._id, e.target.value)}
+                                            >
+                                                <option value="pending">Pending</option>
+                                                <option value="in_progress">In Progress</option>
+                                                <option value="testing">Testing</option>
+                                            </select>
+                                        </div>
+                                        <div className="flex col-span-2 space-x-2 justify-center">
+                                            {role === 'Project_Manager' ? (
+                                                <>
+                                                    <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                    <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                                    <button type="button" onClick={() => handleDelete(task._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                                </>
+                                            ) : (
+                                                <Link href={`/employee/developer/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className='col-span-2'>
-                                        <p className="text-white">{task.developer[0].name}</p>
-                                    </div>
-                                    <div className='col-span-2'>
-                                        <p className="text-white">{task.tester[0].name}</p>
-                                    </div>
-                                    <div className='col-span-2'>
-                                        <select
-                                            className="text-gray-100 bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600 dark:text-gray-100 dark:hover:bg-green-600 dark:focus:ring-green-600"
-                                            value={task.status}
-                                            onChange={(e) => handleStatusChange(task._id, e.target.value)}
-                                        >
-                                            <option value="pending">Pending</option>
-                                            <option value="in_progress">In Progress</option>
-                                            <option value="testing">Testing</option>
-                                        </select>
-                                    </div>
-                                    <div className="flex col-span-2 space-x-2">
-                                        {role === 'Project_Manager' ? (
-                                            <>
-                                                <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
-                                                <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-                                                <button type="button" onClick={() => handleDelete(task._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
-                                            </>
-                                        ) : (
-                                            <Link href={`/employee/project_manager/dashboard/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
-                                        )}
-                                    </div>
-                                </div>
-                            ))
+                                )
+                            })
                         ) : (
                             <Empty />
                         )}
