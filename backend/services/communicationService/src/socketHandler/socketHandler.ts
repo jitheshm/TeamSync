@@ -125,7 +125,8 @@ const socketHandler = (io: Server) => {
                 message: data.message,
                 sender: data.sender,
                 timestamp: new Date(),
-                group_id: data.groupId
+                group_id: data.groupId,
+                sender_name: data.sender_name
             }
             createMessageController(socket.data.user.tenantId, dataObj);
             io.to(groupId).emit('new_message', dataObj);

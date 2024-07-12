@@ -15,22 +15,27 @@ interface RootState {
 
 interface Message {
     sender: string
+    sender_name: string
     message: string
+    timestamp: string
 }
 
 interface MessageWindowProps {
-    name: string
+    userName: string
     message: Message[]
     socket: Socket
     activeRoom: string
+    isGroupChat: boolean
 }
 
-function MessageWindow({ name, message, socket, activeRoom }: MessageWindowProps) {
+function MessageWindow({ userName, message, socket, activeRoom, isGroupChat }: MessageWindowProps) {
     const [newMessage, setNewMessage] = useState('')
-    const { id, verified } = useSelector((state: RootState) => state.user)
+    const { id, verified, name } = useSelector((state: RootState) => state.user)
 
     const handleMessageSent = () => {
         socket.emit('message', {
+            sender: id,
+            sender_name: name,
             message: newMessage,
             groupId: activeRoom
         })
@@ -46,7 +51,7 @@ function MessageWindow({ name, message, socket, activeRoom }: MessageWindowProps
             <div className="w-full bg-gray-700 bg-opacity-60 h-full">
                 <div className="relative flex items-center p-3 border-b border-gray-300">
                     <img className="object-cover w-10 h-10 rounded-full" src="/chatIcon.png" alt="username" />
-                    <span className="block ml-2 font-bold text-gray-100">{name}</span>
+                    <span className="block ml-2 font-bold text-gray-100">{userName}</span>
                     <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span>
                 </div>
                 <div className="relative w-full p-6 overflow-y-auto h-[40rem]">
@@ -54,8 +59,12 @@ function MessageWindow({ name, message, socket, activeRoom }: MessageWindowProps
                         {
                             message.map((msg, index) => (
                                 <li key={index} className={`flex ${msg.sender === id ? 'justify-end' : 'justify-start'}`}>
-                                    <div className="relative max-w-xl px-4 py-2 text-gray-100 bg-green-600 rounded shadow">
-                                        <span className="block">{msg.message}</span>
+                                    <div className="relative max-w-xl px-4 py-2 text-gray-100 bg-green-700 rounded shadow">
+                                        {isGroupChat && msg.sender !== id && (
+                                            <span className="block ">{msg.sender_name}</span>
+                                        )}
+                                        <span className="block font-bold">{msg.message}</span>
+                                        <span className="block text-xs text-gray-100">{new Date(msg.timestamp).toLocaleString()}</span>
                                     </div>
                                 </li>
                             ))

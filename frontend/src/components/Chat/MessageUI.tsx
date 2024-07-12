@@ -26,6 +26,7 @@ function ChatUI() {
     const [socket, setSocket] = useState<Socket | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [newChatEmail, setNewChatEmail] = useState('')
+    const [isGroup, setIsGroup] = useState(false)
     const { id, verified } = useSelector((state: RootState) => state.user)
 
     useEffect(() => {
@@ -65,6 +66,13 @@ function ChatUI() {
     const handleRoomChange = (chat: any) => {
         if (socket) {
             console.log(chat.id)
+            if(chat.type === 'group'){
+                setIsGroup(true)
+            
+            }else{
+                setIsGroup(false)
+            
+            }
             setActiveName(() => {
                 if (chat.type === 'group') {
                     return chat.name
@@ -141,7 +149,7 @@ function ChatUI() {
                         +
                     </button>
                 </div>
-                {activeRoom ? <MessageWindow name={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} /> : ""}
+                {activeRoom ? <MessageWindow userName={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} isGroupChat={isGroup} /> : ""}
             </div>
 
             {isModalOpen && (
