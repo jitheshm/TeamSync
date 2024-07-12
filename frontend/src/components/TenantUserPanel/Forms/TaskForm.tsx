@@ -81,14 +81,16 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
     useEffect(() => {
         if (edit && taskId) {
             fetchSpecificTaskDetails(projectId, taskId).then((res) => {
+                console.log(res.data);
+                
                 setFormData({
                     title: res.data.title,
                     description: res.data.description,
                     due_date: res.data.due_date,
                     developer_id: res.data.developer_id,
                     tester_id: res.data.tester_id,
-                    developer: res.data.developer,
-                    tester: res.data.tester
+                    developer: res.data.developer[0],
+                    tester: res.data.tester[0]
                 });
             })
         }
