@@ -15,7 +15,7 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
 
         if (req.user?.decode?.role !== 'Tenant_Admin') {
 
-            if (req.user?.decode?.role !== 'Manager'&& req.user?.decode?.role !== 'Project_Manager') {
+            if (req.user?.decode?.role !== 'Manager'&& req.user?.decode?.role !== 'Project_Manager'&& req.user?.decode?.role !== 'Developer'&& req.user?.decode?.role !== 'Tester') {
                 return res.status(401).json({ error: "Unauthorized" });
             }
 
