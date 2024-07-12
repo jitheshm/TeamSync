@@ -5,6 +5,7 @@ import { APIURL } from "../../constants/constant"
 import Cookies from 'js-cookie'
 import { Socket, io } from 'socket.io-client'
 import { useDispatch, useSelector } from 'react-redux'
+import Modal from './Modal'
 
 interface UserState {
     name: string
@@ -18,14 +19,14 @@ interface RootState {
 }
 
 function ChatUI() {
-
     const [activeRoom, setActiveRoom] = useState<string | null>(null)
     const [activeName, setActiveName] = useState<string | null>(null)
     const [recent, setRecent] = useState([])
     const [message, setMessage] = useState([])
     const [socket, setSocket] = useState<Socket | null>(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [newChatEmail, setNewChatEmail] = useState('')
     const { id, verified } = useSelector((state: RootState) => state.user)
-
 
     useEffect(() => {
         const socketObj = io('http://localhost:3006', {
@@ -34,24 +35,22 @@ function ChatUI() {
             }
         })
         setSocket(socketObj)
-
-
     }, [])
 
     useEffect(() => {
         if (socket) {
             socket.on('recent_chats', (data) => {
-                console.log(data);
+                console.log(data)
                 setRecent(data.data)
             })
 
             socket.on('previous_messages', (dataObj) => {
-                console.log(dataObj);
+                console.log(dataObj)
                 setMessage(dataObj.data)
             })
 
             socket.on('new_message', (data) => {
-                console.log(data);
+                console.log(data)
                 setMessage((prev) => {
                     return [...prev, data]
                 })
@@ -63,44 +62,47 @@ function ChatUI() {
         }
     }, [socket])
 
-    // useEffect(() => {
-    //     if (socket) {
-    //         socket.emit('join_room', )
-
-    //         return () => {
-    //             socket.emit('leave_room', activeRoom)
-    //         }
-    //     }
-    // }, [activeRoom])
-
     const handleRoomChange = (chat: any) => {
         if (socket) {
-            console.log(chat.id);
+            console.log(chat.id)
             setActiveName(() => {
                 if (chat.type === 'group') {
                     return chat.name
                 } else {
-                    let user = chat.members.filter(((member) => {
+                    let user = chat.members.filter((member) => {
                         return member._id !== id
-
-                    }))
+                    })
                     return user[0].name
                 }
             })
             activeRoom && socket.emit('leave_room', activeRoom)
             socket.emit('join_room', { id: chat._id, type: chat.type }, (response: any) => {
-                console.log(response);
+                console.log(response)
                 setActiveRoom(response.groupId)
             })
-
         }
     }
 
-    return (
+    const handleNewChat = () => {
+        // Logic to start a new chat with newChatEmail
+        if (socket) {
+            activeRoom && socket.emit('leave_room', activeRoom)
 
+            socket.emit('new_chat', newChatEmail)
+            // console.log('Starting chat with:', newChatEmail)
+
+            setIsModalOpen(false)
+        }
+    }
+
+    const onClose = () => {
+        setIsModalOpen(false)
+    }
+
+    return (
         <div className="container mx-auto mt-14 bg-gray-700">
             <div className="min-w-full h-[85vh] border rounded lg:grid lg:grid-cols-3">
-                <div className="border-r border-gray-300 lg:col-span-1">
+                <div className="border-r border-gray-300 lg:col-span-1 relative">
                     <div className="mx-3 my-3">
                         <div className="relative text-gray-100">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -114,37 +116,61 @@ function ChatUI() {
                     <ul className="overflow-auto h-[32rem]">
                         <h2 className="my-2 mb-2 ml-2 text-lg text-gray-100">Chats</h2>
                         <li>
-                            {
-                                recent.map((chat) => {
-                                    return (
-                                        <div key={''} onClick={() => handleRoomChange(chat)}>
-                                            <div className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-600 focus:outline-none">
-                                                <img className="object-cover w-10 h-10 rounded-full" src="https://static.vecteezy.com/system/resources/previews/029/310/139/original/eps10-illustration-of-crowd-of-black-people-icon-user-group-network-sign-corporate-team-group-symbol-isolated-on-white-background-community-member-icon-business-team-work-activity-vector.jpg" alt="username" />
-                                                <div className="w-full pb-2">
-                                                    <div className="flex justify-between">
-                                                        <span className="block ml-2 font-semibold text-gray-100">{chat.name}</span>
-                                                        {/* <span className="block ml-2 text-sm text-gray-100">25 minutes</span> */}
-                                                    </div>
-                                                    {/* <span className="block ml-2 text-sm text-gray-100">bye</span> */}
+                            {recent.map((chat) => {
+                                return (
+                                    <div key={chat._id} onClick={() => handleRoomChange(chat)}>
+                                        <div className="flex items-center px-3 py-2 text-sm transition duration-150 ease-in-out border-b border-gray-300 cursor-pointer hover:bg-gray-600 focus:outline-none">
+                                            <img className="object-cover w-10 h-10 rounded-full" src="/chatIcon.png" alt="username" />
+                                            <div className="w-full pb-2">
+                                                <div className="flex justify-between">
+                                                    <span className="block ml-2 font-semibold text-gray-100">{
+                                                        chat.type === 'group' ? chat.name : chat.members.filter((member: any) => member._id !== id)[0].name
+                                                    }</span>
                                                 </div>
                                             </div>
                                         </div>
-                                    )
-                                })
-                            }
-                            
-
+                                    </div>
+                                )
+                            })}
                         </li>
                     </ul>
+                    <button
+                        className="absolute bottom-4 right-4 w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        +
+                    </button>
                 </div>
-                {
-                    activeRoom ? <MessageWindow name={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} /> : ""
-                }
+                {activeRoom ? <MessageWindow name={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} /> : ""}
             </div>
+
+            {isModalOpen && (
+                <Modal onClose={onClose}>
+                    <div className="bg-gray-700 p-6 rounded shadow-md">
+                        <h2 className="text-lg mb-4">Start a new chat</h2>
+                        <input
+                            type="email"
+                            className="w-full p-2 border border-gray-300 text-gray-950 rounded mb-4"
+                            placeholder="Enter email"
+                            value={newChatEmail}
+                            onChange={(e) => setNewChatEmail(e.target.value)}
+                        />
+                        <button
+                            className="w-full bg-blue-500 text-white p-2 rounded"
+                            onClick={handleNewChat}
+                        >
+                            Start Chat
+                        </button>
+                        <button
+                            className="w-full mt-2 bg-gray-500 text-white p-2 rounded"
+                            onClick={() => setIsModalOpen(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </Modal>
+            )}
         </div>
-
-
-
     )
 }
 

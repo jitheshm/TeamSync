@@ -25,7 +25,7 @@ export default class TenantUserRepository implements ITenantUserRepository {
     }
 
 
-    
+
 
 
     async update(data: ITenantUsers, dbId: string, userId: mongoose.Types.ObjectId) {
@@ -43,11 +43,22 @@ export default class TenantUserRepository implements ITenantUserRepository {
         }
     }
 
-    
 
-    
+    async fetchTenantUserByEmail(email: string, dbId: string): Promise<ITenantUsers | null> {
+        try {
+            console.log(email, dbId);
 
-    
+            const userModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
+            return await userModel.findOne({ email: email })
+        } catch (error) {
+            console.log('Error in UserRepository fetchUserByEmail method');
+
+            throw error
+        }
+    }
+
+
+
 
 }
 

@@ -30,7 +30,7 @@ export default class ChatRepository implements IChatRepository {
             console.log(dbId);
 
             const ChatModel = switchDb<IChats>(`${process.env.SERVICE}_${dbId}`, 'chats')
-            const data = await ChatModel.find({ group_id: group_id })
+            const data = await ChatModel.findOne({ group_id: group_id })
             console.log(data);
 
             return data
