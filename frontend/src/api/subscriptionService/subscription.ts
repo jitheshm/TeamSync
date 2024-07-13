@@ -103,3 +103,14 @@ export const cancelSubscription = async (subscriptionId: string) => {
         throw error
     }
 }
+
+export const updateSubscriptionPlan = async (subscriptionId: string, customerId: string, planId: string) => {
+    try {
+        const response = await instance.patch(`subscription-service/v1/subscriptions/${subscriptionId}/customers/${customerId}`, {
+            plan_id: planId
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
