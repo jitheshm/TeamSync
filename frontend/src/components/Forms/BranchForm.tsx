@@ -22,6 +22,7 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
     const [location, setLocation] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const router = useRouter()
+    const [apiError, setApiError] = useState<string | null>(null)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -58,6 +59,7 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
                 }).catch((err) => {
                     console.log(err);
 
+
                     if (err.response.status === 401) {
                         dispatch(logout())
 
@@ -77,6 +79,8 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
                         dispatch(logout())
 
                         router.push('/login')
+                    } else {
+                        setApiError(err.response.data.error)
                     }
                 })
 
@@ -99,6 +103,7 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
     return (
         <div className="bg-gray-800 border rounded-lg px-8 py-6 mx-auto my-8 max-w-2xl md:mt-60">
             <h2 className="text-2xl font-medium mb-4 text-gray-100 text-center">Create New Branch</h2>
+            {apiError && <p className="text-red-500 text-center mb-4">{apiError}</p>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="location" className="block text-gray-100 font-medium mb-2">Location</label>

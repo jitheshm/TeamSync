@@ -87,5 +87,41 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
 
     }
 
-    
+    async fetchAllowedBranchCount(tenantId: mongoose.Types.ObjectId) {
+        try {
+            const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
+            const res = await SubscriptionModel.aggregate([
+                {
+                    $match: {
+                        tenant_id: tenantId
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'plans',
+                        localField: 'plan_id',
+                        foreignField: 'stripe_plan_id',
+                        as: 'plan'
+                    }
+                },
+                {
+                    $unwind: '$plan'
+                },
+                {
+                    $project: {
+                        allowed_branches: '$plan.features.branches'
+                    }
+                }
+            ]).exec()
+            console.log(res);
+            // return 0
+            return res[0].allowed_branches as number
+        } catch (error) {
+            console.log('Error in SubscriptionRepository fetchAllowedBranchCount method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
 }

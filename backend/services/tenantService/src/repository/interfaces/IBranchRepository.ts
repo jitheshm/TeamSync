@@ -12,5 +12,6 @@ export interface IBranchRepository {
     delete(dbId: string, branchId: mongoose.Types.ObjectId): Promise<IBranches | null>
     fetchBranchByLocation(dbId: string, branchLocation: string): Promise<IBranches | null>
     fetchSpecificBranches(dbId: string,branchId:mongoose.Types.ObjectId): Promise<((IBranches & Document)|null)>
+    fetchBranchCount(dbId: string): Promise<number>
 
 }

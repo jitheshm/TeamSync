@@ -31,6 +31,8 @@ const BranchTable: React.FC = () => {
         });
     }, [searchTerm, toggle, page, limit]);
 
+
+
     const handleDelete = (id: string) => {
         Swal.fire({
             title: "Are you sure?",
