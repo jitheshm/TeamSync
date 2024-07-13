@@ -28,9 +28,22 @@ export default (request: Request, response: Response) => {
     // Handle the event
     switch (event.type) {
 
-        case 'customer.subscription.deleted':
+        case 'customer.subscription.deleted': {
+            const eventObj = event.data.object
+            console.log(eventObj);
+            console.log('customer.subscription.deleted captured');
+
+
+            const dataObj = {
+                stripe_subscription_id: eventObj.id as string,
+                status: "cancelled",
+                cancel_date: new Date()
+            }
+            subscriptionRepository.update(dataObj)
 
             break;
+        }
+
         case 'invoice.created':
             {
                 const eventObj = event.data.object

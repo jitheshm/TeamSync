@@ -94,3 +94,12 @@ export const fetchSubscriptionForUser = async () => {
         throw error
     }
 }
+
+export const cancelSubscription = async (subscriptionId: string) => {
+    try {
+        const response = await instance.patch(`subscription-service/v1/subscriptions/${subscriptionId}/cancel`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
