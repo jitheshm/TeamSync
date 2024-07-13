@@ -4,6 +4,7 @@ import UsersSchema from "../schemas/userSchema";
 import TenantsSchema from "../schemas/tenantSchema";
 import BranchesSchema from "../schemas/branchSchema";
 import SubscriptionSchema from "../schemas/subscriptionSchema";
+import planSchema from "../schemas/planSchema";
 
 // Define a generic function type
 export default function getModel<T>(dbname: string, modelName: string): Model<T & Document> {
@@ -19,6 +20,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
                 break;
             case 'subscriptions':
                 schema = SubscriptionSchema;
+                break;
+            case 'plans':
+                schema = planSchema;
                 break;
             default:
                 throw new Error('Model not found');

@@ -1,6 +1,7 @@
 
 import IConsumer from "../interfaces/IConsumer"
 import BranchConsumer from "./consumers/BranchConsumer"
+import PlanConsumer from "./consumers/PlanConsumer"
 import ProjectConsumer from "./consumers/ProjectConsumer"
 import SubscriptionConsumer from "./consumers/SubscriptionConsumer"
 import TenantConsumer from "./consumers/TenantConsumer"
@@ -14,11 +15,13 @@ export const connectConsumers = () => {
     let tenantUserConsumer: IConsumer = new TenantUserConsumer()
     let projectConsumer: IConsumer = new ProjectConsumer()
     let subscriptionConsumer: IConsumer = new SubscriptionConsumer()
+    let planConsumer: IConsumer = new PlanConsumer()
     userConsumer.consume()
     tenantConsumer.consume()
     branchConsumer.consume()
     tenantUserConsumer.consume()
     projectConsumer.consume()
     subscriptionConsumer.consume()
+    planConsumer.consume()
 
 } 

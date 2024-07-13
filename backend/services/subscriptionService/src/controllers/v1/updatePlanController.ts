@@ -5,9 +5,13 @@ import PlanRepository from "../../repository/implementations/PlanRepository";
 import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
 import mongoose, { Document } from 'mongoose';
 import Stripe from 'stripe';
+import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+import { KafkaConnection } from "../../config/kafka/KafkaConnection";
+import PlanProducer from "../../events/kafka/producers/PlanProducer";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 const planRepository: IPlanRepository = new PlanRepository();
+const kafkaConnection: IKafkaConnection = new KafkaConnection()
 
 const updateStripePlan = async (plan: IPlan & Document) => {
     const product = await stripe.products.update(
@@ -27,7 +31,7 @@ export default async (req: Request, res: Response) => {
         }
         const bodyObj: Partial<IPlan> = req.body;
 
-       const {price,currency,bill_cycle,...dataObj}=bodyObj
+        const { price, currency, bill_cycle, ...dataObj } = bodyObj
 
         const id = new mongoose.Types.ObjectId(req.params.planId);
         let resObj = await planRepository.update(dataObj, id);
@@ -35,6 +39,10 @@ export default async (req: Request, res: Response) => {
             return res.status(404).json({ message: "Plan not found" });
 
         // updateStripePlan(resObj) 
+        let producer = await kafkaConnection.getProducerInstance()
+        let planProducer = new PlanProducer(producer, 'main', 'plans')
+        planProducer.sendMessage('update', resObj)
+
 
         res.status(200).json({ message: "Plan updated successfully" });
 

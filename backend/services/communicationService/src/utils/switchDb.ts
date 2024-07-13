@@ -8,6 +8,7 @@ import ProjectsSchema from "../schemas/projectSchema";
 import ChatSchema from "../schemas/chatSchema";
 import messageSchema from "../schemas/messageSchema";
 import SubscriptionSchema from "../schemas/subscriptionSchema";
+import planSchema from "../schemas/planSchema";
 
 export default function getModel<T>(dbname: string, modelName: string): Model<T & Document> {
     let schema: Schema | null = null;
@@ -22,6 +23,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
                 break;
             case 'subscriptions':
                 schema = SubscriptionSchema;
+                break;
+            case 'plans':
+                schema = planSchema;
                 break;
             default:
                 throw new Error('Model not found');

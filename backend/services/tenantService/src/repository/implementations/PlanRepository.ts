@@ -14,7 +14,6 @@ export default class PlanRepository implements IPlanRepository {
             const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
             const newPlan = new PlanModel(data)
             await newPlan.save()
-            return newPlan
         } catch (error) {
             console.log('Error in PlanRepository create method');
 
