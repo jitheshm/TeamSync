@@ -45,7 +45,7 @@ function Index() {
         }).then((result) => {
 
             if (result.isConfirmed) {
-                cancelSubscription(data?.subscription_id as string).then(() => {
+                cancelSubscription(data?.stripe_subscription_id as string).then(() => {
                     setData(null);
                 }).catch((err) => {
                     if (err.response.status === 401) {
