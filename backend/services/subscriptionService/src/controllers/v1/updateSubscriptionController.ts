@@ -4,9 +4,12 @@ import Stripe from "stripe";
 import createSubscriptionController from "./createSubscriptionController";
 import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
+import { KafkaConnection } from "../../config/kafka/KafkaConnection";
+import SubscriptionProducer from "../../events/kafka/producers/SubscriptionProducer";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepository
+const kafkaConnection = new KafkaConnection()
 export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Response) => {
 
 
@@ -38,7 +41,14 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
 
 
         }
-        subscriptionRepository.update(dataObj)
+        const result = await subscriptionRepository.update(dataObj)
+
+
+        if (result) {
+            let producer = await kafkaConnection.getProducerInstance()
+            let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
+            subscriptionProducer.sendMessage('update', result)
+        }
 
         res.json(subscription);
 

@@ -139,5 +139,18 @@ export default class BranchRepository implements IBranchRepository {
         }
     }
 
+    fetchBranchCount(dbId: string) {
+        try {
+            const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
+            return BranchModel.countDocuments()
+        } catch (error) {
+            console.log('Error in Branch Repository fetchUser method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
 
 }

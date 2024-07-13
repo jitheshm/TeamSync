@@ -29,6 +29,8 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
             return res.status(409).json({ error: "Branch with this location already exist" });
         }
 
+        // const branchCount= await branchRepository.fetchBranchCount(req.user?.decode?.tenantId)
+
         const bodyObj: Partial<IBranches> = req.body as Partial<IBranches>;
         bodyObj.branch_id = '#branch' + new Date().getTime() + Math.floor(Math.random() * 1000)
 

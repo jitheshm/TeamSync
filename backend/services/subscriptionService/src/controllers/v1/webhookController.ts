@@ -3,15 +3,18 @@ import Stripe from "stripe";
 import createSubscriptionController from "./createSubscriptionController";
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
+import SubscriptionProducer from "../../events/kafka/producers/SubscriptionProducer";
+import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 const endpointSecret = process.env.ENDPOINT_SECRET as string;
 
 const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepository
+const kafkaConnection = new KafkaConnection()
 
 
-export default (request: Request, response: Response) => {
+export default async (request: Request, response: Response) => {
     const sig = request.headers['stripe-signature'] as string | string[] | Buffer;
 
     let event;
@@ -39,7 +42,12 @@ export default (request: Request, response: Response) => {
                 status: "cancelled",
                 cancel_date: new Date()
             }
-            subscriptionRepository.update(dataObj)
+            const result = await subscriptionRepository.update(dataObj)
+            if (result) {
+                let producer = await kafkaConnection.getProducerInstance()
+                let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
+                subscriptionProducer.sendMessage('update', result)
+            }
 
             break;
         }
@@ -55,7 +63,12 @@ export default (request: Request, response: Response) => {
                     status: "pending",
                     stripe_latest_invoice: eventObj.id
                 }
-                subscriptionRepository.update(dataObj)
+                const result = await subscriptionRepository.update(dataObj)
+                if (result) {
+                    let producer = await kafkaConnection.getProducerInstance()
+                    let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
+                    subscriptionProducer.sendMessage('update', result)
+                }
             }
             break;
         case 'invoice.payment_succeeded':
@@ -68,7 +81,12 @@ export default (request: Request, response: Response) => {
                     stripe_subscription_id: eventObj.subscription as string,
                     status: "paid"
                 }
-                subscriptionRepository.update(dataObj)
+                const result = await subscriptionRepository.update(dataObj)
+                if (result) {
+                    let producer = await kafkaConnection.getProducerInstance()
+                    let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
+                    subscriptionProducer.sendMessage('update', result)
+                }
             }
 
             break;
@@ -82,7 +100,12 @@ export default (request: Request, response: Response) => {
                     stripe_subscription_id: eventObj.subscription as string,
                     status: "failed"
                 }
-                subscriptionRepository.update(dataObj)
+                const result = await subscriptionRepository.update(dataObj)
+                if (result) {
+                    let producer = await kafkaConnection.getProducerInstance()
+                    let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
+                    subscriptionProducer.sendMessage('update', result)
+                }
             }
             break;
 

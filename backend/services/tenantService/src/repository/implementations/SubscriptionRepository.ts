@@ -16,7 +16,6 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
             const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
             const subscription = new SubscriptionModel(data)
             await subscription.save()
-            return subscription
         } catch (error) {
             console.log('Error in SubscriptionRepository create method');
 
@@ -29,8 +28,8 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
     async update(data: ISubscriptions) {
         try {
             const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
-            const res = await SubscriptionModel.findOneAndUpdate({ stripe_subscription_id: data.stripe_subscription_id }, data,{new:true})
-            return res
+            const res = await SubscriptionModel.updateOne({ stripe_subscription_id: data.stripe_subscription_id }, data)
+
         } catch (error) {
             console.log('Error in SubscriptionRepository update method');
 
@@ -88,73 +87,5 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
 
     }
 
-    async fetchAllSubscriptions() {
-        try {
-            const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
-            const res = await SubscriptionModel.aggregate([
-                {
-                    $lookup: {
-                        from: 'plans',
-                        localField: 'plan_id',
-                        foreignField: 'stripe_plan_id',
-                        as: 'plan'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'tenants',
-                        localField: 'tenant_id',
-                        foreignField: '_id',
-                        as: 'tenant'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'user_id',
-                        foreignField: '_id',
-                        as: 'user'
-
-                    }
-                },
-                {
-                    $unwind: '$plan'
-                },
-                {
-                    $unwind: '$tenant'
-                },
-                {
-                    $unwind: '$user'
-
-                }, {
-                    $project: {
-                        _id: 1,
-                        subscription_id: 1,
-                        user: {
-                            _id:1,
-                            email: 1
-                        },
-                        plan: {
-                            name: 1
-                        },
-                        tenant: {
-                            company_name: 1
-                        },
-
-                    }
-                }
-
-            ]).exec()
-            console.log(res);
-
-
-            return res
-        } catch (error) {
-            console.log('Error in SubscriptionRepository update method');
-
-            console.log(error);
-
-            throw error
-        }
-    }
+    
 }

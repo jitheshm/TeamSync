@@ -3,6 +3,7 @@ import { dbInstance } from "../config/db/connect";
 import UsersSchema from "../schemas/userSchema";
 import TenantsSchema from "../schemas/tenantSchema";
 import BranchesSchema from "../schemas/branchSchema";
+import SubscriptionSchema from "../schemas/subscriptionSchema";
 
 // Define a generic function type
 export default function getModel<T>(dbname: string, modelName: string): Model<T & Document> {
@@ -15,6 +16,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
                 break;
             case 'users':
                 schema = UsersSchema;
+                break;
+            case 'subscriptions':
+                schema = SubscriptionSchema;
                 break;
             default:
                 throw new Error('Model not found');
