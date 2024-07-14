@@ -9,6 +9,7 @@ import UserProducer from '../../events/kafka/producers/UserProducer';
 import { IUserRepository } from '../../repository/interface/IUserRepository';
 import app from '../../config/firebase/firebaseConfig';
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 
 interface DecodedToken {
     uid: string;
@@ -19,7 +20,7 @@ interface DecodedToken {
     };
 }
 
-interface UserServiceProps{
+interface UserServiceProps {
     userRepository: IUserRepository;
     kafkaConnection?: IKafkaConnection;
 
@@ -30,7 +31,7 @@ export class UserService {
     private stripe: Stripe;
     private kafkaConnection?: IKafkaConnection;
 
-    constructor({userRepository, kafkaConnection}: UserServiceProps) {
+    constructor({ userRepository, kafkaConnection }: UserServiceProps) {
         this.userRepository = userRepository;
         this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
         this.kafkaConnection = kafkaConnection;
@@ -132,5 +133,36 @@ export class UserService {
         }
 
         return userData;
+    }
+
+    async signup(email: string): Promise<{ token: string; name: string; id: mongoose.Schema.Types.ObjectId } | null> {
+        try {
+            const userObj = await this.userRepository.verifyUser(email);
+
+            // Kafka producer logic
+            let producer = await this.kafkaConnection?.getProducerInstance();
+            if (producer) {
+                let userProducer = new UserProducer(producer, 'main', 'users');
+                userProducer.sendMessage('update', userObj);
+            }
+
+            // JWT token generation
+            const token = jwt.sign({ email: userObj.email, name: userObj.first_name, id: userObj._id }, process.env.JWT_SECRET_KEY!, { expiresIn: '1h' });
+
+            return { token, name: userObj.first_name, id: userObj._id };
+        } catch (error) {
+            console.log(error);
+            throw new Error("An unexpected error occurred. Please try again later.");
+        }
+    }
+
+    async forgotPassword(email: string): Promise<string> {
+        try {
+            const token = jwt.sign({ email: email }, process.env.JWT_OTP_SECRET_KEY!, { expiresIn: '1h' });
+            return token;
+        } catch (error) {
+            console.log(error);
+            throw new Error("An unexpected error occurred. Please try again later.");
+        }
     }
 }
