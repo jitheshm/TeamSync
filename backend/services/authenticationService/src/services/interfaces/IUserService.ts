@@ -9,5 +9,5 @@ export interface IUserService {
     forgotPassword(email: string): Promise<string>
     sendOtpAndVerifyUser(email: string, context: string): Promise<void>
     updateUserPassword(email: string, newPassword: string): Promise<IUsers | null>
-    
+    handleUserEvent(eventType: string, eventData: any): Promise<void>;
 }

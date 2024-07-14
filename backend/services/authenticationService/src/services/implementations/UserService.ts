@@ -10,8 +10,10 @@ import { IUserRepository } from '../../repository/interface/IUserRepository';
 import app from '../../config/firebase/firebaseConfig';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
-import { sendOtp } from "../../utils/otp";
+import { generateOtp, sendOtp } from "../../utils/otp";
 import hashPassword from '../../utils/bcrypt';
+import { IOtpRepository } from '../../repository/interface/IOtpRepository';
+import OtpProducer from '../../events/kafka/producers/OtpProducer';
 
 interface DecodedToken {
     uid: string;
@@ -192,7 +194,7 @@ export class UserService {
             const updateUserObj = await this.userRepository.updateUser({ email, password: hashedPassword });
 
             if (!updateUserObj) {
-                return null; 
+                return null;
             }
 
             // Send Kafka message
@@ -208,5 +210,27 @@ export class UserService {
         } catch (error) {
             throw error;
         }
+    }
+
+    async handleUserEvent(eventType: string, eventData: any): Promise<void> {
+        switch (eventType) {
+            case 'create':
+                await this.createUser(eventData);
+                break;
+            case 'update':
+                await this.updateUser(eventData);
+                break;
+            default:
+                throw new Error(`Unsupported event type: ${eventType}`);
+        }
+    }
+
+    private async createUser(eventData: any): Promise<void> {
+        await this.userRepository.create(eventData.data);
+        sendOtp(eventData.data.email, 'signup');
+    }
+
+    private async updateUser(eventData: any): Promise<void> {
+        await this.userRepository.updateUser(eventData.data);
     }
 }
