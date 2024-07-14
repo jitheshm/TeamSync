@@ -48,4 +48,18 @@ export default class TenantUserService implements ITenantUserService {
             throw error;
         }
     }
+
+    async handleTenantUserEvent(eventType: string, data: any, dbName?: string): Promise<void> {
+        switch (eventType) {
+            case 'create':
+                await this.tenantUserRepository.create(data, dbName!);
+                break;
+            case 'update':
+                await this.tenantUserRepository.update(data, dbName!, data._id);
+                break;
+           
+            default:
+                throw new Error(`Unknown event type: ${eventType}`);
+        }
+    }
 }
