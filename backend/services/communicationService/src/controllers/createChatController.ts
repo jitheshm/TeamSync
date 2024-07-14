@@ -1,12 +1,14 @@
-import IChats from "../entities/ChatEntity"
-import ChatRepository from "../repository/implementations/ChatRepository"
+import IChats from "../entities/ChatEntity";
+import ChatRepository from "../repository/implementations/ChatRepository";
+import { IChatRepository } from "../repository/interfaces/IChatRepository";
+import ChatService from "../services/implementations/ChatService";
 
-const chatRepository = new ChatRepository()
-
+const chatRepository: IChatRepository = new ChatRepository();
+const chatService = new ChatService(chatRepository);
 
 export default async (dbId: string, data: IChats) => {
     try {
-        await chatRepository.create(dbId, data)
+        await chatService.createChat(dbId, data);
     } catch (error) {
         console.log(error);
     }
