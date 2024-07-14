@@ -3,7 +3,7 @@ import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
 import TenantUserRepository from "../../../repository/implementations/TenantUserRepository";
 import { ITenantUserRepository } from "../../../repository/interfaces/ITenantUserRepository";
-import { sendMail } from "../../../services/projectMailService";
+import { sendMail } from "../../../utils/projectMailService";
 
 
 

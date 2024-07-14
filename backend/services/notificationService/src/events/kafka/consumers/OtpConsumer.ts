@@ -2,7 +2,7 @@
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
 import { IKafkaConnection } from "../../../interfaces/IKafkaConnection";
-import { sendMail } from "../../../services/mailService";
+import { sendMail } from "../../../utils/mailService";
 
 const kafkaConnection:IKafkaConnection = new KafkaConnection()
 
