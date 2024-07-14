@@ -1,15 +1,17 @@
-import mongoose from "mongoose"
-import ChatRepository from "../repository/implementations/ChatRepository"
+import mongoose from "mongoose";
+import ChatRepository from "../repository/implementations/ChatRepository";
+import ChatService from "../services/implementations/ChatService";
 
-const chatRepository = new ChatRepository()
+const chatRepository = new ChatRepository();
+const chatService = new ChatService(chatRepository);
 
-export default (dbId: string, id: string) => {
+export default async (dbId: string, id: string) => {
     try {
-        console.log(id);
-        
-        const userId=new mongoose.Types.ObjectId(id)
-        return chatRepository.fechAllChats(dbId, userId)
-    } catch (error) {
+        console.log("Fetching chats for user:", id);
 
+        return await chatService.fetchAllChats(dbId, id);
+    } catch (error) {
+        console.log(error);
+        throw new Error("Failed to fetch chats");
     }
-}
+};
