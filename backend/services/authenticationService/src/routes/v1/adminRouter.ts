@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { checkSchema } from "express-validator";
 import adminLoginValidator from "../../validators/adminLoginValidator";
-import adminLoginController from "../../controllers/v1/adminLoginController";
 import adminAuth from "../../middlewares/adminAuth";
 import admintokenVerifyController from "../../controllers/v1/admintokenVerifyController";
+import adminLoginController from "../../controllers/v1/adminLoginController";
 
 
 const router = Router()

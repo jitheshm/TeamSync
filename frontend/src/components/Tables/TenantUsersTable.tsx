@@ -46,7 +46,7 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
         }).catch((err: any) => {
             if (err.response.status === 401) {
                 dispatch(logout());
-                router.push('/employee/login');
+                admin ? router.push('/dashboard/login') : router.push('/employee/login');
             }
         });
     }, [toggle, role, search, page, limit]);

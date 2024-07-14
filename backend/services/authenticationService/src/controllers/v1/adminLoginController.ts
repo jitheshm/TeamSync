@@ -1,40 +1,34 @@
-import { Request, Response } from "express";
-import { validationResult } from "express-validator";
-import AdminRepository from "../../repository/implementations/adminRepository";
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { IAdminRepository } from "../../repository/interface/IAdminRepository";
+import { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
+import AdminRepository from '../../repository/implementations/adminRepository';
+import { IAdminService } from '../../services/interfaces/IAdminService';
+import AdminService from '../../services/implementations/AdminService';
 
-let adminRepo:IAdminRepository=new AdminRepository()
 
 export default async (req: Request, res: Response) => {
     try {
-        const result = validationResult(req);
-        if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
 
-        const { user_name, password }: { user_name: string, password: string } = req.body;
+        const { user_name, password }: { user_name: string; password: string } = req.body;
+        console.log('user_name:', user_name);
+        console.log('password', password);
         
-        const adminObj=await adminRepo.fetchUser(user_name)
-        if(!adminObj){
-            return res.status(404).json({error:"User not found"});
-        }
-        const resObj=await bcrypt.compare(password, adminObj.password)
-        if(!resObj){
-            return res.status(401).json({error:"Invalid email or password"});
-        }
+        const adminRepository = new AdminRepository();
+        const adminService: IAdminService = new AdminService(adminRepository);
 
-        if(!process.env.JWT_ADMIN_SECRET_KEY){
-            return res.status(500).json({error:"An unexpected error occurred. Please try again later."})
+        const token = await adminService.authenticateAdmin(user_name, password);
+
+        if (!token) {
+            return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        const token = jwt.sign({name:'admin'},process.env.JWT_ADMIN_SECRET_KEY ,{expiresIn:'1h'});
-        res.status(200).json({message:"admin verified",token:token});
-
+        res.status(200).json({ message: 'Admin verified', token });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({error:"An unexpected error occurred. Please try again later."});
+        console.error(error);
+        res.status(500).json({ error: 'An unexpected error occurred. Please try again later.' });
     }
-}
+};
