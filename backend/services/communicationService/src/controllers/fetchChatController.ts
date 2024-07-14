@@ -1,11 +1,16 @@
-import ChatRepository from "../repository/implementations/ChatRepository"
+import ChatRepository from "../repository/implementations/ChatRepository";
+import ChatService from "../services/implementations/ChatService";
 
-const chatRepository = new ChatRepository()
+const chatRepository = new ChatRepository();
+const chatService = new ChatService(chatRepository);
 
-export default (dbId: string, groupId: string) => {
+export default async (dbId: string, groupId: string) => {
     try {
-        return chatRepository.fechChats(dbId, groupId)
+        console.log("Fetching chats for group:", groupId);
+        
+        return await chatService.fetchChats(dbId, groupId);
     } catch (error) {
-
+        console.log(error);
+        throw new Error("Failed to fetch chats");
     }
-}
+};

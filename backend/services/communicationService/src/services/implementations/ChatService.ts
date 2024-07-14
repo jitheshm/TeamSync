@@ -32,4 +32,13 @@ export default class ChatService implements IChatService {
             throw new Error("Failed to fetch chats");
         }
     }
+
+    async fetchChats(dbId: string, groupId: string): Promise<(IChats & mongoose.Document<unknown, any, any>) | null> {
+        try {
+            return await this.chatRepository.fechChats(dbId, groupId);
+        } catch (error) {
+            console.log(error);
+            throw new Error("Failed to fetch chats");
+        }
+    }
 }
