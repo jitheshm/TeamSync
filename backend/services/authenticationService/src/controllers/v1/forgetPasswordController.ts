@@ -10,7 +10,7 @@ import OtpService from '../../services/implementations/OtpService';
 const userRepository = new UserRepository();
 const otpRepository = new OtpRepository();
 const kafkaConnection = new KafkaConnection();
-const otpService = new OtpService(userRepository, otpRepository, kafkaConnection);
+const otpService = new OtpService({ userRepository, otpRepository, kafkaConnection });
 
 export default async (req: Request, res: Response) => {
     try {
@@ -24,7 +24,7 @@ export default async (req: Request, res: Response) => {
         await otpService.sendOtpForPasswordReset(email);
 
         res.status(200).json({ message: 'OTP sent successfully' });
-    } catch (error:any) {
+    } catch (error: any) {
         console.error(error);
         if (error.message === 'User not found') {
             return res.status(404).json({ error: 'User not found' });

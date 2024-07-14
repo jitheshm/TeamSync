@@ -10,7 +10,7 @@ import { UserService } from '../../services/implementations/UserService';
 
 const userRepository = new UserRepository();
 const kafkaConnection: IKafkaConnection = new KafkaConnection();
-const userService: IUserService = new UserService(userRepository, kafkaConnection);
+const userService: IUserService = new UserService({ userRepository, kafkaConnection });
 
 export default async (req: Request, res: Response) => {
     try {

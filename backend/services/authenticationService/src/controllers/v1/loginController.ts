@@ -8,7 +8,7 @@ import UserRepository from '../../repository/implementations/UserRepository';
 import { UserService } from '../../services/implementations/UserService';
 
 const userRepository: IUserRepository = new UserRepository();
-const userService = new UserService(userRepository);
+const userService = new UserService({userRepository});
 
 export default async (req: Request, res: Response) => {
     try {

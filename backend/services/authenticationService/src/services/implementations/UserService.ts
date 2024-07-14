@@ -19,12 +19,18 @@ interface DecodedToken {
     };
 }
 
+interface UserServiceProps{
+    userRepository: IUserRepository;
+    kafkaConnection?: IKafkaConnection;
+
+}
+
 export class UserService {
     private userRepository: IUserRepository;
     private stripe: Stripe;
     private kafkaConnection?: IKafkaConnection;
 
-    constructor(userRepository: IUserRepository, kafkaConnection?: IKafkaConnection) {
+    constructor({userRepository, kafkaConnection}: UserServiceProps) {
         this.userRepository = userRepository;
         this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
         this.kafkaConnection = kafkaConnection;
