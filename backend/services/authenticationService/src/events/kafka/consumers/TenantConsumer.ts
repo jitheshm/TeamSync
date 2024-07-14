@@ -1,49 +1,44 @@
-
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
 import TenantRepository from "../../../repository/implementations/TenantRepository";
-
-
+import TenantService from "../../../services/implementations/TenantService";
+import { ITenantService } from "../../../services/interfaces/ITenantService";
 
 export default class TenantConsumer implements IConsumer {
+    private tenantService: ITenantService;
+
+    constructor() {
+        const tenantRepository = new TenantRepository();
+        this.tenantService = new TenantService(tenantRepository);
+    }
 
     async consume() {
         try {
-            let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenants_group`)
-            await consumer.subscribe({ topic: 'tenants-events', fromBeginning: true })
+            const kafkaConnection = new KafkaConnection();
+            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenants_group`);
+            await consumer.subscribe({ topic: 'tenants-events', fromBeginning: true });
+
             await consumer.run({
                 eachMessage: async ({ topic, partition, message }) => {
-                    console.log("iam new tenant consumer");
-                    let tenantRepository = new TenantRepository()
-                    let data = message.value?.toString()
+                    console.log("Tenant consumer received a message.");
+                    const data = message.value?.toString();
                     console.log(data);
-                    console.log("iam new tenant consumer>>>>>>>>>>>>>>>");
 
                     if (data) {
-                        let dataObj = JSON.parse(data)
-                        console.log(data)
+                        const dataObj = JSON.parse(data);
+                        console.log(data);
                         const origin = message.headers?.origin?.toString();
 
-                        if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
-
-                                    await tenantRepository.create(dataObj.data)
-                                    break;
-                                
-                            }
+                        if (origin !== process.env.SERVICE) {
+                            await this.tenantService.handleTenantEvent(dataObj.eventType, dataObj.data);
                         }
-
                     }
                 },
-            })
-            console.log("subscribed to new tenant topic");
+            });
 
+            console.log("Subscribed to tenants-events topic.");
         } catch (error) {
-            console.log(error);
-
+            console.error("Error in consuming messages:", error);
         }
     }
-
 }
