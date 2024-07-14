@@ -1,83 +1,39 @@
-import mongoose from "mongoose";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import IChats from "../../entities/ChatEntity";
 import IConsumer from "../../interfaces/IConsumer";
-import ChatRepository from "../../repository/implementations/ChatRepository";
 import ProjectRepository from "../../repository/implementations/ProjectRepository";
+import ChatRepository from "../../repository/implementations/ChatRepository";
+import ProjectService from "../../services/implementations/ProjectService";
 
-
-
-let kafkaConnection = new KafkaConnection()
-let projectRepository = new ProjectRepository()
-let chatRepository = new ChatRepository()
+const kafkaConnection = new KafkaConnection();
+const projectRepository = new ProjectRepository();
+const chatRepository = new ChatRepository();
+const projectService = new ProjectService(projectRepository, chatRepository);
 
 export default class ProjectConsumer implements IConsumer {
-
     async consume() {
         try {
+            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_project_group`);
+            await consumer.subscribe({ topic: "project-events", fromBeginning: true });
 
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_project_group`)
-            await consumer.subscribe({ topic: 'project-events', fromBeginning: true })
             await consumer.run({
                 eachMessage: async ({ topic, partition, message }) => {
-                    console.log("iam new project consumer");
-
-
-                    let data = message.value?.toString()
-                    console.log(data);
-                    console.log("iam new project consumer>>>>>>>>>>>>>>>");
+                    console.log("Received new project event");
+                    const data = message.value?.toString();
 
                     if (data) {
-                        let dataObj = JSON.parse(data)
-                        console.log(dataObj)
+                        const dataObj = JSON.parse(data);
                         const origin = message.headers?.origin?.toString();
 
-                        if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create': {
-                                    await projectRepository.create(dataObj.data, dataObj.dbName)
-                                    // console.log(dataObj.data.testers_id.map((id: any) => new mongoose.Types.ObjectId(id)));
-                                    
-                                    const developers = dataObj.data.developers_id.map((id: any) => new mongoose.Types.ObjectId(id))
-                                    const testers = dataObj.data.testers_id.map((id: any) => new mongoose.Types.ObjectId(id))
-                                    console.log(dataObj.data);
-                                    
-                                    console.log(dataObj.data.project_manager_id);
-                                    
-                                    const data = {
-                                        name: dataObj.data.name,
-                                        group_id: dataObj.data._id,
-                                        type: 'group',
-                                        members: [...developers, ...testers, new mongoose.Types.ObjectId(dataObj.data.project_manager_id)],
-
- 
-                                    }
-                                    console.log(data);
-                                    
-                                    await chatRepository.create(dataObj.dbName, data as IChats)
-                                    break;
-
-                                }
-
-
-                                case 'update':
-
-                                    await projectRepository.update(dataObj.data, dataObj.dbName, dataObj.data._id)
-                                    break;
-
-
-                            }
+                        if (origin !== process.env.SERVICE) {
+                            await projectService.handleEvent(dataObj.eventType, dataObj.data, dataObj.dbName);
                         }
-
                     }
                 },
-            })
-            console.log("subscribed to new project topic");
+            });
 
+            console.log("Subscribed to new project topic");
         } catch (error) {
             console.log(error);
-
         }
     }
-
 }
