@@ -1,10 +1,12 @@
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import IConsumer from "../../interfaces/IConsumer";
 import PlanRepository from "../../repository/implementations/PlanRepository";
+import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
 import PlanService from "../../services/implementations/PlanService";
+import { IPlanService } from "../../services/interfaces/IPlanService";
 
-const planRepository = new PlanRepository();
-const planService = new PlanService(planRepository);
+const planRepository:IPlanRepository = new PlanRepository();
+const planService:IPlanService = new PlanService(planRepository);
 
 export default class PlanConsumer implements IConsumer {
     private kafkaConnection: KafkaConnection;

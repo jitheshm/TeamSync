@@ -1,51 +1,40 @@
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import IConsumer from "../../interfaces/IConsumer";
+import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
+import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
+import SubscriptionService from "../../services/implementations/SubscriptionService";
+import { ISubscriptionService } from "../../services/interfaces/ISubscriptionService";
 
-
-
+const kafkaConnection:IKafkaConnection = new KafkaConnection();
+const subscriptionRepository:ISubscriptionRepository = new SubscriptionRepository();
+const subscriptionService:ISubscriptionService = new SubscriptionService(subscriptionRepository);
 
 export default class SubscriptionConsumer implements IConsumer {
-
     async consume() {
         try {
-            let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_sub_group`)
-            await consumer.subscribe({ topic: 'sub-events', fromBeginning: true })
+            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_sub_group`);
+            await consumer.subscribe({ topic: "sub-events", fromBeginning: true });
+
             await consumer.run({
                 eachMessage: async ({ topic, partition, message }) => {
-                    console.log("iam new sub consumer");
-                    let subscriptionRepository = new SubscriptionRepository()
-                    let data = message.value?.toString()
-                    console.log(data);
-                    console.log("iam new sub consumer");
+                    console.log("Received new subscription event");
+                    const data = message.value?.toString();
 
                     if (data) {
-                        let dataObj = JSON.parse(data)
-                        console.log(data)
+                        const dataObj = JSON.parse(data);
                         const origin = message.headers?.origin?.toString();
 
-                        if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
-
-                                    await subscriptionRepository.create(dataObj.data)
-                                    break;
-                                case 'update':
-                                    await subscriptionRepository.update(dataObj.data)
-                                    break;
-                            }
+                        if (origin !== process.env.SERVICE) {
+                            await subscriptionService.handleEvent(dataObj.eventType, dataObj.data);
                         }
-
                     }
                 },
-            })
-            console.log("subscribed to new sub topic");
+            });
 
+            console.log("Subscribed to new subscription topic");
         } catch (error) {
             console.log(error);
-
         }
     }
-
 }

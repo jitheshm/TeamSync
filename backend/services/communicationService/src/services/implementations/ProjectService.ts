@@ -4,12 +4,13 @@ import IChats from "../../entities/ChatEntity";
 import mongoose from "mongoose";
 import { IProjectService } from "../interfaces/IProjectService";
 import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
+import { IChatRepository } from "../../repository/interfaces/IChatRepository";
 
 export default class ProjectService implements IProjectService {
     private projectRepository: IProjectRepository;
-    private chatRepository: ChatRepository;
+    private chatRepository: IChatRepository;
 
-    constructor(projectRepository: IProjectRepository, chatRepository: ChatRepository) {
+    constructor(projectRepository: IProjectRepository, chatRepository: IChatRepository) {
         this.projectRepository = projectRepository;
         this.chatRepository = chatRepository;
     }

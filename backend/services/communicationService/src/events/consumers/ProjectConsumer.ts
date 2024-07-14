@@ -3,11 +3,15 @@ import IConsumer from "../../interfaces/IConsumer";
 import ProjectRepository from "../../repository/implementations/ProjectRepository";
 import ChatRepository from "../../repository/implementations/ChatRepository";
 import ProjectService from "../../services/implementations/ProjectService";
+import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
+import { IChatRepository } from "../../repository/interfaces/IChatRepository";
+import { IProjectService } from "../../services/interfaces/IProjectService";
 
-const kafkaConnection = new KafkaConnection();
-const projectRepository = new ProjectRepository();
-const chatRepository = new ChatRepository();
-const projectService = new ProjectService(projectRepository, chatRepository);
+const kafkaConnection: IKafkaConnection = new KafkaConnection();
+const projectRepository: IProjectRepository = new ProjectRepository();
+const chatRepository: IChatRepository = new ChatRepository();
+const projectService: IProjectService = new ProjectService(projectRepository, chatRepository);
 
 export default class ProjectConsumer implements IConsumer {
     async consume() {

@@ -1,11 +1,13 @@
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import IConsumer from "../../interfaces/IConsumer";
 import BranchRepository from "../../repository/implementations/BranchRepository";
+import { IBranchRepository } from "../../repository/interfaces/IBranchRepository";
 import BranchService from "../../services/implementations/BranchService";
+import { IBranchService } from "../../services/interfaces/IBranchService";
 
 
-const branchRepository = new BranchRepository();
-const branchService = new BranchService(branchRepository);
+const branchRepository: IBranchRepository = new BranchRepository();
+const branchService: IBranchService = new BranchService(branchRepository);
 
 export default class BranchConsumer implements IConsumer {
     private kafkaConnection: KafkaConnection;
