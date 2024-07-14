@@ -1,4 +1,4 @@
-// src/services/UserService.ts
+
 
 import jwt from 'jsonwebtoken';
 import { getAuth } from 'firebase-admin/auth';
@@ -8,6 +8,7 @@ import { IKafkaConnection } from '../../interfaces/IKafkaConnection';
 import UserProducer from '../../events/kafka/producers/UserProducer';
 import { IUserRepository } from '../../repository/interface/IUserRepository';
 import app from '../../config/firebase/firebaseConfig';
+import bcrypt from 'bcrypt';
 
 interface DecodedToken {
     uid: string;
@@ -21,9 +22,9 @@ interface DecodedToken {
 export class UserService {
     private userRepository: IUserRepository;
     private stripe: Stripe;
-    private kafkaConnection: IKafkaConnection;
+    private kafkaConnection?: IKafkaConnection;
 
-    constructor(userRepository: IUserRepository, kafkaConnection: IKafkaConnection) {
+    constructor(userRepository: IUserRepository, kafkaConnection?: IKafkaConnection) {
         this.userRepository = userRepository;
         this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
         this.kafkaConnection = kafkaConnection;
@@ -74,9 +75,11 @@ export class UserService {
 
                     userExist = await this.userRepository.create(newUser);
 
-                    const producer = await this.kafkaConnection.getProducerInstance();
-                    const userProducer = new UserProducer(producer, 'main', 'users');
-                    userProducer.sendMessage('create', userExist);
+                    const producer = await this.kafkaConnection?.getProducerInstance();
+                    if (producer) {
+                        const userProducer = new UserProducer(producer, 'main', 'users');
+                        userProducer.sendMessage('create', userExist);
+                    }
                 }
             }
 
@@ -108,5 +111,20 @@ export class UserService {
             console.error('Error creating user:', error);
             throw error;
         }
+    }
+
+    public async authenticateUser(email: string, password: string) {
+        const userData = await this.userRepository.fetchUser(email);
+
+        if (!userData) {
+            return null;
+        }
+
+        const passwordMatch = await bcrypt.compare(password, userData.password);
+        if (!passwordMatch) {
+            return null;
+        }
+
+        return userData;
     }
 }
