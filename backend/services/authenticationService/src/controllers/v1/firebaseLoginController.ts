@@ -7,8 +7,9 @@ import { KafkaConnection } from '../../config/kafka/KafkaConnection';
 import UserRepository from '../../repository/implementations/UserRepository';
 import { IUserService } from '../../services/interfaces/IUserService';
 import { UserService } from '../../services/implementations/UserService';
+import { IUserRepository } from '../../repository/interface/IUserRepository';
 
-const userRepository = new UserRepository();
+const userRepository:IUserRepository = new UserRepository();
 const kafkaConnection: IKafkaConnection = new KafkaConnection();
 const userService: IUserService = new UserService({ userRepository, kafkaConnection });
 

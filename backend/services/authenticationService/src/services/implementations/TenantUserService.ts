@@ -2,8 +2,9 @@ import jwt from 'jsonwebtoken';
 import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
 import mongoose from 'mongoose';
 import { sendOtp } from '../../utils/otp';
+import ITenantUserService from '../interfaces/ITenantUserService';
 
-export default class TenantUserService {
+export default class TenantUserService implements ITenantUserService {
     private tenantUserRepository: ITenantUserRepository;
 
     constructor({ tenantUserRepository }: { tenantUserRepository: ITenantUserRepository }) {

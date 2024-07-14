@@ -6,11 +6,15 @@ import UserRepository from '../../repository/implementations/UserRepository';
 import OtpRepository from '../../repository/implementations/OtpRepository';
 import { KafkaConnection } from '../../config/kafka/KafkaConnection';
 import OtpService from '../../services/implementations/OtpService';
+import { IUserRepository } from '../../repository/interface/IUserRepository';
+import { IOtpService } from '../../services/interfaces/IOtpService';
+import { IKafkaConnection } from '../../interfaces/IKafkaConnection';
+import { IOtpRepository } from '../../repository/interface/IOtpRepository';
 
-const userRepository = new UserRepository();
-const otpRepository = new OtpRepository();
-const kafkaConnection = new KafkaConnection();
-const otpService = new OtpService({ userRepository, otpRepository, kafkaConnection });
+const userRepository: IUserRepository = new UserRepository();
+const otpRepository: IOtpRepository = new OtpRepository();
+const kafkaConnection: IKafkaConnection = new KafkaConnection();
+const otpService: IOtpService = new OtpService({ userRepository, otpRepository, kafkaConnection });
 
 export default async (req: Request, res: Response) => {
     try {

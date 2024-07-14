@@ -1,42 +1,36 @@
-import { Request, Response } from "express";
-import { validationResult } from "express-validator";
-import UserRepository from "../../repository/implementations/UserRepository";
-import bcrypt from "../../utils/bcrypt";
-import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import UserProducer from "../../events/kafka/producers/UserProducer";
-import { IUserRepository } from "../../repository/interface/IUserRepository";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
-import jwt from 'jsonwebtoken';
+import { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
+import UserRepository from '../../repository/implementations/UserRepository';
+import { KafkaConnection } from '../../config/kafka/KafkaConnection';
+import { UserService } from '../../services/implementations/UserService';
+import Jwt from 'jsonwebtoken';
+import { IUserService } from '../../services/interfaces/IUserService';
+import { IKafkaConnection } from '../../interfaces/IKafkaConnection';
+import { IUserRepository } from '../../repository/interface/IUserRepository';
 
 const userRepository:IUserRepository = new UserRepository();
-let kafkaConnection:IKafkaConnection = new KafkaConnection()
+const kafkaConnection:IKafkaConnection = new KafkaConnection();
+const userService:IUserService = new UserService({ userRepository, kafkaConnection });
 
-
-export default async (req:  Request & Partial<{ user:jwt.JwtPayload }>, res: Response) => {
+export default async (req: Request & Partial<{ user: Jwt.JwtPayload }>, res: Response) => {
     try {
         const result = validationResult(req);
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() });
         }
+
         const { new_password }: { new_password: string } = req.body;
         const email = req.user?.email;
-        const password = bcrypt(new_password)
-        const updateUserObj = await userRepository.updateUser({ email: email, password: password })
 
-        if (!updateUserObj) {
+        const updatedUser = await userService.updateUserPassword(email!, new_password);
+
+        if (!updatedUser) {
             return res.status(404).json({ error: "User not found" });
-        } else {
-            let producer = await kafkaConnection.getProducerInstance()
-            let userProducer = new UserProducer(producer, 'main', 'users')
-            userProducer.sendMessage('update', updateUserObj)
-            res.status(200).json({ message: "Password updated successfully" });
         }
 
-
-
-
-    } catch (error) {
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error: any) {
         console.log(error);
         res.status(500).json({ error: "An unexpected error occurred. Please try again later." });
     }
-}
+};

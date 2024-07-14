@@ -4,12 +4,16 @@ import UserRepository from '../../repository/implementations/UserRepository';
 import TenantUserRepository from '../../repository/implementations/TenantUserRepository';
 import { UserService } from '../../services/implementations/UserService';
 import TenantUserService from '../../services/implementations/TenantUserService';
+import { IUserRepository } from '../../repository/interface/IUserRepository';
+import { ITenantUserRepository } from '../../repository/interface/ITenantUserRepository';
+import { IUserService } from '../../services/interfaces/IUserService';
+import ITenantUserService from '../../services/interfaces/ITenantUserService';
 
-const userRepository = new UserRepository();
-const tenantUserRepository = new TenantUserRepository();
+const userRepository:IUserRepository = new UserRepository();
+const tenantUserRepository:ITenantUserRepository = new TenantUserRepository();
 
-const userService = new UserService({ userRepository });
-const tenantUserService = new TenantUserService({ tenantUserRepository });
+const userService:IUserService = new UserService({ userRepository });
+const tenantUserService:ITenantUserService = new TenantUserService({ tenantUserRepository });
 
 export default async (req: Request, res: Response) => {
     try {

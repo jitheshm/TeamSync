@@ -11,7 +11,7 @@ import app from '../../config/firebase/firebaseConfig';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import { sendOtp } from "../../utils/otp";
-
+import hashPassword from '../../utils/bcrypt';
 
 interface DecodedToken {
     uid: string;
@@ -181,6 +181,30 @@ export class UserService {
             }
 
             sendOtp(email, context);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async updateUserPassword(email: string, newPassword: string): Promise<IUsers | null> {
+        try {
+            const hashedPassword = hashPassword(newPassword);
+            const updateUserObj = await this.userRepository.updateUser({ email, password: hashedPassword });
+
+            if (!updateUserObj) {
+                return null; 
+            }
+
+            // Send Kafka message
+            const producer = await this.kafkaConnection?.getProducerInstance();
+            if (producer) {
+
+                const userProducer = new UserProducer(producer, 'main', 'users');
+                userProducer.sendMessage('update', updateUserObj);
+
+            }
+
+            return updateUserObj;
         } catch (error) {
             throw error;
         }

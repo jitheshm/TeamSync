@@ -6,9 +6,10 @@ import bcrypt from 'bcrypt';
 import { IUserRepository } from '../../repository/interface/IUserRepository';
 import UserRepository from '../../repository/implementations/UserRepository';
 import { UserService } from '../../services/implementations/UserService';
+import { IUserService } from '../../services/interfaces/IUserService';
 
 const userRepository: IUserRepository = new UserRepository();
-const userService = new UserService({userRepository});
+const userService:IUserService = new UserService({userRepository});
 
 export default async (req: Request, res: Response) => {
     try {

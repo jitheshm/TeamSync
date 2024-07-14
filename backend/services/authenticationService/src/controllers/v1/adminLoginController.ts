@@ -3,7 +3,10 @@ import { validationResult } from 'express-validator';
 import AdminRepository from '../../repository/implementations/adminRepository';
 import { IAdminService } from '../../services/interfaces/IAdminService';
 import AdminService from '../../services/implementations/AdminService';
+import { IAdminRepository } from '../../repository/interface/IAdminRepository';
 
+const adminRepository:IAdminRepository = new AdminRepository();
+const adminService: IAdminService = new AdminService(adminRepository);
 
 export default async (req: Request, res: Response) => {
     try {
@@ -16,8 +19,7 @@ export default async (req: Request, res: Response) => {
         console.log('user_name:', user_name);
         console.log('password', password);
         
-        const adminRepository = new AdminRepository();
-        const adminService: IAdminService = new AdminService(adminRepository);
+
 
         const token = await adminService.authenticateAdmin(user_name, password);
 
