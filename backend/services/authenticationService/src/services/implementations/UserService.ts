@@ -10,6 +10,8 @@ import { IUserRepository } from '../../repository/interface/IUserRepository';
 import app from '../../config/firebase/firebaseConfig';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
+import { sendOtp } from "../../utils/otp";
+
 
 interface DecodedToken {
     uid: string;
@@ -163,6 +165,24 @@ export class UserService {
         } catch (error) {
             console.log(error);
             throw new Error("An unexpected error occurred. Please try again later.");
+        }
+    }
+
+    async sendOtpAndVerifyUser(email: string, context: string): Promise<void> {
+        try {
+            const userData = await this.userRepository.fetchUser(email);
+
+            if (!userData) {
+                throw { status: 404, message: "User not found" };
+            }
+
+            if (userData.is_blocked) {
+                throw { status: 403, message: "User is blocked" };
+            }
+
+            sendOtp(email, context);
+        } catch (error) {
+            throw error;
         }
     }
 }

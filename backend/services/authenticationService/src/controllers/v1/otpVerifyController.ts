@@ -11,7 +11,7 @@ import UserRepository from "../../repository/implementations/UserRepository";
 import OtpRepository from "../../repository/implementations/OtpRepository";
 import { UserService } from "../../services/implementations/UserService";
 import OtpService from "../../services/implementations/OtpService";
-import TenantAuthService from "../../services/implementations/TenantAuthService";
+import TenantAuthService from "../../services/implementations/TenantUserService";
 
 const kafkaConnection: IKafkaConnection = new KafkaConnection();
 const userRepository: IUserRepository = new UserRepository();
@@ -46,7 +46,7 @@ export default async (req: Request, res: Response) => {
                 return res.status(500).json({ error: "An unexpected error occurred. Please try again later." });
             }
             res.status(200).json({ message: "User verified successfully", verified: true, ...tokenData, role: 'Tenant_Admin' });
-            
+
         } else if (context === 'forgot-password') {
 
             const token = await userService.forgotPassword(email);

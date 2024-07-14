@@ -1,11 +1,12 @@
 import jwt from 'jsonwebtoken';
 import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
 import mongoose from 'mongoose';
+import { sendOtp } from '../../utils/otp';
 
-export default class TenantAuthService {
+export default class TenantUserService {
     private tenantUserRepository: ITenantUserRepository;
 
-    constructor({tenantUserRepository}: {tenantUserRepository: ITenantUserRepository}) {
+    constructor({ tenantUserRepository }: { tenantUserRepository: ITenantUserRepository }) {
         this.tenantUserRepository = tenantUserRepository;
     }
 
@@ -30,6 +31,20 @@ export default class TenantAuthService {
         } catch (error) {
             console.log(error);
             throw new Error("An unexpected error occurred. Please try again later.");
+        }
+    }
+
+    async sendOtpAndVerifyTenantUser(email: string, tenantId: string, context: string): Promise<void> {
+        try {
+            const userData = await this.tenantUserRepository.fetchSpecificUser(tenantId, email);
+
+            if (!userData) {
+                throw { status: 401, message: "Invalid email address" };
+            }
+
+            sendOtp(email, context);
+        } catch (error) {
+            throw error;
         }
     }
 }
