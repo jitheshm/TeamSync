@@ -1,50 +1,29 @@
-import { Request, Response } from "express";
-import { validationResult } from "express-validator";
-import jwt from 'jsonwebtoken';
-import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
-import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
-import { generateOtp, sendOtp } from "../../utils/otp";
-import OtpRepository from "../../repository/implementations/OtpRepository";
-import OtpProducer from "../../events/kafka/producers/OtpProducer";
-import { KafkaConnection } from "../../config/kafka/KafkaConnection";
+import { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
+import TenantUserRepository from '../../repository/implementations/TenantUserRepository';
+import TenantUserService from '../../services/implementations/TenantUserService';
+import { ITenantUserRepository } from '../../repository/interface/ITenantUserRepository';
+import ITenantUserService from '../../services/interfaces/ITenantUserService';
 
-const tenantUserRepository: ITenantUserRepository = new TenantUserRepository();
-const kafkaConnection = new KafkaConnection()
+const tenantUserRepository:ITenantUserRepository = new TenantUserRepository();
+const tenantUserService:ITenantUserService = new TenantUserService({tenantUserRepository});
 
 export default async (req: Request, res: Response) => {
     try {
-
         const result = validationResult(req);
         if (!result.isEmpty()) {
             return res.status(400).json({ errors: result.array() });
         }
 
+        const { email, tenantId }: { email: string, tenantId: string } = req.body;
 
-        const bodyObj: { email: string, role: string, tenantId: string } = req.body;
+        await tenantUserService.sendOtpAndVerifyTenantUser(email, tenantId, 'tenant_login');
 
-        const userData = await tenantUserRepository.fetchSpecificUser(bodyObj.tenantId, bodyObj.email);
-
-
-        if (!userData) {
-            return res.status(401).json({ error: "Invalid email address" });
-        }
-
-        if (!process.env.JWT_SECRET_KEY) {
-            return res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
-        }
-
-        sendOtp(bodyObj.email, 'tenant_login')
-        
-
-        // const token = jwt.sign({ email: userData.email, name: userData.name, id: userData._id, tenantId: bodyObj.tenantId, role: userData.role }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-        // res.status(200).json({ message: "User verified", verified: true, token: token, name: userData.name, tenantId: bodyObj.tenantId, role: userData.role });
         res.status(200).json({ message: "OTP sent to email" });
-
-
-
-    } catch (error) {
-
+    } catch (error: any) {
         console.log(error);
-        res.status(500).json({ error: "An unexpected error occurred. Please try again later." });
+        const status = error.status || 500;
+        const message = error.message || "An unexpected error occurred. Please try again later.";
+        res.status(status).json({ error: message });
     }
-}
+};
