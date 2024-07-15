@@ -14,4 +14,18 @@ export default class TenantService implements ITenantService {
     async getTenantById(tenantId: mongoose.Types.ObjectId): Promise<ITenants | null> {
         return await this.tenantRepository.getTenantById(tenantId);
     }
+
+    async createTenant(data: ITenants): Promise<void> {
+        await this.tenantRepository.create(data);
+    }
+
+    async handleKafkaEvent(eventType: string, data: any): Promise<void> {
+        switch (eventType) {
+            case 'create':
+                await this.createTenant(data);
+                break;
+            default:
+                throw new Error(`Unhandled event type: ${eventType}`);
+        }
+    }
 }
