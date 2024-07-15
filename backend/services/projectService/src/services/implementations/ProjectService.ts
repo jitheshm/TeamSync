@@ -20,7 +20,7 @@ export default class ProjectService implements IProjectService {
     private projectRepository: IProjectRepository;
     private kafkaConnection?: IKafkaConnection;
 
-    constructor({ tenantRepository, projectRepository,kafkaConnection }: ProjectServiceProps) {
+    constructor({ tenantRepository, projectRepository, kafkaConnection }: ProjectServiceProps) {
         this.tenantRepository = tenantRepository;
         this.projectRepository = projectRepository;
         this.kafkaConnection = kafkaConnection;
@@ -76,7 +76,28 @@ export default class ProjectService implements IProjectService {
         }
     }
 
-    
+    async deleteProject(projectData: Partial<IProjects>, tenantId: string, projectId: string): Promise<Partial<IProjects> | null> {
+        try {
+            const deletedProject = await this.projectRepository.delete(projectData as IProjects, tenantId, new mongoose.Types.ObjectId(projectId));
+
+            if (!deletedProject) {
+                return null;
+            }
+
+            const producer = await this.kafkaConnection?.getProducerInstance();
+            const tenantProjectProducer = new ProjectProducer(producer!, tenantId, 'projects');
+            tenantProjectProducer.sendMessage('update', deletedProject);
+
+            return deletedProject;
+        } catch (error) {
+            console.log(error);
+            throw new Error("An unexpected error occurred. Please try again later.");
+        }
+    }
+
+
+
+
 
 
 }

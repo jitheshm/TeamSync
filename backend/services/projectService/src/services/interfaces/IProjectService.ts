@@ -11,4 +11,5 @@ export interface IProjectService {
     fetchSpecificProjectDetails(tenantId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<IProjects | null>;
     fetchSpecificProject(tenantId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<IProjects | null>;
     createProject(projectData: Partial<IProjects>, tenantId: string): Promise<IProjects>;
+    deleteProject(projectData: Partial<IProjects>, tenantId: string, projectId: string): Promise<Partial<IProjects> | null>;
 }
