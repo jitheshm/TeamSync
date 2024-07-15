@@ -47,9 +47,9 @@ export default class TaskService implements ITaskService {
         }
     }
 
-    async updateTask(taskId: string, statusData: Partial<ITasks>, tenantId: string): Promise<ITasks | null> {
+    async updateTask(taskId: string, bodyObj: Partial<ITasks>, tenantId: string): Promise<ITasks | null> {
         try {
-            const resultObj = await this.taskRepository.update(statusData, tenantId, new mongoose.Types.ObjectId(taskId));
+            const resultObj = await this.taskRepository.update(bodyObj, tenantId, new mongoose.Types.ObjectId(taskId));
             return resultObj;
         } catch (error) {
             console.log(error);

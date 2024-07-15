@@ -8,5 +8,6 @@ export interface ITaskService {
     fetchProjectAllTask(tenantId: string, branchId: mongoose.Types.ObjectId, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (ITasks & mongoose.Document)[], totalCount: number }>
     fetchSpecificTaskDetails(tenantId: string, taskId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<ITasks | null>;
     deleteTask(data: Partial<ITasks>, taskId: mongoose.Types.ObjectId, tenantId: string): Promise<boolean>
-    updateTask(taskId: string, statusData: Partial<ITasks>, tenantId: string): Promise<ITasks | null>;
+    updateTask(taskId: string, bodyObj: Partial<ITasks>, tenantId: string): Promise<ITasks | null>;
+    
 }
