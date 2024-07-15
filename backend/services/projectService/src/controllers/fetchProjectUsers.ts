@@ -10,7 +10,7 @@ import ProjectService from "../services/implementations/ProjectService";
 
 const tenantRepository: ITenantRepository = new TenantRepository();
 const projectRepository: IProjectRepository = new ProjectRepository();
-const projectService: IProjectService = new ProjectService(tenantRepository, projectRepository);
+const projectService: IProjectService = new ProjectService({tenantRepository, projectRepository});
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
