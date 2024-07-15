@@ -10,7 +10,7 @@ import TenantUserService from "../services/implementations/TenantUserService";
 const tenantUserRepository: ITenantUserRepository = new TenantUserRepository();
 const tenantRepository: ITenantRepository = new TenantRepository();
 const tenantService = new TenantService(tenantRepository);
-const tenantUserService = new TenantUserService(tenantUserRepository, tenantService);
+const tenantUserService = new TenantUserService({tenantUserRepository, tenantService});
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
