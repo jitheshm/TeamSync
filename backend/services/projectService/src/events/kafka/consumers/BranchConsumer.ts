@@ -1,55 +1,47 @@
+// src/events/kafka/consumers/BranchConsumer.ts
 
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
 import BranchRepository from "../../../repository/implementations/BranchRepository";
+import { BranchService } from "../../../services/implementations/BranchService";
 
-
-let kafkaConnection = new KafkaConnection()
+const kafkaConnection = new KafkaConnection();
 
 export default class BranchConsumer implements IConsumer {
+    private branchService: BranchService;
+
+    constructor() {
+        const branchRepository = new BranchRepository();
+        this.branchService = new BranchService(branchRepository);
+    }
 
     async consume() {
         try {
+            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_branches_group`);
+            await consumer.subscribe({ topic: 'branch-events', fromBeginning: true });
 
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_branches_group`)
-            await consumer.subscribe({ topic: 'branch-events', fromBeginning: true })
             await consumer.run({
                 eachMessage: async ({ topic, partition, message }) => {
-                    console.log("iam new branch consumer");
-                    let branchRepository = new BranchRepository()
-                    let data = message.value?.toString()
+                    console.log("I am a new branch consumer");
+                    const data = message.value?.toString();
                     console.log(data);
-                    console.log("iam new branch consumer>>>>>>>>>>>>>>>");
+                    console.log("I am a new branch consumer >>>>>>>>>>>>>>>");
 
                     if (data) {
-                        let dataObj = JSON.parse(data)
-                        console.log(data)
+                        const dataObj = JSON.parse(data);
+                        console.log(data);
                         const origin = message.headers?.origin?.toString();
 
-                        if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
-
-                                    await branchRepository.create(dataObj.data, dataObj.dbName)
-                                    break;
-                                case 'update':
-
-                                    await branchRepository.update(dataObj.data, dataObj.dbName, dataObj.data._id)
-                                    break;
-
-
-                            }
+                        if (origin !== process.env.SERVICE) {
+                            await this.branchService.handleKafkaEvent(dataObj.eventType, dataObj.data, dataObj.dbName);
                         }
-
                     }
                 },
-            })
-            console.log("subscribed to new branch topic");
+            });
+            console.log("Subscribed to new branch topic");
 
         } catch (error) {
             console.log(error);
-
         }
     }
-
 }
