@@ -33,4 +33,8 @@ export default class TaskService implements ITaskService {
         return await this.taskRepository.fetchProjectAllTask(tenantId, branchId, projectId, search, page, limit);
     }
 
+    async fetchSpecificTaskDetails(tenantId: string, taskId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<ITasks | null> {
+        return await this.taskRepository.fetchSpecificTaskDetails(tenantId, taskId, branchId);
+    }
+
 }
