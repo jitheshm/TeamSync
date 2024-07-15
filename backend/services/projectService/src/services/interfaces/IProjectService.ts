@@ -13,4 +13,5 @@ export interface IProjectService {
     createProject(projectData: Partial<IProjects>, tenantId: string): Promise<IProjects>;
     deleteProject(projectData: Partial<IProjects>, tenantId: string, projectId: string): Promise<Partial<IProjects> | null>;
     updateProjectStatus(statusData: Partial<IProjects>, tenantId: string, projectId: string): Promise<Partial<IProjects> | null>;
+    updateProject(projectId: string, projectData: Partial<IProjects>, tenantId: string): Promise<Partial<IProjects> | null>;
 }

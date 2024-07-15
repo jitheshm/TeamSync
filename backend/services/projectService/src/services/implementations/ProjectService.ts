@@ -114,6 +114,25 @@ export default class ProjectService implements IProjectService {
         }
     }
 
+    async updateProject(projectId: string, projectData: Partial<IProjects>, tenantId: string): Promise<Partial<IProjects> | null> {
+        try {
+            const updatedProject = await this.projectRepository.update(projectData as IProjects, tenantId, new mongoose.Types.ObjectId(projectId));
+            
+            if (!updatedProject) {
+                return null;
+            }
+
+            const producer = await this.kafkaConnection?.getProducerInstance();
+            const tenantProjectProducer = new ProjectProducer(producer!, tenantId, 'projects');
+            tenantProjectProducer.sendMessage('update', updatedProject);
+
+            return updatedProject;
+        } catch (error) {
+            console.log(error);
+            throw new Error("An unexpected error occurred. Please try again later.");
+        }
+    }
+
 
 
 
