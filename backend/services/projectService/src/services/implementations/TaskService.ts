@@ -29,12 +29,22 @@ export default class TaskService implements ITaskService {
         return await this.taskRepository.create(body as ITasks, user.decode?.tenantId);
     }
 
-    async fetchProjectAllTask( tenantId: string, branchId: mongoose.Types.ObjectId, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{data: (ITasks & mongoose.Document)[],totalCount: number}> {
+    async fetchProjectAllTask(tenantId: string, branchId: mongoose.Types.ObjectId, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (ITasks & mongoose.Document)[], totalCount: number }> {
         return await this.taskRepository.fetchProjectAllTask(tenantId, branchId, projectId, search, page, limit);
     }
 
     async fetchSpecificTaskDetails(tenantId: string, taskId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<ITasks | null> {
         return await this.taskRepository.fetchSpecificTaskDetails(tenantId, taskId, branchId);
+    }
+
+    async deleteTask(data: Partial<ITasks>, taskId: mongoose.Types.ObjectId, tenantId: string): Promise<boolean> {
+        try {
+            const result = await this.taskRepository.delete(data, tenantId, taskId);
+            return !!result;
+        } catch (error) {
+            console.log(error);
+            throw new Error("An unexpected error occurred. Please try again later.");
+        }
     }
 
 }
