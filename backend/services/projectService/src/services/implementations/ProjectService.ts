@@ -41,5 +41,12 @@ export default class ProjectService implements IProjectService {
         return await this.projectRepository.fetchAllProject(tenantId, branchId, search, page, limit);
     }
 
+    async fetchSpecificProjectDetails(tenantId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<IProjects | null> {
+
+        const resultObj = await this.projectRepository.fetchSpecificProjectDetails(tenantId, projectId, branchId);
+        return resultObj;
+
+    }
+
 
 }
