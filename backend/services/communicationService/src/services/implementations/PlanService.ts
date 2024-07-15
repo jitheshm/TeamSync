@@ -15,8 +15,10 @@ export default class PlanService implements IPlanService {
             switch (eventType) {
                 case "create":
                     await this.planRepository.create(data);
+                    break;
                 case "update":
                     await this.planRepository.update(data, data._id);
+                    break;
 
                 default:
                     throw new Error(`Unsupported event type: ${eventType}`);

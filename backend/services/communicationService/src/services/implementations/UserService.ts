@@ -13,8 +13,10 @@ export default class UserService implements IUserService {
             switch (eventType) {
                 case "create":
                     await this.userRepository.create(data);
+                    break;
                 case "update":
                     await this.userRepository.updateUser(data);
+                    break;
                 default:
                     throw new Error(`Unsupported event type: ${eventType}`);
             }

@@ -16,6 +16,7 @@ export default class MessageService implements IMessageService {
     async createMessage(dbId: string, data: IMessage): Promise<void> {
         try {
             await this.messageRepository.create(dbId, data);
+            
         } catch (error) {
             console.log(error);
             throw new Error("Failed to create message");

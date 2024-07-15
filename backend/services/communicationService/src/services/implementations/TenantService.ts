@@ -15,6 +15,7 @@ export default class TenantService implements ITenantService {
             switch (eventType) {
                 case "create":
                      await this.tenantRepository.create(data);
+                     break;
                 default:
                     throw new Error(`Unsupported event type: ${eventType}`);
             }

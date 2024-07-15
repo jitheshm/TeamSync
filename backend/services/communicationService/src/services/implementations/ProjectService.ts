@@ -31,10 +31,11 @@ export default class ProjectService implements IProjectService {
                     };
 
                     await this.chatRepository.create(dbName, chatData);
-                    return;
+                    break;
                 }
                 case "update":
                     await this.projectRepository.update(data, dbName, data._id);
+                    break;
                 default:
                     throw new Error(`Unsupported event type: ${eventType}`);
             }

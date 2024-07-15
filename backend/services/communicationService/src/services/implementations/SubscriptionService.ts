@@ -15,8 +15,10 @@ export default class SubscriptionService implements ISubscriptionService {
             switch (eventType) {
                 case "create":
                     await this.subscriptionRepository.create(data);
+                    break;
                 case "update":
                     await this.subscriptionRepository.update(data);
+                    break;
                 default:
                     throw new Error(`Unsupported event type: ${eventType}`);
             }

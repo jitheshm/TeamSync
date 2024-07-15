@@ -15,8 +15,10 @@ export default class TenantUserService implements ITenantUserService {
             switch (eventType) {
                 case "create":
                      await this.tenantUserRepository.create(data, dbName);
+                     break;
                 case "update":
                      await this.tenantUserRepository.update(data, dbName, data._id);
+                     break;
                 
                 default:
                     throw new Error(`Unsupported event type: ${eventType}`);
