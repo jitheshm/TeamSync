@@ -64,7 +64,7 @@ export default function TenantManagerSidebar() {
               <img src="/logo.png" className="w-10" alt="Logo" />
               <h1 className='flex items-center font-semibold'>TeamSync</h1>
             </div>
-            <ul className=" space-y-2 tracking-wide mt-16">
+            <ul className=" space-y-6 tracking-wide mt-16">
               <li className="min-w-max ">
                 <Link href="/dashboard" aria-label="dashboard" className="relative flex items-center space-x-4 bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white">
                   <i className="fa-solid fa-chart-line " style={{ color: '#ffffff' }} />

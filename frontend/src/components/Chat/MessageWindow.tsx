@@ -26,9 +26,10 @@ interface MessageWindowProps {
     socket: Socket
     activeRoom: string
     isGroupChat: boolean
+    setActiveRoom: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-function MessageWindow({ userName, message, socket, activeRoom, isGroupChat }: MessageWindowProps) {
+function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, setActiveRoom }: MessageWindowProps) {
     const [newMessage, setNewMessage] = useState('')
     const { id, verified, name } = useSelector((state: RootState) => state.user)
 
@@ -47,14 +48,18 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat }: M
     }
 
     return (
-        <div className="hidden lg:col-span-2 lg:block bg-[url('/chat.jpg')] bg-cover">
-            <div className="w-full bg-gray-700 bg-opacity-60 h-full">
-                <div className="relative flex items-center p-3 border-b border-gray-300">
+        <div className=" lg:col-span-2 lg:block  bg-cover">
+            <div className="w-full bg-opacity-60 h-full">
+                <div className="relative flex items-center p-3 border-b border-gray-700">
+                    <div className='lg:hidden'>
+                        <i className="fa-solid fa-arrow-left mr-10" style={{ color: '#ffffff' }} onClick={() => setActiveRoom(null)} />
+                    </div>
+
                     <img className="object-cover w-10 h-10 rounded-full" src="/chatIcon.png" alt="username" />
                     <span className="block ml-2 font-bold text-gray-100">{userName}</span>
-                    <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span>
+                    {/* <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span> */}
                 </div>
-                <div className="relative w-full p-6 overflow-y-auto h-[40rem]">
+                <div className="relative w-full p-6 overflow-y-auto h-[45rem]">
                     <ul className="space-y-2">
                         {
                             message.map((msg, index) => (
@@ -71,7 +76,7 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat }: M
                         }
                     </ul>
                 </div>
-                <div className="flex items-center justify-between w-full p-3 border-t border-gray-300">
+                <div className="flex items-center justify-between w-full p-3 border-t border-gray-700">
                     <input
                         type="text"
                         onChange={handleInputChange}

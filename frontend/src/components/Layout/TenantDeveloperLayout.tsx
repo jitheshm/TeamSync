@@ -8,9 +8,9 @@ interface TenantDeveloperLayoutProps {
 
 const TenantDeveloperLayout: React.FC<TenantDeveloperLayoutProps> = ({ children }) => {
     return (
-        <div className='bg-gray-800 min-h-screen'>
+        <div className='bg-gray-950 min-h-screen'>
 
-            <div className='fixed bg-gray-800 z-10'>
+            <div className='fixed bg-gray-950 z-10'>
                 <TenantDeveloperSidebar />
 
             </div>

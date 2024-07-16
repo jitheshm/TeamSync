@@ -46,7 +46,7 @@ export default function TenantDeveloperSidebar() {
         <>
             {/* <div className="min-h-screen bg-gray-900 text-gray-100"> */}
 
-            <div className="bg-gray-900 w-screen h-14  fixed top-0 ">
+            <div className="bg-gray-950 w-screen md:hidden h-14  fixed top-0 ">
                 <div className='p-4 md:hidden'>
                     <GiHamburgerMenu className='text-white text-3xl cursor-pointer' onClick={toggleSidebar} />
                 </div>
@@ -66,7 +66,7 @@ export default function TenantDeveloperSidebar() {
                             <img src="/logo.png" className="w-10" alt="Logo" />
                             <h1 className='flex items-center font-semibold'>TeamSync</h1>
                         </div>
-                        <ul className=" space-y-2 tracking-wide mt-16">
+                        <ul className=" space-y-6 tracking-wide mt-16">
                             <li className="min-w-max ">
                                 <a href="#" aria-label="dashboard" className="relative flex items-center space-x-4 bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white">
                                     <i className="fa-solid fa-chart-line " style={{ color: '#ffffff' }} />

@@ -108,9 +108,9 @@ function ChatUI() {
     }
 
     return (
-        <div className="container mx-auto mt-14 bg-gray-700">
-            <div className="min-w-full min-h-[85vh]  rounded lg:grid lg:grid-cols-3">
-                <div className="  lg:col-span-1 relative">
+        <div className=" ms-10 mt-14 md:mt-0 bg-gray-950 ">
+            <div className="min-w-full min-h-[90vh]  rounded lg:grid lg:grid-cols-3">
+                <div className={`${activeRoom?'hidden lg:block' : 'block'} border-r-[0.5px] border-gray-700  lg:col-span-1 relative`}>
                     <div className="mx-3 my-3">
                         <div className="relative text-gray-100">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -149,7 +149,7 @@ function ChatUI() {
                         +
                     </button>
                 </div>
-                {activeRoom ? <MessageWindow userName={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} isGroupChat={isGroup} /> : ""}
+                {activeRoom ? <MessageWindow userName={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} isGroupChat={isGroup} setActiveRoom={setActiveRoom}/> : ""}
             </div>
 
             {isModalOpen && (
