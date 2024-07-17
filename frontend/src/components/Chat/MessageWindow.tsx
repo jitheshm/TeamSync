@@ -48,9 +48,9 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
     }
 
     return (
-        <div className=" lg:col-span-2 lg:block  bg-cover">
+        <div className=" lg:col-span-2 lg:block  bg-cover h-[97%]">
             <div className="w-full bg-opacity-60 h-full">
-                <div className="relative flex items-center p-3 border-b border-gray-700">
+                <div className="relative flex items-center p-3 border-b  border-gray-700">
                     <div className='lg:hidden'>
                         <i className="fa-solid fa-arrow-left mr-10" style={{ color: '#ffffff' }} onClick={() => setActiveRoom(null)} />
                     </div>
@@ -59,7 +59,7 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                     <span className="block ml-2 font-bold text-gray-100">{userName}</span>
                     {/* <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span> */}
                 </div>
-                <div className="relative w-full p-6 overflow-y-auto h-[45rem]">
+                <div className="relative w-full p-6 overflow-y-auto h-[78%]">
                     <ul className="space-y-2">
                         {
                             message.map((msg, index) => (

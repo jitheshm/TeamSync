@@ -91,14 +91,14 @@ export default function TenantManagerSidebar() {
                 </Link>
               </li>
               <li className="min-w-max">
-                <Link href="/dashboard/meetings" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
+                <Link href="/employee/manager/dashboard/meetings" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
                   <i className="fa-solid fa-video group-hover:text-gray-300" />
 
                   <span className="group-hover:text-gray-300">Meetings</span>
                 </Link>
               </li>
               <li className="min-w-max">
-                <Link href="/dashboard/chats" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
+                <Link href="/employee/manager/dashboard/chats" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
                   <i className="fa-solid fa-comments group-hover:text-gray-300" />
 
                   <span className="group-hover:text-gray-300">Chats</span>

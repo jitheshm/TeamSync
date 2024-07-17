@@ -109,8 +109,8 @@ function ChatUI() {
 
     return (
         <div className=" ms-10 mt-14 md:mt-0 bg-gray-950 ">
-            <div className="min-w-full min-h-[90vh]  rounded lg:grid lg:grid-cols-3">
-                <div className={`${activeRoom?'hidden lg:block' : 'block'} border-r-[0.5px] border-gray-700  lg:col-span-1 relative`}>
+            <div className="min-w-full h-[90vh]   rounded lg:grid lg:grid-cols-3">
+                <div className={`${activeRoom?'hidden lg:block' : 'block'}  h-[97%] overflow-y-auto border-r-[0.5px] border-gray-700  lg:col-span-1 relative`}>
                     <div className="mx-3 my-3">
                         <div className="relative text-gray-100">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -121,7 +121,7 @@ function ChatUI() {
                             <input type="search" className="block w-full py-2 pl-10 bg-gray-400 rounded outline-none" name="search" placeholder="Search" required />
                         </div>
                     </div>
-                    <ul className="overflow-auto h-[32rem]">
+                    <ul className="overflow-auto ">
                         <h2 className="my-2 mb-2 ml-2 text-lg text-gray-100">Chats</h2>
                         <li>
                             {recent.map((chat) => {

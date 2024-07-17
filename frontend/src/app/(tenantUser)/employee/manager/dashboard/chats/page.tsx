@@ -3,7 +3,9 @@ import React from 'react'
 
 function page() {
     return (
-        <MessageUI />
+        <div className='mt-14'>
+            <MessageUI />
+        </div>
     )
 }
 
