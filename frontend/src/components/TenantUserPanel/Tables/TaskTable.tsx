@@ -111,11 +111,11 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
 
     return (
         <div className="p-8 rounded-md w-11/12 mt-20 mx-auto">
-            <div className="flex items-center justify-between pb-6">
+            <div className="flex flex-wrap items-center justify-center sm:justify-between pb-6">
                 <div>
                     <h2 className="text-gray-100 font-semibold">Tasks</h2>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between">
                     <div className="flex bg-gray-50 items-center p-2 rounded-md">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
@@ -141,7 +141,7 @@ const TaskTable = ({ projectId, role }: { projectId: string, role: string }) => 
             </div>
             <div className=''>
                 <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                    <div className="space-y-6">
+                    <div className="space-y-6 w-[90rem] mx-auto">
                         <div className="bg-gray-800 p-6 rounded-lg shadow-lg grid grid-cols-10 text-center font-semibold text-white">
                             <div className='col-span-2'>Task Name</div>
                             <div className='col-span-2'>Developer Name</div>
