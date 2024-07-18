@@ -20,7 +20,7 @@ export default class TicketService implements ITicketService {
 
         return await this.ticketRepostitory.create(body as ITickets, user.decode?.tenantId);
     }
-    async updateTicket(ticketId: string, bodyObj: Partial<ITickets & {oldImageUrl:string[]}>, tenantId: string): Promise<ITickets | null> {
+    async updateTicket(ticketId: string, bodyObj: Partial<ITickets & { oldImageUrl: string[] }>, tenantId: string): Promise<ITickets | null> {
         try {
             const resultObj = await this.ticketRepostitory.update(bodyObj, tenantId, new mongoose.Types.ObjectId(ticketId));
             return resultObj;
@@ -39,4 +39,15 @@ export default class TicketService implements ITicketService {
             throw new Error("An unexpected error occurred. Please try again later.");
         }
     }
+
+    async deleteTicket(taskId: mongoose.Types.ObjectId, tenantId: string): Promise<boolean> {
+        try {
+            const result = await this.ticketRepostitory.delete(tenantId, taskId);
+            return !!result;
+        } catch (error) {
+            console.log(error);
+            throw new Error("An unexpected error occurred. Please try again later.");
+        }
+    }
+
 }

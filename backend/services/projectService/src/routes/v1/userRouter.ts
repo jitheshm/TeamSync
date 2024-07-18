@@ -23,6 +23,7 @@ import fileUpload from "../../middlewares/fileUpload";
 import ticketValidators from "../../validators/ticketValidators";
 import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
+import ticketDeleteController from "../../controllers/ticketDeleteController";
 
 
 
@@ -47,6 +48,7 @@ router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth, ta
 router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, checkSchema(ticketValidators()), fileUpload('ticket-files'), ticketCreateController)
 router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), fileUpload('ticket-files'), ticketUpdateController)
 router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', userAuth, tenantAuth, ticketUpdateStatusController)
+router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, ticketDeleteController)
 
 
 
