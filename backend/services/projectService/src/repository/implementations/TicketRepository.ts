@@ -64,7 +64,7 @@ export default class TicketRepository implements ITicketRepository {
                 } else {
                     data.upload_images = final as string[]
                 }
-                if (data.upload_images===null) {
+                if (data.upload_images === null) {
                     data.upload_images = []
                 }
 
@@ -97,7 +97,7 @@ export default class TicketRepository implements ITicketRepository {
         }
     }
 
-    async fetchProjectAllTicket(
+    async fetchProjectAllTickets(
         dbId: string,
         projectId: mongoose.Types.ObjectId,
         search: string | null,
@@ -116,10 +116,19 @@ export default class TicketRepository implements ITicketRepository {
                         is_deleted: false
                     }
                 },
+
+                {
+                    $lookup: {
+                        from: 'projects',
+                        localField: 'project_id',
+                        foreignField: '_id',
+                        as: 'project'
+                    }
+                },
                 {
                     $lookup: {
                         from: 'tenant_users',
-                        localField: 'developer_id',
+                        localField: 'project.developer_id',
                         foreignField: '_id',
                         as: 'developer'
                     }
@@ -127,7 +136,7 @@ export default class TicketRepository implements ITicketRepository {
                 {
                     $lookup: {
                         from: 'tenant_users',
-                        localField: 'tester_id',
+                        localField: 'project.tester_id',
                         foreignField: '_id',
                         as: 'tester'
                     }
@@ -176,7 +185,7 @@ export default class TicketRepository implements ITicketRepository {
 
             return { totalCount, data };
         } catch (error) {
-            console.log('Error in Task Repository fetch method');
+            console.log('Error in ticket Repository fetch method');
             console.log(error);
             throw error;
         }

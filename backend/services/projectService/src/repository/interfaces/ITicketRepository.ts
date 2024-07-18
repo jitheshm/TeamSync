@@ -7,7 +7,7 @@ export interface ITicketRepository {
     fetchSpecificTicket(dbId: string, ticketId: mongoose.Types.ObjectId): Promise<(ITickets & Document) | null>
     update(data: Partial<ITickets & { oldImageUrl: string[] }>, dbId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets | null>
     delete(dbId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets | null>
-    fetchProjectAllTicket(dbId: string, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{
+    fetchProjectAllTickets(dbId: string, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{
         data: (ITickets & Document)[], totalCount: number
     }>
     fetchSpecificTicketDetails(dbId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets & Document>

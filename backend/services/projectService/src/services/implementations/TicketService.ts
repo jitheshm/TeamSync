@@ -50,4 +50,8 @@ export default class TicketService implements ITicketService {
         }
     }
 
+    async fetchProjectAllTickets(tenantId: string, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (ITickets & mongoose.Document)[], totalCount: number }> {
+        return await this.ticketRepostitory.fetchProjectAllTickets(tenantId, projectId, search, page, limit);
+    }
+
 }

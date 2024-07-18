@@ -24,6 +24,7 @@ import ticketValidators from "../../validators/ticketValidators";
 import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
 import ticketDeleteController from "../../controllers/ticketDeleteController";
+import fetchProjectTickets from "../../controllers/fetchProjectTickets";
 
 
 
@@ -49,6 +50,7 @@ router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, 
 router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), fileUpload('ticket-files'), ticketUpdateController)
 router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', userAuth, tenantAuth, ticketUpdateStatusController)
 router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, ticketDeleteController)
+router.get('/projects/:projectId/tickets', userAuth, tenantAuth, fetchProjectTickets)
 
 
 
