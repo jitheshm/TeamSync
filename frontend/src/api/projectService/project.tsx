@@ -1,6 +1,7 @@
 import instance from "@/axios"
 import { ProjectFormData } from "@/components/TenantUserPanel/Forms/ProjectForm"
 import { TaskFormData } from "@/components/TenantUserPanel/Forms/TaskForm"
+import { TicketFormData } from "@/components/TenantUserPanel/Forms/TicketForm"
 import Cookies from 'js-cookie'
 import { string } from "zod"
 
@@ -188,6 +189,19 @@ export const updateProjectStatus = async (data: { stage: string }, id: string) =
 export const updateTaskStatus = async (data: { status: string }, projectId: string, taskId: string) => {
     try {
         const response = await instance.put(`/project-service/v1/projects/${projectId}/tasks/${taskId}/status`, data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const createTicket = async (formData: FormData, projectId: string,taskId:string) => {
+    try {
+        const response = await instance.post(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets`, formData,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
         return response.data
     } catch (error) {
         throw error

@@ -84,7 +84,7 @@ export default function TenantDeveloperSidebar() {
                                 </Link>
                             </li>
                             <li className="min-w-max">
-                                <Link href="/employee/developer/dashboard/meetings" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
+                                <Link href="/employee/developer/dashboard/meeting" className="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-400 hover:bg-gray-700">
                                     <i className="fa-solid fa-video group-hover:text-gray-300" />
 
                                     <span className="group-hover:text-gray-300">Meetings</span>
