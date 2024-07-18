@@ -25,6 +25,7 @@ import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
 import ticketDeleteController from "../../controllers/ticketDeleteController";
 import fetchProjectTickets from "../../controllers/fetchProjectTickets";
+import fetchTicketDetails from "../../controllers/fetchTicketDetails";
 
 
 
@@ -51,6 +52,7 @@ router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, ten
 router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', userAuth, tenantAuth, ticketUpdateStatusController)
 router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, ticketDeleteController)
 router.get('/projects/:projectId/tickets', userAuth, tenantAuth, fetchProjectTickets)
+router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth, fetchTicketDetails)
 
 
 

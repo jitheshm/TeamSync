@@ -119,16 +119,19 @@ export default class TicketRepository implements ITicketRepository {
 
                 {
                     $lookup: {
-                        from: 'projects',
-                        localField: 'project_id',
+                        from: 'tasks',
+                        localField: 'task_id',
                         foreignField: '_id',
-                        as: 'project'
+                        as: 'tasks'
                     }
+                },
+                {
+                    $unwind: "$tasks"
                 },
                 {
                     $lookup: {
                         from: 'tenant_users',
-                        localField: 'project.developer_id',
+                        localField: 'tasks.developer_id',
                         foreignField: '_id',
                         as: 'developer'
                     }
@@ -136,7 +139,7 @@ export default class TicketRepository implements ITicketRepository {
                 {
                     $lookup: {
                         from: 'tenant_users',
-                        localField: 'project.tester_id',
+                        localField: 'tasks.tester_id',
                         foreignField: '_id',
                         as: 'tester'
                     }
@@ -201,13 +204,23 @@ export default class TicketRepository implements ITicketRepository {
                 {
                     $match: {
                         _id: ticketId,
-                        is_deleted: false
+                    } 
+                },
+                {
+                    $lookup: {
+                        from: 'tasks',
+                        localField: 'task_id',
+                        foreignField: '_id',
+                        as: 'tasks'
                     }
+                },
+                {
+                    $unwind: "$tasks"
                 },
                 {
                     $lookup: {
                         from: 'tenant_users',
-                        localField: 'developer_id',
+                        localField: 'tasks.developer_id',
                         foreignField: '_id',
                         as: 'developer'
                     }
@@ -218,7 +231,7 @@ export default class TicketRepository implements ITicketRepository {
                 {
                     $lookup: {
                         from: 'tenant_users',
-                        localField: 'tester_id',
+                        localField: 'tasks.tester_id',
                         foreignField: '_id',
                         as: 'tester'
                     }
