@@ -45,11 +45,33 @@ export default class TicketRepository implements ITicketRepository {
     }
 
 
-    async update(data: ITickets, dbId: string, ticketId: mongoose.Types.ObjectId) {
+    async update(data: Partial<ITickets & { oldImageUrl: string[] }>, dbId: string, ticketId: mongoose.Types.ObjectId) {
         try {
             const TicketModel = switchDb<ITickets>(`${process.env.SERVICE}_${dbId}`, 'tickets')
-            const res: ITickets | null = await TicketModel.findOneAndUpdate({ _id: ticketId, is_deleted: false }, data, { new: true })
-            return res
+
+            const result = await TicketModel.findOne({ _id: ticketId, is_deleted: false })
+            if (result) {
+                const existingImages = result.upload_images
+                const final = existingImages?.map((item) => {
+                    if (data.oldImageUrl && data.oldImageUrl.includes(item as string)) {
+                        return data?.upload_images?.shift()
+                    } else {
+                        return item
+                    }
+                })
+                if (data?.upload_images?.length! > 0) {
+                    data.upload_images = [...final!, ...data.upload_images!] as string[]
+                } else {
+                    data.upload_images = final as string[]
+                }
+                if (data.upload_images===null) {
+                    data.upload_images = []
+                }
+
+                const res: ITickets | null = await TicketModel.findOneAndUpdate({ _id: ticketId, is_deleted: false }, data, { new: true })
+                return res
+            }
+            return null
 
         } catch (error) {
             console.log('Error in Ticket Repository update method');
