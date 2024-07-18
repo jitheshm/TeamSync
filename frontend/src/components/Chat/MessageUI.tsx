@@ -109,7 +109,7 @@ function ChatUI() {
 
     return (
         <div className=" ms-10 mt-14 md:mt-0 bg-gray-950 ">
-            <div className="min-w-full h-[90vh]   rounded lg:grid lg:grid-cols-3">
+            <div className="min-w-full h-[90vh]   rounded lg:grid lg:grid-cols-3 mt-10">
                 <div className={`${activeRoom?'hidden lg:block' : 'block'}  h-[97%] overflow-y-auto border-r-[0.5px] border-gray-700  lg:col-span-1 relative`}>
                     <div className="mx-3 my-3">
                         <div className="relative text-gray-100">
