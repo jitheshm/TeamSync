@@ -223,9 +223,18 @@ export const fetchAllTaskTickets = async (projectId: string, taskId: string, sea
     }
 }
 
-export const updateTicketStatus = async (data: { status: string }, projectId: string, taskId: string,ticketId:string) => {
+export const updateTicketStatus = async (data: { status: string }, projectId: string, taskId: string, ticketId: string) => {
     try {
         const response = await instance.patch(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets/${ticketId}/status`, data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const ticketDelete = async (ticketId: string, taskId: string, projectId: string) => {
+    try {
+        const response = await instance.delete(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets/${ticketId}`)
         return response.data
     } catch (error) {
         throw error

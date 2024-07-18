@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchAllTaskTickets, updateTicketStatus } from '@/api/projectService/project';
+import { fetchAllTaskTickets, ticketDelete, updateTicketStatus } from '@/api/projectService/project';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
@@ -61,32 +61,32 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string, role: str
         });
     }, [toggle, search, page, limit]);
 
-    const handleDelete = (taskId: string) => {
-        // Swal.fire({
-        //     title: "Are you sure?",
-        //     text: "You won't be able to revert this!",
-        //     icon: "warning",
-        //     showCancelButton: true,
-        //     confirmButtonColor: "#3085d6",
-        //     cancelButtonColor: "#d33",
-        //     confirmButtonText: "Yes, delete it!"
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         ticketDelete(ticketId, projectId, taskId).then(() => {
-        //             Swal.fire({
-        //                 title: "Deleted!",
-        //                 text: "The ticket has been deleted.",
-        //                 icon: "success"
-        //             });
-        //             setToggle(!toggle);
-        //         }).catch((err: any) => {
-        //             if (err.response.status === 401) {
-        //                 dispatch(logout());
-        //                 router.push('/employee/login');
-        //             }
-        //         });
-        //     }
-        // });
+    const handleDelete = (ticketId: string) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                ticketDelete(ticketId, taskId, projectId).then(() => {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "The ticket has been deleted.",
+                        icon: "success"
+                    });
+                    setToggle(!toggle);
+                }).catch((err: any) => {
+                    if (err.response.status === 401) {
+                        dispatch(logout());
+                        router.push('/employee/login');
+                    }
+                });
+            }
+        });
     }
 
     const handlePageChange = (newPage: number) => {
