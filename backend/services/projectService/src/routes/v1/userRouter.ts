@@ -18,6 +18,8 @@ import taskDeleteController from "../../controllers/taskDeleteController";
 import fetchProjectTasksDetails from "../../controllers/fetchProjectTasksDetails";
 import projectStatusUpdateController from "../../controllers/projectStatusUpdateController";
 import taskStatusUpdateController from "../../controllers/taskStatusUpdateController";
+import ticketCreateController from "../../controllers/ticketCreateController";
+import fileUpload from "../../middlewares/fileUpload";
 
 
 
@@ -39,6 +41,7 @@ router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskUpdat
 router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskDeleteController)
 router.get('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, fetchProjectTasksDetails)
 router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth, taskStatusUpdateController)
+router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth,fileUpload('ticket-files'), ticketCreateController)
 
 
 
