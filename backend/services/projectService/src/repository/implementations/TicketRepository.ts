@@ -219,6 +219,17 @@ export default class TicketRepository implements ITicketRepository {
                 },
                 {
                     $lookup: {
+                        from: 'projects',
+                        localField: 'project_id',
+                        foreignField: '_id',
+                        as: 'projects'
+                    }
+                },
+                {
+                    $unwind: "$projects"
+                },
+                {
+                    $lookup: {
                         from: 'tasks',
                         localField: 'task_id',
                         foreignField: '_id',

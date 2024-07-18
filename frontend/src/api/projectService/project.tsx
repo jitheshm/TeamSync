@@ -240,3 +240,12 @@ export const ticketDelete = async (ticketId: string, taskId: string, projectId: 
         throw error
     }
 }
+
+export const fetchSpecificTicketDetails = async (projectId: string, taskId: string,ticketId:string) => {
+    try {
+        const response = await instance.get(`/project-service/v1/projects/${projectId}/tickets/${ticketId}`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
