@@ -5,7 +5,8 @@ import { useDispatch } from 'react-redux';
 import { z, ZodError } from 'zod';
 import { logout } from '@/features/user/userSlice';
 import Swal from 'sweetalert2';
-import { createTicket } from '@/api/projectService/project';
+import { createTicket, fetchSpecificTicketDetails, updateTicket } from '@/api/projectService/project';
+import { IMAGEURL } from '@/constants/constant';
 
 const ticketSchema = z.object({
     title: z.string().min(3, "Title must be at least 3 characters long").nonempty("Title is required"),
@@ -17,6 +18,7 @@ export interface TicketFormData {
     title: string;
     description: string;
     files: File[];
+    oldImageUrl: string[];
 }
 
 interface FormErrors {
@@ -29,7 +31,8 @@ function TicketForm({ ticketId, edit = false, projectId, taskId }: { ticketId?: 
     const [formData, setFormData] = useState<TicketFormData>({
         title: '',
         description: '',
-        files: []
+        files: [],
+        oldImageUrl: []
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
@@ -38,17 +41,19 @@ function TicketForm({ ticketId, edit = false, projectId, taskId }: { ticketId?: 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // if (edit && ticketId) {
-        //     fetchSpecificTicketDetails(ticketId).then((res) => {
-        //         setFormData({
-        //             title: res.data.title,
-        //             description: res.data.description,
-        //             files: res.data.files
-        //         });
-        //     }).catch((err) => {
-        //         handleApiError(err);
-        //     });
-        // }
+        if (edit && ticketId) {
+            fetchSpecificTicketDetails(projectId, taskId, ticketId).then((res) => {
+                setFormData({
+                    title: res.data.title,
+                    description: res.data.description,
+                    files: [],
+                    oldImageUrl: []
+                });
+                setImagePreviews(res.data.upload_images.map((image: any) => IMAGEURL + '/' + image));
+            }).catch((err) => {
+                handleApiError(err);
+            });
+        }
     }, [edit, ticketId]);
 
     const handleApiError = (err: any) => {
@@ -84,11 +89,11 @@ function TicketForm({ ticketId, edit = false, projectId, taskId }: { ticketId?: 
             formDataToSend.append('description', formData.description);
             formData.files.forEach((image, index) => {
                 console.log(image);
-                
+
                 formDataToSend.append('files', image);
             });
             console.log(formDataToSend);
-            
+
 
             if (!edit) {
                 createTicket(formDataToSend, projectId, taskId).then(() => {
@@ -98,11 +103,11 @@ function TicketForm({ ticketId, edit = false, projectId, taskId }: { ticketId?: 
                 });
             } else {
                 if (ticketId) {
-                    // updateTicket(formDataToSend, ticketId).then(() => {
-                    //     router.push(`/employee/tickets/${ticketId}`);
-                    // }).catch((err: any) => {
-                    //     handleApiError(err);
-                    // });
+                    updateTicket(formDataToSend,projectId,taskId, ticketId).then(() => {
+                        router.push(`/employee/tester/dashboard/projects/${projectId}/tasks/${taskId}/tickets`);
+                    }).catch((err: any) => {
+                        handleApiError(err);
+                    });
                 }
             }
         } catch (err) {
@@ -154,19 +159,21 @@ function TicketForm({ ticketId, edit = false, projectId, taskId }: { ticketId?: 
                             />
                             {errors.description && <p className="text-red-500">{errors.description}</p>}
                         </div>
-                        <div className="mb-5">
-                            <label htmlFor="files" className="block mb-2 font-bold text-gray-100">Upload Images (Max 3)</label>
-                            <input
-                                type="file"
-                                id="files"
-                                name="files"
-                                multiple
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className="border border-gray-300 text-white shadow p-3 w-full rounded"
-                            />
-                            {errors.files && <p className="text-red-500">{errors.files}</p>}
-                        </div>
+                        {
+                            !edit && <div className="mb-5">
+                                <label htmlFor="files" className="block mb-2 font-bold text-gray-100">Upload Images (Max 3)</label>
+                                <input
+                                    type="file"
+                                    id="files"
+                                    name="files"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    className="border border-gray-300 text-white shadow p-3 w-full rounded"
+                                />
+                                {errors.files && <p className="text-red-500">{errors.files}</p>}
+                            </div>
+                        }
                         {imagePreviews.length > 0 && (
                             <div className="mb-5">
                                 <h2 className="text-lg font-bold text-gray-100 mb-3">Image Previews</h2>

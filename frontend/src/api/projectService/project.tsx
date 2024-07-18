@@ -249,3 +249,13 @@ export const fetchSpecificTicketDetails = async (projectId: string, taskId: stri
         throw error
     }
 }
+
+export const updateTicket = async (formData: FormData, projectId: string, taskId: string,ticketId:string) => {
+    try {
+        
+        const response = await instance.put(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets/${ticketId}`, formData)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
