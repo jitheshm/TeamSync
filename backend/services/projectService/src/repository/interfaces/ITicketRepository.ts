@@ -11,6 +11,7 @@ export interface ITicketRepository {
         data: (ITickets & Document)[], totalCount: number
     }>
     fetchSpecificTicketDetails(dbId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets & Document>
+    updateStatus(data: Partial<ITickets>, tenantId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets | null>
 
 
 

@@ -29,4 +29,14 @@ export default class TicketService implements ITicketService {
             throw new Error("An unexpected error occurred. Please try again later.");
         }
     }
+
+    async updateStatus(ticketId: string, bodyObj: Partial<ITickets>, tenantId: string): Promise<ITickets | null> {
+        try {
+            const resultObj = await this.ticketRepostitory.updateStatus(bodyObj, tenantId, new mongoose.Types.ObjectId(ticketId));
+            return resultObj;
+        } catch (error) {
+            console.log(error);
+            throw new Error("An unexpected error occurred. Please try again later.");
+        }
+    }
 }

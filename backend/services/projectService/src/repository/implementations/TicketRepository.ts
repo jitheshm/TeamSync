@@ -232,6 +232,20 @@ export default class TicketRepository implements ITicketRepository {
         }
     }
 
+    async updateStatus(bodyObj: Partial<ITickets>, tenantId: string, ticketId: mongoose.Types.ObjectId) {
+        try {
+            const TicketModel = switchDb<ITickets>(`${process.env.SERVICE}_${tenantId}`, 'tickets')
+            const res: ITickets | null = await TicketModel.findOneAndUpdate({ _id: ticketId, is_deleted: false }, bodyObj, { new: true })
+            return res
+        } catch (error) {
+            console.log('Error in Ticket Repository updateStatus method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
 
 
 
