@@ -222,3 +222,12 @@ export const fetchAllTaskTickets = async (projectId: string, taskId: string, sea
         throw error;
     }
 }
+
+export const updateTicketStatus = async (data: { status: string }, projectId: string, taskId: string,ticketId:string) => {
+    try {
+        const response = await instance.patch(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets/${ticketId}/status`, data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

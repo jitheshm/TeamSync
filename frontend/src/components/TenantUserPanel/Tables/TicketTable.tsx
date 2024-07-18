@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchAllTaskTickets } from '@/api/projectService/project';
+import { fetchAllTaskTickets, updateTicketStatus } from '@/api/projectService/project';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
@@ -93,23 +93,23 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string, role: str
         setPage(newPage);
     }
 
-    const handleStatusChange = (taskId: string, newStatus: string) => {
-        // const data = {
-        //     status: newStatus
-        // }
-        // updateTicketStatus(data, projectId, taskId, ticketId).then(() => {
-        //     Swal.fire({
-        //         title: "Updated!",
-        //         text: "The task status has been updated.",
-        //         icon: "success"
-        //     });
-        //     setToggle(!toggle);
-        // }).catch((err) => {
-        //     if (err.response.status === 401) {
-        //         dispatch(logout());
-        //         router.push('/employee/login');
-        //     }
-        // });
+    const handleStatusChange = (ticketId: string, newStatus: string) => {
+        const data = {
+            status: newStatus
+        }
+        updateTicketStatus(data, projectId, taskId, ticketId).then(() => {
+            Swal.fire({
+                title: "Updated!",
+                text: "The task status has been updated.",
+                icon: "success"
+            });
+            setToggle(!toggle);
+        }).catch((err) => {
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/employee/login');
+            }
+        });
     };
 
     return (
