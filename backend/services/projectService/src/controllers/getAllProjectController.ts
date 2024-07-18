@@ -8,7 +8,7 @@ import { IProjectService } from "../services/interfaces/IProjectService";
 import ProjectService from "../services/implementations/ProjectService";
 
 const projectRepository: IProjectRepository = new ProjectRepository();
-const projectService: IProjectService = new ProjectService({projectRepository});
+const projectService: IProjectService = new ProjectService({ projectRepository });
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
@@ -29,6 +29,8 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
             resultObj = await projectService.fetchAllPManagerProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user?._id), search, page, limit);
         } else if (req.query.dev) {
             resultObj = await projectService.fetchAllDeveloperProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user?._id), search, page, limit);
+        } else if (req.query.test) {
+            resultObj = await projectService.fetchAllTesterProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user?._id), search, page, limit);
         } else {
             resultObj = await projectService.fetchAllProject(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), search, page, limit);
         }

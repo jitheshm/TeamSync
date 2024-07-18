@@ -1,5 +1,5 @@
 "use client";
-import { fetchAllProjects, fetchAllProjectsByPManager, fetchAllProjectsDeveloper, projectDelete, updateProjectStatus } from '@/api/projectService/project'; // Import updateProjectStatus
+import { fetchAllProjects, fetchAllProjectsByPManager, fetchAllProjectsDeveloper, fetchAllProjectsTester, projectDelete, updateProjectStatus } from '@/api/projectService/project'; // Import updateProjectStatus
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
@@ -42,6 +42,8 @@ const ProjectTable = ({ role }: { role: string }) => {
         }
         else if (role === 'Developer') {
             fetchProjects = fetchAllProjectsDeveloper
+        } else if (role === 'Tester') {
+            fetchProjects = fetchAllProjectsTester
         }
         fetchProjects && fetchProjects(search, page, limit).then((result: any) => {
             setProjects(result.data.data);
@@ -186,12 +188,19 @@ const ProjectTable = ({ role }: { role: string }) => {
                                                 <Link href={`/employee/project_manager/dashboard/projects/${project._id}/tasks/create`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Create Task</Link>
                                                 <Link href={`/employee/project_manager/dashboard/projects/${project._id}/tasks`} className="focus:outline-none text-white bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-500 dark:hover:bg-blue-500 dark:focus:ring-blue-500">Show Task</Link>
                                             </>
-                                        ) : (
+                                        ) : role === 'Developer' ? (
                                             <>
                                                 <Link href={`/employee/developer/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
                                                 <Link href={`/employee/developer/dashboard/projects/${project._id}/tasks`} className="focus:outline-none text-white bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-500 dark:hover:bg-blue-500 dark:focus:ring-blue-500">Show Task</Link>
                                             </>
-                                        )}
+                                        ) : (
+
+                                            <>
+                                                <Link href={`/employee/tester/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                <Link href={`/employee/tester/dashboard/projects/${project._id}/tasks`} className="focus:outline-none text-white bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-500 dark:hover:bg-blue-500 dark:focus:ring-blue-500">Show Task</Link>
+                                            </>
+                                        )
+                                        }
                                     </div>
                                 </div>
                             ))

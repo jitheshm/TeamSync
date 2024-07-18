@@ -282,6 +282,34 @@ export default class ProjectRepository implements IProjectRepository {
         }
     }
 
+    async fetchAllTesterProjects(dbId: string, branchId: mongoose.Types.ObjectId, testerId: mongoose.Types.ObjectId, search: string, page: number, limit: number) {
+        try {
+            console.log(dbId);
+
+            const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects');
+
+            const query: any = { branch_id: branchId, testers_id: testerId, is_deleted: false };
+            if (search) {
+                query.name = { $regex: `^${search}`, $options: 'i' };
+            }
+
+            const data = await ProjectModel.find(query)
+                .skip((page - 1) * limit)
+                .limit(limit);
+
+            // Get the total count for pagination purposes
+            const totalCount = await ProjectModel.countDocuments(query);
+
+            console.log(data);
+
+            return { data, totalCount };
+        } catch (error) {
+            console.log('Error in project Repository fetch method');
+            console.log(error);
+            throw error;
+        }
+    }
+
     async fetchProjectUsers(dbId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId) {
         try {
             console.log(dbId);

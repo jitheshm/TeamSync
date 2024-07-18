@@ -37,6 +37,7 @@ const Login: React.FC<LoginProps> = ({ tenantId, setEmail, setOtpPage }) => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            formData.email= formData.email.toLowerCase()
             loginSchema.parse(formData);
             console.log('Form data is valid:', formData);
             setErrors({});

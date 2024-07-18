@@ -84,6 +84,22 @@ export const fetchAllProjectsDeveloper = async (search: string, page: number, li
     }
 }
 
+export const fetchAllProjectsTester = async (search: string, page: number, limit: number) => {
+    try {
+        const response = await instance.get('/project-service/v1/projects', {
+            params: {
+                test: true,
+                search,
+                page,
+                limit
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const fetchAllProjects = async (search: string, page: number, limit: number) => {
     try {
         const response = await instance.get('/project-service/v1/projects', {
