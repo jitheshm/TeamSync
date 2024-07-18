@@ -97,9 +97,9 @@ export default class TicketRepository implements ITicketRepository {
         }
     }
 
-    async fetchProjectAllTickets(
+    async fetchTaskAllTickets(
         dbId: string,
-        projectId: mongoose.Types.ObjectId,
+        taskId: mongoose.Types.ObjectId,
         search: string | null,
         page: number,
         limit: number
@@ -112,11 +112,22 @@ export default class TicketRepository implements ITicketRepository {
             const pipeline: any[] = [
                 {
                     $match: {
-                        project_id: projectId,
+                        task_id: taskId,
                         is_deleted: false
                     }
                 },
-
+                {
+                    $lookup: {
+                        from: 'projects',
+                        localField: 'project_id',
+                        foreignField: '_id',
+                        as: 'projects'
+                    }
+                },
+                {
+                    $unwind: "$projects"
+                }
+                ,
                 {
                     $lookup: {
                         from: 'tasks',
@@ -204,7 +215,7 @@ export default class TicketRepository implements ITicketRepository {
                 {
                     $match: {
                         _id: ticketId,
-                    } 
+                    }
                 },
                 {
                     $lookup: {

@@ -16,9 +16,9 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         const page = Number(req.query.page || 1);
         const limit = Number(req.query.limit || 1000);
 
-        const data = await ticketServcie.fetchProjectAllTickets(
+        const data = await ticketServcie.fetchTaskAllTickets(
             req.user?.decode?.tenantId as string,
-            new mongoose.Types.ObjectId(req.params.projectId),
+            new mongoose.Types.ObjectId(req.params.taskId),
             search,
             page,
             limit

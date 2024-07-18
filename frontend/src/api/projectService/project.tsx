@@ -195,9 +195,9 @@ export const updateTaskStatus = async (data: { status: string }, projectId: stri
     }
 }
 
-export const createTicket = async (formData: FormData, projectId: string,taskId:string) => {
+export const createTicket = async (formData: FormData, projectId: string, taskId: string) => {
     try {
-        const response = await instance.post(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets`, formData,{
+        const response = await instance.post(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -205,5 +205,20 @@ export const createTicket = async (formData: FormData, projectId: string,taskId:
         return response.data
     } catch (error) {
         throw error
+    }
+}
+
+export const fetchAllTaskTickets = async (projectId: string, taskId: string, search: string, page: number, limit: number) => {
+    try {
+        const response = await instance.get(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets`, {
+            params: {
+                search,
+                page,
+                limit
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
     }
 }
