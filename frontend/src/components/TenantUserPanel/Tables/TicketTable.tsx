@@ -52,7 +52,7 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string, role: str
             console.log(result);
 
             setTickets(result.data.data);
-            setTotal(result.data.total);
+            setTotal(result.data.totalCount);
         }).catch((err: any) => {
             if (err.response?.status === 401) {
                 dispatch(logout());
@@ -171,7 +171,7 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string, role: str
                                                 <option value="closed">closed</option>
                                             </select>
                                         </div>
-                                        <div className='flex col-span-3 space-x-2 justify-center'> 
+                                        <div className='flex col-span-3 space-x-2 justify-center'>
                                             {
                                                 role === 'Tester' ? (
                                                     <>
