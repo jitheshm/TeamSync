@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import AdminRepository from "../../repository/implementations/adminRepository";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { IAdminRepository } from "../../repository/interface/IAdminRepository";
 
