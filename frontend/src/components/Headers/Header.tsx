@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
     }
 
     return (
-        <header className={`flex items-center ${background} justify-between shadow-lg z-50 px-6 py-6 lg:py-6  ${background==='bg-gray-100'?'border-b border-gray-300':""} shadow-md  `}>
+        <header className={`flex items-center ${background} justify-between shadow-lg lg:z-50 px-6 py-6 lg:py-6  ${background==='bg-gray-100'?'border-b border-gray-300':""} shadow-md  `}>
             <div className="flex items-center">
                 <button
                     onClick={() => setSidebarOpen(true)}

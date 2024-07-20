@@ -112,7 +112,7 @@ const TaskTable = ({ projectId, role }: { projectId: string; role: string }) => 
 
     return (
         <div className="w-11/12 mb-8 mt-6 overflow-hidden rounded-lg">
-            <h1 className={`font-semibold text-xl my-8 bg-violet-800 py-2 text-center rounded-lg flex w-full px-14 bg-gray-100`}>
+            <h1 className={`font-semibold text-xl my-8 bg-violet-800 py-2 text-center rounded-lg flex w-full px-14 `}>
                 Task List
             </h1>
             <div className='mb-8'>
