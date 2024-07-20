@@ -117,34 +117,35 @@ const ProjectTable = ({ role }: { role: string }) => {
 
     return (
         <div className="w-11/12 mb-8 mt-6 overflow-hidden rounded-lg  ">
-            <div className="w-full overflow-x-auto shadow-lg">
-                <h1 className={` ${'text-gray-100'} font-semibold text-xl my-8 bg-violet-800 py-2 text-center rounded-lg flex w-full px-14`}>
-                    Projects List
-                </h1>
-                <div className='mb-8'>
-                    <form className="max-w-md ">
-                        <div className="relative">
-                            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                </svg>
-                            </div>
-                            <input type="search" id="default-search" className={`block w-full p-4 ps-10 text-sm ${dark ? 'bg-gray-700 border-gray-600 rounded-lg placeholder-gray-400 text-white focus:ring-blue-500 focus' : ' text-gray-900 border border-gray-300 rounded-lg bg-gray-50'}  `} placeholder="Search Projects" onChange={(e) => setSearch(e.target.value)} value={search} required />
-
-
+            <h1 className={` ${'text-gray-100'} font-semibold text-xl my-8 bg-violet-800 py-2 text-center rounded-lg flex w-full px-14`}>
+                Projects List
+            </h1>
+            <div className='mb-8'>
+                <form className="max-w-md ">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                            </svg>
                         </div>
-                    </form>
+                        <input type="search" id="default-search" className={`block w-full p-4 ps-10 text-sm ${dark ? 'bg-gray-700 border-gray-600 rounded-lg placeholder-gray-400 text-white focus:ring-blue-500 focus' : ' text-gray-900 border border-gray-300 rounded-lg bg-gray-50'}  `} placeholder="Search Projects" onChange={(e) => setSearch(e.target.value)} value={search} required />
 
-                    <div className="lg:ml-40 ml-10 space-x-8">
-                        {role === 'Manager' && (
-                            <Link href={'/employee/manager/dashboard/projects/create'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
-                                Create
-                            </Link>
-                        )}
+
                     </div>
+                </form>
 
+                <div className="lg:ml-40 ml-10 space-x-8">
+                    {role === 'Manager' && (
+                        <Link href={'/employee/manager/dashboard/projects/create'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
+                            Create
+                        </Link>
+                    )}
                 </div>
-                <table className="w-full whitespace-no-wrap ">
+
+            </div>
+            <div className="w-full overflow-x-auto shadow-lg">
+
+                <table className="min-w-[70rem] w-full  whitespace-no-wrap ">
                     <thead>
                         <tr className={`text-lg font-semibold tracking-wide text-left shadow  uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : "bg-[#1A1C23] text-gray-300 border-b border-gray-700"} `}>
                             <th className="px-4 py-3 text-center">Project Name</th>
@@ -217,7 +218,7 @@ const ProjectTable = ({ role }: { role: string }) => {
                         )}
                     </tbody>
                 </table>
-                <div className={`grid px-4 py-3 text-xs font-semibold tracking-wide shadow   uppercase  ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : "bg-[#1A1C23] text-gray-300 border-t border-gray-700"} sm:grid-cols-9 `}>
+                <div className={`grid px-4 min-w-[70rem] w-full  py-3 text-xs font-semibold tracking-wide shadow   uppercase  ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : "bg-[#1A1C23] text-gray-300 border-t border-gray-700"} sm:grid-cols-9 `}>
                     <span className="flex items-center col-span-3">
                         Showing {page} of {Math.ceil(total / limit)} pages
                     </span>
