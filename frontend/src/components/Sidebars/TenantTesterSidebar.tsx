@@ -32,21 +32,21 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
                     </div>
                 </Link>
 
-                <Link href="/">
+                <Link href="/employee/tester/dashboard/projects">
                     <div className={`flex items-center px-6 py-2 mt-8 ${text}  bg-opacity-25`}>
                         <i className={`fa-solid fa-list-check ${text}`} />
                         <span className="mx-3">Projects</span>
                     </div>
                 </Link>
 
-                <Link href="/">
+                <Link href="/employee/tester/dashboard/chats">
                     <div className={`flex items-center px-6 py-2 mt-8 ${text} bg-opacity-25`}>
                         <i className={`fa-regular fa-comments ${text}`} />
                         <span className="mx-3">Chat</span>
                     </div>
                 </Link>
 
-                <Link href="/">
+                <Link href="/employee/tester/dashboard/meeting">
                     <div className={`flex items-center px-6 py-2 mt-8 ${text} bg-opacity-25`}>
                         <i className={`fa-solid fa-video ${text}`} />
                         <span className="mx-3">Meeting</span>
