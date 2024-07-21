@@ -1,56 +1,65 @@
-"use client"
+"use client";
+
 import { fetchTenantUsers, tenantUserDelete } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
+import { ThemeState } from '@/features/theme/themeSlice';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
-export interface ITenantUsers {
+interface IUser {
     _id: string;
-    email: string;
-    created_at: string;
     name: string;
-    tenant_user_id: string;
+    email: string;
     role: string;
-    branch_id: string;
-    branch_location: string;
-    phone_no: string;
+    created_at: string;
+}
+
+interface UserState {
+    name: string;
+    verified: boolean;
+    tenantId: string;
+    id: string;
+}
+
+interface RootState {
+    user: UserState;
+    theme: ThemeState;
 }
 
 const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
-    const [users, setUsers] = useState<ITenantUsers[]>([]);
+    const [users, setUsers] = useState<IUser[]>([]);
     const [toggle, setToggle] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
     const [page, setPage] = useState<number>(1);
-    const [limit] = useState<number>(10); 
-    const [total, setTotal] = useState<number>(0); 
+    const [limit] = useState<number>(10);
+    const [total, setTotal] = useState<number>(0);
+    const [role, setRole] = useState(admin ? '' : 'Tester');
     const router = useRouter();
     const dispatch = useDispatch();
-    const [role, setRole] = useState(admin ? '' : 'Tester');
-
-
+    const { id, verified } = useSelector((state: RootState) => state.user);
+    const { background, text, main, dark } = useSelector((state: RootState) => state.theme);
 
     useEffect(() => {
         setPage(1);
     }, [search, role]);
-    
+
     useEffect(() => {
         fetchTenantUsers(role, search, page, limit).then((result: any) => {
             console.log(result);
-            
+
             setUsers(result.data.data);
-            setTotal(result.data.total); 
+            setTotal(result.data.total);
         }).catch((err: any) => {
-            if (err.response.status === 401) {
+            if (err.response?.status === 401) {
                 dispatch(logout());
-                router.push('/employee/login');
+                router.push('/login');
             }
         });
-    }, [toggle, role, search, page, limit]);
-    
+    }, [toggle, search, page, limit,role]);
 
     const handleDelete = (branchId: string, id: string, role: string) => {
         Swal.fire({
@@ -82,110 +91,115 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
-    }
+    };
 
     return (
-        <div className="p-8 rounded-md w-11/12 mt-20 mx-auto">
-            <div className="flex items-center justify-between pb-6">
-                <div>
-                    <h2 className="text-gray-100 font-semibold">Tenant Users</h2>
-                </div>
-                <div className="flex items-center justify-between">
-                    <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                        </svg>
-                        <input 
-                            className="bg-gray-50 text-gray-950 outline-none ml-1 block" 
-                            type="text" 
-                            name="search" 
-                            id="search" 
-                            placeholder="search..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
-                    <div className="lg:ml-40 ml-10 space-x-8">
-                        <Link href={admin ? '/dashboard/users/register' : '/employee/manager/dashboard/users/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
-                    </div>
-                </div>
-            </div>
-            <div className="pb-6 mt-7 md:mt-0">
-                <label htmlFor="role" className="text-gray-100 font-semibold mr-4">Role:</label>
-                <select
-                    id="role"
-                    className="bg-gray-50 outline-none p-2 rounded-md text-gray-950"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                >
-                    {admin && <option value="">All</option>}
-                    <option value="Project_Manager">Project_Manager</option>
-                    <option value="Developer">Developer</option>
-                    <option value="Tester">Tester</option>
-                </select>
-            </div>
-            <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                <div className="space-y-6">
-                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg grid grid-cols-8 text-center font-semibold text-white">
-                        <div className="col-span-1">Id</div>
-                        <div className="col-span-1">Name</div>
-                        <div className="col-span-1">Email</div>
-                        <div className="col-span-1">Phone No</div>
-                        <div className="col-span-1">Branch</div>
-                        <div className="col-span-1">Role</div>
-                        <div className="col-span-1">Created At</div>
-                        <div className="col-span-1">Actions</div>
-                    </div>
-                    {users.length > 0 ? users.map((user, index) => (
-                        <div key={index} className="bg-gray-700 p-6 rounded-lg text-center justify-stretch shadow-lg grid grid-cols-8">
-                            <div className="col-span-1 ">
-                                <div className="tooltip-container">
-                                    <p className="text-white  max-w-40  truncate">{user.tenant_user_id}</p>
-                                    <p className="text-white tooltip-text">{user.tenant_user_id}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="tooltip-container">
-                                    <p className="text-white">{user.name}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="tooltip-container">
-                                    <p className="text-white">{user.email}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="tooltip-container">
-                                    <p className="text-white">{user.phone_no}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="tooltip-container">
-                                    <p className="text-white">{user.branch_location}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="tooltip-container">
-                                    <p className="text-white">{user.role}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-1">
-                                <div className="tooltip-container">
-                                    <p className="text-white">{new Date(user.created_at).toLocaleDateString()}</p>
-                                </div>
-                            </div>
-                            <div className="col-span-1 flex space-x-2">
-                                <Link href={admin ? `/dashboard/users/${user._id}/edit` : `/employee/manager/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-                                <button type="button" onClick={() => handleDelete(user.branch_id, user._id, user.role as string)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
-                            </div>
+        <div className="w-11/12 mb-8 mt-6 overflow-hidden rounded-lg">
+            <h1 className={`font-semibold text-xl my-8 py-2 text-center bg-violet-800 rounded-lg flex w-full px-14 bg-gray-100`}>
+                Tenant Users
+            </h1>
+            <div className='mb-8 flex justify-between items-center'>
+                <form className="max-w-md">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                            </svg>
                         </div>
-                    )) : <Empty />}
+                        <input type="search" id="default-search" className={`block w-full p-4 ps-10 text-sm ${dark ? 'bg-gray-700 border-gray-600 placeholder-gray-400 text-white' : 'text-gray-900 border border-gray-300 bg-gray-50'} rounded-lg`} placeholder="Search Users" onChange={(e) => setSearch(e.target.value)} value={search} required />
+                    </div>
+                </form>
+                <div className="pb-6 mt-7 md:mt-0">
+                    <label htmlFor="role" className="text-gray-100 font-semibold mr-4">Role:</label>
+                    <select
+                        id="role"
+                        className="bg-gray-50 outline-none p-2 rounded-md text-gray-950"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                    >
+                        {admin && <option value="">All</option>}
+                        <option value="Project_Manager">Project_Manager</option>
+                        <option value="Developer">Developer</option>
+                        <option value="Tester">Tester</option>
+                    </select>
                 </div>
+                <div className="lg:ml-40 ml-10 space-x-8">
+                    <Link href={admin ? '/dashboard/users/register' : '/employee/manager/dashboard/users/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">
+                        Create User
+                    </Link>
+                </div>
+               
             </div>
-            <div className="flex justify-center gap-5 items-center py-4">
-                <button onClick={() => handlePageChange(page - 1)} disabled={page === 1} className="px-4 py-2 bg-gray-800 text-white rounded-md">Previous</button>
-                <span className="text-white">Page {page}</span>
-                <button onClick={() => handlePageChange(page + 1)} disabled={(page * limit) >= total} className="px-4 py-2 bg-gray-800 text-white rounded-md">Next</button>
+            <div className="w-full overflow-x-auto shadow-lg">
+                <table className="min-w-[70rem] w-full whitespace-no-wrap">
+                    <thead>
+                        <tr className={`text-lg font-semibold tracking-wide text-left shadow uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
+                            <th className="px-4 py-3 text-center">Name</th>
+                            <th className="px-4 py-3 text-center">Email</th>
+                            <th className="px-4 py-3 text-center">Role</th>
+                            <th className="px-4 py-3 text-center">Created At</th>
+                            <th className="px-4 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className={`divide-y divide-gray-600 ${!dark ? 'bg-gray-100 text-gray-950 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
+                        {users.length > 0 ? (
+                            users.map((user, index) => (
+                                <tr key={index}>
+                                    <td className="px-4 py-3 text-center">{user.name}</td>
+                                    <td className="px-4 py-3 text-center">{user.email}</td>
+                                    <td className="px-4 py-3 text-center">{user.role}</td>
+                                    <td className="px-4 py-3 text-center">{new Date(user.created_at).toLocaleDateString()}</td>
+                                    <td className="px-2 py-3 text-center">
+                                    <Link href={admin ? `/dashboard/users/${user._id}/edit` : `/employee/manager/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                    <button type="button" onClick={() => handleDelete(user.branch_id, user._id, user.role as string)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={5} className="py-3 text-center">
+                                    <Empty />
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+                <div className={`grid px-4 py-3 min-w-[70rem] w-full text-xs font-semibold tracking-wide shadow uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : "bg-[#1A1C23] text-gray-300 border-t border-gray-700"} sm:grid-cols-9`}>
+                    <span className="flex items-center col-span-3">
+                        Showing {page} of {Math.ceil(total / limit)} pages
+                    </span>
+                    <div className="col-span-4"></div>
+                    <span className="flex col-span-2 mt-2 sm:mt-auto sm:justify-end">
+                        <nav aria-label="Table navigation">
+                            <ul className="inline-flex items-center">
+                                <li>
+                                    <button
+                                        className="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:ring"
+                                        aria-label="Previous"
+                                        onClick={() => handlePageChange(page - 1)}
+                                        disabled={page === 1}
+                                    >
+                                        <svg className="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                            <path d="M7.05 10l4.95-4.95-1.41-1.41L3.24 10l7.34 7.36 1.41-1.41L7.05 10z" />
+                                        </svg>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        className="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:ring"
+                                        aria-label="Next"
+                                        onClick={() => handlePageChange(page + 1)}
+                                        disabled={page === Math.ceil(total / limit)}
+                                    >
+                                        <svg className="w-4 h-4 fill-current" aria-hidden="true" viewBox="0 0 20 20">
+                                            <path d="M12.95 10l-4.95 4.95 1.41 1.41L16.76 10l-7.34-7.36-1.41 1.41L12.95 10z" />
+                                        </svg>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </span>
+                </div>
             </div>
         </div>
     );
