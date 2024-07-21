@@ -1,25 +1,47 @@
-import React from 'react'
-import TenantProjectManagerSidebar from '../Sidebars/TenantProjectManagerSidebar';
-
+"use client"
+import React, { useState } from 'react';
+import Header from '../Headers/Header';
+import Sidebar from '../Sidebars/TenantProjectManagerSidebar';
+import { useSelector } from 'react-redux';
+import { ThemeState } from '@/features/theme/themeSlice';
 
 interface TenantProjectManagerLayoutProps {
     children: React.ReactNode;
 }
 
-const TenantProjectManagerLayout: React.FC<TenantProjectManagerLayoutProps> = ({ children }) => {
-    return (
-        <div className='bg-gray-950 min-h-screen'>
-
-            <div className='fixed bg-gray-950 z-10'>
-                <TenantProjectManagerSidebar />
-
-            </div>
-            <div className="p-4 ">
-                {children}
-
-            </div>
-        </div>
-    )
+interface RootState {
+    theme: ThemeState
 }
 
-export default TenantProjectManagerLayout
+const TenantProjectManagerLayout: React.FC<TenantProjectManagerLayoutProps> = ({ children }) => {
+
+
+
+    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+    const { background, text, main } = useSelector((state: RootState) => state.theme)
+
+
+    return (
+        <div className="flex h-screen ">
+            {/* Overlay */}
+            {sidebarOpen && (
+                <div
+                    className={`fixed inset-0 z-20 transition-opacity ${background} opacity-50 lg:hidden`}
+                    onClick={() => setSidebarOpen(false)}
+                ></div>
+            )}
+
+            <Sidebar sidebarOpen={sidebarOpen} />
+
+            <div className="flex flex-col flex-1 overflow-hidden">
+                <Header setSidebarOpen={setSidebarOpen} />
+                <div className={`h-screen ${main} overflow-auto flex justify-center`}>
+
+                    {children}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default TenantProjectManagerLayout;

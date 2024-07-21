@@ -166,9 +166,26 @@ const ProjectTable = ({ role }: { role: string }) => {
                                         {project.client_name}
                                     </td>
                                     <td className="px-4 py-3 text-md text-center">
-                                        <span className="px-4 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
-                                            {project.stage}
-                                        </span>
+
+                                        {
+                                            role === 'Project_Manager' ? (
+                                                <select
+                                                    className="text-gray-100 bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 mx-2 py-1.5 text-center inline-flex items-center border border-green-600 dark:text-gray-100 dark:hover:bg-green-600 dark:focus:ring-green-600"
+                                                    value={project.status}
+                                                    onChange={(e) => handleStatusChange(project._id, e.target.value)}
+                                                >
+                                                    <option value="pending">Not Started</option>
+                                                    <option value="development">In Progress</option>
+                                                    <option value="completed">Completed</option>
+                                                </select>
+
+                                            ) :
+                                                <span className="px-4 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
+                                                    {project.stage}
+                                                </span>
+                                        }
+
+
                                     </td>
                                     <td className="px-4 py-3 text-md text-center">
                                         {new Date(project.end_date).toLocaleDateString()}
@@ -182,17 +199,11 @@ const ProjectTable = ({ role }: { role: string }) => {
                                             </>
                                         ) : role === 'Project_Manager' ? (
                                             <>
-                                                <select
-                                                    className="text-gray-100 bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600 dark:text-gray-100 dark:hover:bg-green-600 dark:focus:ring-green-600"
-                                                    value={project.status}
-                                                    onChange={(e) => handleStatusChange(project._id, e.target.value)}
-                                                >
-                                                    <option value="pending">Not Started</option>
-                                                    <option value="development">In Progress</option>
-                                                    <option value="completed">Completed</option>
-                                                </select>
+                                               
                                                 <Link href={`/employee/project_manager/dashboard/projects/${project._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
                                                 <Link href={`/employee/project_manager/dashboard/projects/${project._id}/tasks/create`} className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">Create Task</Link>
+                                                <Link href={`/employee/project_manager/dashboard/projects/${project._id}/tasks`} className="focus:outline-none text-white bg-blue-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-500 dark:hover:bg-blue-500 dark:focus:ring-blue-500">Show Task</Link>
+
                                             </>
                                         ) : role === 'Developer' ?
                                             (

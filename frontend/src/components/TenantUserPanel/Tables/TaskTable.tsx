@@ -115,7 +115,7 @@ const TaskTable = ({ projectId, role }: { projectId: string; role: string }) => 
             <h1 className={`font-semibold text-xl my-8 bg-violet-800 py-2 text-center rounded-lg flex w-full px-14 `}>
                 Task List
             </h1>
-            <div className='mb-8'>
+            <div className='mb-8 flex justify-between items-center'>
                 <form className="max-w-md">
                     <div className="relative">
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
