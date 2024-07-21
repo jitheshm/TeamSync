@@ -4,9 +4,9 @@ import { Request, Response, NextFunction } from 'express';
 import { FileArray, UploadedFile } from 'express-fileupload';
 
 cloudinary.config({
-    cloud_name: 'dsxnkdv2k',
-    api_key: '833735884435541',
-    api_secret: 'SYL5gS5ZicLKRlVohLxLD-ZPyjU'
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 interface CloudinaryUploadResult {
