@@ -101,8 +101,8 @@ const socketHandler = (io: Server) => {
                 }
                 console.log(dataObj.members, ">>>>>>hai.");
 
-                createChatController(socket.data.user.tenantId, dataObj)
-
+                await createChatController(socket.data.user.tenantId, dataObj)
+ 
 
             }
 

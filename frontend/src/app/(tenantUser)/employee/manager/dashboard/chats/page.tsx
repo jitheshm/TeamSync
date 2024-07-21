@@ -1,10 +1,10 @@
-import MessageUI from '@/components/Chat/MessageUI'
+import Chat from '@/components/Chat/Chat'
 import React from 'react'
 
 function page() {
     return (
         <div className='mt-14'>
-            <MessageUI />
+            <Chat/>
         </div>
     )
 }
