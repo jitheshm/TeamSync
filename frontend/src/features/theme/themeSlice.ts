@@ -21,7 +21,7 @@ export const themeSlice = createSlice({
     initialState,
     reducers: {
         toogleTheme: (state) => {
-            state.background = state.background === 'bg-gray-100' ? 'bg-[#1a1c23]' : 'bg-gray-100'
+            state.background = state.background === 'bg-white' ? 'bg-[#1a1c23]' : 'bg-white'
             state.text = state.text === 'text-gray-950' ? 'text-gray-100' : 'text-gray-950';
             state.main = state.main === 'bg-gray-100' ? 'bg-[#121317]' : 'bg-gray-100';
             state.dark = !state.dark;
