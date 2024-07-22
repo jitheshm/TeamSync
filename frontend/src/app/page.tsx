@@ -4,6 +4,8 @@ import Main from "@/components/Landing/Main/Main";
 import Image from "next/image";
 import Feature from "@/components/Landing/Features/Feature";
 import Plans from "@/components/Landing/Plans/Plans";
+import CTA from "@/components/Landing/CTA/CTA";
+import Footer from "@/components/Landing/Footer/Footer";
 
 export default function Home() {
   return (
@@ -12,6 +14,8 @@ export default function Home() {
       <Main />
       <Feature/>
       <Plans/>
+      <CTA/>
+      <Footer/>
     </UserLayout>
   );
 }
