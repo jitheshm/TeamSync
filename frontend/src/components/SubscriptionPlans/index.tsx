@@ -21,6 +21,7 @@ function Index() {
             }
         })
     }, [])
+    
     return (
         <div className="bg-white h-screen text-gray-950 pt-16">
             <div>

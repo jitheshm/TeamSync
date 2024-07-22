@@ -7,7 +7,7 @@ interface IFeatures {
     support: 'basic' | 'expert';
 }
 
-interface IPlan {
+export interface IPlan {
     plan_id: string;
     stripe_plan_id: string;
     description: string;
@@ -45,7 +45,7 @@ const PriceCard: React.FC<{ plan: IPlan }> = ({ plan }) => {
                     </svg><span className="ml-3 ">{plan.features.support} Support</span></li>
                     
                 </ul>
-            </div><Link className="bg-emerald-500 text-white  hover:bg-emerald-600 mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium" href={`/tenant-registration/${plan.stripe_plan_id}`}>Select</Link>
+            </div><Link className="bg-emerald-500 text-white  hover:bg-emerald-600  block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium mt-32" href={`/tenant-registration/${plan.stripe_plan_id}`}>Select</Link>
         </div>
     )
 }
