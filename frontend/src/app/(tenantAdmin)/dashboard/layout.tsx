@@ -27,7 +27,7 @@ export default function DashboardLayout({
 }) {
     const [loading, setLoading] = useState<boolean>(true)
 
-    const { verified,role } = useSelector((state: RootState) => state.user)
+    const { verified,role,tenantId } = useSelector((state: RootState) => state.user)
     const dispatch = useDispatch()
     const router = useRouter()
 
@@ -35,6 +35,9 @@ export default function DashboardLayout({
         console.log(role);
         
         if (verified && role ==='Tenant_Admin') {
+            if(!tenantId){
+                router.push('/subscription-plans')
+            }
             setLoading(false)
         } else {
             // const token = Cookies.get('team-sync-user-token')

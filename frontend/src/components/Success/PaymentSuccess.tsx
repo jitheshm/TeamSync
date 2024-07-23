@@ -1,6 +1,12 @@
-import React from 'react'
+"use client"
+import { logout } from '@/features/user/userSlice'
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 function PaymentSuccess() {
+  const dispatch = useDispatch()
+
   return (
     <div className="bg-gray-100 h-screen flex justify-center items-center">
       <div className="bg-white p-6  md:mx-auto border shadow">
@@ -13,9 +19,9 @@ function PaymentSuccess() {
           <p className="text-gray-600 my-2">Thank you for completing your secure online payment.</p>
           <p className="text-gray-600 my-2"> Your subscription is now Active</p>
           <div className="py-10 text-center">
-            <a href="#" className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3">
-              GO To Dashboard
-            </a>
+            <button onClick={() => dispatch(logout())} className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3">
+              Login
+            </button>
           </div>
         </div>
       </div>
