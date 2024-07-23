@@ -1,12 +1,13 @@
 "use client"
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, FormEvent } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { z, ZodError } from 'zod';
 import { logout } from '@/features/user/userSlice';
 import Swal from 'sweetalert2';
 import { createTicket, fetchSpecificTicketDetails, updateTicket } from '@/api/projectService/project';
 import { IMAGEURL } from '@/constants/constant';
+import { ThemeState } from '@/features/theme/themeSlice';
 
 const ticketSchema = z.object({
     title: z.string().min(3, "Title must be at least 3 characters long").nonempty("Title is required"),
@@ -27,6 +28,10 @@ interface FormErrors {
     files?: string;
 }
 
+interface RootState {
+    theme: ThemeState
+}
+
 function TicketForm({ ticketId, edit = false, projectId, taskId }: { ticketId?: string, edit?: boolean, projectId: string, taskId: string }) {
     const [formData, setFormData] = useState<TicketFormData>({
         title: '',
@@ -39,6 +44,8 @@ function TicketForm({ ticketId, edit = false, projectId, taskId }: { ticketId?: 
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const router = useRouter();
     const dispatch = useDispatch();
+    const { background, text, main, dark } = useSelector((state: RootState) => state.theme)
+
 
     useEffect(() => {
         if (edit && ticketId) {
@@ -127,9 +134,9 @@ function TicketForm({ ticketId, edit = false, projectId, taskId }: { ticketId?: 
     };
 
     return (
-        <div className="min-h-screen flex items-center">
+        <div className="min-h-screen flex items-center w-full">
             <div className="w-full">
-                <div className="bg-gray-800 p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
+                <div className={` ${background} p-10 rounded-lg shadow  lg:w-10/12 xl:w-8/12 mx-auto `}>
                     <form onSubmit={handleSubmit}>
                         {
                             edit ? <h1 className="text-2xl font-bold text-gray-100 mb-5">Edit Ticket</h1> : <h1 className="text-2xl font-bold text-gray-100 text-center mb-5">Create Ticket</h1>

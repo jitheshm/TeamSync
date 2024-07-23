@@ -3,10 +3,11 @@ import { fetchAvailableTenantUsers, fetchTenantUsers } from '@/api/userService/u
 import { logout } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { z, ZodError } from 'zod';
 import Select from 'react-select';
 import { createProject, fetchSpecificProject, updateProject } from '@/api/projectService/project';
+import { ThemeState } from '@/features/theme/themeSlice';
 
 const projectSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
@@ -41,6 +42,9 @@ interface FormErrors {
     end_date?: string;
 }
 
+interface RootState {
+    theme: ThemeState
+}
 
 function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     const [formData, setFormData] = useState<ProjectFormData>({
@@ -63,6 +67,9 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     const [testers, setTesters] = useState([]);
     const [developer, setDeveloper] = useState([]);
     const [projectManager, setProjectManager] = useState([]);
+    const { background, text, main, dark } = useSelector((state: RootState) => state.theme)
+
+    
     const router = useRouter();
     const dispatch = useDispatch();
 
@@ -185,9 +192,9 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     };
 
     return (
-        <div className="min-h-screen flex items-center">
+        <div className="min-h-screen flex items-center w-full">
             <div className="w-full">
-                <div className="bg-gray-900 p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
+                <div className={ ` ${background} p-10 rounded-lg shadow  lg:w-10/12 xl:w-8/12 mx-auto `}>
                     <form onSubmit={handleSubmit}>
                         <h1 className="text-center text-gray-200 font-bold text-2xl mb-10">
                             Create Project

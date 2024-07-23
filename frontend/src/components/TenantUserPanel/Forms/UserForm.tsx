@@ -1,11 +1,12 @@
 "use client"
 import { fetchBranches } from '@/api/tenantService/tenant';
 import { fetchTenantSpecificUser, fetchTenantUsers, tenantUserRegister, tenantUserUpdate } from '@/api/userService/user';
+import { ThemeState } from '@/features/theme/themeSlice';
 import { logout } from '@/features/user/userSlice';
 import { IBranches } from '@/interfaces/Branches';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { z, ZodError } from 'zod';
 
 // Define the Zod schema
@@ -33,6 +34,9 @@ interface FormErrors {
     role?: string;
     branch_id?: string;
 }
+interface RootState {
+    theme: ThemeState
+}
 
 const roles = ['Project_Manager', 'Developer', 'Tester'];
 
@@ -48,6 +52,8 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     const [errors, setErrors] = useState<FormErrors>({});
     const router = useRouter();
     const dispatch = useDispatch();
+    const { background, text, main, dark } = useSelector((state: RootState) => state.theme)
+
 
 
 
@@ -119,9 +125,9 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     };
 
     return (
-        <div className="min-h-screen flex items-center">
+        <div className="min-h-screen flex items-center w-full"> 
             <div className="w-full">
-                <div className="bg-gray-900 p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
+                <div className={` ${background} p-10 rounded-lg shadow w-11/12 md:w-6/12  lg:w-8/12 xl:w-6/12 mx-auto `}> 
                     <form onSubmit={handleSubmit}>
                         <h1 className="text-center text-gray-200 font-bold text-2xl mb-10">
                             {

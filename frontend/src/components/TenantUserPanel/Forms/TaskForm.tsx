@@ -3,10 +3,11 @@ import { fetchAvailableTenantUsers } from '@/api/userService/user';
 import { logout } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, FormEvent } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { z, ZodError } from 'zod';
 import Select from 'react-select';
 import { createTask, fetchAvailableProjectUsers, fetchSpecificTaskDetails, updateTask } from '@/api/projectService/project';
+import { ThemeState } from '@/features/theme/themeSlice';
 // import { createTask } from '@/api/taskService/task';
 
 const taskSchema = z.object({
@@ -41,6 +42,9 @@ interface FormErrors {
     developer_id?: string;
     tester_id?: string;
 }
+interface RootState {
+    theme: ThemeState
+}
 
 function TaskForm({ projectId, taskId, edit = false }: { projectId: string, taskId?: string, edit?: boolean }) {
     const [formData, setFormData] = useState<TaskFormData>({
@@ -64,6 +68,8 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
     const [testers, setTesters] = useState([]);
     const router = useRouter();
     const dispatch = useDispatch();
+    const { background, text, main, dark } = useSelector((state: RootState) => state.theme)
+
 
     useEffect(() => {
         fetchAvailableProjectUsers(projectId).then((res) => {
@@ -82,7 +88,7 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
         if (edit && taskId) {
             fetchSpecificTaskDetails(projectId, taskId).then((res) => {
                 console.log(res.data);
-                
+
                 setFormData({
                     title: res.data.title,
                     description: res.data.description,
@@ -117,7 +123,7 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
             }
             else {
                 if (taskId) {
-                    
+
                     updateTask(formData, projectId, taskId).then(() => {
                         router.push(`/employee/project_manager/dashboard/projects/${projectId}/tasks/${taskId}`);
                     }).catch((err: any) => {
@@ -142,9 +148,9 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
     };
 
     return (
-        <div className="min-h-screen flex items-center">
+        <div className="min-h-screen flex items-center w-full">
             <div className="w-full">
-                <div className="bg-gray-800 p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
+                <div className={` ${background} p-10 rounded-lg shadow  lg:w-10/12 xl:w-8/12 mx-auto `}>
                     <form onSubmit={handleSubmit}>
                         {
                             edit ? <h1 className="text-2xl font-bold text-gray-100 mb-5">Edit Task</h1> : <h1 className="text-2xl font-bold text-gray-100 mb-5">Create Task</h1>
