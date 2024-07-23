@@ -18,7 +18,8 @@ export default class UserService implements IUserService {
                     await this.userRepository.updateUser(data);
                     break;
                 default:
-                    throw new Error(`Unsupported event type: ${eventType}`);
+                    console.log(`Unsupported event type: ${eventType}`);
+
             }
         } catch (error) {
             console.log(error);

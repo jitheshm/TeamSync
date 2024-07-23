@@ -29,7 +29,7 @@ export class UserService implements IUserService {
                 await this.updateUser(data);
                 break;
             default:
-                throw new Error(`Unhandled event type: ${eventType}`);
+                console.log(`Unhandled event type: ${eventType}`);
         }
     }
 }

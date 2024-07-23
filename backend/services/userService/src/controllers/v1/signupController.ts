@@ -27,7 +27,16 @@ export default async (req: Request, res: Response) => {
         let user: IUsers = req.body;
         let userExist = await userRepo.fetchUserByEmail(user.email)
         if (userExist) {
-            return res.status(409).json({ error: "Email address already exists." })
+            if (userExist.is_verified)
+                return res.status(409).json({ error: "Email address already exists." })
+            else {
+                let producer = await kafkaConnection.getProducerInstance()
+                let userProducer = new UserProducer(producer, 'main', 'users')
+                userProducer.sendMessage('resendOtp', userExist)
+                return res.status(200).json({ message: "otp send successfully" })
+
+
+            }
         }
 
 
@@ -37,8 +46,8 @@ export default async (req: Request, res: Response) => {
         const customer = await stripe.customers.create({
             email: user.email,
             name: user.first_name,
-            
 
+ 
         });
 
         user.stripe_customer_id = customer.id

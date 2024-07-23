@@ -31,26 +31,50 @@ export default class UserConsumer implements IConsumer {
                                 case 'create':
 
 
-                                    await userRepository.create(dataObj.data)
-                                    let otp = generateOtp()
-                                    let otpRepository = new OtpRepository()
-                                    let otpObj = {
-                                        email: dataObj.data.email,
-                                        otp: `${otp}`,
-                                        context: 'signup'
+                                    {
+                                        await userRepository.create(dataObj.data)
+                                        let otp = generateOtp()
+                                        let otpRepository = new OtpRepository()
+                                        let otpObj = {
+                                            email: dataObj.data.email,
+                                            otp: `${otp}`,
+                                            context: 'signup'
+                                        }
+                                        await otpRepository.create(otpObj, dataObj.data.email)
+
+
+                                        let producer = await kafkaConnection.getProducerInstance()
+                                        let otpProducer = new OtpProducer(producer, 'main', 'otps')
+                                        otpProducer.sendMessage('create', otpObj)
+                                        break;
                                     }
-                                    await otpRepository.create(otpObj, dataObj.data.email)
 
 
-                                    let producer = await kafkaConnection.getProducerInstance()
-                                    let otpProducer = new OtpProducer(producer, 'main', 'otps')
-                                    otpProducer.sendMessage('create', otpObj)
 
-
-                                    break;
                                 case 'update':
                                     await userRepository.updateUser(dataObj.data)
                                     break;
+                                    
+                                case 'resendOtp':
+                                    {
+                                        let otp = generateOtp()
+                                        let otpRepository = new OtpRepository()
+                                        let otpObj = {
+                                            email: dataObj.data.email,
+                                            otp: `${otp}`,
+                                            context: 'signup'
+                                        }
+                                        await otpRepository.create(otpObj, dataObj.data.email)
+
+
+                                        let producer = await kafkaConnection.getProducerInstance()
+                                        let otpProducer = new OtpProducer(producer, 'main', 'otps')
+                                        otpProducer.sendMessage('create', otpObj)
+                                        break
+
+                                    }
+                               
+                                    
                             }
                         }
 
