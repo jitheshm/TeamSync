@@ -7,8 +7,6 @@ import { verify } from '@/features/user/userSlice'
 import Link from 'next/link'
 import MobileNav from './MobileNav'
 
-
-
 interface UserState {
     name: string
     verified: boolean
@@ -24,13 +22,12 @@ function Navbar() {
     const [mobileNav, setMobileNav] = useState(false)
     const dispatch = useDispatch()
 
-
     return (
-        <header className="absolute inset-x-0 top-0 z-50">
+        <header className="absolute inset-x-0 top-0 z-50 backdrop-blur-md bg-white/30">
             <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex-1 gap-3">
                     <a href="#" className="-m-1.5 p-1.5">
-                        <span className="sr-only ">TeamSync</span>
+                        <span className="sr-only">TeamSync</span>
                         <img className="h-8 w-auto" src="/logo.png" alt='TeamSync' />
                     </a>
                     <span className="self-center text-2xl font-semibold whitespace-nowrap text-black">TeamSync</span>
@@ -58,7 +55,6 @@ function Navbar() {
                 mobileNav && <MobileNav setMobileNav={setMobileNav} />
             }
         </header>
-
     )
 }
 
