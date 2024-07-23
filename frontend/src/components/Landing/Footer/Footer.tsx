@@ -2,14 +2,13 @@ import React from 'react'
 
 function Footer() {
     return (
-        <footer className="flex flex-col space-y-20 justify-center m-10 bg-black text-white">
+        <footer id='follow' className="flex flex-col space-y-20 justify-center m-10 bg-black text-white">
             <nav className="flex justify-center flex-wrap gap-6  font-medium">
                 <a  href="#">Home</a>
-                <a  href="#">About</a>
-                <a  href="#">Services</a>
-                <a  href="#">Media</a>
-                <a  href="#">Gallery</a>
-                <a  href="#">Contact</a>
+                <a  href="#">Features</a>
+                <a  href="#">Plans</a>
+                <a  href="#">About us</a>
+                
             </nav>
             <div className="flex justify-center space-x-5">
                 <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">

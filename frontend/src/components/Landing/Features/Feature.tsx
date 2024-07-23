@@ -2,12 +2,12 @@
 function Feature() {
     return (
         <div >
-            <div className='min-h-screen w-screen bg-white  text-gray-900 pb-16'> 
+            <div id="features" className='min-h-screen w-screen bg-white  text-gray-900 pb-16'> 
                 <div className=' w-11/12 md:w-7/12 lg:w-7/12 xl:w-4/12 mx-auto pt-36 '>
                     <h1 className="text-3xl lg:text-5xl  font-bold tracking-tight  text-center ">Streamlined for easy management</h1>
                 </div>
 
-                <div className='md:w-11/12 xl:w-9/12 mx-auto mt-16'>  
+                <div className='md:w-11/12 xl:w-10/12 mx-auto mt-16'>  
                     <div className='grid grid-cols-12 place-items-center mt-10 gap-5 xl:gap-0'>
                         <div className='col-span-12 xl:col-span-4 h-fit text-center '> 
 

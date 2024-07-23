@@ -41,13 +41,16 @@ function Navbar() {
                     </button>
                 </div>
                 <div className="hidden lg:flex lg:gap-x-12">
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Home</a>
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Features</a>
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Plans</a>
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Follow Us</a>
+                    <Link href="#home" className="text-sm font-semibold leading-6 text-gray-900">Home</Link>
+                    <Link href="#features" className="text-sm font-semibold leading-6 text-gray-900">Features</Link>
+                    <Link href="#plans" className="text-sm font-semibold leading-6 text-gray-900">Plans</Link>
+                    <Link href="#follow" className="text-sm font-semibold leading-6 text-gray-900">Follow Us</Link>
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                    <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">→</span></a>
+                    {
+                        verified ? <Link href={'/dashboard/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Dashboard</Link> : <a href="#" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">→</span></a>
+                    }
+
                 </div>
             </nav>
             {/* Mobile menu, show/hide based on menu open state. */}

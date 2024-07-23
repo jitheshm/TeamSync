@@ -32,6 +32,8 @@ export default function DashboardLayout({
     const router = useRouter()
 
     useEffect(() => {
+        console.log(role);
+        
         if (verified && role ==='Tenant_Admin') {
             setLoading(false)
         } else {

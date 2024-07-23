@@ -95,6 +95,7 @@ const Login: React.FC = () => {
                 const data = await firebaseLogin(token);
                 Cookies.set('team-sync-token', data.token, { expires: 1 })
                 console.log(data);
+                console.log("hai")
 
                 dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '',role:data.role,id:data.id }))
                 router.push('/')

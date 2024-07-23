@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 function CTA() {
@@ -9,7 +10,7 @@ function CTA() {
                     <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">SignUp Now</h1>
                     <p className="mt-6 text-lg leading-8 text-gray-600">Celebrate the joy of accomplishment with an app designed to track team progress and motivate their efforts.</p>
                     <div className="mt-10 flex items-center justify-center gap-x-6">
-                        <a href="#" className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
+                        <Link href="/signup" className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</Link>
                        
                     </div>
                 </div> 
