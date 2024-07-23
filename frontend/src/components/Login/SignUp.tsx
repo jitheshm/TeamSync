@@ -5,10 +5,14 @@ import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { z } from 'zod';
 
+const nameRegex = /^[A-Za-z\s]+$/;
 
 const signUpSchema = z.object({
-    first_name: z.string().min(3, "First Name must be at least 3 characters long"),
-    last_name: z.string().min(1, "Last Name is required"),
+    first_name: z.string()
+        .min(3, { message: "First Name must be at least 3 characters long" })
+        .regex(nameRegex, { message: "First Name must only contain alphabetic characters" }),
+    last_name: z.string()
+        .min(1, { message: "Last Name is required" }).regex(nameRegex, { message: "Last Name must only contain alphabetic characters" }),
     email: z.string().min(1, "Email is required").email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
     confirm_password: z.string().min(6, "Confirm Password must be at least 6 characters long")
@@ -41,7 +45,7 @@ interface SignUpProps {
 
 }
 
-const SignUp: React.FC<SignUpProps> = ({ setOtpPage,setEmail }) => {
+const SignUp: React.FC<SignUpProps> = ({ setOtpPage, setEmail }) => {
 
 
     const [formData, setFormData] = useState<SignupFormData>({
