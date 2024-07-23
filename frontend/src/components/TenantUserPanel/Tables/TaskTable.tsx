@@ -2,6 +2,7 @@
 
 import { fetchAllTasks, taskDelete, updateTaskStatus } from '@/api/projectService/project';
 import Empty from '@/components/Empty/Empty';
+import { ThemeState } from '@/features/theme/themeSlice';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -17,6 +18,8 @@ export interface ITask {
     status: string;
     description: string;
     due_date: string;
+    developer_id:string
+    tester_id:string
 }
 
 interface UserState {
@@ -95,7 +98,7 @@ const TaskTable = ({ projectId, role }: { projectId: string; role: string }) => 
         const data = {
             status: newStatus
         };
-        updateTaskStatus(data,projectId, taskId).then(() => {
+        updateTaskStatus(data, projectId, taskId).then(() => {
             Swal.fire({
                 title: "Updated!",
                 text: "The task status has been updated.",
@@ -150,67 +153,122 @@ const TaskTable = ({ projectId, role }: { projectId: string; role: string }) => 
                     </thead>
                     <tbody className={`divide-y dark:divide-gray-700 shadow ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-950 border border-gray-300' : "bg-[#1A1C23] text-gray-300 border-b border-gray-700"}`}>
                         {tasks.length > 0 ? (
-                            tasks.map((task, index) => (
-                                <tr key={index}>
-                                    <td className="px-4 py-3 text-center">{task.title}</td>
-                                    <td className="px-4 py-3 text-md text-center">{task.developer.map(dev => dev.name).join(', ')}</td>
-                                    <td className="px-4 py-3 text-md text-center">{task.tester.map(tester => tester.name).join(', ')}</td>
-                                    <td className="px-4 py-3 text-md text-center">{new Date(task.due_date).toLocaleDateString()}</td>
-                                    <td className="px-4 py-3 text-md text-center">
-                                        {
-                                            role === 'Tester' ?
-                                                <div className='col-span-1'>
-                                                    <select
-                                                        className={` ${dark ? "text-gray-100" : "text-gray-950"} bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600  dark:hover:bg-green-600 dark:focus:ring-green-600`}
-                                                        value={task.status}
-                                                        onChange={(e) => handleStatusChange(task._id, e.target.value)}
-                                                    >
+                            tasks.map((task, index) => {
+                                if (role != 'Project_Manager') {
+                                    if (task.developer_id === id||task.tester_id===id)
+                                        return (<tr key={index}>
+                                            <td className="px-4 py-3 text-center">{task.title}</td>
+                                            <td className="px-4 py-3 text-md text-center">{task.developer.map(dev => dev.name).join(', ')}</td>
+                                            <td className="px-4 py-3 text-md text-center">{task.tester.map(tester => tester.name).join(', ')}</td>
+                                            <td className="px-4 py-3 text-md text-center">{new Date(task.due_date).toLocaleDateString()}</td>
+                                            <td className="px-4 py-3 text-md text-center">
+                                                {
+                                                    role === 'Tester' ?
+                                                        <div className='col-span-1'>
+                                                            <select
+                                                                className={` ${dark ? "text-gray-100" : "text-gray-950"} bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600  dark:hover:bg-green-600 dark:focus:ring-green-600`}
+                                                                value={task.status}
+                                                                onChange={(e) => handleStatusChange(task._id, e.target.value)}
+                                                            >
 
-                                                        <option value="testing">Testing</option>
-                                                        <option value="completed">Completed</option>
-                                                    </select>
-                                                </div>
-                                                :
+                                                                <option value="pending">Pending</option>
+                                                                <option value="testing">Testing</option>
+                                                                <option value="completed">Completed</option>
+                                                            </select>
+                                                        </div>
+                                                        :
 
-                                                <div className='col-span-1'>
-                                                    <select
-                                                        className={` ${dark ? "text-gray-100" : "text-gray-950"} bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600  dark:hover:bg-green-600 dark:focus:ring-green-600`}
-                                                        value={task.status}
-                                                        onChange={(e) => handleStatusChange(task._id, e.target.value)}
-                                                    >
-                                                        <option value="pending">Pending</option>
-                                                        <option value="in_progress">In Progress</option>
-                                                        <option value="testing">Testing</option>
-                                                    </select>
-                                                </div>
-                                        }
-                                    </td>
-                                    <td className="px-2 py-3 text-md text-center">
-                                        {role === 'Project_Manager' ? (
-                                            <>
-                                                <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
-                                                <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
-                                                <button type="button" onClick={() => handleDelete(task._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
-                                            </>
-                                        ) : role === 'Developer' ? (
-                                            <>
-                                                <Link href={`/employee/developer/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
-                                                <Link href={`/employee/developer/dashboard/projects/${projectId}/tasks/${task._id}/tickets`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show Tickets</Link>
-                                            </>
+                                                        <div className='col-span-1'>
+                                                            <select
+                                                                className={` ${dark ? "text-gray-100" : "text-gray-950"} bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600  dark:hover:bg-green-600 dark:focus:ring-green-600`}
+                                                                value={task.status}
+                                                                onChange={(e) => handleStatusChange(task._id, e.target.value)}
+                                                            >
+                                                                <option value="pending">Pending</option>
+                                                                <option value="in_progress">In Progress</option>
+                                                                <option value="testing">Testing</option>
+                                                            </select>
+                                                        </div>
+                                                }
+                                            </td>
+                                            <td className="px-2 py-3 text-md text-center">
+                                                {role === 'Project_Manager' ? (
+                                                    <>
+                                                        <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                        <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                                        <button type="button" onClick={() => handleDelete(task._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
+                                                    </>
+                                                ) : role === 'Developer' ? (
+                                                    <>
+                                                        <Link href={`/employee/developer/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                        <Link href={`/employee/developer/dashboard/projects/${projectId}/tasks/${task._id}/tickets`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show Tickets</Link>
+                                                    </>
 
-                                        ) :
-                                            (
+                                                ) :
+                                                    (
+                                                        <>
+                                                            <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                            <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}/tickets/create`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create Ticket</Link>
+                                                            <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}/tickets`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show Tickets</Link>
+                                                        </>
+                                                    )
+
+                                                }
+                                            </td>
+                                        </tr>)
+                                    else {
+                                        return null
+                                    }
+                                } else {
+                                    return (<tr key={index}>
+                                        <td className="px-4 py-3 text-center">{task.title}</td>
+                                        <td className="px-4 py-3 text-md text-center">{task.developer.map(dev => dev.name).join(', ')}</td>
+                                        <td className="px-4 py-3 text-md text-center">{task.tester.map(tester => tester.name).join(', ')}</td>
+                                        <td className="px-4 py-3 text-md text-center">{new Date(task.due_date).toLocaleDateString()}</td>
+                                        <td className="px-4 py-3 text-md text-center">
+
+
+
+                                            <div className='col-span-1'>
+                                                <select
+                                                    className={` ${dark ? "text-gray-100" : "text-gray-950"} bg-transparent hover:bg-green-600 focus:ring-1 focus:outline-none focus:ring-green-600 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center border border-green-600  dark:hover:bg-green-600 dark:focus:ring-green-600`}
+                                                    value={task.status}
+                                                    onChange={(e) => handleStatusChange(task._id, e.target.value)}
+                                                >
+                                                    <option value="pending">Pending</option>
+                                                    <option value="in_progress">In Progress</option>
+                                                    <option value="testing">Testing</option>
+                                                </select>
+                                            </div>
+
+                                        </td>
+                                        <td className="px-2 py-3 text-md text-center">
+                                            {role === 'Project_Manager' ? (
                                                 <>
-                                                    <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
-                                                    <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}/tickets/create`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create Ticket</Link>
-                                                    <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}/tickets`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show Tickets</Link>
+                                                    <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                    <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${task._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
+                                                    <button type="button" onClick={() => handleDelete(task._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                                 </>
-                                            )
+                                            ) : role === 'Developer' ? (
+                                                <>
+                                                    <Link href={`/employee/developer/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                    <Link href={`/employee/developer/dashboard/projects/${projectId}/tasks/${task._id}/tickets`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show Tickets</Link>
+                                                </>
 
-                                        }
-                                    </td>
-                                </tr>
-                            ))
+                                            ) :
+                                                (
+                                                    <>
+                                                        <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View</Link>
+                                                        <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}/tickets/create`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create Ticket</Link>
+                                                        <Link href={`/employee/tester/dashboard/projects/${projectId}/tasks/${task._id}/tickets`} className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Show Tickets</Link>
+                                                    </>
+                                                )
+
+                                            }
+                                        </td>
+                                    </tr>)
+                                }
+                            })
                         ) : (
                             <tr>
                                 <td colSpan={6}>

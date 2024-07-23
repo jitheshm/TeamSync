@@ -41,7 +41,7 @@ function Page() {
                     router.push('/employee/manager/dashboard')
                     break
                 case 'Project_Manager':
-                    router.push('/employee/project-manager/dashboard')
+                    router.push('/employee/project_manager/dashboard')
                     break
                 case 'Developer':
                     router.push('/employee/developer/dashboard')
