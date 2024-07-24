@@ -23,4 +23,14 @@ export default class ChatNotificationRepository implements IChatNotificationRepo
 
         }
     }
+
+    async delete(dbId: string, chat_id: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) {
+        try {
+            const ChatNotificationModel = switchDb<IChatNotfication>(`${process.env.SERVICE}_${dbId}`, 'chat_notifications')
+            await ChatNotificationModel.deleteOne({ chat_id: chat_id, user_id: userId })
+        } catch (error) {
+            console.log(error);
+            throw new Error("Failed to delete chat");
+        }
+    }
 }

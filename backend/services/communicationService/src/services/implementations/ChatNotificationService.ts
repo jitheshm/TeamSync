@@ -23,5 +23,14 @@ export default class ChatNotoficationService implements IChatNotificationService
         }
     }
 
+    async deleteChatNotification(dbId: string, chat_id: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): Promise<void> {
+        try {
+            await this.chatNotificationRepository.delete(dbId, chat_id, userId);
+        } catch (error) {
+            console.log(error);
+            throw new Error("Failed to delete chat");
+        }
+    }
+
 
 }
