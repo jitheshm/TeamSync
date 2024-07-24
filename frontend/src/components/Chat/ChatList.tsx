@@ -33,7 +33,10 @@ function ChatList({ recent, handleRoomChange, activeRoom, setIsModalOpen }: { re
                                 return (
                                     <li className="flex justify-between items-center  mt-2 p-2 hover:shadow-lg rounded cursor-pointer transition" onClick={() => handleRoomChange(chat)} key={chat._id}>
                                         <div className="flex ml-2">
-                                            <img src="https://i.imgur.com/aq39RMA.jpg" width={40} height={40} className="rounded-full" />
+
+                                            {chat.type === 'group' ? <img src="/group.jpeg" width={40} height={40} className="rounded-full" /> : <img src="/profile.png" width={40} height={40} className="rounded-full" />}
+
+
                                             <div className="flex flex-col ml-2">
                                                 <span className="font-medium text-white">{
                                                     chat.type === 'group' ? chat.name : chat.members.filter((member: any) => member._id !== id)[0].name

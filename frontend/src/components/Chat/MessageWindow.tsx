@@ -62,8 +62,10 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                                 <div className='2xl:hidden'>
                                     <i className="fa-solid fa-arrow-left mr-10" style={{ color: '#ffffff' }} onClick={() => setActiveRoom(null)} />
                                 </div>
-
-                                <img className="object-cover w-10 h-10 rounded-full" src="/chatIcon.png" alt="username" />
+                                {
+                                    isGroupChat?<img className="object-cover w-10 h-10 rounded-full" src="/group.jpeg" alt="username" />:<img className="object-cover w-10 h-10 rounded-full" src="/profile.png" alt="username" />
+                                }
+                                
                                 <span className="block ml-2 font-bold text-gray-100">{userName}</span>
                                 {/* <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span> */}
                             </div>
