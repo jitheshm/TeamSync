@@ -2,6 +2,9 @@ import { ThemeState } from '@/features/theme/themeSlice'
 import React, { useState, ChangeEvent } from 'react'
 import { useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
+import DropDown from './DropDown'
+import IMessage from '@/interfaces/Messages'
+import Swal from 'sweetalert2'
 
 interface UserState {
     name: string
@@ -15,23 +18,18 @@ interface RootState {
     theme: ThemeState
 }
 
-interface Message {
-    sender: string
-    sender_name: string
-    message: string
-    timestamp: string
-}
 
 interface MessageWindowProps {
     userName: string
-    message: Message[]
+    message: IMessage[]
     socket: Socket
     activeRoom: string | null
     isGroupChat: boolean
     setActiveRoom: React.Dispatch<React.SetStateAction<string | null>>
+    setMessage: React.Dispatch<React.SetStateAction<IMessage[]>>
 }
 
-function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, setActiveRoom }: MessageWindowProps) {
+function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, setActiveRoom, setMessage }: MessageWindowProps) {
     const [newMessage, setNewMessage] = useState('')
     const { id, verified, name } = useSelector((state: RootState) => state.user)
     const { background, text } = useSelector((state: RootState) => state.theme)
@@ -45,6 +43,30 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
             groupId: activeRoom
         })
         setNewMessage('')
+    }
+
+    const handleMessageDelete = (msgId: string) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result: any) => {
+            if (result.isConfirmed) {
+                socket.emit('delete_message', {
+                    msgId
+                }, (data: { status: string, message: string }) => {
+                    if (data.status === 'success') {
+                        setMessage((prev) => {
+                            return prev.filter((msg) => msg._id !== msgId)
+                        })
+                    }
+                })
+            }
+        })
     }
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,9 +85,9 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                                     <i className="fa-solid fa-arrow-left mr-10" style={{ color: '#ffffff' }} onClick={() => setActiveRoom(null)} />
                                 </div>
                                 {
-                                    isGroupChat?<img className="object-cover w-10 h-10 rounded-full" src="/group.jpeg" alt="username" />:<img className="object-cover w-10 h-10 rounded-full" src="/profile.png" alt="username" />
+                                    isGroupChat ? <img className="object-cover w-10 h-10 rounded-full" src="/group.jpeg" alt="username" /> : <img className="object-cover w-10 h-10 rounded-full" src="/profile.png" alt="username" />
                                 }
-                                
+
                                 <span className="block ml-2 font-bold text-gray-100">{userName}</span>
                                 {/* <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span> */}
                             </div>
@@ -74,14 +96,24 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                                     {
                                         message.map((msg, index) => (
                                             <li key={index} className={`flex ${msg.sender === id ? 'justify-end' : 'justify-start'}`}>
-                                                <div className="relative max-w-xl px-4 py-2 text-gray-100 bg-green-700 rounded shadow">
+                                                <div className="relative max-w-xl px-7 py-2 text-gray-100 bg-[#202C33] rounded shadow">
+
+                                                    <div className='absolute top-0 right-3'>
+                                                        <DropDown msgId={msg._id} handleMessageDelete={handleMessageDelete} />
+
+                                                    </div>
                                                     {isGroupChat && msg.sender !== id && (
-                                                        <span className="block ">{msg.sender_name}</span>
+                                                        <span className="block  font-bold text-orange-600">{msg.sender_name}</span>
                                                     )}
-                                                    <span className="block font-bold">{msg.message}</span>
-                                                    <span className="block text-xs text-gray-100">{new Date(msg.timestamp).toLocaleString()}</span>
+                                                    <span className="block font-bold mt-4">{msg.message}</span>
+                                                    <p className="block text-xs text-gray-300 mt-5 text-end">{new Date(msg.timestamp).toLocaleString()}</p>
                                                 </div>
+
+
+
+
                                             </li>
+
                                         ))
                                     }
                                 </ul>

@@ -16,7 +16,7 @@ export default class MessageService implements IMessageService {
     async createMessage(dbId: string, data: IMessage): Promise<void> {
         try {
             await this.messageRepository.create(dbId, data);
-            
+
         } catch (error) {
             console.log(error);
             throw new Error("Failed to create message");
@@ -29,6 +29,15 @@ export default class MessageService implements IMessageService {
         } catch (error) {
             console.log(error);
             throw new Error("Failed to fetch messages");
+        }
+    }
+
+    async deleteMessage(dbId: string, msgId: mongoose.Types.ObjectId): Promise<void> {
+        try {
+            await this.messageRepository.deleteMessage(dbId, msgId);
+        } catch (error) {
+            console.log(error);
+            throw new Error("Failed to delete message");
         }
     }
 }

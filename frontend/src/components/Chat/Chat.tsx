@@ -6,6 +6,7 @@ import { io, Socket } from 'socket.io-client'
 import { useSelector } from 'react-redux'
 import Cookies from 'js-cookie'
 import Modal from './Modal'
+import IMessage from '@/interfaces/Messages'
 
 interface UserState {
     name: string
@@ -24,7 +25,7 @@ function Chat() {
     const [activeRoom, setActiveRoom] = useState<string | null>('')
     const [activeName, setActiveName] = useState<string | null>(null)
     const [recent, setRecent] = useState([])
-    const [message, setMessage] = useState([])
+    const [message, setMessage] = useState<IMessage[]>([])
     const [socket, setSocket] = useState<Socket | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [newChatEmail, setNewChatEmail] = useState('')
@@ -112,7 +113,7 @@ function Chat() {
     return (
         <div className='w-screen flex'>
             <ChatList recent={recent} handleRoomChange={handleRoomChange} activeRoom={activeRoom} setIsModalOpen={setIsModalOpen} />
-            <MessageWindow userName={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} isGroupChat={isGroup} setActiveRoom={setActiveRoom} />
+            <MessageWindow userName={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} isGroupChat={isGroup} setActiveRoom={setActiveRoom} setMessage={setMessage} />
             {isModalOpen && (
                 <Modal onClose={onClose}>
                     <div className={` p-3 rounded shadow-md`}>

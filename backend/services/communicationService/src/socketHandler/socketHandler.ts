@@ -8,6 +8,8 @@ import fetchAllMessages from '../controllers/fetchAllMessages';
 import { IUserRepository } from '../repository/interfaces/IUserRepository';
 import { ITenantUserRepository } from '../repository/interfaces/ITenantUserRepository';
 import TenantUserRepository from '../repository/implementations/TenantUserRepository';
+import IMessage from '../entities/MessageEntity';
+import deleteMessage from '../controllers/deleteMessage';
 
 const tenantUserRepository: ITenantUserRepository = new TenantUserRepository()
 const socketHandler = (io: Server) => {
@@ -102,7 +104,7 @@ const socketHandler = (io: Server) => {
                 console.log(dataObj.members, ">>>>>>hai.");
 
                 await createChatController(socket.data.user.tenantId, dataObj)
- 
+
 
             }
 
@@ -126,11 +128,25 @@ const socketHandler = (io: Server) => {
                 sender: data.sender,
                 timestamp: new Date(),
                 group_id: data.groupId,
-                sender_name: data.sender_name
+                sender_name: data.sender_name,
+                is_deleted: false
             }
-            createMessageController(socket.data.user.tenantId, dataObj);
+            createMessageController(socket.data.user.tenantId, dataObj as IMessage);
             io.to(groupId).emit('new_message', dataObj);
         });
+
+        socket.on('delete_message', async (data, callback) => {
+            try {
+                console.log(data);
+                await deleteMessage(socket.data.user.tenantId, data.msgId)
+                callback({ status: 'success', message: 'Message deleted' })
+
+            } catch (error) {
+                console.log(error);
+                callback({ status: 'error', message: 'Error deleting message' })
+            }
+
+        })
 
         socket.on('disconnect', () => {
             console.log('User disconnected:', socket.id);

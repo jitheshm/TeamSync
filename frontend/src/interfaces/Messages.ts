@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
 
 export default interface IMessage {
+    _id: string;
     message: string;
-    sender: mongoose.Schema.Types.ObjectId;
+    sender: string;
     sender_name: string;
     group_id: string
     timestamp: Date;

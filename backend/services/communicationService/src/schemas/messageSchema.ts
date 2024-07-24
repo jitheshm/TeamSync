@@ -7,6 +7,7 @@ const messageSchema = new mongoose.Schema({
     sender_name: { type: String, required: true },
     group_id: { type: String, required: true },
     timestamp: { type: Date, default: Date.now },
+    is_deleted: { type: Boolean, default: false }
 });
 
 export default messageSchema;
