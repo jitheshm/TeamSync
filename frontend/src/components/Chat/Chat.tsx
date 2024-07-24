@@ -39,6 +39,11 @@ function Chat() {
             }
         })
         setSocket(socketObj)
+
+        return () => {
+            activeRoom && socketObj.emit('leave_room', activeRoom)
+            socketObj.disconnect()
+        } 
     }, [])
 
     useEffect(() => {
@@ -87,6 +92,8 @@ function Chat() {
                 }
             })
             activeRoom && socket.emit('leave_room', activeRoom)
+            console.log(activeRoom);
+
             socket.emit('join_room', { id: chat._id, type: chat.type }, (response: any) => {
                 console.log(response)
                 setActiveRoom(response.groupId)

@@ -128,7 +128,7 @@ export default class ChatRepository implements IChatRepository {
     async fetchInactiveUsers(dbId: string, groupId: mongoose.Types.ObjectId, activeUsers: mongoose.Types.ObjectId[]) {
         try {
             console.log("act", activeUsers);
-            
+
             const ChatModel = switchDb<IChats>(`${process.env.SERVICE}_${dbId}`, 'chats')
             const result = await ChatModel.aggregate([
 

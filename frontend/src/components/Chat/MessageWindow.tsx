@@ -73,6 +73,11 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
         setNewMessage(e.target.value)
     }
 
+    const handleRoomLeave = () => {
+        socket.emit('leave_room', activeRoom)
+        setActiveRoom(null)
+    }
+
     return (
         <div className={`w-full h-full lg:p-6 ${activeRoom ? 'block' : 'hidden 2xl:block'}`}>
 
@@ -82,7 +87,7 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                         <div className='h-full'>
                             <div className="relative flex items-center p-3 border-b  border-gray-700">
                                 <div className='2xl:hidden'>
-                                    <i className="fa-solid fa-arrow-left mr-10" style={{ color: '#ffffff' }} onClick={() => setActiveRoom(null)} />
+                                    <i className="fa-solid fa-arrow-left mr-10" style={{ color: '#ffffff' }} onClick={handleRoomLeave} />
                                 </div>
                                 {
                                     isGroupChat ? <img className="object-cover w-10 h-10 rounded-full" src="/group.jpeg" alt="username" /> : <img className="object-cover w-10 h-10 rounded-full" src="/profile.png" alt="username" />

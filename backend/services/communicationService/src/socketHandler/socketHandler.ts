@@ -20,13 +20,14 @@ import { IChatRepository } from '../repository/interfaces/IChatRepository';
 
 const tenantUserRepository: ITenantUserRepository = new TenantUserRepository()
 const chatNotificationRepository: IChatNotificationRepository = new ChatNotificationRepository()
-const chatRepository:IChatRepository = new ChatRepository()
-const chatService: IChatService = new ChatService(chatRepository) 
+const chatRepository: IChatRepository = new ChatRepository()
+const chatService: IChatService = new ChatService(chatRepository)
 const messageRepository = new MessageRepository()
 const messageService: IMessageService = new MessageService(messageRepository)
 const chatNotificationService: IChatNotificationService = new ChatNotoficationService(chatNotificationRepository)
 const tenantUserService: ITenantUserService = new TenantUserService(tenantUserRepository)
 const userActivity = new Map()
+const ServerActiveUsers = new Map()
 
 const socketHandler = (io: Server) => {
 
@@ -34,6 +35,11 @@ const socketHandler = (io: Server) => {
 
     io.on('connection', async (socket: Socket) => {
         console.log('A user connected:', socket.id);
+        let userId = socket.data.user.id
+        if (!ServerActiveUsers.has(userId.toString())) {
+            ServerActiveUsers.set(userId.toString(), socket.id)
+        }
+
         console.log(socket.data.user);
         let recentChats = await chatService.fetchAllChats(socket.data.user.tenantId, socket.data.user.id);
         console.log(recentChats);
@@ -49,11 +55,14 @@ const socketHandler = (io: Server) => {
 
             socket.join(joinId);
 
-            if (userActivity.has(joinId)) {
-                userActivity.get(joinId).add(new mongoose.Types.ObjectId(socket.data.user.id))
+
+            if (userActivity.has(joinId.toString())) {
+                userActivity.get(joinId.toString()).add(socket.data.user.id?.toString())
             } else {
-                userActivity.set(joinId, new Set([new mongoose.Types.ObjectId(socket.data.user.id)]))
+                userActivity.set(joinId, new Set([socket.data.user.id?.toString()]))
             }
+            console.log(userActivity, "userActivity");
+
 
             callback({ status: 'success', message: `Joined room ${joinId}`, groupId: joinId });
 
@@ -68,6 +77,11 @@ const socketHandler = (io: Server) => {
         socket.on('leave_room', (id) => {
 
             socket.leave(id);
+            userActivity.get(id.toString())?.delete(socket.data.user.id?.toString())
+            console.log(socket.data.user.id, ">>>>>>");
+
+            console.log(userActivity, "userActivity");
+
             console.log(`User ${socket.id} left room ${id}`);
 
         });
@@ -134,15 +148,30 @@ const socketHandler = (io: Server) => {
                 messageService.createMessage(socket.data.user.tenantId, dataObj as IMessage);
 
                 io.to(groupId).emit('new_message', dataObj);
+                console.log(userActivity.get(groupId.toString()), "userActivity");
 
-                let activeUsers = [...userActivity.get(groupId)]
+                let activeUsers = userActivity.get(groupId.toString()) ? [...userActivity.get(groupId.toString())] : [];
                 console.log(activeUsers, "activeUsers");
-
+                activeUsers = activeUsers.map((user) => new mongoose.Types.ObjectId(user))
 
                 const inactiveUsers = await chatService.fetchInactiveUsers(socket.data.user.tenantId, new mongoose.Types.ObjectId(groupId), activeUsers)
                 console.log(inactiveUsers, "inactiveUsers");
 
-                chatNotificationService.createChatNotification(socket.data.user.tenantId, groupId, inactiveUsers)
+                await chatNotificationService.createChatNotification(socket.data.user.tenantId, groupId, inactiveUsers)
+                console.log(ServerActiveUsers, "ServerActiveUsers");
+
+                inactiveUsers.forEach(async (user) => {
+                    console.log(user, "user");
+
+                    console.log(ServerActiveUsers.has(user.toString()));
+
+                    if (ServerActiveUsers.has(user.toString())) {
+                        console.log('hai');
+
+                        let userRecentChats = await chatService.fetchAllChats(socket.data.user.tenantId, user)
+                        io.to(ServerActiveUsers.get(user.toString())).emit('recent_chats', { status: 'success', message: 'Recent chats', data: userRecentChats })
+                    }
+                })
                 console.log(inactiveUsers, "inactiveUsers");
             } catch (error) {
                 console.log(error);
@@ -167,9 +196,10 @@ const socketHandler = (io: Server) => {
         })
 
         socket.on('disconnect', () => {
+            ServerActiveUsers.delete(userId.toString())
             console.log('User disconnected:', socket.id);
         });
     });
 };
 
-export default socketHandler;
+export default socketHandler; 
