@@ -1,27 +1,33 @@
 import { Server, Socket } from 'socket.io';
 import userAuth from '../middlewares/userAuth';
-import fetchChatController from '../controllers/fetchChatController';
-import createChatController from '../controllers/createChatController';
-import fetchAllChats from '../controllers/fetchAllChats';
-import createMessageController from '../controllers/createMessageController';
-import fetchAllMessages from '../controllers/fetchAllMessages';
-import { IUserRepository } from '../repository/interfaces/IUserRepository';
 import { ITenantUserRepository } from '../repository/interfaces/ITenantUserRepository';
 import TenantUserRepository from '../repository/implementations/TenantUserRepository';
 import IMessage from '../entities/MessageEntity';
-import deleteMessage from '../controllers/deleteMessage';
-import fetchInactiveUsers from '../controllers/fetchInactiveUsers';
-import IChatNotfication from '../entities/ChatNotification';
 import { IChatNotificationService } from '../services/interfaces/IChatNotificationService';
 import ChatNotoficationService from '../services/implementations/ChatNotificationService';
 import { IChatNotificationRepository } from '../repository/interfaces/IChatNotificationRepository';
 import ChatNotificationRepository from '../repository/implementations/ChatNotificationRepository';
 import mongoose from 'mongoose';
+import ChatService from '../services/implementations/ChatService';
+import { IChatService } from '../services/interfaces/IChatService';
+import ChatRepository from '../repository/implementations/ChatRepository';
+import { IMessageService } from '../services/interfaces/IMessageService';
+import MessageService from '../services/implementations/MessageService';
+import MessageRepository from '../repository/implementations/MessageRepository';
+import { ITenantUserService } from '../services/interfaces/ITenantUserService';
+import TenantUserService from '../services/implementations/TenantUserService';
+import { IChatRepository } from '../repository/interfaces/IChatRepository';
 
 const tenantUserRepository: ITenantUserRepository = new TenantUserRepository()
 const chatNotificationRepository: IChatNotificationRepository = new ChatNotificationRepository()
+const chatRepository:IChatRepository = new ChatRepository()
+const chatService: IChatService = new ChatService(chatRepository) 
+const messageRepository = new MessageRepository()
+const messageService: IMessageService = new MessageService(messageRepository)
 const chatNotificationService: IChatNotificationService = new ChatNotoficationService(chatNotificationRepository)
+const tenantUserService: ITenantUserService = new TenantUserService(tenantUserRepository)
 const userActivity = new Map()
+
 const socketHandler = (io: Server) => {
 
     io.use(userAuth);
@@ -29,7 +35,7 @@ const socketHandler = (io: Server) => {
     io.on('connection', async (socket: Socket) => {
         console.log('A user connected:', socket.id);
         console.log(socket.data.user);
-        let recentChats = await fetchAllChats(socket.data.user.tenantId, socket.data.user.id)
+        let recentChats = await chatService.fetchAllChats(socket.data.user.tenantId, socket.data.user.id);
         console.log(recentChats);
 
         socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: recentChats })
@@ -51,7 +57,8 @@ const socketHandler = (io: Server) => {
 
             callback({ status: 'success', message: `Joined room ${joinId}`, groupId: joinId });
 
-            const prevMessages = await fetchAllMessages(socket.data.user.tenantId, joinId)
+
+            const prevMessages = await messageService.fetchMessages(socket.data.user.tenantId, joinId)
 
             socket.emit('previous_messages', { status: 'success', message: 'Previous messages', data: prevMessages })
 
@@ -67,12 +74,13 @@ const socketHandler = (io: Server) => {
 
         socket.on('new_chat', async (email) => {
             const roomId = [email, socket.data.user.email].sort().join('-')
-            const chatObj = await fetchChatController(socket.data.user.tenantId, roomId)
+            const chatObj = await chatService.fetchChats(socket.data.user.tenantId, roomId);
+
             console.log(chatObj, ">>>>>>.");
 
             if (!chatObj) {
 
-                const userData = await tenantUserRepository.fetchTenantUserByEmail(email, socket.data.user.tenantId)
+                const userData = await tenantUserService.fetchTenantUserByEmail(email, socket.data.user.tenantId)
 
                 if (!userData) {
                     console.log("User not found");
@@ -92,12 +100,14 @@ const socketHandler = (io: Server) => {
                 }
                 console.log(dataObj.members, ">>>>>>hai.");
 
-                await createChatController(socket.data.user.tenantId, dataObj)
+                await chatService.createChat(socket.data.user.tenantId, dataObj)
+
 
 
             }
 
-            recentChats = await fetchAllChats(socket.data.user.tenantId, socket.data.user.id)
+            recentChats = await chatService.fetchAllChats(socket.data.user.tenantId, socket.data.user.id)
+
 
             // socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: await fetchAllChats(socket.data.user.tenantId, socket.data.user.id) })
             socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: recentChats })
@@ -121,14 +131,15 @@ const socketHandler = (io: Server) => {
                     sender_name: data.sender_name,
                     is_deleted: false
                 }
-                createMessageController(socket.data.user.tenantId, dataObj as IMessage);
+                messageService.createMessage(socket.data.user.tenantId, dataObj as IMessage);
+
                 io.to(groupId).emit('new_message', dataObj);
 
                 let activeUsers = [...userActivity.get(groupId)]
                 console.log(activeUsers, "activeUsers");
 
 
-                const inactiveUsers = await fetchInactiveUsers(socket.data.user.tenantId, groupId, activeUsers)
+                const inactiveUsers = await chatService.fetchInactiveUsers(socket.data.user.tenantId, new mongoose.Types.ObjectId(groupId), activeUsers)
                 console.log(inactiveUsers, "inactiveUsers");
 
                 chatNotificationService.createChatNotification(socket.data.user.tenantId, groupId, inactiveUsers)
@@ -145,7 +156,7 @@ const socketHandler = (io: Server) => {
         socket.on('delete_message', async (data, callback) => {
             try {
                 console.log(data);
-                await deleteMessage(socket.data.user.tenantId, data.msgId)
+                await messageService.deleteMessage(socket.data.user.tenantId, new mongoose.Types.ObjectId(data.msgId))
                 callback({ status: 'success', message: 'Message deleted' })
 
             } catch (error) {
