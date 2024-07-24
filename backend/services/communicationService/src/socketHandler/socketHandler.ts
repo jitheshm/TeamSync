@@ -10,8 +10,18 @@ import { ITenantUserRepository } from '../repository/interfaces/ITenantUserRepos
 import TenantUserRepository from '../repository/implementations/TenantUserRepository';
 import IMessage from '../entities/MessageEntity';
 import deleteMessage from '../controllers/deleteMessage';
+import fetchInactiveUsers from '../controllers/fetchInactiveUsers';
+import IChatNotfication from '../entities/ChatNotification';
+import { IChatNotificationService } from '../services/interfaces/IChatNotificationService';
+import ChatNotoficationService from '../services/implementations/ChatNotificationService';
+import { IChatNotificationRepository } from '../repository/interfaces/IChatNotificationRepository';
+import ChatNotificationRepository from '../repository/implementations/ChatNotificationRepository';
+import mongoose from 'mongoose';
 
 const tenantUserRepository: ITenantUserRepository = new TenantUserRepository()
+const chatNotificationRepository: IChatNotificationRepository = new ChatNotificationRepository()
+const chatNotificationService: IChatNotificationService = new ChatNotoficationService(chatNotificationRepository)
+const userActivity = new Map()
 const socketHandler = (io: Server) => {
 
     io.use(userAuth);
@@ -31,34 +41,13 @@ const socketHandler = (io: Server) => {
             let joinId = id
             console.log(id, type);
 
-            // if (type === 'personal') {
-            //     if(role!='Tenant_admin'){
-
-            //     }else{
-
-            //     }
-
-            //     const roomId = [id, socket.data.user._id].sort().join('-')
-            //     const chatObj = fetchChatController(socket.data.user.tenantId, roomId)
-            //     if (!chatObj) {
-            //         const dataObj = {
-            //             groupId: roomId,
-            //             chat_id: roomId,
-            //             type: 'personal',
-            //             members: [id, socket.data.user._id]
-            //         }
-            //         createChatController(socket.data.user.tenantId, dataObj)
-            //     }
-
-            //     joinId = roomId
-
-
-            // } else {
-            //     joinId = id
-            // }
-
-
             socket.join(joinId);
+
+            if (userActivity.has(joinId)) {
+                userActivity.get(joinId).add(new mongoose.Types.ObjectId(socket.data.user.id))
+            } else {
+                userActivity.set(joinId, new Set([new mongoose.Types.ObjectId(socket.data.user.id)]))
+            }
 
             callback({ status: 'success', message: `Joined room ${joinId}`, groupId: joinId });
 
@@ -118,21 +107,39 @@ const socketHandler = (io: Server) => {
 
 
 
-        socket.on('message', (data) => {
-            const { message, groupId } = data;
-            console.log(data);
-            data.sender = socket.data.user.id;
+        socket.on('message', async (data) => {
+            try {
+                const { message, groupId } = data;
+                console.log(data);
+                data.sender = socket.data.user.id;
 
-            const dataObj = {
-                message: data.message,
-                sender: data.sender,
-                timestamp: new Date(),
-                group_id: data.groupId,
-                sender_name: data.sender_name,
-                is_deleted: false
+                const dataObj = {
+                    message: data.message,
+                    sender: data.sender,
+                    timestamp: new Date(),
+                    group_id: data.groupId,
+                    sender_name: data.sender_name,
+                    is_deleted: false
+                }
+                createMessageController(socket.data.user.tenantId, dataObj as IMessage);
+                io.to(groupId).emit('new_message', dataObj);
+
+                let activeUsers = [...userActivity.get(groupId)]
+                console.log(activeUsers, "activeUsers");
+
+
+                const inactiveUsers = await fetchInactiveUsers(socket.data.user.tenantId, groupId, activeUsers)
+                console.log(inactiveUsers, "inactiveUsers");
+
+                chatNotificationService.createChatNotification(socket.data.user.tenantId, groupId, inactiveUsers)
+                console.log(inactiveUsers, "inactiveUsers");
+            } catch (error) {
+                console.log(error);
+
             }
-            createMessageController(socket.data.user.tenantId, dataObj as IMessage);
-            io.to(groupId).emit('new_message', dataObj);
+
+
+
         });
 
         socket.on('delete_message', async (data, callback) => {

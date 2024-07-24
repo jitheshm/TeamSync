@@ -43,10 +43,13 @@ function ChatList({ recent, handleRoomChange, activeRoom, setIsModalOpen }: { re
                                                 }</span>
                                                 <span className="text-sm text-gray-400 truncate w-32">Hey, Joel, I here to help you out please tell me</span> </div>
                                         </div>
-                                        <div className="flex flex-col items-center">
-                                            <span className="text-gray-300">11:26</span>
-                                            <i className="fa fa-star text-green-400" />
-                                        </div>
+                                        {
+                                            chat.notification?.count && <span className="inline-flex items-center justify-center w-8 h-8 ms-2 text-xs font-semibold  bg-green-600 rounded-full">  {chat.notification.count}
+                                            </span>
+                                        }
+
+
+
                                     </li>
                                 )
                             })}

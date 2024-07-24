@@ -69,12 +69,29 @@ export default class ChatRepository implements IChatRepository {
 
                 {
                     $lookup: {
-                        from: 'tenant_users',  
+                        from: 'tenant_users',
                         localField: 'members',
                         foreignField: '_id',
                         as: 'memberDetails'
                     }
                 },
+                {
+                    $lookup: {
+                        from: 'chat_notifications',
+                        let: { chat_id: '$_id' },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ['$chat_id', '$$chat_id'] } } },
+                            { $match: { user_id: userId } },
+                            { $project: { _id: 0, count: 1 } }
+                        ],
+                        as: 'notification'
+                    }
+                },
+
+                {
+                    $unwind: { path: '$notification', preserveNullAndEmptyArrays: true }
+                },
+
 
                 {
                     $sort: {
@@ -91,15 +108,49 @@ export default class ChatRepository implements IChatRepository {
                         chat_id: 1,
                         type: 1,
                         lastMessage: 1,
-                        members: '$memberDetails'
+                        members: '$memberDetails',
+                        notification: 1
                     }
-                }
+                },
             ]);
             console.log(recentChats);
 
             return recentChats
         } catch (error) {
             console.log('Error in chat Repository fetchUser method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
+    async fetchInactiveUsers(dbId: string, groupId: mongoose.Types.ObjectId, activeUsers: mongoose.Types.ObjectId[]) {
+        try {
+            console.log("act", activeUsers);
+            
+            const ChatModel = switchDb<IChats>(`${process.env.SERVICE}_${dbId}`, 'chats')
+            const result = await ChatModel.aggregate([
+
+                {
+                    $match: { _id: groupId }
+                },
+
+                {
+                    $project: {
+                        inactiveMembers: {
+                            $setDifference: ["$members", activeUsers]
+                        }
+                    }
+                }
+            ]).exec()
+            console.log(result);
+
+
+            return result[0].inactiveMembers
+
+        } catch (error) {
+            console.log('Error in chat Repository fetchInactiveUsers method');
 
             console.log(error);
 

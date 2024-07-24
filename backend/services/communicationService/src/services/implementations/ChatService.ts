@@ -41,4 +41,13 @@ export default class ChatService implements IChatService {
             throw new Error("Failed to fetch chats");
         }
     }
+
+    async fetchInactiveUsers(dbId: string, groupId: mongoose.Types.ObjectId, activeUsers: mongoose.Types.ObjectId[]) {
+        try {
+            return await this.chatRepository.fetchInactiveUsers(dbId, groupId, activeUsers);
+        } catch (error) {
+            console.log(error);
+            throw new Error("Failed to fetch chats");
+        }
+    }
 }

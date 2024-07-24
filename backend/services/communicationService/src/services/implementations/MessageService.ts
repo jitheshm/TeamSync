@@ -11,6 +11,7 @@ export default class MessageService implements IMessageService {
 
     constructor(messageRepository: IMessageRepository) {
         this.messageRepository = messageRepository;
+        
     }
 
     async createMessage(dbId: string, data: IMessage): Promise<void> {
