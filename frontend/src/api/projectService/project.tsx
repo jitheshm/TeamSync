@@ -241,7 +241,7 @@ export const ticketDelete = async (ticketId: string, taskId: string, projectId: 
     }
 }
 
-export const fetchSpecificTicketDetails = async (projectId: string, taskId: string,ticketId:string) => {
+export const fetchSpecificTicketDetails = async (projectId: string, taskId: string, ticketId: string) => {
     try {
         const response = await instance.get(`/project-service/v1/projects/${projectId}/tickets/${ticketId}`)
         return response.data
@@ -250,10 +250,19 @@ export const fetchSpecificTicketDetails = async (projectId: string, taskId: stri
     }
 }
 
-export const updateTicket = async (formData: FormData, projectId: string, taskId: string,ticketId:string) => {
+export const updateTicket = async (formData: FormData, projectId: string, taskId: string, ticketId: string) => {
     try {
-        
+
         const response = await instance.put(`/project-service/v1/projects/${projectId}/tasks/${taskId}/tickets/${ticketId}`, formData)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const fetchRecentProjects = async () => {
+    try {
+        const response = await instance.get('/project-service/v1/projects/recent')
         return response.data
     } catch (error) {
         throw error

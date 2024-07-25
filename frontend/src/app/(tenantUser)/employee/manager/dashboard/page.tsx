@@ -1,9 +1,10 @@
-import React from 'react'
+import TenantManagerDashboard from "@/components/Dashboards/TenantManagerDashboard";
 
-function page() {
+
+function Page() {
   return (
-    <div>page</div>
-  )
+    <TenantManagerDashboard />
+  );
 }
 
-export default page
+export default Page;
