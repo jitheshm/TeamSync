@@ -213,7 +213,52 @@ export default class TaskRepository implements ITaskRepository {
     }
 
 
+    async fetchPMTaskStats(dbId: string, branchId: mongoose.Types.ObjectId, pmId: mongoose.Types.ObjectId): Promise<{ status: string, count: number }[]> {
+        try {
+            const TaskModel = switchDb<ITasks>(`${process.env.SERVICE}_${dbId}`, 'tasks')
 
+            const data = await TaskModel.aggregate([
+                {
+                    $match: {
+                        branch_id: branchId
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'projects',
+                        localField: 'project_id',
+                        foreignField: '_id',
+                        as: 'project'
+                    }
+                },
+                {
+                    $unwind: "$project"
+                },
+                {
+                    $match: {
+                        "project.project_manager_id": pmId
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$status",
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        status: "$_id",
+                        count: 1
+                    }
+                }
+            ])
+            return data
+        } catch (error) {
+            throw error
+        }
+
+    }
 
 
 }

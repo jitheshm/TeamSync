@@ -14,3 +14,10 @@ export interface IUserDetails {
     is_verified: boolean;
 
 }
+
+export interface ReduxUserState {
+    name: string;
+    verified: boolean;
+    tenantId: string;
+    id: string;
+}

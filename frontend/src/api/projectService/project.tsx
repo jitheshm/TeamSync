@@ -269,9 +269,31 @@ export const fetchRecentProjects = async () => {
     }
 }
 
+export const fetchRecentPMProjects = async (pmId: string) => {
+    try {
+        const response = await instance.get('/project-service/v1/projects/recent', {
+            params: {
+                pmId
+            }
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 export const fetchProjectsstats = async () => {
     try {
         const response = await instance.get('/project-service/v1/projects/stats')
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const fetchPMTaskStats = async (pmId: string) => {
+    try {
+        const response = await instance.get(`/project-service/v1/projects/tasks/pm/${pmId}/stats`)
         return response.data
     } catch (error) {
         throw error

@@ -57,4 +57,11 @@ export default class TaskService implements ITaskService {
         }
     }
 
+    async fetchPMTaskStats(tenantId: string, branchId: mongoose.Types.ObjectId, pmId: mongoose.Types.ObjectId): Promise<{
+        status: string;
+        count: number;
+    }[]> {
+        return await this.taskRepository.fetchPMTaskStats(tenantId, branchId, pmId);
+    }
+
 }

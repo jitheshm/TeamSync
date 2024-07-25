@@ -28,6 +28,7 @@ import fetchProjectTickets from "../../controllers/fetchProjectTickets";
 import fetchTicketDetails from "../../controllers/fetchTicketDetails";
 import fetchRecentProjects from "../../controllers/fetchRecentProjects";
 import fetchProjectStats from "../../controllers/fetchProjectStats";
+import fetchPMTaskStats from "../../controllers/fetchPMTaskStats";
 
 
 
@@ -57,6 +58,7 @@ router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', user
 router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, ticketDeleteController)
 router.get('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, fetchProjectTickets)
 router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth, fetchTicketDetails)
+router.get('/projects/tasks/pm/:pmId/stats', userAuth, tenantAuth, fetchPMTaskStats)
 
 
 
