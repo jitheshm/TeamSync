@@ -120,7 +120,7 @@ export default class ProjectService implements IProjectService {
     async updateProject(projectId: string, projectData: Partial<IProjects>, tenantId: string): Promise<Partial<IProjects> | null> {
         try {
             const updatedProject = await this.projectRepository.update(projectData as IProjects, tenantId, new mongoose.Types.ObjectId(projectId));
-            
+
             if (!updatedProject) {
                 return null;
             }
@@ -134,6 +134,10 @@ export default class ProjectService implements IProjectService {
             console.log(error);
             throw new Error("An unexpected error occurred. Please try again later.");
         }
+    }
+
+    async fetchRecentProjects(tenantId: string, branchId: mongoose.Types.ObjectId): Promise<(IProjects & Document)[]> {
+        return await this.projectRepository.fetchRecentProjects(tenantId, branchId);
     }
 
 

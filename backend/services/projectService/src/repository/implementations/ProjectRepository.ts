@@ -370,6 +370,13 @@ export default class ProjectRepository implements IProjectRepository {
         }
     }
 
+    async fetchRecentProjects(dbId: string, branchId: mongoose.Types.ObjectId) {
+        const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
+        const projects = await ProjectModel.find({ branch_id: branchId }).sort({ created_at: -1 }).limit(10)
+        return projects
+
+    }
+
 
 
 }
