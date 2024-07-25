@@ -27,6 +27,7 @@ import ticketDeleteController from "../../controllers/ticketDeleteController";
 import fetchProjectTickets from "../../controllers/fetchProjectTickets";
 import fetchTicketDetails from "../../controllers/fetchTicketDetails";
 import fetchRecentProjects from "../../controllers/fetchRecentProjects";
+import fetchProjectStats from "../../controllers/fetchProjectStats";
 
 
 
@@ -34,6 +35,7 @@ import fetchRecentProjects from "../../controllers/fetchRecentProjects";
 const router = Router();
 
 router.get('/projects/recent', userAuth, tenantAuth, fetchRecentProjects)
+router.get('/projects/stats', userAuth, tenantAuth, fetchProjectStats)
 router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), projectController)
 router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), projectUpdateController)
 router.put('/projects/:projectId/status', userAuth, tenantAuth, projectStatusUpdateController)

@@ -140,7 +140,9 @@ export default class ProjectService implements IProjectService {
         return await this.projectRepository.fetchRecentProjects(tenantId, branchId);
     }
 
-
+    async fetchProjectStats(tenantId: string, branchId: mongoose.Types.ObjectId): Promise<(IProjects & Document)[]> {
+        return await this.projectRepository.fetchProjectStats(tenantId, branchId);
+    }
 
 
 

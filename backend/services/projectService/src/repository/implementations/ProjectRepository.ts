@@ -377,6 +377,31 @@ export default class ProjectRepository implements IProjectRepository {
 
     }
 
+    async fetchProjectStats(dbId: string, branchId: mongoose.Types.ObjectId) {
+        const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects')
+
+        const stats = await ProjectModel.aggregate([
+            {
+                $match: { is_deleted: false, branch_id: branchId }
+            },
+            {
+                $group: {
+                    _id: "$stage",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    stage: "$_id",
+                    count: 1
+                }
+            }
+        ]);
+        return stats
+    }
+
+
 
 
 }
