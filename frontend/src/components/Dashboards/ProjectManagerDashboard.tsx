@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Slider from '../TenantUserPanel/Slider/Slider'
 import Cards from '../TenantUserPanel/Cards/Cards'
-import { fetchPMTaskStats, fetchProjectsstats, fetchRecentPMProjects, fetchRecentProjects } from '@/api/projectService/project'
+import { fetchProjectsstats, fetchRecentPMProjects, fetchRecentProjects, fetchTaskStats } from '@/api/projectService/project'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
@@ -41,7 +41,7 @@ function ProjectManagerDashboard() {
             }
         })
 
-        fetchPMTaskStats(id).then((result) => {
+        fetchTaskStats().then((result) => {
             console.log(result);
             setTaskStats(result.data)
         }).catch((err) => {
@@ -58,7 +58,7 @@ function ProjectManagerDashboard() {
             id: index,
             value: ele.count,
             label: ele.status,
-            color: ele.status === 'pending' ? 'red' : ele.status === 'in_progress' ? 'yellow' : 'green'
+            color: ele.status === 'pending' ? 'red' : ele.status === 'in_progress' || ele.status === 'testing' ? 'yellow' : 'green'
         }));
 
     return (

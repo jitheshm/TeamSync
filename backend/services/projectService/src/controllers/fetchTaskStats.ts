@@ -12,10 +12,10 @@ const taskService: ITaskService = new TaskService(taskRepository)
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
-        const pmId = new mongoose.Types.ObjectId(req.params.pmId)
         const branchId = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+        const userId = new mongoose.Types.ObjectId(req.user?._id)
 
-        const result = await taskService.fetchPMTaskStats(req.user?.decode.tenantId, branchId, pmId)
+        const result = await taskService.fetchTaskStats(req.user?.decode.tenantId, branchId, userId)
 
 
         res.status(200).json({ message: "project fetch successfully", data: result });

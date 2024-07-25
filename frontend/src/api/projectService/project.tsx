@@ -291,9 +291,9 @@ export const fetchProjectsstats = async () => {
     }
 }
 
-export const fetchPMTaskStats = async (pmId: string) => {
+export const fetchTaskStats = async () => {
     try {
-        const response = await instance.get(`/project-service/v1/projects/tasks/pm/${pmId}/stats`)
+        const response = await instance.get(`/project-service/v1/projects/tasks/stats`)
         return response.data
     } catch (error) {
         throw error

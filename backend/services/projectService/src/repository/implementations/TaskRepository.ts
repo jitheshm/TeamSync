@@ -213,7 +213,7 @@ export default class TaskRepository implements ITaskRepository {
     }
 
 
-    async fetchPMTaskStats(dbId: string, branchId: mongoose.Types.ObjectId, pmId: mongoose.Types.ObjectId): Promise<{ status: string, count: number }[]> {
+    async fetchTaskStats(dbId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): Promise<{ status: string, count: number }[]> {
         try {
             const TaskModel = switchDb<ITasks>(`${process.env.SERVICE}_${dbId}`, 'tasks')
 
@@ -236,7 +236,12 @@ export default class TaskRepository implements ITaskRepository {
                 },
                 {
                     $match: {
-                        "project.project_manager_id": pmId
+
+                        $or: [
+                            { developer_id: userId },
+                            { tester_id: userId },
+                            { "project.project_manager_id": userId }
+                        ]
                     }
                 },
                 {
@@ -259,6 +264,8 @@ export default class TaskRepository implements ITaskRepository {
         }
 
     }
+
+    
 
 
 }

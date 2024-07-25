@@ -11,7 +11,7 @@ export interface ITaskRepository {
         data: (ITasks & Document)[], totalCount: number
     }>
     fetchSpecificTaskDetails(dbId: string, taskId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId): Promise<ITasks & Document>
-    fetchPMTaskStats(dbId: string, branchId: mongoose.Types.ObjectId, pmId: mongoose.Types.ObjectId): Promise<{ status: string, count: number }[]>
+    fetchTaskStats(dbId: string, branchId: mongoose.Types.ObjectId, pmId: mongoose.Types.ObjectId): Promise<{ status: string, count: number }[]>
 
 
 
