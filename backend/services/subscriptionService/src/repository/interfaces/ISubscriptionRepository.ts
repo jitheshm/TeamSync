@@ -11,6 +11,7 @@ export interface ISubscriptionRepository {
         total: any;
     }>
     fetchMonthlyProfit(): Promise<{ total_earned: number }>
+    fetchPlanStats(): Promise<any[]>
 
 
 }

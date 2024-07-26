@@ -10,12 +10,14 @@ import getUserSubscriptionController from "../../controllers/v1/getUserSubscript
 import getSpecificPlanController from "../../controllers/v1/getSpecificPlanController";
 import getAllSubscriptionController from "../../controllers/v1/getAllSubscriptionController";
 import fetchProfit from "../../controllers/v1/fetchProfit";
+import fetchPlanStats from "../../controllers/v1/fetchPlanStats";
 
 
 const router = Router();
 
 router.post('/subscription-plans', adminAuth, checkSchema(planValidator()), planController)
 router.get('/subscription-plans', adminAuth, getAllPlansController)
+router.get('/subscription-plans/stats', adminAuth, fetchPlanStats)
 router.get('/subscription-plans/:planId', adminAuth, getSpecificPlanController)
 router.put('/subscription-plans/:planId', adminAuth, checkSchema(planValidator()), updatePlanController)
 router.patch('/subscription-plans/:planId', adminAuth, check('active').isBoolean().withMessage('active must be a boolean value (true or false)'), updatePlanController)

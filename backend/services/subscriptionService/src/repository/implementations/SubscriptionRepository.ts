@@ -232,4 +232,36 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
             throw error
         }
     }
+
+    async fetchPlanStats() {
+        try {
+            const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
+            const data = await SubscriptionModel.aggregate([
+                {
+                    $group: {
+                        _id: "$plan_id",
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "plans",
+                        localField: "_id",
+                        foreignField: "stripe_plan_id",
+                        as: "plans"
+
+                    }
+                },
+                {
+                    $unwind: "plans"
+                }
+
+            ]).exec()
+
+            return data
+
+        } catch (error) {
+            throw error
+        }
+    }
 }
