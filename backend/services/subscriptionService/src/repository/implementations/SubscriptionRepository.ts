@@ -115,7 +115,7 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
                 },
                 {
                     $lookup: {
-                        from: 'tenants', 
+                        from: 'tenants',
                         localField: 'tenant_id',
                         foreignField: '_id',
                         as: 'tenant'
@@ -189,6 +189,46 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
 
             console.log(error);
 
+            throw error
+        }
+    }
+
+    async fetchMonthlyProfit() {
+        try {
+            const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
+
+            const data = await SubscriptionModel.aggregate([
+                {
+                    $match: {
+                        status: "paid",
+                        renewal_date: {
+                            $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+                            $lt: new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0)
+                        }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "plans",
+                        localField: "plan_id",
+                        foreignField: "stripe_plan_id",
+                        as: "plan_details"
+                    }
+                },
+                {
+                    $unwind: "$plan_details"
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total_earned: { $sum: { $toDouble: "$plan_details.price" } }
+                    }
+                }
+            ])
+            console.log(data);
+
+            return data[0]
+        } catch (error) {
             throw error
         }
     }

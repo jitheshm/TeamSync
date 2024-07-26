@@ -9,6 +9,7 @@ import getAllPlansController from "../../controllers/v1/getAllPlansController";
 import getUserSubscriptionController from "../../controllers/v1/getUserSubscriptionController";
 import getSpecificPlanController from "../../controllers/v1/getSpecificPlanController";
 import getAllSubscriptionController from "../../controllers/v1/getAllSubscriptionController";
+import fetchProfit from "../../controllers/v1/fetchProfit";
 
 
 const router = Router();
@@ -23,5 +24,6 @@ router.delete('/subscription-plans/:planId', adminAuth, deletePlanController)
 
 router.get('/subscriptions/users/:userId', adminAuth, getUserSubscriptionController)
 router.get('/subscriptions', adminAuth, getAllSubscriptionController)
+router.get('/subscriptions/profit', adminAuth, fetchProfit)
 
 export default router
