@@ -139,5 +139,17 @@ export default class UserRepository implements IUserRepository {
             throw error
         }
     }
+    async fetchUsersStats() {
+        try {
+            const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
+            const usersCount = await userModel.find().countDocuments()
+            return {
+                usersCount
+            }
+
+        } catch (error) {
+            throw error
+        }
+    }
 
 }
