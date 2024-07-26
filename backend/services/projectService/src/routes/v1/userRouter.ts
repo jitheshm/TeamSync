@@ -31,6 +31,7 @@ import fetchTaskStats from "../../controllers/fetchTaskStats";
 import fetchTicketStats from "../../controllers/fetchTicketStats";
 import fetchBranchRecentProjects from "../../controllers/fetchBranchRecentProjects";
 import fetchRecentProjects from "../../controllers/fetchRecentProjects";
+import fetchBranchProjectCount from "../../controllers/fetchBranchProjectCount";
 
 
 
@@ -40,6 +41,7 @@ const router = Router();
 router.get('/projects/recent', userAuth, tenantAuth, fetchBranchRecentProjects)
 router.get('/projects/recent/tenant', userAuth, fetchRecentProjects)
 router.get('/projects/stats', userAuth, tenantAuth, fetchProjectStats)
+router.get('/projects/branches/stats', userAuth, fetchBranchProjectCount)
 router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), projectController)
 router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), projectUpdateController)
 router.put('/projects/:projectId/status', userAuth, tenantAuth, projectStatusUpdateController)

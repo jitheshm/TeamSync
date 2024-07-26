@@ -2,14 +2,17 @@
 import React, { useEffect, useState } from 'react'
 import Slider from '../TenantUserPanel/Slider/Slider'
 import { IProjects } from '@/interfaces/Project'
-import { fetchTenantRecentProjects } from '@/api/projectService/project'
+import { fetchBranchProjectCount, fetchTenantRecentProjects } from '@/api/projectService/project'
 import { useDispatch } from 'react-redux'
 import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
 import Cards from '../TenantUserPanel/Cards/Cards'
+import Barchart from '../Charts/Barchart'
 
 function TenantAdminDashboard() {
     const [projects, setProjects] = useState<IProjects[]>([])
+    const [dataValues, setDataValues] = useState<number[]>([])
+    const [dataNames, setDataNames] = useState<string[]>([])
     const dispatch = useDispatch()
     const router = useRouter()
 
@@ -21,12 +24,29 @@ function TenantAdminDashboard() {
             console.log(err);
             if (err.response?.status === 401) {
                 dispatch(logout())
-                router.push('/employee/login')
+                router.push('/login')
+            }
+        })
+
+        fetchBranchProjectCount('week').then((result) => {
+            console.log(result);
+            setDataValues(result.data.map((project: any) => project.count))
+            setDataNames(result.data.map((project: any) => project.branchName))
+
+        }).catch((err) => {
+            console.log(err);
+            if (err.response?.status === 401) {
+                dispatch(logout())
+                router.push('/login')
             }
         })
 
 
+
+
     }, [])
+
+
 
     return (
         <div className='w-full '>
@@ -40,6 +60,11 @@ function TenantAdminDashboard() {
                     ))
                 }
             </Slider>
+
+            <div className='w-5/12 mx-auto mt-24'>
+            <p className='font-bold text-2xl text-center'> Projects Count</p>
+                <Barchart dataValues={dataValues} dataNames={dataNames} />
+            </div>
 
         </div>
     )

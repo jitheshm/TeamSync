@@ -144,6 +144,31 @@ export default class ProjectService implements IProjectService {
         return await this.projectRepository.fetchProjectStats(tenantId, branchId);
     }
 
+    async fetchBranchProjectsCount(tenantId: string, period: 'week' | 'month' | '6month' | 'year'): Promise<(any)[]> {
+        const now = new Date();
+        let startDate: Date;
+
+        switch (period) {
+            case 'week':
+                startDate = new Date(now.setDate(now.getDate() - 7));
+                break;
+            case 'month':
+                startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                break;
+            case '6month':
+                startDate = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+                break;
+            case 'year':
+                startDate = new Date(now.getFullYear() - 1, 0, 1);
+                break;
+            default:
+                throw new Error('Invalid period');
+        }
+
+        return await this.projectRepository.fetchBranchProjectsCount(tenantId, startDate);
+
+    }
+
 
 
 

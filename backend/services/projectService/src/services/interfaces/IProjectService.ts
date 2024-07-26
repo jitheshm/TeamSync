@@ -17,4 +17,5 @@ export interface IProjectService {
     fetchAllTesterProjects(tenantId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (IProjects & Document)[], totalCount: number }>
     fetchRecentProjects(tenantId: string, branchId?: mongoose.Types.ObjectId, pmId?: mongoose.Types.ObjectId): Promise<(IProjects & Document)[]>
     fetchProjectStats(tenantId: string, branchId: mongoose.Types.ObjectId): Promise<any[]>
+    fetchBranchProjectsCount(tenantId: string, period: "week" | "month" | "6month" | "year"): Promise<(any)[]>
 }

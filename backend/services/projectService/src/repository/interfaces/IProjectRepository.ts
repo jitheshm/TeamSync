@@ -15,5 +15,6 @@ export interface IProjectRepository {
     fetchAllTesterProjects(dbId: string, branchId: mongoose.Types.ObjectId, testerId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (IProjects & Document)[], totalCount: number }>
     fetchRecentProjects(dbId: string, branchId?: mongoose.Types.ObjectId, pmId?: mongoose.Types.ObjectId): Promise<(IProjects & Document)[]>
     fetchProjectStats(dbId: string, branchId: mongoose.Types.ObjectId): Promise<any[]>
+    fetchBranchProjectsCount(dbId: string, startDate: Date): Promise<any[]>
 
 }

@@ -8,7 +8,7 @@ function Cards({ data }: { data: IProjects }) {
                 {data.name}
             </p>
             <div className='flex justify-center items-center flex-1'>
-                <div className={`rounded-full w-32 h-32 ${data.stage === 'pending' ? 'bg-red-500' : data.stage === 'development' ? 'bg-yellow-600' : ' bg-green-600'} flex justify-center items-center drop-shadow-2xl`}>
+                <div className={`rounded-full animate-bounce w-32 h-32 ${data.stage === 'pending' ? 'bg-red-500' : data.stage === 'development' ? 'bg-yellow-600' : ' bg-green-600'} flex justify-center items-center drop-shadow-2xl`}>
                     <span>{data.stage}</span>
                 </div>
             </div>

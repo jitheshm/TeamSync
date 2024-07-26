@@ -418,6 +418,47 @@ export default class ProjectRepository implements IProjectRepository {
         return stats
     }
 
+    async fetchBranchProjectsCount(dbId: string, startDate: Date) {
+        const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects');
+
+
+
+        const stats = await ProjectModel.aggregate([
+            {
+                $match: {
+                    is_deleted: false,
+                    created_at: { $gte: startDate }
+                }
+            },
+            {
+                $group: {
+                    _id: "$branch_id",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'branches',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'branch'
+                }
+            },
+            {
+                $unwind: "$branch"
+            },
+            {
+                $project: {
+                    _id: 0,
+                    branchName: "$branch.location",
+                    count: 1
+                }
+            }
+        ]);
+
+        return stats;
+    }
+
 
 
 

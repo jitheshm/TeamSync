@@ -317,3 +317,16 @@ export const fetchTenantRecentProjects = async () => {
         throw error
     }
 }
+
+export const fetchBranchProjectCount = async (period: string) => {
+    try {
+        const response = await instance.get('/project-service/v1/projects/branches/stats', {
+            params: {
+                period
+            }
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
