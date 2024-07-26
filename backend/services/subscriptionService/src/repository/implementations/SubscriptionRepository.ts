@@ -29,7 +29,7 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
     async update(data: ISubscriptions) {
         try {
             const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
-            const res = await SubscriptionModel.findOneAndUpdate({ stripe_subscription_id: data.stripe_subscription_id }, data,{new:true})
+            const res = await SubscriptionModel.findOneAndUpdate({ stripe_subscription_id: data.stripe_subscription_id }, data, { new: true })
             return res
         } catch (error) {
             console.log('Error in SubscriptionRepository update method');
@@ -88,10 +88,23 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
 
     }
 
-    async fetchAllSubscriptions() {
+    async fetchAllSubscriptions(name: string, page: number, limit: number) {
         try {
             const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
-            const res = await SubscriptionModel.aggregate([
+            let data = null;
+
+            const matchStage: any = {
+
+            };
+
+
+            if (name) {
+                matchStage['user.email'] = { $regex: `^${name}`, $options: 'i' };
+            }
+            data = await SubscriptionModel.aggregate([
+
+
+
                 {
                     $lookup: {
                         from: 'plans',
@@ -102,7 +115,7 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
                 },
                 {
                     $lookup: {
-                        from: 'tenants',
+                        from: 'tenants', 
                         localField: 'tenant_id',
                         foreignField: '_id',
                         as: 'tenant'
@@ -126,12 +139,22 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
                 {
                     $unwind: '$user'
 
-                }, {
+                },
+                {
+                    $match: matchStage
+                },
+                {
+                    $skip: (page - 1) * limit
+                },
+                {
+                    $limit: limit
+                }
+                , {
                     $project: {
                         _id: 1,
                         subscription_id: 1,
                         user: {
-                            _id:1,
+                            _id: 1,
                             email: 1
                         },
                         plan: {
@@ -145,10 +168,22 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
                 }
 
             ]).exec()
-            console.log(res);
+            console.log(data);
+
+            const countPipeline = [
+                {
+                    $match: matchStage
+                },
+                {
+                    $count: 'total'
+                }
+            ];
+
+            const totalCountResult = await SubscriptionModel.aggregate(countPipeline).exec();
+            const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
 
 
-            return res
+            return { data, total };
         } catch (error) {
             console.log('Error in SubscriptionRepository update method');
 

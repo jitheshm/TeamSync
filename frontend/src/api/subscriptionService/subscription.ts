@@ -77,9 +77,19 @@ export const fetchPlanDetails = async (id: string) => {
     }
 }
 
-export const fetchSubscription = async () => {
+export const fetchSubscription = async (name: string, page: number, limit: number) => {
     try {
-        const response = await instance.get(`/subscription-service/v1/admin/subscriptions`,)
+        let url = '/subscription-service/v1/admin/subscriptions';
+        const params: any = {
+            page,
+            limit
+        };
+
+
+        if (name) {
+            params.name = name;
+        }
+        const response = await instance.get(url, { params });
         return response.data
     } catch (error) {
         throw error

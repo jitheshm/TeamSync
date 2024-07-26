@@ -6,8 +6,10 @@ export interface ISubscriptionRepository {
     create(data: Partial<ISubscriptions>): Promise<ISubscriptions & Document>
     update(data: Partial<ISubscriptions>): Promise<ISubscriptions & Document |null>
     findSubscriptionByUserId(userId: mongoose.Types.ObjectId): Promise<ISubscriptions | null>
-    fetchAllSubscriptions(): Promise<ISubscriptions[]>
-
+    fetchAllSubscriptions(name: string | null, page: number, limit: number): Promise<{
+        data: any[];
+        total: any;
+    }>
 
 
 }
