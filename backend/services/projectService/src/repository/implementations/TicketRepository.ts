@@ -291,6 +291,79 @@ export default class TicketRepository implements ITicketRepository {
     }
 
 
+    async fetchTicketStats(dbId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) {
+        try {
+            console.log(userId, "userId");
+
+            const TicketModel = switchDb<ITickets>(`${process.env.SERVICE}_${dbId}`, 'tickets')
+            const data = await TicketModel.aggregate([
+                {
+                    $match: {
+                        is_deleted: false,
+
+
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "tasks",
+                        localField: "task_id",
+                        foreignField: "_id",
+                        as: "task"
+                    }
+                },
+                {
+                    $unwind: "$task"
+                },
+                {
+                    $match: {
+                        "task.branch_id": branchId
+                    }
+                },
+                {
+                    $match: {
+                        $or: [
+                            {
+                                "task.developer_id": userId
+                            },
+                            {
+                                "task.tester_id": userId
+                            }
+                        ]
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$status",
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $match: {
+                        _id: { $ne: 'closed' }
+                    }
+                },
+                {
+                    $project: {
+                        status: "$_id",
+                        count: 1,
+                        _id: 0
+                    }
+                }
+
+            ]).exec();
+            console.log(data);
+
+            return data
+        } catch (error) {
+            console.log('Error in Ticket Repository fetch method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
 
 
 

@@ -3,12 +3,19 @@ import { ThemeState } from '@/features/theme/themeSlice';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import TaskCard from '../Cards/TaskCard';
-import { fetchTaskStats } from '@/api/projectService/project';
+import { fetchTaskStats, fetchTicketStats } from '@/api/projectService/project';
 import { logout } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
+import PieCharts from '../Charts/PieChart';
+import { PieValueType } from '@mui/x-charts/models';
 
 
 interface TaskStats {
+    count: number;
+    status: string;
+}
+
+interface TicketStats {
     count: number;
     status: string;
 }
@@ -24,6 +31,8 @@ function DeveloperDashboard() {
     const [progress, setProgress] = useState(0)
     const [total, setTotal] = useState(0)
     const [testing, setTesting] = useState(0)
+    const [ticketStats, setTicketStats] = useState<TicketStats[]>([])
+
 
     const dispatch = useDispatch()
     const router = useRouter()
@@ -61,7 +70,27 @@ function DeveloperDashboard() {
         })
 
 
+        fetchTicketStats().then((result) => {
+            console.log(result);
+            setTicketStats(result.data)
+        }).catch((err) => {
+            console.log(err);
+            if (err.response?.status === 401) {
+                dispatch(logout())
+                router.push('/employee/login')
+            }
+        })
+
+
     }, [])
+
+    const data: PieValueType[] = ticketStats
+        .map((ele, index) => ({
+            id: index,
+            value: ele.count,
+            label: ele.status,
+            color: ele.status === 'pending' ? 'red' : ele.status === 'resolved' ? 'orange' : 'green'
+        }));
 
     const { background, text, main, dark } = useSelector((state: RootState) => state.theme);
 
@@ -74,6 +103,16 @@ function DeveloperDashboard() {
                 <TaskCard count={progress} title='Progress Task' grd1='#5a2e0a' grd2='#a95c1d' />
 
 
+
+            </div>
+
+            <div className='mx-auto   text-white md:w-[400px]'>
+                <div className='text-center my-24'>
+                    <p className='font-bold text-2xl'>Overall Ticket Stats</p>
+                </div>
+                {
+                    data.length === 0 ? <p className='text-center'>No Data Available</p> : <PieCharts data={data} />
+                }
 
             </div>
 

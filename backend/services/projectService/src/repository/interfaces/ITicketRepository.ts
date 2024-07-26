@@ -12,6 +12,7 @@ export interface ITicketRepository {
     }>
     fetchSpecificTicketDetails(dbId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets & Document>
     updateStatus(data: Partial<ITickets>, tenantId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets | null>
+    fetchTicketStats(dbId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): Promise<any[]>
 
 
 

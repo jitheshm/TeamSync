@@ -9,4 +9,5 @@ export interface ITicketService {
     deleteTicket(taskId: mongoose.Types.ObjectId, tenantId: string): Promise<boolean>
     fetchTaskAllTickets(tenantId: string, taskId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (ITickets & mongoose.Document)[], totalCount: number }>
     fetchSpecificTicketDetails(tenantId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets | null>
+    fetchTicketStats(tenantId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): Promise<(any)[]>
 }

@@ -57,5 +57,8 @@ export default class TicketService implements ITicketService {
     async fetchSpecificTicketDetails(tenantId: string, ticketId: mongoose.Types.ObjectId): Promise<ITickets | null> {
         return await this.ticketRepostitory.fetchSpecificTicketDetails(tenantId, ticketId);
     }
+    async fetchTicketStats(tenantId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): Promise<(any)[]> {
+        return await this.ticketRepostitory.fetchTicketStats(tenantId, branchId, userId);
+    }
 
 } 

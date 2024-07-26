@@ -299,3 +299,12 @@ export const fetchTaskStats = async () => {
         throw error
     }
 }
+
+export const fetchTicketStats = async () => {
+    try {
+        const response = await instance.get(`/project-service/v1/projects/ticket/stats`)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
