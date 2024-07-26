@@ -253,10 +253,12 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
                     }
                 },
                 {
-                    $unwind: "plans"
+                    $unwind: "$plans"
                 }
 
             ]).exec()
+            console.log(data);
+            
 
             return data
 
