@@ -308,3 +308,12 @@ export const fetchTicketStats = async () => {
         throw error
     }
 }
+
+export const fetchTenantRecentProjects = async () => {
+    try {
+        const response = await instance.get('/project-service/v1/projects/recent/tenant')
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

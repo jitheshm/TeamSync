@@ -15,6 +15,6 @@ export interface IProjectService {
     updateProjectStatus(statusData: Partial<IProjects>, tenantId: string, projectId: string): Promise<Partial<IProjects> | null>;
     updateProject(projectId: string, projectData: Partial<IProjects>, tenantId: string): Promise<Partial<IProjects> | null>;
     fetchAllTesterProjects(tenantId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (IProjects & Document)[], totalCount: number }>
-    fetchRecentProjects(tenantId: string, branchId: mongoose.Types.ObjectId, pmId?: mongoose.Types.ObjectId): Promise<(IProjects & Document)[]>
+    fetchRecentProjects(tenantId: string, branchId?: mongoose.Types.ObjectId, pmId?: mongoose.Types.ObjectId): Promise<(IProjects & Document)[]>
     fetchProjectStats(tenantId: string, branchId: mongoose.Types.ObjectId): Promise<any[]>
 }

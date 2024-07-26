@@ -12,9 +12,10 @@ const projectService: IProjectService = new ProjectService({ projectRepository }
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
+        const pmId = req.query.pmId ? new mongoose.Types.ObjectId(req.query.pmId as string) : undefined
+        const branchId = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
 
-
-        const projects = await projectService.fetchRecentProjects(req.user?.decode.tenantId);
+        const projects = await projectService.fetchRecentProjects(req.user?.decode.tenantId, branchId, pmId);
         console.log(projects);
 
 

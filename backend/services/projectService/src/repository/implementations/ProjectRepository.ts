@@ -372,15 +372,18 @@ export default class ProjectRepository implements IProjectRepository {
 
     async fetchRecentProjects(
         dbId: string,
-        branchId: mongoose.Types.ObjectId,
+        branchId?: mongoose.Types.ObjectId,
         pmId?: mongoose.Types.ObjectId
     ) {
         const ProjectModel = switchDb<IProjects>(`${process.env.SERVICE}_${dbId}`, 'projects');
 
         // Build the query object
-        const query: any = { branch_id: branchId };
+        const query: any = {};
         if (pmId) {
             query.project_manager_id = pmId;
+        }
+        if (branchId) {
+            query.branch_id = branchId
         }
 
         const projects = await ProjectModel.find(query)

@@ -1,8 +1,9 @@
+import TenantAdminDashboard from '@/components/Dashboards/TenantAdminDashboard'
 import React from 'react'
 
 function Page() {
   return (
-    <div >page</div>
+    <TenantAdminDashboard />
   )
 }
 
