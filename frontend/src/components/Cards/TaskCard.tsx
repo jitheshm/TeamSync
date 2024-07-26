@@ -9,7 +9,7 @@ interface TaskCardProps {
 
 const TaskCard: React.FC<TaskCardProps> = ({ count, title, grd1, grd2 }) => {
     return (
-        <div className={`bg-gradient-to-t from-[${grd1}] to-[${grd2}] h-48 w-48 rounded-2xl drop-shadow-xl`}>
+        <div className={`bg-gradient-to-t  ${grd1} ${grd2} h-48 w-48 rounded-2xl drop-shadow-xl`}>
             <p className='font-bold text-6xl text-center pt-10'>
                 {count}
             </p>

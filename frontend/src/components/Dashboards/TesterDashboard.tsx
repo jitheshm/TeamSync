@@ -25,7 +25,7 @@ interface RootState {
     theme: ThemeState;
 }
 
-function DeveloperDashboard() {
+function TesterDashboard() {
 
     const [pending, setPending] = useState(0)
     const [progress, setProgress] = useState(0)
@@ -124,4 +124,4 @@ function DeveloperDashboard() {
     )
 }
 
-export default DeveloperDashboard
+export default TesterDashboard
