@@ -101,27 +101,31 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
     };
 
     return (
-        <div className="bg-gray-800 border rounded-lg px-8 py-6 mx-auto my-8 max-w-2xl md:mt-60">
-            <h2 className="text-2xl font-medium mb-4 text-gray-100 text-center">Create New Branch</h2>
-            {apiError && <p className="text-red-500 text-center mb-4">{apiError}</p>}
-            <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="location" className="block text-gray-100 font-medium mb-2">Location</label>
-                    <input
-                        type="text"
-                        id="location"
-                        name="location"
-                        className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400 text-black"
-                        value={location}
-                        onChange={handleChange}
-                        required
-                    />
-                    {errors['location'] && <p className="text-red-500">{errors['location']}</p>}
+        <div className="flex items-center w-screen">
+            <div className="w-full">
+                <div className="bg-gray-900 p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
+                    <h2 className="text-2xl font-medium mb-4 text-gray-100 text-center">Create New Branch</h2>
+                    {apiError && <p className="text-red-500 text-center mb-4">{apiError}</p>}
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label htmlFor="location" className="block text-gray-100 font-medium mb-2">Location</label>
+                            <input
+                                type="text"
+                                id="location"
+                                name="location"
+                                className="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400 text-black"
+                                value={location}
+                                onChange={handleChange}
+                                required
+                            />
+                            {errors['location'] && <p className="text-red-500">{errors['location']}</p>}
+                        </div>
+                        <div className='text-center'>
+                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
+                        </div>
+                    </form>
                 </div>
-                <div className='text-center'>
-                    <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Submit</button>
-                </div>
-            </form>
+            </div>
         </div>
     );
 }

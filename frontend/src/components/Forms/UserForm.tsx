@@ -133,7 +133,7 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     };
 
     return (
-        <div className="min-h-screen flex items-center">
+        <div className="min-h-screen flex items-center w-screen">
             <div className="w-full">
                 <div className="bg-gray-900 p-10 rounded-lg shadow md:w-3/4 mx-auto lg:w-1/2">
                     <form onSubmit={handleSubmit}>
