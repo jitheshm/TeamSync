@@ -124,3 +124,20 @@ export const updateSubscriptionPlan = async (subscriptionId: string, customerId:
         throw error
     }
 }
+
+export const fetchProfit = async () => {
+    try {
+        const response = await instance.get('/subscription-service/v1/admin/subscriptions/profit')
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+export const popularPlan = async () => {
+    try {
+        const response = await instance.get('/subscription-service/v1/admin/subscription-plans/stats')
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

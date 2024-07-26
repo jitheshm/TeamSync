@@ -162,3 +162,14 @@ export const fetchAvailableTenantUsers = async (role: string) => {
         throw error;
     }
 };
+
+export const fetchUsersCount = async () => {
+    try {
+        const response = await instance.get('/user-service/v1/admin/users/stats');
+        return response.data;
+    } catch (error) {
+        throw error
+    }
+}
+
+
