@@ -14,9 +14,19 @@ export const signup = async (formData: SignupFormData) => {
 }
 
 
-export const fetchUsers = async () => {
+export const fetchUsers = async (search: string, page: number, limit: number) => {
     try {
-        const response = await instance.get('/user-service/v1/admin/users')
+        const url = '/user-service/v1/admin/users'
+        const params: any = {
+            page,
+            limit
+        };
+
+        if (search) {
+            params.name = search;
+        }
+
+        const response = await instance.get(url, { params });
         return response.data
     } catch (error) {
         throw error

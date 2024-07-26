@@ -44,10 +44,49 @@ export default class UserRepository implements IUserRepository {
         }
     }
 
-    async fetchAllUsers(): Promise<IUsers[]> {
+    async fetchAllUsers(name: string, page: number, limit: number) {
         try {
             const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.find({ is_deleted: false }, { password: 0 })
+            let data = null;
+
+            const matchStage: any = {
+                is_deleted: false
+            };
+
+
+            if (name) {
+                matchStage.first_name = { $regex: `^${name}`, $options: 'i' };
+            }
+
+            const aggregationPipeline = [
+                {
+                    $match: matchStage
+                },
+
+                {
+                    $skip: (page - 1) * limit
+                },
+                {
+                    $limit: limit
+                }
+            ];
+
+            data = await userModel.aggregate(aggregationPipeline).exec();
+
+            const countPipeline = [
+                {
+                    $match: matchStage
+                },
+                {
+                    $count: 'total'
+                }
+            ];
+
+            const totalCountResult = await userModel.aggregate(countPipeline).exec();
+            const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+
+            return { data, total };
+
         } catch (error: any) {
             console.log('Error in UserRepository fetchAllUsers method');
             throw error
