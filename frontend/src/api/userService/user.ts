@@ -172,4 +172,13 @@ export const fetchUsersCount = async () => {
     }
 }
 
+export const fetchTenantBranchUsers = async () => {
+    try {
+        const response = await instance.get('/user-service/v1/tenants/branches/users')
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 

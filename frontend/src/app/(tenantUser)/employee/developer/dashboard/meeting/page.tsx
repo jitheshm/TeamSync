@@ -20,8 +20,12 @@ function Page() {
     const onRoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRoomId(e.target.value)
     }
+
+    const handleScheduleMeeting = () => {
+        router.push(`/employee/developer/dashboard/meeting/schedule`)
+    }
     return (
-        <MeetingForm handleCreateRoom={handleCreateRoom} handleJoinRoom={handleJoinRoom} onRoomChange={onRoomChange} />
+        <MeetingForm handleCreateRoom={handleCreateRoom} handleJoinRoom={handleJoinRoom} onRoomChange={onRoomChange} handleScheduleMeeting={handleScheduleMeeting} />
     )
 }
 

@@ -10,6 +10,7 @@ import deleteTenantUserController from "../../controllers/v1/deleteTenantUserCon
 import fetchTenantUsersController from "../../controllers/v1/fetchTenantUsersController";
 import tenantAuth from "../../middlewares/tenantAuth";
 import fetchTenantSpecificUserController from "../../controllers/v1/fetchTenantSpecificUserController";
+import fetchTenantBranchUsersController from "../../controllers/v1/fetchTenantBranchUsersController";
 
 
 const router = Router();
@@ -19,6 +20,7 @@ router.post('/tenants/users', userAuth, tenantAuth, checkSchema(tenantUserValida
 router.put('/tenants/users/:userId', userAuth, tenantAuth, checkSchema(tenantUserValidator()), updateTenantUserController)
 router.delete('/tenants/branches/:branchId/users/:userId', userAuth, tenantAuth, deleteTenantUserController)
 router.get('/tenants/users', userAuth, fetchTenantUsersController)
+router.get('/tenants/branches/users', userAuth, fetchTenantBranchUsersController)
 router.get('/tenants/users/:userId', userAuth, fetchTenantSpecificUserController)
 
 export default router

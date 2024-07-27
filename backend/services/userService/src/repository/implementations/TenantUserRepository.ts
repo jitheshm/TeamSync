@@ -78,19 +78,19 @@ export default class TenantUserRepository implements ITenantUserRepository {
         try {
             const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users');
             let data = null;
-    
+
             const matchStage: any = {
                 is_deleted: false
             };
-    
+
             if (role) {
                 matchStage.role = role;
             }
-    
+
             if (name) {
                 matchStage.name = { $regex: `^${name}`, $options: 'i' };
             }
-    
+
             const aggregationPipeline = [
                 {
                     $match: matchStage
@@ -126,9 +126,9 @@ export default class TenantUserRepository implements ITenantUserRepository {
                     $limit: limit
                 }
             ];
-    
+
             data = await TenantUserModel.aggregate(aggregationPipeline).exec();
-    
+
             const countPipeline = [
                 {
                     $match: matchStage
@@ -137,10 +137,10 @@ export default class TenantUserRepository implements ITenantUserRepository {
                     $count: 'total'
                 }
             ];
-    
+
             const totalCountResult = await TenantUserModel.aggregate(countPipeline).exec();
             const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
-    
+
             return { data, total };
         } catch (error) {
             console.log('Error in Tenant User Repository fetchUser method');
@@ -148,8 +148,8 @@ export default class TenantUserRepository implements ITenantUserRepository {
             throw error;
         }
     }
-    
-    
+
+
 
 
     async fetchTenantSpecificUser(dbId: string, userId: mongoose.Types.ObjectId) {
@@ -167,6 +167,22 @@ export default class TenantUserRepository implements ITenantUserRepository {
             console.log(error);
 
             throw error
+        }
+    }
+
+    async fetchTenantBranchUsers(dbId: string, branchId: mongoose.Types.ObjectId) {
+        try {
+
+            const TenantUserModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
+            const data = await TenantUserModel.find({ branch_id: branchId, is_deleted: false })
+            return data
+        } catch (error) {
+            console.log('Error in Tenant User  Repository fetchUser method');
+
+            console.log(error);
+
+            throw error
+
         }
     }
 
