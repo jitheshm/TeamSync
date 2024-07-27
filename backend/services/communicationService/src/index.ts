@@ -7,6 +7,7 @@ import cors from 'cors';
 import connect from './config/db/connect';
 import { connectConsumers } from './events/consumerStart';
 import socketHandler from './socketHandler/socketHandler';
+import router from './routes/router';
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ connect().then(() => {
   connectConsumers();
 });
 
+app.use('/', router)
+
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -29,7 +32,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
- 
+
 socketHandler(io);
 // Start the server
 server.listen(port, () => {

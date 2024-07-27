@@ -1,9 +1,12 @@
 "use client";
+import { scheduleMeeting } from '@/api/communicationService.ts/communication';
 import { fetchTenantBranchUsers } from '@/api/userService/user';
+import { logout } from '@/features/user/userSlice';
+import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { z, ZodError } from 'zod';
 
-// Define Zod schema for validation
 const meetingSchema = z.object({
     meetingTitle: z.string().min(3, 'Meeting title is required'),
     meetingDate: z.string().min(1, 'Date is required'),
@@ -13,30 +16,38 @@ const meetingSchema = z.object({
 
 type MeetingFormValues = z.infer<typeof meetingSchema>;
 
-// Define type for available participants
 type Participant = {
     _id: string;
     name: string;
 };
 
-const ScheduleMeetingForm: React.FC = () => {
+type FetchTenantBranchUsersResponse = {
+    data: Participant[];
+};
+
+const ScheduleMeetingForm: React.FC<{ Homeurl: string }> = ({ Homeurl }) => {
     const [meetingTitle, setMeetingTitle] = useState<string>('');
     const [meetingDate, setMeetingDate] = useState<string>('');
     const [meetingTime, setMeetingTime] = useState<string>('');
     const [participants, setParticipants] = useState<string[]>([]);
     const [availableParticipants, setAvailableParticipants] = useState<Participant[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
+    const router = useRouter();
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        fetchTenantBranchUsers().then((result) => {
-            setAvailableParticipants(result.data.map((ele: any) => ({
-                _id: ele._id,
-                name: ele.name,
-            })));
-        }).catch((error) => {
-            console.error('Error fetching participants:', error);
-        });
-    }, []);
+        fetchTenantBranchUsers()
+            .then((result: FetchTenantBranchUsersResponse) => {
+                setAvailableParticipants(result.data);
+            })
+            .catch((error: any) => {
+                console.error('Error fetching participants:', error);
+                if (error.response?.status === 401) {
+                    dispatch(logout());
+                    router.push('/employee/login');
+                }
+            });
+    }, [dispatch, router]);
 
     const handleParticipantChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const { options } = e.target;
@@ -52,7 +63,6 @@ const ScheduleMeetingForm: React.FC = () => {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validate meeting date and time
         const now = new Date();
         const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD format
         const currentTime = now.toTimeString().split(' ')[0].slice(0, 5); // HH:MM format
@@ -71,8 +81,18 @@ const ScheduleMeetingForm: React.FC = () => {
 
         try {
             meetingSchema.parse(formData);
-            // Handle form submission here
-            console.log('Meeting scheduled:', formData);
+            scheduleMeeting(formData)
+                .then(() => {
+                    console.log("Meeting scheduled successfully");
+                    router.push(Homeurl);
+                })
+                .catch((err: any) => {
+                    console.error('Error scheduling meeting:', err);
+                    if (err.response?.status === 401) {
+                        dispatch(logout());
+                        router.push('/employee/login');
+                    }
+                });
         } catch (error) {
             if (error instanceof ZodError) {
                 console.error('Validation errors:', error.errors);
@@ -84,10 +104,9 @@ const ScheduleMeetingForm: React.FC = () => {
 
     // Get current date and time
     const now = new Date();
-    const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD format
-    const currentTime = now.toTimeString().split(' ')[0].slice(0, 5); // HH:MM format
+    const currentDate = now.toISOString().split('T')[0]; 
+    const currentTime = now.toTimeString().split(' ')[0].slice(0, 5); 
 
-    // Filter participants based on the search term
     const filteredParticipants = availableParticipants.filter(participant =>
         participant.name.toLowerCase().includes(searchTerm.toLowerCase())
     );

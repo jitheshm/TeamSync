@@ -10,6 +10,7 @@ import messageSchema from "../schemas/messageSchema";
 import SubscriptionSchema from "../schemas/subscriptionSchema";
 import planSchema from "../schemas/planSchema";
 import chatNotificationSchema from "../schemas/chatNotificationSchema";
+import MeetingSchema from "../schemas/meetingSchema";
 
 export default function getModel<T>(dbname: string, modelName: string): Model<T & Document> {
     let schema: Schema | null = null;
@@ -51,6 +52,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
             case 'chat_notifications':
                 schema = chatNotificationSchema;
                 break
+            case 'meetings':
+                schema = MeetingSchema
+                break;
             default:
                 throw new Error('Model not found');
         }
