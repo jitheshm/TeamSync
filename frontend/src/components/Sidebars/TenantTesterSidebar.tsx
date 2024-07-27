@@ -52,6 +52,13 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
                         <span className="mx-3">Meeting</span>
                     </div>
                 </Link>
+                <Link href="/employee/tester/dashboard/todo">
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} bg-opacity-25`}>
+                        <i className={`fa-solid fa-pen ${text}`} />
+
+                        <span className="mx-3">Todo</span>
+                    </div>
+                </Link>
 
                 {/* Add more navigation items */}
             </nav>
