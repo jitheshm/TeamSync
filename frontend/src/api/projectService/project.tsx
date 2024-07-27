@@ -330,3 +330,32 @@ export const fetchBranchProjectCount = async (period: string) => {
         throw error
     }
 }
+
+export const createTodo = async (task: string) => {
+    try {
+        const response = await instance.post('/project-service/v1/todo', {
+            task: task
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const fetchTodo = async () => {
+    try {
+        const response = await instance.get('/project-service/v1/todo')
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+export const updateTodo = async (data: { status?: string, is_deleted?: boolean }, id: string) => {
+    try {
+        const response = await instance.put(`/project-service/v1/todo/${id}`, data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

@@ -1,8 +1,11 @@
 "use client";
 import { ThemeState } from '@/features/theme/themeSlice';
-import React, { useState, FormEvent } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, FormEvent, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChevronRightIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { createTodo, fetchTodo, updateProject, updateTodo } from '@/api/projectService/project';
+import { logout } from '@/features/user/userSlice';
+import { useRouter } from 'next/navigation';
 
 interface RootState {
     theme: ThemeState;
@@ -10,32 +13,68 @@ interface RootState {
 
 const Todo: React.FC = () => {
     const [task, setTask] = useState<string>('');
-    const [todos, setTodos] = useState<string[]>([]);
-    const [inProgress, setInProgress] = useState<string[]>([]);
-    const [completed, setCompleted] = useState<string[]>([]);
+    const [todos, setTodos] = useState<{ task: string, status: string, _id: string }[]>([]);
+    const [toogle, setToogle] = useState(false)
     const { background, text, main, dark } = useSelector((state: RootState) => state.theme);
+    const dispatch = useDispatch()
+    const router = useRouter()
+
+    useEffect(() => {
+        fetchTodo().then((result) => {
+            setTodos(result.data)
+        })
+    }, [toogle])
 
     const handleAddTask = (e: FormEvent) => {
         e.preventDefault();
         if (task.trim() === '') return;
-        setTodos([...todos, task]);
-        setTask('');
+        createTodo(task).then(() => {
+            setToogle(!toogle)
+            setTask('');
+        }).catch((err) => {
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/employee/login');
+            }
+        })
+        
+
     };
 
-    const moveToInProgress = (taskIndex: number) => {
-        const taskToMove = todos[taskIndex];
-        setTodos(todos.filter((_, index) => index !== taskIndex));
-        setInProgress([...inProgress, taskToMove]);
+    const moveToInProgress = (id: string) => {
+        // const taskToMove = todos[taskIndex];
+        // setTodos(todos.filter((_, index) => index !== taskIndex));
+        // setInProgress([...inProgress, taskToMove]);
+        updateTodo({ status: "progress" }, id).then(() => {
+            setToogle(!toogle)
+        }).catch((err) => {
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/employee/login');
+            }
+        })
     };
 
-    const moveToCompleted = (taskIndex: number) => {
-        const taskToMove = inProgress[taskIndex];
-        setInProgress(inProgress.filter((_, index) => index !== taskIndex));
-        setCompleted([...completed, taskToMove]);
+    const moveToCompleted = (id: string) => {
+        updateTodo({ status: "completed" }, id).then(() => {
+            setToogle(!toogle)
+        }).catch((err) => {
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/employee/login');
+            }
+        })
     };
 
-    const removeTask = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, index: number) => {
-        setList(list.filter((_, i) => i !== index));
+    const removeTask = (id: string) => {
+        updateTodo({ is_deleted: true }, id).then(() => {
+            setToogle(!toogle)
+        }).catch((err) => {
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/employee/login');
+            }
+        })
     };
 
     return (
@@ -64,25 +103,31 @@ const Todo: React.FC = () => {
                     <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
                         <h2 className="text-xl font-semibold mb-4 text-gray-700">To-Do</h2>
                         <ul className="space-y-4">
-                            {todos.map((item, index) => (
-                                <li key={index} className="bg-white p-3 border border-gray-200 rounded-lg text-gray-950 flex items-center justify-between">
-                                    <span>{item}</span>
-                                    <div className="space-x-2">
-                                        <button
-                                            className="text-yellow-500 hover:text-yellow-600 focus:outline-none"
-                                            onClick={() => moveToInProgress(index)}
-                                        >
-                                            <ChevronRightIcon className="h-5 w-5" />
-                                        </button>
-                                        <button
-                                            className="text-red-500 hover:text-red-600 focus:outline-none"
-                                            onClick={() => removeTask(todos, setTodos, index)}
-                                        >
-                                            <XMarkIcon className="h-5 w-5" />
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
+                            {todos.map((item, index) => {
+                                if (item.status === 'todo') {
+                                    return (
+                                        <li key={index} className="bg-white p-3 border border-gray-200 rounded-lg text-gray-950 flex items-center justify-between">
+                                            <span>{item.task}</span>
+                                            <div className="space-x-2">
+                                                <button
+                                                    className="text-yellow-500 hover:text-yellow-600 focus:outline-none"
+                                                    onClick={() => moveToInProgress(item._id)}
+                                                >
+                                                    <ChevronRightIcon className="h-5 w-5" />
+                                                </button>
+                                                <button
+                                                    className="text-red-500 hover:text-red-600 focus:outline-none"
+                                                    onClick={() => removeTask(item._id)}
+                                                >
+                                                    <XMarkIcon className="h-5 w-5" />
+                                                </button>
+                                            </div>
+                                        </li>
+                                    )
+                                } else {
+                                    return null
+                                }
+                            })}
                         </ul>
                     </div>
 
@@ -90,25 +135,33 @@ const Todo: React.FC = () => {
                     <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
                         <h2 className="text-xl font-semibold mb-4 text-gray-700">In Progress</h2>
                         <ul className="space-y-4">
-                            {inProgress.map((item, index) => (
-                                <li key={index} className="bg-white p-3 border border-gray-200 rounded-lg text-gray-950 flex items-center justify-between">
-                                    <span>{item}</span>
-                                    <div className="space-x-2">
-                                        <button
-                                            className="text-green-500 hover:text-green-600 focus:outline-none"
-                                            onClick={() => moveToCompleted(index)}
-                                        >
-                                            <CheckIcon className="h-5 w-5" />
-                                        </button>
-                                        <button
-                                            className="text-red-500 hover:text-red-600 focus:outline-none"
-                                            onClick={() => removeTask(inProgress, setInProgress, index)}
-                                        >
-                                            <XMarkIcon className="h-5 w-5" />
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
+
+
+                            {todos.map((item, index) => {
+                                if (item.status === 'progress') {
+                                    return (
+                                        <li key={index} className="bg-white p-3 border border-gray-200 rounded-lg text-gray-950 flex items-center justify-between">
+                                            <span>{item.task}</span>
+                                            <div className="space-x-2">
+                                                <button
+                                                    className="text-green-500 hover:text-green-600 focus:outline-none"
+                                                    onClick={() => moveToCompleted(item._id)}
+                                                >
+                                                    <CheckIcon className="h-5 w-5" />
+                                                </button>
+                                                <button
+                                                    className="text-red-500 hover:text-red-600 focus:outline-none"
+                                                    onClick={() => removeTask(item._id)}
+                                                >
+                                                    <XMarkIcon className="h-5 w-5" />
+                                                </button>
+                                            </div>
+                                        </li>
+                                    )
+                                } else {
+                                    return null
+                                }
+                            })}
                         </ul>
                     </div>
 
@@ -116,17 +169,33 @@ const Todo: React.FC = () => {
                     <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
                         <h2 className="text-xl font-semibold mb-4 text-gray-700">Completed</h2>
                         <ul className="space-y-4">
-                            {completed.map((item, index) => (
-                                <li key={index} className="bg-white p-3 border border-gray-200 rounded-lg text-gray-950 flex items-center justify-between">
-                                    <span>{item}</span>
-                                    <button
-                                        className="text-red-500 hover:text-red-600 focus:outline-none"
-                                        onClick={() => removeTask(completed, setCompleted, index)}
-                                    >
-                                        <XMarkIcon className="h-5 w-5" />
-                                    </button>
-                                </li>
-                            ))}
+
+
+                            {todos.map((item, index) => {
+                                if (item.status === 'completed') {
+                                    return (
+                                        <li key={index} className="bg-white p-3 border border-gray-200 rounded-lg text-gray-950 flex items-center justify-between">
+                                            <span>{item.task}</span>
+                                            <div className="space-x-2">
+                                                <button
+                                                    className="text-yellow-500 hover:text-yellow-600 focus:outline-none"
+                                                    onClick={() => moveToInProgress(item._id)}
+                                                >
+                                                    <ChevronRightIcon className="h-5 w-5" />
+                                                </button>
+                                                <button
+                                                    className="text-red-500 hover:text-red-600 focus:outline-none"
+                                                    onClick={() => removeTask(item._id)}
+                                                >
+                                                    <XMarkIcon className="h-5 w-5" />
+                                                </button>
+                                            </div>
+                                        </li>
+                                    )
+                                } else {
+                                    return null
+                                }
+                            })}
                         </ul>
                     </div>
                 </div>
