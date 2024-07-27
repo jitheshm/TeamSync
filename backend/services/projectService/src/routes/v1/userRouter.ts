@@ -32,6 +32,9 @@ import fetchTicketStats from "../../controllers/fetchTicketStats";
 import fetchBranchRecentProjects from "../../controllers/fetchBranchRecentProjects";
 import fetchRecentProjects from "../../controllers/fetchRecentProjects";
 import fetchBranchProjectCount from "../../controllers/fetchBranchProjectCount";
+import createTodoController from "../../controllers/createTodoController";
+import fetchTodoController from "../../controllers/fetchTodoController";
+import updateTodoController from "../../controllers/updateTodoController";
 
 
 
@@ -65,6 +68,10 @@ router.get('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, f
 router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth, fetchTicketDetails)
 router.get('/projects/tasks/stats', userAuth, tenantAuth, fetchTaskStats)
 router.get('/projects/ticket/stats', userAuth, tenantAuth, fetchTicketStats)
+router.post('/todo', userAuth, tenantAuth, createTodoController)
+router.get('/todo', userAuth, tenantAuth, fetchTodoController)
+router.put('/todo/:todoId', userAuth, tenantAuth, updateTodoController)
+
 
 
 
