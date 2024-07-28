@@ -43,12 +43,12 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
 
                 </div>
 
-                <div onClick={handleThemeToogle}>
+                {/* <div onClick={handleThemeToogle}>
                     {
                         background === 'bg-gray-100' ? <i className={`fa-solid fa-moon ${text}`} /> : <i className={`fa-solid fa-sun ${text}`} />
                     }
 
-                </div>
+                </div> */}
             </div>
         </header>
     );
