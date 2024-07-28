@@ -1,22 +1,29 @@
-
-
 import { ThemeState } from '@/features/theme/themeSlice';
 import Link from 'next/link';
-import React, { use } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import { usePathname } from 'next/navigation';  // Import usePathname
 
 interface SidebarProps {
     sidebarOpen: boolean;
 }
+
 interface RootState {
-    theme: ThemeState
+    theme: ThemeState;
 }
+
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
-    const { background, text } = useSelector((state: RootState) => state.theme)
+    const { background, text } = useSelector((state: RootState) => state.theme);
+    const pathname = usePathname();  // Get the current path
+
+    // Define a function to get background color based on the current path
+    const getIconBackground = (path: string) => {
+        return pathname === path ? 'bg-violet-500' : '';
+    };
 
     return (
         <div
-            className={`fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform  shadow-lg z-10 ${background} lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'
+            className={`fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform shadow-lg z-10 ${background} lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'
                 }`}
         >
             <div className="flex items-center justify-center mt-8">
@@ -27,45 +34,44 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
             </div>
 
             <nav className="mt-14">
-                <Link href="/">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} bg-gray-700 bg-opacity-25`}>
+                <Link href="/employee/manager/dashboard">
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard')}`}>
                         <i className={`fa-solid fa-gauge ${text}`} />
                         <span className="mx-3">Dashboard</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/users">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} bg-gray-700 bg-opacity-25`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/users')}`}>
                         <i className={`fa-solid fa-gauge ${text}`} />
                         <span className="mx-3">Users</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/projects">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text}  bg-opacity-25`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/projects')}`}>
                         <i className={`fa-solid fa-list-check ${text}`} />
                         <span className="mx-3">Projects</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/chats">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} bg-opacity-25`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/chats')}`}>
                         <i className={`fa-regular fa-comments ${text}`} />
                         <span className="mx-3">Chat</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/meeting">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} bg-opacity-25`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/meeting')}`}>
                         <i className={`fa-solid fa-video ${text}`} />
                         <span className="mx-3">Meeting</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/todo">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} bg-opacity-25`}>
-                    <i className={`fa-solid fa-pen ${text}`} />
-
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/todo')}`}>
+                        <i className={`fa-solid fa-pen ${text}`} />
                         <span className="mx-3">Todo</span>
                     </div>
                 </Link>
