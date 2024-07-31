@@ -3,7 +3,8 @@ import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 // import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 
 const kafkaInstance = new Kafka({
-    brokers: ["redpanda-0:9092"]
+    clientId: process.env.SERVICE,
+    brokers: [process.env.KAFKA_BROKER as string]
 
 })
 
