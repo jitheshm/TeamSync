@@ -242,10 +242,10 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                             <div className="col-span-1 mb-5">
                                 <label htmlFor="tester_id" className="block mb-2 font-bold text-gray-100">Tester</label>
                                 <Select
-                                    defaultValue={defaultFormData.testers.map(dev => ({ value: dev._id, label: dev.name}))}
+                                    defaultValue={defaultFormData.testers.map((dev:any) => ({ value: dev._id, label: dev.name}))}
                                     id="testers_id"
                                     name="testers_id"
-                                    options={testers.map(dev => ({ value: dev._id, label: dev.name }))}
+                                    options={testers.map((dev:any) => ({ value: dev._id, label: dev.name }))}
                                     //  value={formData.developers_id}
                                     isMulti
                                     onChange={handleTesterChange}
@@ -260,8 +260,8 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                 <Select
                                     id="developers_id"
                                     name="developers_id"
-                                    defaultValue={defaultFormData.developers.map(dev => ({ value: dev._id, label: dev.name}))}
-                                    options={developer.map(dev => ({ value: dev._id, label: dev.name }))}
+                                    defaultValue={defaultFormData.developers.map((dev:any) => ({ value: dev._id, label: dev.name}))}
+                                    options={developer.map((dev:any) => ({ value: dev._id, label: dev.name }))}
                                     // value={formData.developers_id}
                                     isMulti
                                     onChange={handleChange}

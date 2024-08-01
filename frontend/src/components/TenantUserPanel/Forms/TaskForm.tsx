@@ -199,7 +199,7 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
                                 id="developer_id"
                                 name="developer_id"
                                 defaultValue={edit ? { value: formData.developer._id, label: formData.developer.name } : null}
-                                options={developers.map(dev => ({ value: dev._id, label: dev.name }))}
+                                options={developers.map((dev:any) => ({ value: dev._id, label: dev.name }))}
                                 onChange={(option: any) => setFormData({ ...formData, developer_id: option.value })}
                                 className="basic-single text-gray-950"
                                 classNamePrefix="select"
@@ -213,7 +213,7 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
                                 id="tester_id"
                                 name="tester_id"
                                 defaultValue={edit ? { value: formData.tester._id, label: formData.tester.name } : null}
-                                options={testers.map(test => ({ value: test._id, label: test.name }))}
+                                options={testers.map((test:any) => ({ value: test._id, label: test.name }))}
                                 onChange={(option: any) => setFormData({ ...formData, tester_id: option.value })}
                                 className="basic-single text-gray-950"
                                 key={formData.tester._id}

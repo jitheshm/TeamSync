@@ -11,17 +11,20 @@ function Page() {
 
     const handleCreateRoom = () => {
         const roomId = nanoid()
-        router.push(`/employee/project_manager/dashboard/meeting/${roomId}`)
+        router.push(`/employee/tester/dashboard/meeting/${roomId}`)
     }
 
     const handleJoinRoom = () => {
-        router.push(`/employee/project_manager/dashboard/meeting/${roomId}`)
+        router.push(`/employee/tester/dashboard/meeting/${roomId}`)
     }
     const onRoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRoomId(e.target.value)
     }
+    const handleScheduleMeeting = () => {
+        router.push(`/employee/tester/dashboard/meeting/schedule`)
+    }
     return (
-        <MeetingForm handleCreateRoom={handleCreateRoom} handleJoinRoom={handleJoinRoom} onRoomChange={onRoomChange} />
+        <MeetingForm handleCreateRoom={handleCreateRoom} handleJoinRoom={handleJoinRoom} onRoomChange={onRoomChange} handleScheduleMeeting={handleScheduleMeeting} />
     )
 }
 

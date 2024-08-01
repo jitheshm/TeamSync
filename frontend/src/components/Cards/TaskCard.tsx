@@ -17,7 +17,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ count, title, grd1, grd2 }) => {
                 {title}
             </p>
         </div>
-    );II
+    );
 }
 
 export default TaskCard;

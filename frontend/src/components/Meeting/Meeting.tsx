@@ -71,6 +71,7 @@ function Meeting({ roomId }: { roomId: string }) {
                 }}
                 userInfo={{
                     displayName: name,
+                    email:''
 
                 }}
                 onApiReady={(externalApi) => {

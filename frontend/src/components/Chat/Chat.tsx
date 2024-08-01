@@ -85,7 +85,7 @@ function Chat() {
                 if (chat.type === 'group') {
                     return chat.name
                 } else {
-                    let user = chat.members.filter((member) => {
+                    let user = chat.members.filter((member:any) => {
                         return member._id !== id
                     })
                     return user[0].name

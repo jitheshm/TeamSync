@@ -16,6 +16,7 @@ interface IUser {
     email: string;
     role: string;
     created_at: string;
+    branch_id: string;
 }
 
 interface UserState {
