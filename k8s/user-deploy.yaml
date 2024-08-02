@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: userservice-config
+  namespace: team-sync
+data:
+  KAFKA_BROKER: kafka:29092
+  SERVICE: userService
+  JWT_SECRET_KEY: secret
+  JWT_ADMIN_SECRET_KEY: adminSecret
+  
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userservice
+  namespace: team-sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userservice
+  template:
+    metadata:
+      labels:
+        app: userservice
+    spec:
+      containers:
+        - name: userservice
+          image: jitheshmjithooz/team-sync-user-service
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: userservice-config
+            - secretRef:
+                name: app-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userservice
+  namespace: team-sync
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: userservice

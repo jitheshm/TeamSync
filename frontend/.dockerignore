@@ -6,13 +6,13 @@ Dockerfile
 # Ignore development and debugging files
 node_modules
 npm-debug.log
-public
 yarn-debug.log
 yarn-error.log
+.next
 
 # Ignore system and temporary files
 *.log
 *.swp
 .DS_Store
 
-.env
+.env.local

@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tenantservice-config
+  namespace: team-sync
+data:
+  KAFKA_BROKER: kafka:29092
+  SERVICE: tenantService
+  JWT_SECRET_KEY: secret
+  JWT_ADMIN_SECRET_KEY: adminSecret
+  
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenantservice
+  namespace: team-sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tenantservice
+  template:
+    metadata:
+      labels:
+        app: tenantservice
+    spec:
+      containers:
+        - name: tenantservice
+          image: jitheshmjithooz/team-sync-tenant-service
+          ports:
+            - containerPort: 3004
+          envFrom:
+            - configMapRef:
+                name: tenantservice-config
+            - secretRef:
+                name: app-secrets
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tenantservice
+  namespace: team-sync
+spec:
+  ports:
+    - port: 3004
+      targetPort: 3004
+  selector:
+    app: tenantservice

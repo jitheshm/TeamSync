@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: projectservice-config
+  namespace: team-sync
+data:
+  KAFKA_BROKER: kafka:29092
+  SERVICE: projService
+  JWT_SECRET_KEY: secret
+  
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projectservice
+  namespace: team-sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projectservice
+  template:
+    metadata:
+      labels:
+        app: projectservice
+    spec:
+      containers:
+        - name: projectservice
+          image: jitheshmjithooz/team-sync-project-service
+          ports:
+            - containerPort: 3005
+          envFrom:
+            - configMapRef:
+                name: projectservice-config
+            - secretRef:
+                name: app-secrets
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: projectservice
+  namespace: team-sync
+spec:
+  ports:
+    - port: 3005
+      targetPort: 3005
+  selector:
+    app: projectservice

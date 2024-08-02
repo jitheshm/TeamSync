@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserRepository from "../../repository/implementations/UserRepository";
 import { IUsers } from "../../entities/UserEntity";
-import bcrypt from "../../utils/bcrypt";
+import bcrypt from 'bcryptjs';
 import { validationResult } from "express-validator";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import UserProducer from "../../events/kafka/producers/UserProducer";

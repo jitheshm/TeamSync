@@ -1,12 +1,21 @@
+"use client"
 import { fetchPlans } from '@/api/subscriptionService/subscription'
 import PriceCard from '@/components/SubscriptionPlans/PriceCard'
 import { IPlan } from '@/interfaces/subscription'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
-async function Plans() {
 
-    const response = await fetchPlans()
-    const plans: IPlan[] = response.data
+
+ function Plans() {
+    const [plans, setPlans] = useState<IPlan[]>([])
+
+    useEffect(() => {
+        fetchPlans().then((response) => {
+            setPlans(response.data)
+        })
+    })
+
     return (
         <div className='w-screen min-h-screen bg-white text-black'>
 

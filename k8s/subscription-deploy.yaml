@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: subscriptionservice-config
+  namespace: team-sync
+data:
+  KAFKA_BROKER: kafka:29092
+  SERVICE: subService
+  JWT_SECRET_KEY: secret
+  JWT_ADMIN_SECRET_KEY: adminSecret
+  
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: subscriptionservice
+  namespace: team-sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: subscriptionservice
+  template:
+    metadata:
+      labels:
+        app: subscriptionservice
+    spec:
+      containers:
+        - name: subscriptionservice
+          image: jitheshmjithooz/team-sync-subscription-service
+          ports:
+            - containerPort: 3003
+          envFrom:
+            - configMapRef:
+                name: subscriptionservice-config
+            - secretRef:
+                name: app-secrets
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: subscriptionservice
+  namespace: team-sync
+spec:
+  ports:
+    - port: 3003
+      targetPort: 3003
+  selector:
+    app: subscriptionservice
