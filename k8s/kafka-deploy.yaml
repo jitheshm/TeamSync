@@ -8,7 +8,7 @@ data:
   ALLOW_PLAINTEXT_LISTENER: "yes"
   KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
   KAFKA_CFG_LISTENERS: "PLAINTEXT://:29092,PLAINTEXT_HOST://:9092"
-  KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092"
+  KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://192.168.49.2:9092"
 ---
 
 apiVersion: apps/v1
@@ -39,16 +39,21 @@ apiVersion: v1
 kind: Service
 metadata:
   name: kafka
+  namespace: team-sync
 spec:
+  type: NodePort
   ports:
     - name: client
       port: 9092
       targetPort: 9092
+      nodePort: 30092
     - name: inter-broker
       port: 29092
       targetPort: 29092
+      nodePort: 30091
   selector:
     app: kafka
+
 
 
 

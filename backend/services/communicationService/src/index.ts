@@ -33,7 +33,9 @@ const io = new Server(server, {
   }
 });
 
-socketHandler(io);
+const connectNamespace = io.of('/api/chat');
+
+socketHandler(connectNamespace);
 // Start the server
 server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

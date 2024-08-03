@@ -10,7 +10,7 @@ import { connectConsumers } from './events/kafka/consumerStart';
 dotenv.config();
 
 const app: Application = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3007;
 app.use(logger('dev'));
 app.use(express.json()); 
 app.use(cors())

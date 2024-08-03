@@ -101,7 +101,7 @@ services:
     depends_on:
       - kafka
     ports:
-      - 3000:3000
+      - 3007:3007
     networks: 
       - team_sync_network
     develop:

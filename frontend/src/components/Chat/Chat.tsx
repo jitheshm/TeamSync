@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import Cookies from 'js-cookie'
 import Modal from './Modal'
 import IMessage from '@/interfaces/Messages'
+import { APIURL } from '@/constants/constant'
 
 interface UserState {
     name: string
@@ -33,7 +34,7 @@ function Chat() {
     const { id, verified } = useSelector((state: RootState) => state.user)
 
     useEffect(() => {
-        const socketObj = io('http://localhost:3006', {
+        const socketObj = io(`${APIURL}/chat`, {
             auth: {
                 token: Cookies.get('team-sync-token')
             }
@@ -43,7 +44,7 @@ function Chat() {
         return () => {
             activeRoom && socketObj.emit('leave_room', activeRoom)
             socketObj.disconnect()
-        } 
+        }
     }, [])
 
     useEffect(() => {
@@ -85,7 +86,7 @@ function Chat() {
                 if (chat.type === 'group') {
                     return chat.name
                 } else {
-                    let user = chat.members.filter((member:any) => {
+                    let user = chat.members.filter((member: any) => {
                         return member._id !== id
                     })
                     return user[0].name

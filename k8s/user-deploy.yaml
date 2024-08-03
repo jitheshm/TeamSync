@@ -31,7 +31,7 @@ spec:
         - name: userservice
           image: jitheshmjithooz/team-sync-user-service
           ports:
-            - containerPort: 3000
+            - containerPort: 3007
           envFrom:
             - configMapRef:
                 name: userservice-config
@@ -45,7 +45,7 @@ metadata:
   namespace: team-sync
 spec:
   ports:
-    - port: 3000
-      targetPort: 3000
+    - port: 3007
+      targetPort: 3007
   selector:
     app: userservice
