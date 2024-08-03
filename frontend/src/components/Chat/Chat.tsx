@@ -34,7 +34,7 @@ function Chat() {
     const { id, verified } = useSelector((state: RootState) => state.user)
 
     useEffect(() => {
-        const socketObj = io(`${APIURL}/chat`, {
+        const socketObj = io(`${APIURL}/api/chat`, {
             auth: {
                 token: Cookies.get('team-sync-token')
             }

@@ -1,4 +1,4 @@
-import { Server, Socket } from 'socket.io';
+import { Namespace, Server, Socket } from 'socket.io';
 import userAuth from '../middlewares/userAuth';
 import { ITenantUserRepository } from '../repository/interfaces/ITenantUserRepository';
 import TenantUserRepository from '../repository/implementations/TenantUserRepository';
@@ -29,7 +29,7 @@ const tenantUserService: ITenantUserService = new TenantUserService(tenantUserRe
 const userActivity = new Map()
 const ServerActiveUsers = new Map()
 
-const socketHandler = (io: Server) => {
+const socketHandler = (io: Namespace) => {
 
     io.use(userAuth);
 

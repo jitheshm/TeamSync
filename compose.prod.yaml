@@ -135,20 +135,20 @@ services:
     networks: 
       - team_sync_network
 
-  frontend:
-    build: ./frontend
-    container_name: team-sync-frontend
-    image: jitheshmjithooz/team-sync-frontend
-    restart: unless-stopped
-    ports:
-      - 3000:3000
-    env_file:
-      -  ./frontend/.env.local
+  # frontend:
+  #   build: ./frontend
+  #   container_name: team-sync-frontend
+  #   image: jitheshmjithooz/team-sync-frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - 3000:3000
+  #   env_file:
+  #     -  ./frontend/.env.local
 
-    depends_on:
-      - subscriptionservice
-    networks: 
-      - team_sync_network
+  #   depends_on:
+  #     - subscriptionservice
+  #   networks: 
+  #     - team_sync_network
     
 
 
