@@ -61,7 +61,7 @@ function Meeting({ roomId }: { roomId: string }) {
     const { name, verified, tenantId } = useSelector((state: RootState) => state.user)
 
     return (
-        <div className='flex justify-center mt-10'>
+        <div className='flex justify-center w-full h-full'>
             <JitsiMeeting
                 domain='meet.jit.si'
                 roomName={roomId}
@@ -78,7 +78,7 @@ function Meeting({ roomId }: { roomId: string }) {
                     // here you can attach custom event listeners to the Jitsi Meet External API
                     // you can also store it locally to execute commands
                 }}
-                getIFrameRef={(iframeRef) => { iframeRef.style.height = '90vh'; iframeRef.style.width = '90vw'; }}
+                getIFrameRef={(iframeRef) => { iframeRef.style.height = '100%'; iframeRef.style.width = '100%'; }}
             />
         </div>
     )
