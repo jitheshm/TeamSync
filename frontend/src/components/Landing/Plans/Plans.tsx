@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
         fetchPlans().then((response) => {
             setPlans(response.data)
         })
-    })
+    },[])
 
     return (
         <div className='w-screen min-h-screen bg-white text-black'>
