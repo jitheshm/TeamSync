@@ -191,6 +191,7 @@ const socketHandler = (io: Namespace) => {
 
                             let userRecentChats = await chatService.fetchAllChats(socket.data.user.tenantId, user)
                             io.to(ServerActiveUsers.get(user.toString())).emit('recent_chats', { status: 'success', message: 'Recent chats', data: userRecentChats })
+                            io.to(ServerActiveUsers.get(user.toString())).emit('notify_user', { status: 'success', message: 'New message received' })
                         }
                     })
                     console.log(inactiveUsers, "inactiveUsers");

@@ -8,6 +8,7 @@ import Cookies from 'js-cookie'
 import Modal from './Modal'
 import IMessage from '@/interfaces/Messages'
 import { APIURL } from '@/constants/constant'
+import Swal from 'sweetalert2'
 
 interface UserState {
     name: string
@@ -34,7 +35,7 @@ function Chat() {
     const { id, verified } = useSelector((state: RootState) => state.user)
 
     useEffect(() => {
-        const socketObj = io(`${APIURL}/api/chat`, {
+        const socketObj = io(`http://localhost:3006/api/chat`, {
             auth: {
                 token: Cookies.get('team-sync-token')
             }
@@ -65,6 +66,26 @@ function Chat() {
                     return [...prev, data]
                 })
             })
+            socket.on('notify_user', (data) => {
+                console.log(data);
+                
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    
+                    title: data.message
+                });
+            }
+            )
         }
 
         return () => {
