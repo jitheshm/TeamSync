@@ -6,11 +6,12 @@ metadata:
 data:
   KAFKA_CFG_ZOOKEEPER_CONNECT: "zookeeper:2181"
   ALLOW_PLAINTEXT_LISTENER: "yes"
-  KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
-  KAFKA_CFG_LISTENERS: "PLAINTEXT://:29092,PLAINTEXT_HOST://:9092"
-  KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://192.168.49.2:9092"
----
+  KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT"
+  KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,PLAINTEXT_INTERNAL://:29092"
+  KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092,PLAINTEXT_INTERNAL://kafka:29092"
+  KAFKA_CFG_INTER_BROKER_LISTENER_NAME: "PLAINTEXT_INTERNAL"
 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,9 +32,11 @@ spec:
           image: bitnami/kafka:latest
           ports:
             - containerPort: 9092
+            - containerPort: 29092
           envFrom:
             - configMapRef:
                 name: kafka-config
+
 ---
 apiVersion: v1
 kind: Service
@@ -41,23 +44,13 @@ metadata:
   name: kafka
   namespace: team-sync
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - name: client
       port: 9092
       targetPort: 9092
-      nodePort: 30092
     - name: inter-broker
       port: 29092
       targetPort: 29092
-      nodePort: 30091
   selector:
     app: kafka
-
-
-
-
-
-
-
-

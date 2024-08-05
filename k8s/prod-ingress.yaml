@@ -1,0 +1,74 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: teamsync-ingress
+  namespace: team-sync
+  annotations:
+    cert-manager.io/issuer: "letsencrypt-nginx"
+spec:
+  tls:
+  - hosts:
+    - server.teamsync.jitheshm.online
+    secretName: letsencrypt-nginx
+
+  rules:
+  - host: server.teamsync.jitheshm.online
+    http:
+      paths:
+      - path: /api/auth-service
+        pathType: Prefix
+        backend:
+          service:
+            name: authenticationservice
+            port:
+              number: 3002
+      - path: /api/tenant-service
+        pathType: Prefix
+        backend:
+          service:
+            name: tenantservice
+            port:
+              number: 3004
+      - path: /api/user-service
+        pathType: Prefix
+        backend:
+          service:
+            name: userservice
+            port:
+              number: 3007
+      - path: /api/subscription-service
+        pathType: Prefix
+        backend:
+          service:
+            name: subscriptionservice
+            port:
+              number: 3003
+      - path: /api/project-service
+        pathType: Prefix
+        backend:
+          service:
+            name: projectservice
+            port:
+              number: 3005
+      - path: /api/communication-service
+        pathType: Prefix
+        backend:
+          service:
+            name: communicationservice
+            port:
+              number: 3006
+      - path: /socket.io
+        pathType: Prefix
+        backend:
+          service:
+            name: communicationservice
+            port:
+              number: 3006
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 3000
+  ingressClassName: nginx
