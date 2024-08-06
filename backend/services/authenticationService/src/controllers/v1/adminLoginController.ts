@@ -18,11 +18,11 @@ export default async (req: Request, res: Response) => {
         
         const adminObj=await adminRepo.fetchUser(user_name)
         if(!adminObj){
-            return res.status(404).json({error:"User not found"});
+            return res.status(401).json({error:"Invalid user name or password"});
         }
         const resObj=await bcrypt.compare(password, adminObj.password)
         if(!resObj){
-            return res.status(401).json({error:"Invalid email or password"});
+            return res.status(401).json({error:"Invalid user name or password"});
         }
 
         if(!process.env.JWT_ADMIN_SECRET_KEY){

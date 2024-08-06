@@ -6,6 +6,7 @@ import Cookie from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { verify } from '@/features/admin/adminSlice';
+import { errorModal } from '@/utils/alerts/errorAlert';
 
 
 const userSchema = z.object({
@@ -51,6 +52,9 @@ const router=useRouter()
         
 
 
+      }).catch((error)=>{
+        console.log(error)
+        errorModal(error.response.data.error)
       })
       console.log('Form data is valid', formData);
       setErrors({});

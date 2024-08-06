@@ -5,7 +5,7 @@ console.log("APIURL", APIURL);
 const instance = axios.create({
 
 
-    baseURL: String('/api/'),
+    baseURL: String(`${APIURL}/api`),
 
 
 });
