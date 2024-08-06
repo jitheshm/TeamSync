@@ -4,9 +4,7 @@ import React from 'react'
 
 function page({ params }: { params: { planId: string } }) {
     return (
-        <AdminAuth>
-            <PlanForm viewOnly={true} id={params.planId} />
-        </AdminAuth>
+        <PlanForm viewOnly={true} id={params.planId} />
     )
 }
 

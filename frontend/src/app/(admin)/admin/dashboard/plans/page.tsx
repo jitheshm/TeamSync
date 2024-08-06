@@ -4,9 +4,7 @@ import React from 'react'
 
 function page() {
   return (
-    <AdminAuth>
-      <PlansTable />
-    </AdminAuth>
+    <PlansTable />
   )
 }
 

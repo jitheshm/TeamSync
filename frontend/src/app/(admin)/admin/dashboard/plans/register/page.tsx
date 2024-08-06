@@ -4,9 +4,7 @@ import React from 'react'
 
 function Page() {
   return (
-    <AdminAuth>
-      <PlanForm />
-    </AdminAuth>
+    <PlanForm />
   )
 }
 

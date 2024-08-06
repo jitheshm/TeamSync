@@ -111,7 +111,7 @@ const PlansTable: React.FC = () => {
     }
 
     return (
-        <div className="bg-gray-900 p-8 rounded-md w-11/12 mt-20 mx-auto">
+        <div className="bg-gray-900 p-8 rounded-md w-11/12 my-20 mx-auto">
             <div className="flex items-center justify-between pb-6">
                 <div>
                     <h2 className="text-gray-100 font-semibold">Plans</h2>

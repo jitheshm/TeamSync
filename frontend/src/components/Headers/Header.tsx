@@ -1,5 +1,6 @@
 import { ThemeState, toogleTheme } from '@/features/theme/themeSlice';
 import { logout } from '@/features/user/userSlice';
+import { logout as adminLogout } from '@/features/admin/adminSlice';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
@@ -23,6 +24,7 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
 
     const handleLogout = () => {
         dispatch(logout())
+        dispatch(adminLogout())
         Cookies.remove('team-sync-token')
     }
 
