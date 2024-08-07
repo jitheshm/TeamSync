@@ -1,5 +1,5 @@
 "use client"
-import { fetchPlans } from '@/api/subscriptionService/subscription'
+import { fetchAvailablePlans, fetchPlans } from '@/api/subscriptionService/subscription'
 import PriceCard from '@/components/SubscriptionPlans/PriceCard'
 import { IPlan } from '@/interfaces/subscription'
 import Link from 'next/link'
@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
     const [plans, setPlans] = useState<IPlan[]>([])
 
     useEffect(() => {
-        fetchPlans().then((response) => {
+        fetchAvailablePlans().then((response) => {
             setPlans(response.data.data)
         })
     },[])

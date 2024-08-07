@@ -41,6 +41,52 @@ export default class PlanRepository implements IPlanRepository {
 
     async fetchAll(page:number, limit:number, name:string | null) {
         try {
+            console.log(name,name);
+            
+            const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
+            let data = null
+            const matchStage: any = {
+                is_deleted:false,
+            };
+            console.log(matchStage,">>>>>>>>>>>>>>>")
+            if (name) {
+                matchStage.name = { $regex: `^${name}`, $options: 'i' };
+            }
+
+            data=await PlanModel.aggregate([
+                {
+                    $match:matchStage
+                },
+                {
+                    $skip: (page - 1) * limit
+                },
+                {
+                    $limit: limit
+                }
+            ])
+            const countPipeline = [
+                {
+                    $match: matchStage
+                },
+                {
+                    $count: 'total'
+                }
+            ];
+            const totalCountResult = await PlanModel.aggregate(countPipeline).exec();
+            const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+
+            return { data, total };
+        } catch (error) {
+            console.log('Error in PlanRepository fetchAll method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
+
+    async fetchAvailablePlans(page:number, limit:number, name:string | null) {
+        try {
             console.log(name);
             
             const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')

@@ -8,12 +8,13 @@ import getUserSubscriptionController from "../../controllers/v1/getUserSubscript
 import getSubscriptionDetailsController from "../../controllers/v1/getSubscriptionDetailsController";
 import cancelSubscriptionController from "../../controllers/v1/cancelSubscriptionController";
 import updateSubscriptionController from "../../controllers/v1/updateSubscriptionController";
+import getAvailablePlans from "../../controllers/v1/getAvailablePlans";
 
 const router = Router();
 
 
 router.post('/subscriptions', userAuth, subscriptionController)
-router.get('/subscription-plans', getAllPlansController)
+router.get('/subscription-plans', getAvailablePlans)
 router.get('/subscription', userAuth, getSubscriptionDetailsController)
 router.patch('/subscriptions/:subscriptionId/customers/:customerId', userAuth, updateSubscriptionController)
 router.patch('/subscriptions/:subscriptionId/cancel', userAuth, cancelSubscriptionController)

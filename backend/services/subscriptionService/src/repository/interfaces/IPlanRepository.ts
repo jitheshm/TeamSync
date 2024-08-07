@@ -8,5 +8,9 @@ export interface IPlanRepository {
         data: any[];
         total: any;
     }>
+    fetchAvailablePlans(page: number, limit: number, name: string | null): Promise<{
+        data: any[];
+        total: any;
+    }>
     fetchById(id: mongoose.Types.ObjectId): Promise<IPlan | null>
 }
