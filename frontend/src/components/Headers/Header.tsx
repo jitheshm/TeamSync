@@ -39,8 +39,16 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
                 </button>
             </div>
 
-            <div className="flex items-center me-20">
-                <div className='px-10 '>
+            <div className="flex justify-center lg:justify-end items-center w-full">
+                <div className="flex lg:flex-1 gap-3 lg:hidden">
+                    <a href="/" className="-m-1.5 p-1.5">
+                        <span className="sr-only text-gray-100 ">TeamSync</span>
+                        <img className="h-8 w-auto" src="/logo.png" alt='TeamSync' />
+
+                    </a>
+                    <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">TeamSync</span>
+                </div>
+                <div className='px-10 hidden lg:block'>
                     <button onClick={handleLogout} type="button" className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Logout</button>
 
                 </div>

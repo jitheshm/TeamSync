@@ -1,9 +1,10 @@
 import { ThemeState } from '@/features/theme/themeSlice';
 import Link from 'next/link';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { usePathname } from 'next/navigation'; // Import usePathname
-
+import { logout } from '@/features/user/userSlice';
+import Cookies from 'js-cookie';
 interface SidebarProps {
     sidebarOpen: boolean;
 }
@@ -15,10 +16,16 @@ interface RootState {
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
     const { background, text } = useSelector((state: RootState) => state.theme);
     const pathname = usePathname(); // Get the current path
-
+    const dispatch=useDispatch()
     // Function to get background color based on the current path
     const getLinkClass = (path: string) => {
         return pathname.startsWith(path) ? 'bg-violet-500' : '';
+    }
+
+    const handleLogout = () => {
+        dispatch(logout())
+        // dispatch(adminLogout())
+        Cookies.remove('team-sync-token')
     }
 
     return (
@@ -68,7 +75,10 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
                         <span className="mx-3">Todo</span>
                     </div>
                 </Link>
+                <div className='px-10 mt-10 lg:hidden'>
+                    <button onClick={handleLogout} type="button" className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Logout</button>
 
+                </div>
                 {/* Add more navigation items */}
             </nav>
         </div>

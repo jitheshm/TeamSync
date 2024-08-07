@@ -129,9 +129,9 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
     };
 
     return (
-        <div className=' pt-10 h-screen w-full'>
+        <div className='py-4 sm-pt-10 h-screen w-full'>
 
-            <div className={`${background} p-4 w-11/12 mx-auto rounded`}>
+            <div className={`${background} p-4 w-11/12 mx-auto rounded `}>
 
                 <div>
                     {
@@ -139,7 +139,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                             <h4 className="text-3xl font-bold tracki text-center mt-12 sm:text-4xl text-gray-100">Create New Plan</h4>
                     }
                 </div>
-                <form className='w-1/2 mx-auto mt-20' onSubmit={handleSubmit}>
+                <form className='sm:w-1/2 mx-auto mt-20' onSubmit={handleSubmit}>
                     <div className="space-y-12">
                         <div className="border-b border-gray-900/10 pb-12">
                             {/* <h2 className="text-base font-semibold leading-7 text-gray-100">Plan Details</h2> */}
