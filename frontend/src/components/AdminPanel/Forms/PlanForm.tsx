@@ -2,11 +2,12 @@
 import { createPlan, fetchPlanDetails } from '@/api/subscriptionService/subscription';
 import { logout } from '@/features/admin/adminSlice';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { z, ZodError } from 'zod';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { errorModal } from '@/utils/alerts/errorAlert';
+import { ThemeState } from '@/features/theme/themeSlice';
 
 export interface PlanFormData {
     name: string;
@@ -19,6 +20,10 @@ export interface PlanFormData {
     description: string;
     currency: string;
     bill_cycle: string;
+}
+
+interface RootState {
+    theme: ThemeState
 }
 
 const planSchema = z.object({
@@ -52,6 +57,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const dispatch = useDispatch();
     const router = useRouter();
+    const { background, text, main } = useSelector((state: RootState) => state.theme)
 
     useEffect(() => {
         if (viewOnly) {
@@ -125,7 +131,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
     return (
         <div className=' pt-10 h-screen w-full'>
 
-            <div className='bg-gray-900 p-4 w-11/12 mx-auto rounded'>
+            <div className={`${background} p-4 w-11/12 mx-auto rounded`}>
 
                 <div>
                     {
@@ -146,7 +152,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             name="name"
                                             id="name"
                                             autoComplete="given-name"
-                                            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 bg-gray-100"
                                             value={formData.name}
                                             onChange={handleChange}
                                             disabled={viewOnly}
@@ -161,7 +167,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             type="text"
                                             name="price"
                                             id="price"
-                                            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            className="block bg-gray-100 w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             value={formData.price}
                                             onChange={handleChange}
                                             disabled={viewOnly}
@@ -192,7 +198,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                             type="number"
                                             name="features.branches"
                                             id="features.branches"
-                                            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            className="block w-full bg-gray-100 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             value={formData.features.branches}
                                             onChange={handleChange}
                                             disabled={viewOnly}
@@ -202,11 +208,11 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                 </div>
                                 <div className="sm:col-span-3">
                                     <label htmlFor="features.support" className="block text-sm font-medium leading-6 text-gray-100">Support</label>
-                                    <div className="mt-2">
+                                    <div className="mt-2 bg-gray-100">
                                         <select
                                             id="features.support"
                                             name="features.support"
-                                            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                            className="block w-full bg-gray-100 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                             value={formData.features.support}
                                             onChange={handleChange}
                                             disabled={viewOnly}
@@ -223,7 +229,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                         <textarea
                                             name="description"
                                             id="description"
-                                            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            className="block w-full bg-gray-100 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                             value={formData.description}
                                             onChange={handleChange}
                                             disabled={viewOnly}
@@ -231,13 +237,13 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                         {errors['description'] && <p className="text-red-500">{errors['description']}</p>}
                                     </div>
                                 </div>
-                                <div className="sm:col-span-3">
+                                {/* <div className="sm:col-span-3">
                                     <label htmlFor="currency" className="block text-sm font-medium leading-6 text-gray-100">Currency</label>
-                                    <div className="mt-2">
+                                    <div className="mt-2 bg-gray-100">
                                         <select
                                             id="currency"
                                             name="currency"
-                                            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                            className="block w-full bg-gray-100 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                             value={formData.currency}
                                             onChange={handleChange}
                                             disabled={viewOnly}
@@ -249,11 +255,11 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                 </div>
                                 <div className="sm:col-span-3">
                                     <label htmlFor="bill_cycle" className="block text-sm font-medium leading-6 text-gray-100">Bill Cycle</label>
-                                    <div className="mt-2">
+                                    <div className="mt-2 bg-gray-100">
                                         <select
                                             id="bill_cycle"
                                             name="bill_cycle"
-                                            className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                            className="block w-full bg-gray-100 rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                             value={formData.bill_cycle}
                                             onChange={handleChange}
                                             disabled={viewOnly}
@@ -262,7 +268,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                                         </select>
                                         {errors['bill_cycle'] && <p className="text-red-500">{errors['bill_cycle']}</p>}
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

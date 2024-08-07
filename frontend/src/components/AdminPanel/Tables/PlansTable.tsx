@@ -96,7 +96,7 @@ const PlansTable: React.FC = () => {
 
     return (
         <div className="w-11/12 mb-8 mt-6 overflow-hidden rounded-lg">
-            <h1 className={`font-semibold text-xl my-8 py-2 text-center ${dark ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+            <h1 className={`font-semibold text-xl my-8 py-2 text-center ${dark ? 'bg-violet-800' : 'bg-gray-100'} rounded-lg`}>
                 Plans
             </h1>
             <div className='mb-8 flex justify-between items-center'>
@@ -160,7 +160,7 @@ const PlansTable: React.FC = () => {
                         )}
                     </tbody>
                 </table>
-                <div className={`px-4 py-3 min-w-[70rem] w-full text-xs font-semibold tracking-wide shadow uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
+                <div className={`px-4 py-3 flex justify-between min-w-[70rem] w-full text-xs font-semibold tracking-wide shadow uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
                     <span className="text-xs xs:text-sm text-gray-100">
                         Showing {((page - 1) * limit) + 1} to {Math.min(page * limit, total)} of {total} Entries
                     </span>

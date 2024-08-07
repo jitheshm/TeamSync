@@ -18,8 +18,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
 
     // Function to determine active link styles
     const getLinkClass = (path: string) => {
-        return pathname === path ? 'bg-violet-500' : '';
-    };
+        return pathname.startsWith(path) ? 'bg-violet-500' : '';
+    }
 
     return (
         <div
@@ -34,7 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
 
             <nav className="mt-14">
                 <Link href="/dashboard">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/dashboard')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${pathname === '/dashboard' ? 'bg-violet-500' : ''}`}>
                         <i className={`fa-solid fa-gauge ${text}`} />
                         <span className="mx-3">Dashboard</span>
                     </div>
