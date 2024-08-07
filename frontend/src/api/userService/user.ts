@@ -26,7 +26,7 @@ export const fetchUsers = async (search: string, page: number, limit: number) =>
             params.name = search;
         }
 
-        const response = await instance.get(url, { params });
+        const response = await instance.get();
         return response.data
     } catch (error) {
         throw error

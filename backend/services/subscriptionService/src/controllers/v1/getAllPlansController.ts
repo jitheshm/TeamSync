@@ -9,10 +9,15 @@ const planRepository: IPlanRepository = new PlanRepository();
 
 export default async (req: Request & Partial<{ user: string | jwt.JwtPayload }>, res: Response) => {
     try {
+        const { name, page, limit } = req.query
+        let data
+        if (page && limit) {
+            data = await planRepository.fetchAll(Number(page), Number(limit), name as string | null);
 
-        const plans = await planRepository.fetchAll();
+        } else
+            data = await planRepository.fetchAll(1, 100, null);
 
-        res.status(200).json({ data: plans });
+        res.status(200).json({ data: data });
 
 
     } catch (error) {

@@ -27,7 +27,7 @@ export default class PlanRepository implements IPlanRepository {
     async update(data: Partial<IPlan>, id: mongoose.Types.ObjectId) {
         try {
             const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
-            let resObj = await PlanModel.findOneAndUpdate({ _id: id }, data,{new:true})
+            let resObj = await PlanModel.findOneAndUpdate({ _id: id }, data, { new: true })
             return resObj
 
         } catch (error) {
@@ -39,11 +39,44 @@ export default class PlanRepository implements IPlanRepository {
         }
     }
 
-    async fetchAll() {
+    async fetchAll(page:number, limit:number, name:string | null) {
         try {
+            console.log(name);
+            
             const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
-            let data = await PlanModel.find({is_deleted:false})
-            return data
+            let data = null
+            const matchStage: any = {
+                is_deleted:false,
+                active:true
+            };
+
+            if (name) {
+                matchStage.name = { $regex: `^${name}`, $options: 'i' };
+            }
+
+            data=await PlanModel.aggregate([
+                {
+                    $match:matchStage
+                },
+                {
+                    $skip: (page - 1) * limit
+                },
+                {
+                    $limit: limit
+                }
+            ])
+            const countPipeline = [
+                {
+                    $match: matchStage
+                },
+                {
+                    $count: 'total'
+                }
+            ];
+            const totalCountResult = await PlanModel.aggregate(countPipeline).exec();
+            const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+
+            return { data, total };
         } catch (error) {
             console.log('Error in PlanRepository fetchAll method');
 
@@ -53,10 +86,10 @@ export default class PlanRepository implements IPlanRepository {
         }
     }
 
-    async fetchById(id: mongoose.Types.ObjectId){
+    async fetchById(id: mongoose.Types.ObjectId) {
         try {
             const PlanModel = switchDb<IPlan>(`${process.env.SERVICE}_main`, 'plans')
-            let data = await PlanModel.findOne({_id:id})
+            let data = await PlanModel.findOne({ _id: id })
             return data
         } catch (error) {
             console.log('Error in PlanRepository fetchById method');

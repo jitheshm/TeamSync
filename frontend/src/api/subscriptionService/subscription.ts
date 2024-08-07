@@ -14,9 +14,18 @@ export const subscription = async (tenantId: string, planId: string) => {
 }
 
 
-export const fetchPlans = async () => {
+export const fetchPlans = async (search?: string, page?: number, limit?: number) => {
     try {
-        const response = await instance.get('/subscription-service/v1/subscription-plans')
+        const url = '/subscription-service/v1/admin/subscription-plans'
+        const params:any={}
+        if (page && limit) {
+            params.page=page
+            params.limit=limit
+        }
+        if (search) {
+            params.name = search
+        }
+        const response = await instance.get(url, { params })
         return response.data
     } catch (error) {
         throw error

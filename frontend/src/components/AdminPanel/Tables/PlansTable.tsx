@@ -1,80 +1,70 @@
-"use client"
+"use client";
 import { blockPlan, deletePlan, fetchPlans, unBlockPlan } from '@/api/subscriptionService/subscription';
-import { blockUser, deleteUser, fetchUsers, unBlockUser } from '@/api/userService/user';
 import Empty from '@/components/Empty/Empty';
 import { logout } from '@/features/admin/adminSlice';
+import { ThemeState } from '@/features/theme/themeSlice';
+import { IPlan } from '@/interfaces/subscription';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
-interface IFeatures {
-    branches: number;
-    meetings: number;
-    support: 'basic' | 'expert';
+interface RootState {
+    theme: ThemeState;
 }
 
-interface IPlans {
-    _id: string;
-    plan_id: string;
-    stripe_plan_id: string;
-    description: string;
-    bill_cycle: 'month' | 'year';
-    features: IFeatures;
-    price: string;
-    name: string;
-    currency: 'usd';
-    created_at: Date;
-    active: boolean;
-    is_deleted: boolean;
-
-
-}
 const PlansTable: React.FC = () => {
-    const [plans, setPlans] = useState<IPlans[]>([]);
+    const [plans, setPlans] = useState<IPlan[]>([]);
     const [toogle, setToogle] = useState<boolean>(true);
+    const [search, setSearch] = useState<string>('');
+    const [page, setPage] = useState<number>(1);
+    const [limit] = useState<number>(10);
+    const [total, setTotal] = useState<number>(0);
     const router = useRouter();
     const dispatch = useDispatch();
+    const { background, text, main, dark } = useSelector((state: RootState) => state.theme);
 
     useEffect(() => {
-        fetchPlans().then((result) => {
-            console.log(result);
+        setPage(1);
+    }, [search]);
 
-            setPlans(result.data);
+    useEffect(() => {
+        fetchPlans(search,page,limit).then((result) => {
+            setPlans(result.data.data);
+            setTotal(result.data.total);
         }).catch((err) => {
-            if(err.response.status===401){
-                dispatch(logout())
-
-                router.push('/admin/login')
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/admin/login');
             }
-        })
-    }, [toogle]);
-
+        });
+    }, [toogle, search, page, limit]);
 
     const handleBlock = (id: string) => {
         blockPlan(id).then(() => {
-            setToogle(!toogle)
+            setToogle(!toogle);
         }).catch((err) => {
-            if(err.response.status===401){
-                dispatch(logout())
-
-                router.push('/admin/login')
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/admin/login');
             }
-        })
-    }
+        });
+    };
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+    };
 
     const handleUnBlock = (id: string) => {
         unBlockPlan(id).then(() => {
-            setToogle(!toogle)
+            setToogle(!toogle);
         }).catch((err) => {
-            if(err.response.status===401){
-                dispatch(logout())
-
-                router.push('/admin/login')
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/admin/login');
             }
-        })
-    }
+        });
+    };
 
     const handleDelete = (id: string) => {
         Swal.fire({
@@ -88,132 +78,106 @@ const PlansTable: React.FC = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 deletePlan(id).then(() => {
-
                     Swal.fire({
                         title: "Deleted!",
                         text: "Your file has been deleted.",
                         icon: "success"
                     });
-                    setToogle(!toogle)
-
+                    setToogle(!toogle);
                 }).catch((err) => {
-                    if(err.response.status===401){
-                        dispatch(logout())
-
-                        router.push('/admin/login')
+                    if (err.response.status === 401) {
+                        dispatch(logout());
+                        router.push('/admin/login');
                     }
-                })
-
+                });
             }
         });
-
-
-    }
+    };
 
     return (
-        <div className="bg-gray-900 p-8 rounded-md w-11/12 my-20 mx-auto">
-            <div className="flex items-center justify-between pb-6">
-                <div>
-                    <h2 className="text-gray-100 font-semibold">Plans</h2>
-                </div>
-                <div className="flex items-center justify-between">
-                    <div className="flex bg-gray-50 items-center p-2 rounded-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                        </svg>
-                        <input className="bg-gray-50 outline-none ml-1 block" type="text" name="search" id="search" placeholder="search..." />
+        <div className="w-11/12 mb-8 mt-6 overflow-hidden rounded-lg">
+            <h1 className={`font-semibold text-xl my-8 py-2 text-center ${dark ? 'bg-gray-800' : 'bg-gray-100'} rounded-lg`}>
+                Plans
+            </h1>
+            <div className='mb-8 flex justify-between items-center'>
+                <form className="max-w-md">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </div>
+                        <input
+                            type="search"
+                            id="default-search"
+                            className={`block w-full p-4 ps-10 text-sm ${dark ? 'bg-gray-700 border-gray-600 placeholder-gray-400 text-white' : 'text-gray-900 border border-gray-300 bg-gray-50'} rounded-lg`}
+                            placeholder="Search Plans"
+                            onChange={(e) => setSearch(e.target.value)}
+                            value={search}
+                        />
                     </div>
-                    <div className="lg:ml-40 ml-10 space-x-8">
-                        <Link href={'/admin/dashboard/plans/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
-                    </div>
+                </form>
+                <div className="space-x-8">
+                    <Link href={'/admin/dashboard/plans/register'} className="bg-indigo-600 px-4 py-2 rounded-md text-white font-semibold tracking-wide cursor-pointer">Create</Link>
                 </div>
             </div>
-            <div className=''>
-                <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-                    <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                        {
-                            plans.length > 0 ?
-                                <>
-                                    <table className="min-w-full leading-normal">
-                                        <thead>
-                                            <tr className='text-center'>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Id
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Plan Name
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Price
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Status
-                                                </th>
-                                                <th className="px-5 text-center py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                                    Action
-                                                </th>
-                                            </tr>
-                                        </thead>
-
-
-                                        <tbody>
-                                            {
-                                                plans.map((plan, index) => (
-                                                    <tr key={index}>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{plan.plan_id}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{`${plan.name}`}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{plan.price} {plan.currency}</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">{!plan.active ? 'Blocked' :  'Active' }</p>
-                                                        </td>
-                                                        <td className="px-5 py-5 border-b border-gray-200 bg-gray-800 text-sm">
-                                                            <p className="text-gray-100 whitespace-no-wrap text-center">
-                                                                <Link type="button" href={`/admin/dashboard/plans/${plan._id}`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">view</Link>
-                                                                {
-                                                                    !plan.active ?
-                                                                        <button type="button" onClick={() => handleUnBlock(plan._id)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Unblock</button>
-                                                                        :
-                                                                        <button type="button" onClick={() => handleBlock(plan._id)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Block</button>
-                                                                }
-                                                                <button type="button" onClick={() => handleDelete(plan._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
-                                                            </p>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </tbody>
-
-
-                                    </table>
-                                    <div className="px-5 py-5 bg-gray-600 border-t flex flex-col xs:flex-row items-center xs:justify-between">
-                                        <span className="text-xs xs:text-sm text-gray-100">
-                                            Showing 1 to {plans.length} of 50 Entries
-                                        </span>
-                                        <div className="inline-flex mt-2 xs:mt-0">
-                                            <button className="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-l">
-                                                Prev
-                                            </button>
-                                            &nbsp; &nbsp;
-                                            <button className="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-r">
-                                                Next
-                                            </button>
-                                        </div>
-                                    </div>
-                                </>
-                                :
-                                <Empty />
-                        }
+            <div className="w-full overflow-x-auto shadow-lg">
+                <table className={`min-w-[70rem] w-full whitespace-no-wrap ${dark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
+                    <thead>
+                        <tr className={`text-lg font-semibold tracking-wide text-left shadow uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
+                            <th className="px-4 py-3 text-center">Id</th>
+                            <th className="px-4 py-3 text-center">Plan Name</th>
+                            <th className="px-4 py-3 text-center">Price</th>
+                            <th className="px-4 py-3 text-center">Status</th>
+                            <th className="px-4 py-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody className={`divide-y divide-gray-600 ${dark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
+                        {plans.length > 0 ? (
+                            plans.map((plan, index) => (
+                                <tr key={index}>
+                                    <td className="px-4 py-3 text-center">{plan.plan_id}</td>
+                                    <td className="px-4 py-3 text-center">{plan.name}</td>
+                                    <td className="px-4 py-3 text-center">{plan.price} {plan.currency}</td>
+                                    <td className="px-4 py-3 text-center">{!plan.active ? 'Blocked' : 'Active'}</td>
+                                    <td className="px-4 py-3 text-center">
+                                        <Link href={`/admin/dashboard/plans/${plan._id}`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">View</Link>
+                                        {!plan.active ? (
+                                            <button onClick={() => handleUnBlock(plan._id)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Unblock</button>
+                                        ) : (
+                                            <button onClick={() => handleBlock(plan._id)} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Block</button>
+                                        )}
+                                        <button onClick={() => handleDelete(plan._id)} className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Delete</button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={5} className="py-3 text-center">
+                                    <Empty />
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+                <div className={`px-4 py-3 min-w-[70rem] w-full text-xs font-semibold tracking-wide shadow uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
+                    <span className="text-xs xs:text-sm text-gray-100">
+                        Showing {((page - 1) * limit) + 1} to {Math.min(page * limit, total)} of {total} Entries
+                    </span>
+                    <div className="inline-flex mt-2 xs:mt-0">
+                        <button onClick={() => handlePageChange(page - 1)} className="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-l" disabled={page === 1}>
+                            Prev
+                        </button>
+                        <button onClick={() => handlePageChange(page + 1)} className="text-sm text-indigo-50 transition duration-150 hover:bg-indigo-500 bg-indigo-600 font-semibold py-2 px-4 rounded-r" disabled={page * limit >= total}>
+                            Next
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     );
 };
+
+
 
 export default PlansTable;

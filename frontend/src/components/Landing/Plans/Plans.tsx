@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 
     useEffect(() => {
         fetchPlans().then((response) => {
-            setPlans(response.data)
+            setPlans(response.data.data)
         })
     },[])
 
