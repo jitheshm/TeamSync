@@ -5,6 +5,7 @@ interface IFeatures {
 }
 
 export interface IPlan {
+    _id:string;
     plan_id: string;
     stripe_plan_id: string;
     description: string;
