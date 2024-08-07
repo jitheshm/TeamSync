@@ -39,7 +39,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
                     {children}
                 </div>
-            </div>
+            </div> 
         </div>
     );
 };

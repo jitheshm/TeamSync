@@ -10,11 +10,11 @@ import { z, ZodError } from 'zod';
 
 // Define the Zod schema
 const userSchema = z.object({
-    name: z.string().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
-    email: z.string().email("Invalid email address").nonempty("Email is required"),
-    phone_no: z.string().min(6, "Phone number must be at least 6 characters long").nonempty("Phone number is required"),
-    role: z.string().nonempty("Role is required"),
-    branch_id: z.string().nonempty("Branch is required"),
+    name: z.string().trim().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
+    email: z.string().trim().email("Invalid email address").nonempty("Email is required"),
+    phone_no: z.string().trim().min(6, "Phone number must be at least 6 characters long").nonempty("Phone number is required"),
+    role: z.string().trim().nonempty("Role is required"),
+    branch_id: z.string().trim().nonempty("Branch is required"),
 });
 
 // Define the interface for form data

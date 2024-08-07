@@ -1,13 +1,14 @@
 "use client"
 import { createBranch, fetchBranch, updateBranch } from '@/api/tenantService/tenant';
 import { logout } from '@/features/user/userSlice';
+import { errorModal } from '@/utils/alerts/errorAlert';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { boolean, z, ZodError } from 'zod';
 
 const branchSchema = z.object({
-    location: z.string()
+    location: z.string().trim()
         .min(3, "Location must be at least 3 characters long")
         .regex(/^[a-zA-Z\s]+$/, "Location must only contain letters and spaces")
         .nonempty("Location is required"),
@@ -64,6 +65,9 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
                         dispatch(logout())
 
                         router.push('/login')
+                    }
+                    else{
+                        errorModal(err.response.data.error)
                     }
 
                 })

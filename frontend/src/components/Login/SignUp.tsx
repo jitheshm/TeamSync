@@ -103,9 +103,9 @@ const SignUp: React.FC<SignUpProps> = ({ setOtpPage, setEmail }) => {
             setErrors(formattedErrors);
         }
     };
-
+ 
     return (
-        <div className="w-3/4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
+        <div className="w-3/4 mt-16 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
             <form className="space-y-6" onSubmit={handleSubmit}>
                 <h5 className="text-xl font-medium text-gray-900 dark:text-dark text-center">Sign up to our platform</h5>
                 {errors.general && <p className="text-red-500 text-xs mt-1 text-center">{errors.general}</p>}

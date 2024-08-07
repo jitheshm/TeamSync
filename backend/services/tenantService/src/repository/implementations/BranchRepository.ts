@@ -110,7 +110,7 @@ export default class BranchRepository implements IBranchRepository {
     async fetchBranchByLocation(dbId: string, branchLocation: string) {
         try {
             const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
-            const res: IBranches | null = await BranchModel.findOne({ location: branchLocation })
+            const res: IBranches | null = await BranchModel.findOne({ location: branchLocation,is_deleted:false })
             return res
         } catch (error) {
             console.log('Error in Branch Repository create method');
@@ -142,7 +142,7 @@ export default class BranchRepository implements IBranchRepository {
     fetchBranchCount(dbId: string) {
         try {
             const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
-            return BranchModel.countDocuments()
+            return BranchModel.find({ is_deleted: false }).countDocuments()
         } catch (error) {
             console.log('Error in Branch Repository fetchUser method');
 
