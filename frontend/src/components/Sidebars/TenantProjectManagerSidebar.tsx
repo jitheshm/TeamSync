@@ -42,28 +42,28 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
                 </Link>
 
                 <Link href="/employee/project_manager/dashboard/projects">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/project_manager/dashboard/projects')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/project_manager/dashboard/projects')}`}>
                         <i className={`fa-solid fa-list-check ${text}`} />
                         <span className="mx-3">Projects</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/project_manager/dashboard/chats">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/project_manager/dashboard/chats')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/project_manager/dashboard/chats')}`}>
                         <i className={`fa-regular fa-comments ${text}`} />
                         <span className="mx-3">Chat</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/project_manager/dashboard/meeting">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/project_manager/dashboard/meeting')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/project_manager/dashboard/meeting')}`}>
                         <i className={`fa-solid fa-video ${text}`} />
                         <span className="mx-3">Meeting</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/project_manager/dashboard/todo">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/project_manager/dashboard/todo')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/project_manager/dashboard/todo')}`}>
                         <i className={`fa-solid fa-pen ${text}`} />
                         <span className="mx-3">Todo</span>
                     </div>

@@ -42,35 +42,35 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
                 </Link>
 
                 <Link href="/employee/manager/dashboard/users">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/users')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/manager/dashboard/users')}`}>
                         <i className={`fa-solid fa-gauge ${text}`} />
                         <span className="mx-3">Users</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/projects">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/projects')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/manager/dashboard/projects')}`}>
                         <i className={`fa-solid fa-list-check ${text}`} />
                         <span className="mx-3">Projects</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/chats">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/chats')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/manager/dashboard/chats')}`}>
                         <i className={`fa-regular fa-comments ${text}`} />
                         <span className="mx-3">Chat</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/meeting">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/meeting')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/manager/dashboard/meeting')}`}>
                         <i className={`fa-solid fa-video ${text}`} />
                         <span className="mx-3">Meeting</span>
                     </div>
                 </Link>
 
                 <Link href="/employee/manager/dashboard/todo">
-                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getIconBackground('/employee/manager/dashboard/todo')}`}>
+                    <div className={`flex items-center px-6 py-2 mt-8 ${text} ${getLinkClass('/employee/manager/dashboard/todo')}`}>
                         <i className={`fa-solid fa-pen ${text}`} />
                         <span className="mx-3">Todo</span>
                     </div>
