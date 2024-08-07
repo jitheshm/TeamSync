@@ -30,7 +30,7 @@ const PriceCard: React.FC<{ plan: IPlan }> = ({ plan }) => {
                 {/* <p className="absolute top-0 py-1.5 px-4 bg-emerald-500 text-white rounded-full text-xs font-semibold uppercase tracking-wide  transform -translate-y-1/2">
                     Most popular</p> */}
                 <p className="mt-4 flex items-baseline ">
-                    <span className="text-5xl font-extrabold tracking-tight">$12</span><span className="ml-1 text-xl font-semibold">/{plan.bill_cycle}</span>
+                    <span className="text-5xl font-extrabold tracking-tight">{plan.price}$</span><span className="ml-1 text-xl font-semibold">/{plan.bill_cycle}</span>
                 </p>
 
                 <ul role="list" className="mt-6 space-y-6">

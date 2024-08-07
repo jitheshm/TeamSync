@@ -32,7 +32,7 @@ export default async (req: Request, res: Response) => {
             return res.status(403).json({ error: "User is blocked" });
         }
         if (!userData.is_verified) {
-            return res.status(200).json({ message: "User not verified", verified: false });
+            return res.status(403).json({ error: "User not verified", verified: false });
         }
 
         if (!process.env.JWT_SECRET_KEY) {

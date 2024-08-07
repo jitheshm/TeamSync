@@ -133,7 +133,7 @@ const TenantForm: React.FC<{ planId: string }> = ({ planId }) => {
     };
 
     return (
-        <div className='bg-white pt-10 h-screen'>
+        <div className='bg-white py-10 min-h-screen'>
             <div>
                 <h4 className="text-3xl font-bold tracki text-center mt-12 sm:text-4xl text-gray-900">Tenant Registration</h4>
             </div>

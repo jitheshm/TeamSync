@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import CompanyDetails from './CompanyDetails'
-import { fetchSubscriptionForUser, cancelSubscription, updateSubscriptionPlan, fetchPlans } from '@/api/subscriptionService/subscription'
+import { fetchSubscriptionForUser, cancelSubscription, updateSubscriptionPlan, fetchPlans, fetchAvailablePlans } from '@/api/subscriptionService/subscription'
 import { useDispatch } from 'react-redux'
 import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
@@ -45,8 +45,8 @@ function Index() {
     }, [toogle])
 
     useEffect(() => {
-        fetchPlans().then((result) => {
-            setPlans(result.data)
+        fetchAvailablePlans().then((result) => {
+            setPlans(result.data.data)
         }).catch((error: any) => {
             if (error.response.status === 401) {
                 dispatch(logout())

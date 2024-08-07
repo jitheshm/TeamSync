@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import PriceCard from './PriceCard'
-import { fetchPlans } from '@/api/subscriptionService/subscription'
+import { fetchAvailablePlans, fetchPlans } from '@/api/subscriptionService/subscription'
 import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
@@ -11,8 +11,8 @@ function Index() {
     const router = useRouter()
     const dispatch = useDispatch()
     useEffect(() => {
-        fetchPlans().then((result) => {
-            setPlans(result.data)
+        fetchAvailablePlans().then((result) => {
+            setPlans(result.data.data)
         }).catch((error: any) => {
             if (error.response.status === 401) {
                 dispatch(logout())

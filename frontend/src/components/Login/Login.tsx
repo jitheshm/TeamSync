@@ -61,6 +61,8 @@ const Login: React.FC = () => {
                 dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '',role:data.role,id:data.id }))
                 router.push('/')
             } catch (error: any) {
+                console.log(error);
+                
                 if (error.response) {
 
                     const { status, data } = error.response;
