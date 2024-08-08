@@ -1,5 +1,4 @@
 import { forgetPassword } from '@/api/authService/auth';
-import instance from '@/axios';
 import Link from 'next/link';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { z } from 'zod';

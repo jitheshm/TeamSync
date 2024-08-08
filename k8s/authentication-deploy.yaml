@@ -9,6 +9,8 @@ data:
   JWT_SECRET_KEY: secret
   JWT_ADMIN_SECRET_KEY: adminSecret
   JWT_OTP_SECRET_KEY: otpSecret
+  REFRESH_TOKEN_SECRET: refreshSecret
+  ADMIN_REFRESH_TOKEN_SECRET: adminRefreshSecret
   APIKEY: AIzaSyDvdiau5vmBCW_fMxaJkMrFm4lPfTIra1Q
   AUTHDOMAIN: teamsync-123.firebaseapp.com
   PROJECTID: teamsync-123

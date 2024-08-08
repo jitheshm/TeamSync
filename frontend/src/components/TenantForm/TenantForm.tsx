@@ -1,6 +1,5 @@
 "use client";
 import { register } from '@/api/tenantService/tenant';
-import instance from '@/axios';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { z } from 'zod';
