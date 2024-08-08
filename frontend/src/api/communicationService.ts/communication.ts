@@ -1,4 +1,4 @@
-import instance from "@/axios"
+import {userInstance as instance} from "@/axios"
 
 interface ScheduleMeetingFormData {
     meetingTitle: string;

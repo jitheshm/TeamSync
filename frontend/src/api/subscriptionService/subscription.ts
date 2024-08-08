@@ -1,4 +1,4 @@
-import instance from "@/axios";
+import {adminInstance, userInstance as instance} from "@/axios";
 import { PlanFormData } from "@/components/AdminPanel/Forms/PlanForm";
 import { TenantFormData } from "@/components/TenantForm/TenantForm";
 import Cookies from 'js-cookie';
@@ -25,7 +25,7 @@ export const fetchPlans = async (search?: string, page?: number, limit?: number)
         if (search) {
             params.name = search
         }
-        const response = await instance.get(url, { params })
+        const response = await adminInstance.get(url, { params })
         return response.data
     } catch (error) {
         throw error
@@ -52,7 +52,7 @@ export const fetchAvailablePlans = async (search?: string, page?: number, limit?
 
 export const fetchSubscriptionDetails = async (userId: string) => {
     try {
-        const response = await instance.get(`subscription-service/v1/admin/subscriptions/users/${userId}`)
+        const response = await adminInstance.get(`subscription-service/v1/admin/subscriptions/users/${userId}`)
         return response.data
     } catch (error) {
         throw error
@@ -61,7 +61,7 @@ export const fetchSubscriptionDetails = async (userId: string) => {
 
 export const blockPlan = async (planId: string) => {
     try {
-        const response = await instance.patch(`subscription-service/v1/admin/subscription-plans/${planId}`, { active: false })
+        const response = await adminInstance.patch(`subscription-service/v1/admin/subscription-plans/${planId}`, { active: false })
         return response.data
     } catch (error) {
         throw error
@@ -70,7 +70,7 @@ export const blockPlan = async (planId: string) => {
 
 export const unBlockPlan = async (planId: string) => {
     try {
-        const response = await instance.patch(`subscription-service/v1/admin/subscription-plans/${planId}`, { active: true })
+        const response = await adminInstance.patch(`subscription-service/v1/admin/subscription-plans/${planId}`, { active: true })
         return response.data
     } catch (error) {
         throw error
@@ -79,7 +79,7 @@ export const unBlockPlan = async (planId: string) => {
 
 export const deletePlan = async (planId: string) => {
     try {
-        const response = await instance.delete(`subscription-service/v1/admin/subscription-plans/${planId}`)
+        const response = await adminInstance.delete(`subscription-service/v1/admin/subscription-plans/${planId}`)
         return response.data
     } catch (error) {
         throw error
@@ -88,7 +88,7 @@ export const deletePlan = async (planId: string) => {
 
 export const createPlan = async (formData: PlanFormData) => {
     try {
-        const response = await instance.post('/subscription-service/v1/admin/subscription-plans', formData)
+        const response = await adminInstance.post('/subscription-service/v1/admin/subscription-plans', formData)
         return response.data
     } catch (error) {
         throw error
@@ -97,7 +97,7 @@ export const createPlan = async (formData: PlanFormData) => {
 
 export const fetchPlanDetails = async (id: string) => {
     try {
-        const response = await instance.get(`/subscription-service/v1/admin/subscription-plans/${id}`)
+        const response = await adminInstance.get(`/subscription-service/v1/admin/subscription-plans/${id}`)
         return response.data
     } catch (error) {
         throw error
@@ -116,7 +116,7 @@ export const fetchSubscription = async (name: string, page: number, limit: numbe
         if (name) {
             params.name = name;
         }
-        const response = await instance.get(url, { params });
+        const response = await adminInstance.get(url, { params });
         return response.data
     } catch (error) {
         throw error
@@ -154,7 +154,7 @@ export const updateSubscriptionPlan = async (subscriptionId: string, customerId:
 
 export const fetchProfit = async () => {
     try {
-        const response = await instance.get('/subscription-service/v1/admin/subscriptions/profit')
+        const response = await adminInstance.get('/subscription-service/v1/admin/subscriptions/profit')
         return response.data
     } catch (error) {
         throw error
@@ -162,7 +162,7 @@ export const fetchProfit = async () => {
 }
 export const popularPlan = async () => {
     try {
-        const response = await instance.get('/subscription-service/v1/admin/subscription-plans/stats')
+        const response = await adminInstance.get('/subscription-service/v1/admin/subscription-plans/stats')
         return response.data
     } catch (error) {
         throw error

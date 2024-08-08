@@ -26,6 +26,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
         dispatch(logout())
         // dispatch(adminLogout())
         Cookies.remove('team-sync-token')
+        localStorage.removeItem('team-sync-refresh-token');
+
     }
 
     return (

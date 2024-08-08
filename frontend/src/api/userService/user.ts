@@ -1,4 +1,4 @@
-import instance from "@/axios";
+import {adminInstance, userInstance as instance} from "@/axios";
 import { RegisterFormData } from "@/components/AdminPanel/Forms/UserForm";
 import { TenantRegisterFormData } from "@/components/Forms/UserForm";
 import { SignupFormData } from "@/components/Login/SignUp";
@@ -26,7 +26,7 @@ export const fetchUsers = async (search: string, page: number, limit: number) =>
             params.name = search;
         }
 
-        const response = await instance.get(url,{params});
+        const response = await adminInstance.get(url,{params});
         return response.data
     } catch (error) {
         throw error
@@ -35,7 +35,7 @@ export const fetchUsers = async (search: string, page: number, limit: number) =>
 
 export const blockUser = async (id: string) => {
     try {
-        const response = await instance.patch(`/user-service/v1/admin/users/block/${id}`, {})
+        const response = await adminInstance.patch(`/user-service/v1/admin/users/block/${id}`, {})
         return response.data
     } catch (error) {
         throw error
@@ -43,7 +43,7 @@ export const blockUser = async (id: string) => {
 }
 export const unBlockUser = async (id: string) => {
     try {
-        const response = await instance.patch(`/user-service/v1/admin/users/unblock/${id}`, {})
+        const response = await adminInstance.patch(`/user-service/v1/admin/users/unblock/${id}`, {})
         return response.data
     } catch (error) {
         throw error
@@ -52,7 +52,7 @@ export const unBlockUser = async (id: string) => {
 
 export const deleteUser = async (id: string) => {
     try {
-        const response = await instance.delete(`/user-service/v1/admin/users/${id}`)
+        const response = await adminInstance.delete(`/user-service/v1/admin/users/${id}`)
         return response.data
     } catch (error) {
         throw error
@@ -61,7 +61,7 @@ export const deleteUser = async (id: string) => {
 
 export const fetchUser = async (id: string) => {
     try {
-        const response = await instance.get(`/user-service/v1/admin/users/${id}`)
+        const response = await adminInstance.get(`/user-service/v1/admin/users/${id}`)
         return response.data
     } catch (error) {
         throw error
@@ -71,7 +71,7 @@ export const fetchUser = async (id: string) => {
 
 export const register = async (formData: RegisterFormData) => {
     try {
-        const response = await instance.post('/user-service/v1/admin/users', formData)
+        const response = await adminInstance.post('/user-service/v1/admin/users', formData)
         return response.data
     } catch (error) {
         throw error
@@ -165,7 +165,7 @@ export const fetchAvailableTenantUsers = async (role: string) => {
 
 export const fetchUsersCount = async () => {
     try {
-        const response = await instance.get('/user-service/v1/admin/users/stats');
+        const response = await adminInstance.get('/user-service/v1/admin/users/stats');
         return response.data;
     } catch (error) {
         throw error

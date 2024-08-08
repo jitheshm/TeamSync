@@ -28,7 +28,7 @@ function Index() {
   const [errors, setErrors] = useState<FormErrors>({});
   const dispatch = useDispatch()
 
-const router=useRouter()
+  const router = useRouter()
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -46,13 +46,14 @@ const router=useRouter()
       setErrors({});
       adminLogin(formData).then((res) => {
         console.log('Form data is valid', formData);
-        Cookie.set('team-sync-token', res.token);
+        Cookie.set('team-sync-token', res.accessToken, { expires: 1 })
+        localStorage.setItem('team-sync-refresh-token', res.refreshToken);
         dispatch(verify())
         router.push('/admin/dashboard')
-        
 
 
-      }).catch((error)=>{
+
+      }).catch((error) => {
         console.log(error)
         errorModal(error.response.data.error)
       })

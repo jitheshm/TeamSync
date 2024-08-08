@@ -56,6 +56,8 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
             setUsers(result.data.data);
             setTotal(result.data.total);
         }).catch((err: any) => {
+            console.log(err);
+            
             if (err.response?.status === 401) {
                 dispatch(logout());
                 router.push('/login');

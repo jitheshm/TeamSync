@@ -16,6 +16,7 @@ import tenantLoginValidator from "../../validators/tenantLoginValidator";
 import tenantLoginController from "../../controllers/v1/tenantLoginController";
 import resendOtpController from "../../controllers/v1/resendOtpController";
 import resendValidator from "../../validators/resendValidator";
+import newTokenController from "../../controllers/v1/newTokenController";
 
 
 
@@ -23,6 +24,7 @@ const router = Router();
 
 router.post('/verify-otp', checkSchema(otpValidator()), otpVerifyController)
 router.post('/login', checkSchema(loginValidator()), loginController)
+router.post('/token/new', newTokenController);
 router.post('/forget-password', checkSchema(forgetValidator()), forgetPasswordController)
 router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), resetPasswordController)
 router.get('/token/verify', userAuth, tokenVerifyController)

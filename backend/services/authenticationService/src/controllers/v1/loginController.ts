@@ -4,6 +4,7 @@ import UserRepository from "../../repository/implementations/UserRepository";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { IUserRepository } from "../../repository/interface/IUserRepository";
+import { generateAccessToken, generateRefreshToken } from "../../utils/token";
 
 const userRepository: IUserRepository = new UserRepository();
 
@@ -40,8 +41,9 @@ export default async (req: Request, res: Response) => {
         }
 
 
-        const token = jwt.sign({ email: userData.email, name: userData.first_name, id: userData._id, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-        res.status(200).json({ message: "User verified", verified: true, token: token, name: userData.first_name, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin',id:userData._id });
+        const accessToken = generateAccessToken({ email: userData.email, name: userData.first_name, id: userData._id, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' })
+        const refreshToken=generateRefreshToken({ email: userData.email, name: userData.first_name, id: userData._id, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' })
+        res.status(200).json({ message: "User verified", verified: true, accessToken,refreshToken, name: userData.first_name, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin', id: userData._id });
 
 
 

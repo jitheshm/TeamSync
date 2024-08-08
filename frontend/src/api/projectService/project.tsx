@@ -1,4 +1,4 @@
-import instance from "@/axios"
+import {userInstance as instance} from "@/axios"
 import { ProjectFormData } from "@/components/TenantUserPanel/Forms/ProjectForm"
 import { TaskFormData } from "@/components/TenantUserPanel/Forms/TaskForm"
 import { TicketFormData } from "@/components/TenantUserPanel/Forms/TicketForm"

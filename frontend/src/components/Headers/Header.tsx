@@ -26,6 +26,8 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
         dispatch(logout())
         dispatch(adminLogout())
         Cookies.remove('team-sync-token')
+        localStorage.removeItem('team-sync-refresh-token');
+
     }
 
     return (

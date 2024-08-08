@@ -1,4 +1,4 @@
-import instance from "@/axios";
+import {userInstance as instance} from "@/axios";
 import { TenantFormData } from "@/components/TenantForm/TenantForm";
 import Cookies from 'js-cookie';
 

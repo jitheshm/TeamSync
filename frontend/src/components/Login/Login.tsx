@@ -55,7 +55,8 @@ const Login: React.FC = () => {
             setErrors({});
             try {
                 const data = await login(formData);
-                Cookies.set('team-sync-token', data.token, { expires: 1 })
+                Cookies.set('team-sync-token', data.accessToken, { expires: 1 })
+                localStorage.setItem('team-sync-refresh-token', data.refreshToken);
                 console.log(data);
 
                 dispatch(verify({ name: data.name, tenantId: data.tenantId ?? '',role:data.role,id:data.id }))
@@ -95,7 +96,9 @@ const Login: React.FC = () => {
             const token = await auth.currentUser?.getIdToken()
             if (token) {
                 const data = await firebaseLogin(token);
-                Cookies.set('team-sync-token', data.token, { expires: 1 })
+                Cookies.set('team-sync-token', data.accessToken, { expires: 1 })
+                localStorage.setItem('team-sync-refresh-token', data.refreshToken);
+
                 console.log(data);
                 console.log("hai")
 
