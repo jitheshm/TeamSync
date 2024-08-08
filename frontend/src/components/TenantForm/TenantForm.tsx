@@ -9,6 +9,7 @@ import { subscription } from '@/api/subscriptionService/subscription';
 import Payment from '../Stripe/Payment';
 import { logout } from '@/features/user/userSlice';
 import { useDispatch } from 'react-redux';
+import { errorModal } from '@/utils/alerts/errorAlert';
 
 const addressSchema = z.object({
     building_no: z.string().min(1, 'Building number is required'),
@@ -118,12 +119,9 @@ const TenantForm: React.FC<{ planId: string }> = ({ planId }) => {
 
                     router.push('/login')
                 }
-                // if (error.response) {
-                //     const { status, data } = error.response;
-                //     setErrors({ general: data.error });
-                // } else {
-                //     setErrors({ general: "An unexpected error occurred. Please try again later." });
-                // }
+                else {
+                    errorModal(error.response.data.errors || error.response.data.error)
+                }
             }
             console.log('Form data:', formData);
         } else {

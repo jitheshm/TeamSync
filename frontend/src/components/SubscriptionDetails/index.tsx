@@ -119,7 +119,7 @@ function Index() {
     return (
         <div>
             <div className='mt-10 text-end mr-20'>
-                {data && (
+                {data && data.status !== 'cancelled' && (
                     <>
                         <button
                             onClick={handleCancelSubscription}
