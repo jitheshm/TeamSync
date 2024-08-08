@@ -35,7 +35,7 @@ import { useEffect, useState } from 'react'
                                     <div className="relative flex flex-col  mt-6 text-gray-700 bg-white drop-shadow-lg bg-clip-border rounded-xl  mx-auto w-72  lg:w-96 p-10">
                                         <p className='font-semibold'>{plan.name}</p>
                                         <p className="mt-10 flex items-baseline text-black">
-                                            <span className="text-5xl font-extrabold tracking-tight">$12</span><span className="ml-1 text-xl font-semibold">/{plan.bill_cycle}</span>
+                                            <span className="text-5xl font-extrabold tracking-tight">{plan.price}</span><span className="ml-1 text-xl font-semibold">/{plan.bill_cycle}</span>
                                         </p>
 
                                         <Link href={'/signup'} className="text-white bg-black font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 mt-10 text-center">Sign up now</Link>

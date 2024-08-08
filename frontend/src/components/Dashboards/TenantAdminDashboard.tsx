@@ -8,6 +8,7 @@ import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
 import Cards from '../TenantUserPanel/Cards/Cards'
 import Barchart from '../Charts/Barchart'
+import Empty from '../Empty/Empty'
 
 function TenantAdminDashboard() {
     const [projects, setProjects] = useState<IProjects[]>([])
@@ -53,17 +54,27 @@ function TenantAdminDashboard() {
             <div className='mt-10' >
                 <p className='font-bold text-2xl text-center'>Recent Projects</p>
             </div>
-            <Slider>
-                {
-                    projects.map((project) => (
-                        <Cards data={project} key={project._id} />
-                    ))
-                }
-            </Slider>
+            {
+                projects.length > 0 ?
+                    <Slider>
+                        {
 
+                            projects.map((project) => (
+                                <Cards data={project} key={project._id} />
+                            ))
+                        }
+                    </Slider>
+                    :
+                    <Empty/>
+            }
             <div className='w-5/12 mx-auto mt-24'>
-            <p className='font-bold text-2xl text-center'> Projects Count</p>
-                <Barchart dataValues={dataValues} dataNames={dataNames} />
+                <p className='font-bold text-2xl text-center'> Projects Count</p>
+                {
+                    
+                    dataValues.length === 0 ? <Empty/> :
+
+                        <Barchart dataValues={dataValues} dataNames={dataNames} />
+                }
             </div>
 
         </div>

@@ -84,20 +84,34 @@ function Index() {
     }
 
     const handlePlanChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+
         setSelectedPlan(event.target.value);
+
     }
 
     const handleUpdatePlan = () => {
         if (!selectedPlan) return;
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
 
-        updateSubscriptionPlan(data?.stripe_subscription_id as string, data?.stripe_customer_id as string, selectedPlan).then(() => {
-            setToogle(!toogle)
-        }).catch((err) => {
-            if (err.response.status === 401) {
-                dispatch(logout());
-                router.push('/login');
-            } else {
-                setError('Failed to update plan.');
+            if (result.isConfirmed) {
+                updateSubscriptionPlan(data?.stripe_subscription_id as string, data?.stripe_customer_id as string, selectedPlan).then(() => {
+                    setToogle(!toogle)
+                }).catch((err) => {
+                    if (err.response.status === 401) {
+                        dispatch(logout());
+                        router.push('/login');
+                    } else {
+                        setError('Failed to update plan.');
+                    }
+                })
             }
         })
     }
@@ -109,7 +123,7 @@ function Index() {
                     <>
                         <button
                             onClick={handleCancelSubscription}
-                    
+
                             className='mt-5 px-5 py-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600 disabled:bg-red-300'
                         >
                             Cancel Subscription
@@ -118,6 +132,7 @@ function Index() {
                             value={selectedPlan ?? ''}
                             onChange={handlePlanChange}
                             className='ml-5 px-4 py-2 border rounded text-gray-950'
+                            disabled={plans[plans.length - 1]?.stripe_plan_id === data.plan_id || data.status === 'canceled'}
                         >
                             {plans.map(plan => (
                                 <option key={plan.stripe_plan_id} value={plan.stripe_plan_id}>{plan.name}</option>
@@ -125,6 +140,7 @@ function Index() {
                         </select>
                         <button
                             onClick={handleUpdatePlan}
+                            disabled={plans[plans.length - 1]?.stripe_plan_id === data.plan_id || data.status === 'canceled'}
 
                             className='ml-2 px-5 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 disabled:bg-blue-300'
                         >

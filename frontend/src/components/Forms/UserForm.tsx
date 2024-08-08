@@ -3,6 +3,7 @@ import { fetchBranches } from '@/api/tenantService/tenant';
 import { fetchTenantSpecificUser, fetchTenantUsers, tenantUserRegister, tenantUserUpdate } from '@/api/userService/user';
 import { logout } from '@/features/user/userSlice';
 import { IBranches } from '@/interfaces/Branches';
+import { errorModal } from '@/utils/alerts/errorAlert';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -10,7 +11,8 @@ import { z, ZodError } from 'zod';
 
 // Define the Zod schema
 const userSchema = z.object({
-    name: z.string().trim().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
+    name: z.string().trim().min(3, "Name must be at least 3 characters long").nonempty("Name is required")
+    .regex(/^[a-zA-Z\s]+$/, "Location must only contain letters and spaces"),
     email: z.string().trim().email("Invalid email address").nonempty("Email is required"),
     phone_no: z.string().trim().min(6, "Phone number must be at least 6 characters long").nonempty("Phone number is required"),
     role: z.string().trim().nonempty("Role is required"),
@@ -102,6 +104,10 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
 
                         router.push('/login')
                     }
+                    else{
+                        console.log(err)
+                        errorModal(err.response.data.error)
+                    }
                 })
             } else {
                 tenantUserRegister(formData).then((res) => {
@@ -112,6 +118,10 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
                         dispatch(logout())
 
                         router.push('/login')
+                    }
+                    else{
+                        console.log(err)
+                        errorModal(err.response.data.errors || err.response.data.error)
                     }
                 })
             }

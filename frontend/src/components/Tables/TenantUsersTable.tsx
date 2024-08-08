@@ -17,6 +17,7 @@ interface IUser {
     role: string;
     created_at: string;
     branch_id: string;
+    branch_location: string;
 }
 
 interface UserState {
@@ -138,6 +139,7 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                             <th className="px-4 py-3 text-center">Name</th>
                             <th className="px-4 py-3 text-center">Email</th>
                             <th className="px-4 py-3 text-center">Role</th>
+                            <th className="px-4 py-3 text-center">Branch</th>
                             <th className="px-4 py-3 text-center">Created At</th>
                             <th className="px-4 py-3 text-center">Actions</th>
                         </tr>
@@ -149,6 +151,7 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                                     <td className="px-4 py-3 text-center">{user.name}</td>
                                     <td className="px-4 py-3 text-center">{user.email}</td>
                                     <td className="px-4 py-3 text-center">{user.role}</td>
+                                    <td className="px-4 py-3 text-center">{user.branch_location}</td>
                                     <td className="px-4 py-3 text-center">{new Date(user.created_at).toLocaleDateString()}</td>
                                     <td className="px-2 py-3 text-center">
                                     <Link href={admin ? `/dashboard/users/${user._id}/edit` : `/employee/manager/dashboard/users/${user._id}/edit`} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Edit</Link>
@@ -158,7 +161,7 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={5} className="py-3 text-center">
+                                <td colSpan={6} className="py-3 text-center">
                                     <Empty />
                                 </td>
                             </tr>
