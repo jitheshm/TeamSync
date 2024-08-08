@@ -19,7 +19,7 @@ export default async (req: Request, res: Response) => {
         const data = {
             email: payload.email,
             name: payload.first_name,
-            id: payload._id,
+            id: payload.id,
             tenantId: payload.tenantId,
             role: payload.role
         }

@@ -12,7 +12,7 @@ import { z, ZodError } from 'zod';
 // Define the Zod schema
 const userSchema = z.object({
     name: z.string().trim().min(3, "Name must be at least 3 characters long").nonempty("Name is required")
-    .regex(/^[a-zA-Z\s]+$/, "Location must only contain letters and spaces"),
+    .regex(/^[a-zA-Z\s]+$/, "Name must only contain letters and spaces"),
     email: z.string().trim().email("Invalid email address").nonempty("Email is required"),
     phone_no: z.string().trim().min(6, "Phone number must be at least 6 characters long").nonempty("Phone number is required"),
     role: z.string().trim().nonempty("Role is required"),
