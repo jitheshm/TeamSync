@@ -19,8 +19,8 @@ router.post('/register', checkSchema(signupValidator()), signupController)
 router.post('/tenants/users', userAuth, tenantAuth, checkSchema(tenantUserValidator()), createTenantUserController)
 router.put('/tenants/users/:userId', userAuth, tenantAuth, checkSchema(tenantUserValidator()), updateTenantUserController)
 router.delete('/tenants/branches/:branchId/users/:userId', userAuth, tenantAuth, deleteTenantUserController)
-router.get('/tenants/users', userAuth, fetchTenantUsersController)
-router.get('/tenants/branches/users', userAuth, fetchTenantBranchUsersController)
-router.get('/tenants/users/:userId', userAuth, fetchTenantSpecificUserController)
+router.get('/tenants/users', userAuth,tenantAuth, fetchTenantUsersController)
+router.get('/tenants/branches/users', userAuth,tenantAuth, fetchTenantBranchUsersController)
+router.get('/tenants/users/:userId', userAuth,tenantAuth, fetchTenantSpecificUserController)
 
 export default router

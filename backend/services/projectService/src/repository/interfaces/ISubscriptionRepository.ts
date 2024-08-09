@@ -10,5 +10,4 @@ export interface ISubscriptionRepository {
     fetchSubscription(tenantId: mongoose.Types.ObjectId): Promise<ISubscriptions | null>
 
 
-
 }

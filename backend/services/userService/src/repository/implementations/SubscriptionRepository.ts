@@ -3,7 +3,7 @@ import mongoose, { Mongoose, ObjectId } from "mongoose";
 
 import switchDb from "../../utils/switchDb";
 import ISubscriptions from "../../entities/SubscriptionEntity";
-import { ISubscriptionRepository } from "../interfaces/ISubscriptionRepository";
+import { ISubscriptionRepository } from "../interface/ISubscriptionRepository";
 
 
 

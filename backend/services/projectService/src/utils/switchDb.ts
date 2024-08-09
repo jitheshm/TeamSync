@@ -8,6 +8,7 @@ import ProjectsSchema from "../schemas/projectSchema";
 import TasksSchema from "../schemas/taskSchema";
 import TicketSchma from "../schemas/ticketSchema";
 import TodoSchema from "../schemas/todoSchema";
+import SubscriptionSchema from "../schemas/subscriptionSchema";
 
 // Define a generic function type
 export default function getModel<T>(dbname: string, modelName: string): Model<T & Document> {
@@ -44,6 +45,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
             case 'todo':
                 schema = TodoSchema
                 break
+            case 'subscriptions':
+                schema = SubscriptionSchema;
+                break;
             default:
                 throw new Error('Model not found');
         }

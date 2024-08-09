@@ -5,9 +5,12 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { IBranchRepository } from "../repository/interface/IBranchRepository";
 import BranchRepository from "../repository/implementations/BranchRepository";
+import { ISubscriptionRepository } from "../repository/interface/ISubscriptionRepository";
+import SubscriptionRepository from "../repository/implementations/SubscriptionRepository";
 
 let tenantRepository: ITenantRepository = new TenantRepository()
 let branchRepository: IBranchRepository = new BranchRepository()
+let subscriptionRepository:ISubscriptionRepository = new SubscriptionRepository()
 export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Response, next: NextFunction) => {
     try {
         if (!req.user?.decode?.tenantId) {
@@ -19,6 +22,14 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
         if (!tenant) {
             return res.status(404).json({ error: "Tenant not found" });
         }
+
+        const subscriptionData = await subscriptionRepository.fetchSubscription(new mongoose.Types.ObjectId(req.user?.decode?.tenantId));
+
+        if (!subscriptionData) return res.status(401).json({ error: "Unauthorized" });
+        if (subscriptionData.status !== 'paid') return res.status(403).json({ error: "Company account suspended" });
+
+
+
         console.log(req.params.branchId);
 
         if (!req.body.branch_id) {

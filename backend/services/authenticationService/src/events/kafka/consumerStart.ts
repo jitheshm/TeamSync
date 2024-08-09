@@ -12,10 +12,10 @@ export const connectConsumers = () => {
     let branchConsumer: IConsumer = new BranchConsumer()
     let tenantUserConsumer: IConsumer = new TenantUserConsumer()
     let subscriptionConsumer: IConsumer = new SubscriptionConsumer
+    subscriptionConsumer.consume()
     userConsumer.consume()
     tenantConsumer.consume()
     branchConsumer.consume()
     tenantUserConsumer.consume()
-    subscriptionConsumer.consume()
-
+    
 } 

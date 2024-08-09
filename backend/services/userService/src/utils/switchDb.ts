@@ -4,6 +4,7 @@ import UsersSchema from "../schemas/userSchema";
 import TenantsSchema from "../schemas/tenantSchema";
 import BranchesSchema from "../schemas/branchSchema";
 import TenantUserSchema from "../schemas/tenantUserSchema";
+import SubscriptionSchema from "../schemas/subscriptionSchema";
 
 export default function <T>(dbname: string, modelName: string): Model<T & Document> {
     let schema: Schema;
@@ -15,6 +16,9 @@ export default function <T>(dbname: string, modelName: string): Model<T & Docume
                 break;
             case 'tenants':
                 schema = TenantsSchema;
+                break;
+            case 'subscriptions':
+                schema = SubscriptionSchema;
                 break;
             default:
                 throw new Error('Model not found')
