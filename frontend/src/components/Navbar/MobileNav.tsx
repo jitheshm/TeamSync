@@ -1,6 +1,9 @@
+import { logout } from '@/features/user/userSlice'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import Cookies from 'js-cookie'
 
 
 interface UserState {
@@ -14,7 +17,18 @@ interface RootState {
 }
 
 function MobileNav({ setMobileNav }: { setMobileNav: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const { name, verified } = useSelector((state: RootState) => state.user)
+  const { name, verified, tenantId } = useSelector((state: RootState) => state.user)
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  const handleLogout = () => {
+      dispatch(logout())
+      // dispatch(adminLogout())
+      Cookies.remove('team-sync-token')
+      localStorage.removeItem('team-sync-refresh-token');
+      router.push('/login')
+
+  }
   return (
     <div className="lg:hidden" role="dialog" aria-modal="true">
       {/* Background backdrop, show/hide based on slide-over state. */}
@@ -46,7 +60,13 @@ function MobileNav({ setMobileNav }: { setMobileNav: React.Dispatch<React.SetSta
             </div>
             <div className="py-6">
               {
-                verified ? <Link href={'/dashboard/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Dashboard</Link> : <a href="/login" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">→</span></a>
+                verified ? tenantId ? <Link href={'/dashboard/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Dashboard</Link> :
+                  <>
+                    <Link href={'/subscription-plans/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Choose a plan</Link>
+                    <button onClick={handleLogout} type="button" className="mx-10 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Logout</button>
+                  </>
+
+                  : <Link href="/login" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">→</span></Link>
               }
             </div>
           </div>

@@ -119,7 +119,7 @@ function Index() {
     return (
         <div>
             <div className='mt-10 text-end mr-20'>
-                {data && data.status !== 'cancelled' && (
+                {data && data.status !== 'cancelled' && data.status != 'pending' && data.status != 'failed' && (
                     <>
                         <button
                             onClick={handleCancelSubscription}
@@ -148,6 +148,19 @@ function Index() {
                         </button>
                     </>
                 )}
+                {
+                    data && (data.status === 'pending' || data.status === 'failed') && (
+                        <>
+                            <button
+                                onClick={handleCancelSubscription}
+
+                                className='mt-5 px-5 py-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600 disabled:bg-red-300'
+                            >
+                                Retry Payment
+                            </button>
+                        </>
+                    )
+                }
                 {error && <p className='text-red-500'>{error}</p>}
             </div>
             <CompanyDetails tenant={data?.tenant as ITenants | null} />

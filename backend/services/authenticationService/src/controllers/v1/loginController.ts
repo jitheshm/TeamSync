@@ -35,9 +35,9 @@ export default async (req: Request, res: Response) => {
         if (!userData.is_verified) {
             return res.status(403).json({ error: "User not verified", verified: false });
         }
-        if (userData.subscription?.[0]?.status !== 'paid') {
-            return res.status(403).json({ error: "Account suspended" });
-        } 
+        // if (userData.subscription?.[0]?.status !== 'paid' ) {
+        //     return res.status(403).json({ error: "Account suspended" });
+        // } 
 
         if (!process.env.JWT_SECRET_KEY) {
             return res.status(500).json({ error: "An unexpected error occurred. Please try again later." })

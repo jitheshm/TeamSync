@@ -7,7 +7,7 @@ export interface ISubscriptionRepository {
     update(data: Partial<ISubscriptions>): Promise<void>
     findSubscriptionByUserId(userId: mongoose.Types.ObjectId): Promise<ISubscriptions | null>
     fetchAllowedBranchCount(tenantId: mongoose.Types.ObjectId): Promise<number>
-
+    fetchSubscription(tenantId: mongoose.Types.ObjectId): Promise<ISubscriptions | null>
 
 
 }

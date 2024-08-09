@@ -132,7 +132,7 @@ const UserTable: React.FC = () => {
     };
 
     return (
-        <div className="w-11/12 mb-8 mt-6 overflow-hidden rounded-lg">
+        <div className="w-11/12 mb-8 mt-6 overflow-hidden  rounded-lg">
 
             <h1 className={`font-semibold text-xl my-8 py-2 text-center bg-violet-800 rounded-lg flex w-full px-14 bg-gray-100`}>
                 Tenant Users
@@ -152,8 +152,8 @@ const UserTable: React.FC = () => {
 
 
             </div>
-            <div className="w-full overflow-x-auto shadow-lg mt-20 mx-10">
-                <table className="min-w-[70rem] w-full whitespace-no-wrap">
+            <div className="w-full overflow-x-auto h-[400px]  shadow-lg mt-20 mx-10 ">
+                <table className="min-w-[70rem] h-full  w-full whitespace-no-wrap">
                     <thead>
                         <tr className={`text-lg font-semibold tracking-wide text-left shadow uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
                             <th className="px-4 py-3 text-center">Id</th>
@@ -163,7 +163,7 @@ const UserTable: React.FC = () => {
                             <th className="px-4 py-3 text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody className={`divide-y divide-gray-600 ${!dark ? 'bg-gray-100 text-gray-950 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
+                    <tbody className={`divide-y  divide-gray-600 ${!dark ? 'bg-gray-100 text-gray-950 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
                         {users.length > 0 ? (
                             users.map((user, index) => (
                                 <tr key={index}>

@@ -3,9 +3,10 @@ import { verifyToken } from '@/api/authService/auth'
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useDispatch, useSelector } from 'react-redux'
-import { verify } from '@/features/user/userSlice'
+import { logout, verify } from '@/features/user/userSlice'
 import Link from 'next/link'
 import MobileNav from './MobileNav'
+import { useRouter } from 'next/navigation'
 
 interface UserState {
     name: string
@@ -21,6 +22,16 @@ function Navbar() {
     const { name, verified, tenantId } = useSelector((state: RootState) => state.user)
     const [mobileNav, setMobileNav] = useState(false)
     const dispatch = useDispatch()
+    const router = useRouter()
+
+    const handleLogout = () => {
+        dispatch(logout())
+        // dispatch(adminLogout())
+        Cookies.remove('team-sync-token')
+        localStorage.removeItem('team-sync-refresh-token');
+        router.push('/login')
+
+    }
 
     return (
         <header className="absolute inset-x-0 top-0 z-50 backdrop-blur-md bg-white/30">
@@ -48,7 +59,13 @@ function Navbar() {
                 </div>
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                     {
-                        verified ? tenantId ? <Link href={'/dashboard/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Dashboard</Link> :<Link href={'/subscription-plans/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Choose a plan</Link>: <Link href="/login" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">→</span></Link>
+                        verified ? tenantId ? <Link href={'/dashboard/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Dashboard</Link> :
+                            <>
+                                <Link href={'/subscription-plans/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Choose a plan</Link>
+                                <button onClick={handleLogout} type="button" className="mx-10 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Logout</button>
+                            </>
+
+                            : <Link href="/login" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">→</span></Link>
                     }
 
                 </div>

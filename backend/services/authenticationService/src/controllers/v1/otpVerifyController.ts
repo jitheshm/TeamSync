@@ -13,11 +13,15 @@ import TenantRepository from "../../repository/implementations/TenantRepository"
 import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
 import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token";
+import mongoose from "mongoose";
+import { ISubscriptionRepository } from "../../repository/interface/ISubscriptionRepository";
+import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 
 const otpRepo: IOtpRepository = new OtpRepository();
 const userRepository: IUserRepository = new UserRepository()
 const kafkaConnection: IKafkaConnection = new KafkaConnection()
 const tenantUserRepository: ITenantUserRepository = new TenantUserRepository()
+const subscriptionRepository:ISubscriptionRepository = new SubscriptionRepository()
 
 export default async (req: Request, res: Response) => {
     try {
@@ -49,7 +53,7 @@ export default async (req: Request, res: Response) => {
                 }
 
                 const token = jwt.sign({ email: userObj.email, name: userObj.first_name, id: userObj._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-                res.status(200).json({ message: "User verified successfully", verified: true, token: token, name: userObj.first_name, role: 'Tenant_Admin', id: userObj._id});
+                res.status(200).json({ message: "User verified successfully", verified: true, token: token, name: userObj.first_name, role: 'Tenant_Admin', id: userObj._id });
 
             } else if (context === 'forgot-password') {
 
@@ -68,7 +72,14 @@ export default async (req: Request, res: Response) => {
                     return res.status(400).json({ error: "Tenant ID is required" });
                 }
 
+                const subscriptionData = await subscriptionRepository.fetchSubscription(new mongoose.Types.ObjectId(tenantId));
+
+                if (!subscriptionData) return res.status(401).json({ error: "Unauthorized" });
+                if (subscriptionData.status !== 'paid') return res.status(403).json({ error: "Company account suspended" });
+
                 const userObj = await tenantUserRepository.fetchSpecificUser(tenantId, email);
+
+
 
                 if (!userObj) {
                     return res.status(401).json({ error: "Invalid email address" });
@@ -77,9 +88,12 @@ export default async (req: Request, res: Response) => {
                 if (!process.env.JWT_SECRET_KEY) {
                     return res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
                 }
-                const accessToken=generateAccessToken({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role, branchId: userObj.branch_id })
-                const refreshToken=generateRefreshToken({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role, branchId: userObj.branch_id })
-                res.status(200).json({ message: "User verified", verified: true, accessToken,refreshToken, name: userObj.name, tenantId: tenantId, role: userObj.role, id: userObj._id });
+
+                
+
+                const accessToken = generateAccessToken({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role, branchId: userObj.branch_id })
+                const refreshToken = generateRefreshToken({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role, branchId: userObj.branch_id })
+                res.status(200).json({ message: "User verified", verified: true, accessToken, refreshToken, name: userObj.name, tenantId: tenantId, role: userObj.role, id: userObj._id });
             }
 
 
