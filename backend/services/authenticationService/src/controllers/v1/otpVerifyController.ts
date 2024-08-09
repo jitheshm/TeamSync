@@ -12,6 +12,7 @@ import { ITenantRepository } from "../../repository/interface/ITenantRepository"
 import TenantRepository from "../../repository/implementations/TenantRepository";
 import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
 import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
+import { generateAccessToken, generateRefreshToken } from "../../utils/token";
 
 const otpRepo: IOtpRepository = new OtpRepository();
 const userRepository: IUserRepository = new UserRepository()
@@ -76,9 +77,9 @@ export default async (req: Request, res: Response) => {
                 if (!process.env.JWT_SECRET_KEY) {
                     return res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
                 }
-
-                const token = jwt.sign({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role, branchId: userObj.branch_id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-                res.status(200).json({ message: "User verified", verified: true, token: token, name: userObj.name, tenantId: tenantId, role: userObj.role, id: userObj._id });
+                const accessToken=generateAccessToken({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role, branchId: userObj.branch_id })
+                const refreshToken=generateRefreshToken({ email: email, name: userObj.name, id: userObj._id, tenantId: tenantId, role: userObj.role, branchId: userObj.branch_id })
+                res.status(200).json({ message: "User verified", verified: true, accessToken,refreshToken, name: userObj.name, tenantId: tenantId, role: userObj.role, id: userObj._id });
             }
 
 

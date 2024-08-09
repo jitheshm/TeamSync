@@ -26,7 +26,7 @@ export default function Payment({clientSecret}) {
   };
 
   return (
-    <div className="absolute top-[113px] bg-white mx-auto left-[40%]">
+    <div className="w-full h-screen fixed  top-0 pt-36 overflow-y-scroll">
       {clientSecret && (
         <Elements options={options} stripe={stripePromise}>
           <CheckoutForm clientSecret={clientSecret}/>

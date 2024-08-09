@@ -6,7 +6,7 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 
-export default function CheckoutForm({clientSecret}) {
+export default function CheckoutForm({ clientSecret }) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -36,6 +36,7 @@ export default function CheckoutForm({clientSecret}) {
           setMessage("Your payment is processing.");
           break;
         case "requires_payment_method":
+          console.log(paymentIntent);
           setMessage("Your payment was not successful, please try again.");
           break;
         default:
@@ -83,16 +84,31 @@ export default function CheckoutForm({clientSecret}) {
   }
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button disabled={isLoading || !stripe || !elements} id="submit" className="bg-green-700 mx-auto">
-        <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
-        </span>
-      </button>
-      {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
-    </form>
+    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Complete Your Payment</h2>
+      <form id="payment-form" onSubmit={handleSubmit} className="space-y-4">
+        <PaymentElement id="payment-element" options={paymentElementOptions} />
+        <button
+          type="submit"
+          disabled={isLoading || !stripe || !elements}
+          className={`w-full py-2 px-4 rounded-md text-white ${isLoading || !stripe || !elements ? 'bg-gray-400' : 'bg-green-700 hover:bg-green-800'
+            } transition-colors`}
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <div className="spinner-border animate-spin h-5 w-5 border-4 border-white border-t-transparent rounded-full"></div>
+            </div>
+          ) : (
+            "Pay Now"
+          )}
+        </button>
+        {message && (
+          <div className={`text-center mt-4 p-2 rounded-md ${message.includes("succeeded") ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            }`}>
+            {message}
+          </div>
+        )}
+      </form>
+    </div>
   );
 }
