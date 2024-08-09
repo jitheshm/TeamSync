@@ -1,13 +1,15 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import CompanyDetails from './CompanyDetails'
-import { fetchSubscriptionForUser, cancelSubscription, updateSubscriptionPlan, fetchPlans, fetchAvailablePlans } from '@/api/subscriptionService/subscription'
+import { fetchSubscriptionForUser, cancelSubscription, updateSubscriptionPlan, fetchPlans, fetchAvailablePlans, retryPayment } from '@/api/subscriptionService/subscription'
 import { useDispatch } from 'react-redux'
 import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
 import { ISubscriptionDetails, ITenants } from '@/interfaces/subscription'
 import SubscriptionDetails from './SubscriptionDetails'
 import Swal from 'sweetalert2'
+import { errorModal } from '@/utils/alerts/errorAlert'
+import Payment from '../Stripe/Payment'
 
 
 
@@ -27,6 +29,7 @@ function Index() {
     const [toogle, setToogle] = useState<boolean>(true)
     const dispatch = useDispatch()
     const router = useRouter()
+    const [clientSecret, setClientSecret] = useState<string | null>(null)
 
 
 
@@ -116,6 +119,35 @@ function Index() {
         })
     }
 
+    const handlePaymentRetry = () => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                retryPayment(data?.stripe_latest_invoice as string).then((res) => {
+                    console.log(res.paymentIntent.client_secret);
+                    setClientSecret(res.paymentIntent.client_secret)
+                }).catch((err) => {
+                    console.log(err)
+
+                    if (err.response.status === 401) {
+                        dispatch(logout());
+                        router.push('/login');
+                    } else {
+                        errorModal(err.response.data.error)
+                    }
+                })
+            }
+        })
+    }
+
     return (
         <div>
             <div className='mt-10 text-end mr-20'>
@@ -152,7 +184,7 @@ function Index() {
                     data && (data.status === 'pending' || data.status === 'failed') && (
                         <>
                             <button
-                                onClick={handleCancelSubscription}
+                                onClick={handlePaymentRetry}
 
                                 className='mt-5 px-5 py-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600 disabled:bg-red-300'
                             >
@@ -165,6 +197,11 @@ function Index() {
             </div>
             <CompanyDetails tenant={data?.tenant as ITenants | null} />
             <SubscriptionDetails subscription={data} />
+            {
+                clientSecret && (
+                    <Payment clientSecret={clientSecret} theme={null} />
+                )
+            }
         </div>
     )
 }

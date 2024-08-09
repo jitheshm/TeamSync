@@ -168,3 +168,12 @@ export const popularPlan = async () => {
         throw error
     }
 }
+
+export const retryPayment=async (invoiceId:string)=>{
+    try {
+        const response = await instance.post('/subscription-service/v1/subscriptions/retry', { invoiceId })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

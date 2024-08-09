@@ -9,11 +9,13 @@ import getSubscriptionDetailsController from "../../controllers/v1/getSubscripti
 import cancelSubscriptionController from "../../controllers/v1/cancelSubscriptionController";
 import updateSubscriptionController from "../../controllers/v1/updateSubscriptionController";
 import getAvailablePlans from "../../controllers/v1/getAvailablePlans";
+import paymentRetryController from "../../controllers/v1/paymentRetryController";
 
 const router = Router();
 
 
 router.post('/subscriptions', userAuth, subscriptionController)
+router.post('/subscriptions/retry', userAuth, paymentRetryController)
 router.get('/subscription-plans', getAvailablePlans)
 router.get('/subscription', userAuth, getSubscriptionDetailsController)
 router.patch('/subscriptions/:subscriptionId/customers/:customerId', userAuth, updateSubscriptionController)
