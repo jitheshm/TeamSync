@@ -54,6 +54,15 @@ export default class UserRepository implements IUserRepository {
                         as: "tenant"
 
                     }
+                },
+                {
+                    $lookup: {
+                        from: "subscriptions",
+                        localField: "tenants[0]._id",
+                        foreignField: "tenant_id",
+                        as: "subscription"
+
+                    }
                 }
             ]).exec()
             return userdata[0]

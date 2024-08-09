@@ -16,6 +16,11 @@ export default async (req: Request, res: Response) => {
 
         const userData = await userRepository.fetchUser(payload.email);
         if (!userData) return res.status(401).json({ error: "Unauthorized" });
+        if(userData.is_blocked) return res.status(403).json({ error: "User is blocked" });
+        if(!userData.is_verified) return res.status(403).json({ error: "User not verified", verified: false });
+        if(userData.role !== 'Tenant_Admin') return res.status(401).json({ error: "Unauthorized" });
+        if(userData.subscribtion[0].status !== 'paid') return res.status(403).json({ error: "Account suspended" });
+
         const data = {
             email: payload.email,
             name: payload.first_name,

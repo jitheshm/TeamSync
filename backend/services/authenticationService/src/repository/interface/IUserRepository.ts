@@ -1,9 +1,11 @@
 import { Document } from "mongoose";
 import { IUsers } from "../../entities/UserEntity";
 import { ITenants } from "../../entities/TenantEntity";
+import ISubscriptions from "../../entities/SubscriptionEntity";
 
 interface IFetchReturn extends IUsers {
     tenant?: ITenants[]
+    subscription?:ISubscriptions[]
 }
 export interface IUserRepository {
     create(user: Partial<IUsers>): Promise<IUsers & Document>
