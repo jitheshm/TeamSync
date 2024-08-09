@@ -16,7 +16,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(cors())
 connect().then(() => {
-  // connectConsumers()
+  connectConsumers()
 }) 
 
 app.use('/', router)  
