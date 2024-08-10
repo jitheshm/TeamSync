@@ -12,9 +12,9 @@ import { ITenantUserRepository } from "../../repository/interface/ITenantUserRep
 
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
 
-const userRepository:IUserRepository = new UserRepository()
-const tenantUserRepository:ITenantUserRepository = new TenantUserRepository()
-const subscriptionRepository:ISubscriptionRepository = new SubscriptionRepository()
+const userRepository: IUserRepository = new UserRepository()
+const tenantUserRepository: ITenantUserRepository = new TenantUserRepository()
+const subscriptionRepository: ISubscriptionRepository = new SubscriptionRepository()
 export default async (req: Request, res: Response) => {
 
     const { refreshToken }: { refreshToken: string } = req.body;
@@ -47,7 +47,8 @@ export default async (req: Request, res: Response) => {
             name: payload.first_name,
             id: payload.id,
             tenantId: payload.tenantId,
-            role: payload.role
+            role: payload.role,
+            branchId: payload.branchId??""
         }
 
         const newAccessToken = generateAccessToken(data);

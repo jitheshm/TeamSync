@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
+import { validationResult } from "express-validator";
 import TaskRepository from "../repository/implementations/TaskRepository";
 import { ITaskRepository } from "../repository/interfaces/ITaskRepository";
 import IDecodedUser from "../interfaces/IDecodeUser";
@@ -12,10 +13,10 @@ const taskService: ITaskService = new TaskService(taskRepository);
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
-        // const result = validationResult(req);
-        // if (!result.isEmpty()) {
-        //     return res.status(400).json({ errors: result.array() });
-        // }
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            return res.status(400).json({ errors: result.array() });
+        }
 
         const user = req.user as IDecodedUser;
         const bodyObj: Partial<ITasks> = req.body as Partial<ITasks>;

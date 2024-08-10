@@ -8,14 +8,15 @@ import { z, ZodError } from 'zod';
 import Select from 'react-select';
 import { createTask, fetchAvailableProjectUsers, fetchSpecificTaskDetails, updateTask } from '@/api/projectService/project';
 import { ThemeState } from '@/features/theme/themeSlice';
+import { errorModal } from '@/utils/alerts/errorAlert';
 // import { createTask } from '@/api/taskService/task';
 
 const taskSchema = z.object({
-    title: z.string().min(3, "Title must be at least 3 characters long").nonempty("Title is required"),
-    description: z.string().min(10, "Description must be at least 10 characters long").nonempty("Description is required"),
-    due_date: z.string().nonempty("Due date is required"),
-    developer_id: z.string().nonempty("Developer is required"),
-    tester_id: z.string().nonempty("Tester is required"),
+    title: z.string().trim().min(3, "Title must be at least 3 characters long").nonempty("Title is required"),
+    description: z.string().trim().min(10, "Description must be at least 10 characters long").nonempty("Description is required"),
+    due_date: z.string().trim().nonempty("Due date is required"),
+    developer_id: z.string().trim().nonempty("Developer is required"),
+    tester_id: z.string().trim().nonempty("Tester is required"),
 });
 
 export interface TaskFormData {
@@ -103,9 +104,11 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
     }, [edit])
 
     const handleApiError = (err: any) => {
-        if (err.response && err.response.status === 401) {
+        if (err.response && err.response?.status === 401) {
             dispatch(logout());
             router.push('/employee/login');
+        }else{
+            errorModal(err.response.data.errors||err.response.data.error)
         }
     };
 

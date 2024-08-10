@@ -8,16 +8,17 @@ import { z, ZodError } from 'zod';
 import Select from 'react-select';
 import { createProject, fetchSpecificProject, updateProject } from '@/api/projectService/project';
 import { ThemeState } from '@/features/theme/themeSlice';
+import { errorModal } from '@/utils/alerts/errorAlert';
 
 const projectSchema = z.object({
-    name: z.string().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
-    description: z.string().min(10, "Description must be at least 10 characters long").nonempty("Description is required"),
-    client_name: z.string().min(3, "Client name must be at least 3 characters long").nonempty("Client name is required"),
+    name: z.string().trim().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
+    description: z.string().trim().min(10, "Description must be at least 10 characters long").nonempty("Description is required"),
+    client_name: z.string().trim().min(3, "Client name must be at least 3 characters long").nonempty("Client name is required"),
     testers_id: z.array(z.string()).min(1, "At least one tester is required"),
     developers_id: z.array(z.string()).min(1, "At least one developer is required"),
-    project_manager_id: z.string().nonempty("Project Manager is required"),
-    start_date: z.string().nonempty("Start date is required"),
-    end_date: z.string().nonempty("End date is required"),
+    project_manager_id: z.string().trim().nonempty("Project Manager is required"),
+    start_date: z.string().trim().nonempty("Start date is required"),
+    end_date: z.string().trim().nonempty("End date is required"),
 });
 
 export interface ProjectFormData {
@@ -125,9 +126,14 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     // }, [formData.developers_id])
 
     const handleApiError = (err: any) => {
-        if (err.response && err.response.status === 401) {
+        console.log(err);
+        if (err.response && err.response?.status === 401) {
             dispatch(logout());
             router.push('/employee/login');
+        }else{
+           
+            
+            errorModal(err.response.data.errors||err.response.data.error)
         }
     };
 

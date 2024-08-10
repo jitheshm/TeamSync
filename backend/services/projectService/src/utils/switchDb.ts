@@ -22,6 +22,9 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
             case 'users':
                 schema = UsersSchema;
                 break;
+            case 'subscriptions':
+                schema = SubscriptionSchema;
+                break;
             default:
                 throw new Error('Model not found');
         }
@@ -45,9 +48,7 @@ export default function getModel<T>(dbname: string, modelName: string): Model<T 
             case 'todo':
                 schema = TodoSchema
                 break
-            case 'subscriptions':
-                schema = SubscriptionSchema;
-                break;
+
             default:
                 throw new Error('Model not found');
         }

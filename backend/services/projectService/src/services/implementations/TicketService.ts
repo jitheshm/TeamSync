@@ -20,7 +20,7 @@ export default class TicketService implements ITicketService {
 
         return await this.ticketRepostitory.create(body as ITickets, user.decode?.tenantId);
     }
-    async updateTicket(ticketId: string, bodyObj: Partial<ITickets & { oldImageUrl: string[] }>, tenantId: string): Promise<ITickets | null> {
+    async updateTicket(ticketId: string, bodyObj: Partial<ITickets >, tenantId: string): Promise<ITickets | null> {
         try {
             const resultObj = await this.ticketRepostitory.update(bodyObj, tenantId, new mongoose.Types.ObjectId(ticketId));
             return resultObj;

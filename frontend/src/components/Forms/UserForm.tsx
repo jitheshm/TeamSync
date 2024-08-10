@@ -59,7 +59,7 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
             
             setBranches(res.data.data)
         }).catch((err) => {
-            if (err.response.status === 401) {
+            if (err.response?.status === 401) {
                 dispatch(logout())
 
                 router.push('/login')
@@ -72,7 +72,7 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
             fetchTenantSpecificUser(userId).then((res) => {
                 setFormData(res.data)
             }).catch((err) => {
-                if (err.response.status === 401) {
+                if (err.response?.status === 401) {
                     dispatch(logout())
 
                     router.push('/login')
@@ -99,14 +99,13 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
                     console.log(res);
                     router.push('/dashboard/users')
                 }).catch((err) => {
-                    if (err.response.status === 401) {
+                    if (err.response?.status === 401) {
                         dispatch(logout())
 
                         router.push('/login')
                     }
                     else{
-                        console.log(err)
-                        errorModal(err.response.data.error)
+                        errorModal(err.response.data.errors||err.response.data.error)
                     }
                 })
             } else {
@@ -114,7 +113,7 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
                     console.log(res);
                     router.push('/dashboard/users')
                 }).catch((err) => {
-                    if (err.response.status === 401) {
+                    if (err.response?.status === 401) {
                         dispatch(logout())
 
                         router.push('/login')

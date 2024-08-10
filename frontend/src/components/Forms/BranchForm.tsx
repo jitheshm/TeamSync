@@ -33,7 +33,7 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
             }).catch((err) => {
                 console.log(err);
 
-                if (err.response.status === 401) {
+                if (err.response?.status === 401) {
                     dispatch(logout())
 
                     router.push('/login')
@@ -61,13 +61,13 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
                     console.log(err);
 
 
-                    if (err.response.status === 401) {
+                    if (err.response?.status === 401) {
                         dispatch(logout())
 
                         router.push('/login')
                     }
                     else{
-                        errorModal(err.response.data.error)
+                        errorModal(err.response.data.errors||err.response.data.error)
                     }
 
                 })
@@ -79,7 +79,7 @@ const BranchForm: React.FC<BranchFormProps> = ({ edit = false, id }) => {
                 }).catch((err) => {
                     console.log(err);
 
-                    if (err.response.status === 401) {
+                    if (err.response?.status === 401) {
                         dispatch(logout())
 
                         router.push('/login')

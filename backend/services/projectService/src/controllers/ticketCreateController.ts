@@ -10,15 +10,13 @@ import { ITickets } from "../entities/TicketEntity";
 import TicketRepository from "../repository/implementations/TicketRepository";
 import TicketService from "../services/implementations/TicketService";
 import { ITicketService } from "../services/interfaces/ITicketService";
-import { FileArray } from "express-fileupload";
 
 const ticketRepository: ITicketRepository = new TicketRepository();
 const ticketService: ITicketService = new TicketService(ticketRepository);
 
 export default async (req: Request & Partial<{
     user: IDecodedUser,
-    files: FileArray | null | undefined;
-    uploadedFiles?: string[];
+   
 }>, res: Response) => {
     try {
         const result = validationResult(req);
@@ -30,8 +28,7 @@ export default async (req: Request & Partial<{
         const bodyObj: Partial<ITickets> = req.body as Partial<ITickets>;
         const projectId: string = req.params.projectId;
         const taskId: string = req.params.taskId;
-        if (req.uploadedFiles)
-            bodyObj.upload_images = req.uploadedFiles
+        
 
         if (user.decode?.role !== 'Tenant_Admin') {
             if (user.decode?.role !== 'Tester') {

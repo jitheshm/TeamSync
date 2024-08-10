@@ -11,12 +11,12 @@ import { useDispatch } from 'react-redux';
 import { errorModal } from '@/utils/alerts/errorAlert';
 
 const addressSchema = z.object({
-    building_no: z.string().min(1, 'Building number is required'),
-    city: z.string().min(3, 'City must contain at least 3 letters'),
-    country: z.string().min(3, 'Country must contain at least 3 letters'),
-    postal_code: z.string().regex(/^\d+$/, 'Postal code must contain only digits'),
-    state: z.string().min(2, 'State must contain at least 2 letters'),
-    street: z.string().min(3, 'Street must contain at least 3 letters'),
+    building_no: z.string().trim().min(1, 'Building number is required'),
+    city: z.string().trim().min(3, 'City must contain at least 3 letters'),
+    country: z.string().trim().min(3, 'Country must contain at least 3 letters'),
+    postal_code: z.string().trim().regex(/^\d+$/, 'Postal code must contain only digits'),
+    state: z.string().trim().min(2, 'State must contain at least 2 letters'),
+    street: z.string().trim().min(3, 'Street must contain at least 3 letters'),
 });
 
 const tenantSchema = z.object({
@@ -113,7 +113,7 @@ const TenantForm: React.FC<{ planId: string }> = ({ planId }) => {
                 setPaymentForm(true)
 
             } catch (error: any) {
-                if (error.response.status === 401) {
+                if (error.response?.status === 401) {
                     dispatch(logout())
 
                     router.push('/login')

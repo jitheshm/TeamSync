@@ -106,7 +106,7 @@ function PlanForm({ viewOnly = false, id }: { viewOnly?: boolean; id?: string })
                     router.push('/admin/dashboard/plans');
                 }).catch((err) => {
                     console.log(err);
-                    if (err.response.status === 401) {
+                    if (err.response?.status === 401) {
                         Cookies.remove('team-sync-admin-token')
                         dispatch(logout())
                     }

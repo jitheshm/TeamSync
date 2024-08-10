@@ -4,6 +4,7 @@ import { fetchTenantSpecificUser, fetchTenantUsers, tenantUserRegister, tenantUs
 import { ThemeState } from '@/features/theme/themeSlice';
 import { logout } from '@/features/user/userSlice';
 import { IBranches } from '@/interfaces/Branches';
+import { errorModal } from '@/utils/alerts/errorAlert';
 import { useRouter } from 'next/navigation';
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,10 +12,10 @@ import { z, ZodError } from 'zod';
 
 // Define the Zod schema
 const userSchema = z.object({
-    name: z.string().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
-    email: z.string().email("Invalid email address").nonempty("Email is required"),
-    phone_no: z.string().min(6, "Phone number must be at least 6 characters long").nonempty("Phone number is required"),
-    role: z.string().nonempty("Role is required"),
+    name: z.string().trim().min(3, "Name must be at least 3 characters long").nonempty("Name is required"),
+    email: z.string().trim().email("Invalid email address").nonempty("Email is required"),
+    phone_no: z.string().trim().min(6, "Phone number must be at least 6 characters long").nonempty("Phone number is required"),
+    role: z.string().trim().nonempty("Role is required"),
 });
 
 // Define the interface for form data
@@ -62,10 +63,12 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
             fetchTenantSpecificUser(userId).then((res) => {
                 setFormData(res.data)
             }).catch((err) => {
-                if (err.response.status === 401) {
+                if (err.response?.status === 401) {
                     dispatch(logout())
 
                     router.push('/login')
+                }else{
+                    errorModal(err.response.data.errors||err.response.data.error)
                 }
 
             })
@@ -89,10 +92,12 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
                     console.log(res);
                     router.push('/employee/manager/dashboard/users')
                 }).catch((err) => {
-                    if (err.response.status === 401) {
+                    if (err.response?.status === 401) {
                         dispatch(logout())
 
                         router.push('/employee/login')
+                    }else{
+                        errorModal(err.response.data.errors||err.response.data.error)
                     }
                 })
             } else {
@@ -100,10 +105,11 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
                     console.log(res);
                     router.push('/employee/manager/dashboard/users')
                 }).catch((err) => {
-                    if (err.response.status === 401) {
+                    if (err.response?.status === 401) {
                         dispatch(logout())
-
                         router.push('/employee/login')
+                    }else{
+                        errorModal(err.response.data.errors||err.response.data.error)
                     }
                 })
             }
@@ -125,9 +131,9 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     };
 
     return (
-        <div className="min-h-screen flex items-center w-full"> 
+        <div className="min-h-screen flex items-center w-full">
             <div className="w-full">
-                <div className={` ${background} p-10 rounded-lg shadow w-11/12 md:w-6/12  lg:w-8/12 xl:w-6/12 mx-auto `}> 
+                <div className={` ${background} p-10 rounded-lg shadow w-11/12 md:w-6/12  lg:w-8/12 xl:w-6/12 mx-auto `}>
                     <form onSubmit={handleSubmit}>
                         <h1 className="text-center text-gray-200 font-bold text-2xl mb-10">
                             {

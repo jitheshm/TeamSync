@@ -19,7 +19,6 @@ import fetchProjectTasksDetails from "../../controllers/fetchProjectTasksDetails
 import projectStatusUpdateController from "../../controllers/projectStatusUpdateController";
 import taskStatusUpdateController from "../../controllers/taskStatusUpdateController";
 import ticketCreateController from "../../controllers/ticketCreateController";
-import fileUpload from "../../middlewares/fileUpload";
 import ticketValidators from "../../validators/ticketValidators";
 import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
@@ -35,6 +34,7 @@ import fetchBranchProjectCount from "../../controllers/fetchBranchProjectCount";
 import createTodoController from "../../controllers/createTodoController";
 import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
+import taskValidator from "../../validators/taskValidator";
 
 
 
@@ -52,16 +52,16 @@ router.delete('/projects/:projectId', userAuth, tenantAuth, projectDeleteControl
 router.get('/projects', userAuth, tenantAuth, getAllProjectController)
 router.get('/projects/:projectId', userAuth, tenantAuth, getSpecificProjectController)
 router.get('/projects/:projectId/details', userAuth, tenantAuth, getProjectDetails)
-router.post('/projects/:projectId/tasks', userAuth, tenantAuth, createTaskController)
+router.post('/projects/:projectId/tasks', userAuth, tenantAuth,checkSchema(taskValidator()), createTaskController)
 router.get('/tenants/users/available', userAuth, fetchAvailableTenantUsersController)
 router.get('/projects/:projectId/users/available', userAuth, tenantAuth, fetchProjectUsers)
 router.get('/projects/:projectId/tasks', userAuth, tenantAuth, fetchProjectTasks)
-router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskUpdateController)
+router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth,checkSchema(taskValidator()), taskUpdateController)
 router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskDeleteController)
 router.get('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, fetchProjectTasksDetails)
 router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth, taskStatusUpdateController)
-router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, checkSchema(ticketValidators()), fileUpload('ticket-files'), ticketCreateController)
-router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), fileUpload('ticket-files'), ticketUpdateController)
+router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, checkSchema(ticketValidators()), ticketCreateController)
+router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), ticketUpdateController)
 router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', userAuth, tenantAuth, ticketUpdateStatusController)
 router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, ticketDeleteController)
 router.get('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, fetchProjectTickets)
