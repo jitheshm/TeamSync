@@ -149,7 +149,8 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
             }
         }
     };
-
+    const now = new Date();
+    const currentDate = now.toISOString().split('T')[0]; 
     return (
         <div className="min-h-screen flex items-center w-full">
             <div className="w-full">
@@ -190,6 +191,7 @@ function TaskForm({ projectId, taskId, edit = false }: { projectId: string, task
                                 type="date"
                                 id="due_date"
                                 name="due_date"
+                                min={currentDate}
                                 className="border border-gray-300 text-gray-950 shadow p-3 w-full rounded"
                                 value={formData.due_date.split('T')[0]}
                                 onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}

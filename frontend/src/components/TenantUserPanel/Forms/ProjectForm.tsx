@@ -197,6 +197,9 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
         }
     };
 
+    const now = new Date();
+    const currentDate = now.toISOString().split('T')[0]; 
+
     return (
         <div className="min-h-screen flex items-center w-full">
             <div className="w-full">
@@ -300,6 +303,7 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                     type="date"
                                     id="start_date"
                                     name="start_date"
+                                    min={currentDate}
                                     className="border border-gray-300 text-gray-950 shadow p-3 w-full rounded"
                                     value={formData.start_date.split('T')[0]}
                                     onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
@@ -312,6 +316,8 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                     type="date"
                                     id="end_date"
                                     name="end_date"
+                                    min={formData.start_date}
+                                    disabled={!formData.start_date}
                                     className="border border-gray-300 text-gray-950 shadow p-3 w-full rounded"
                                     value={formData.end_date.split('T')[0]}
                                     onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}

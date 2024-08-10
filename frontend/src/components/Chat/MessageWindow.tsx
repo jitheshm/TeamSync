@@ -1,5 +1,5 @@
 import { ThemeState } from '@/features/theme/themeSlice'
-import React, { useState, ChangeEvent } from 'react'
+import React, { useState, ChangeEvent, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
 import DropDown from './DropDown'
@@ -34,6 +34,13 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
     const { id, verified, name } = useSelector((state: RootState) => state.user)
     const { background, text } = useSelector((state: RootState) => state.theme)
 
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        }
+    }, [message])
 
     const handleMessageSent = () => {
         socket.emit('message', {
@@ -96,7 +103,7 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                                 <span className="block ml-2 font-bold text-gray-100">{userName}</span>
                                 {/* <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span> */}
                             </div>
-                            <div className="relative w-full p-6 overflow-y-auto h-[78%]">
+                            <div ref={scrollContainerRef} className="relative w-full p-6 overflow-y-auto h-[78%]">
                                 <ul className="space-y-2">
                                     {
                                         message.map((msg, index) => (
@@ -132,6 +139,11 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                                     name="message"
                                     value={newMessage}
                                     required
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleMessageSent()
+                                        }
+                                    }}
                                 />
                                 <button type="submit" onClick={handleMessageSent}>
                                     <svg className="w-5 h-5 text-gray-500 origin-center transform rotate-90" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
