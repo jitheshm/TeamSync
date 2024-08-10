@@ -122,6 +122,7 @@ const TenantUsersTable: React.FC<{ admin: boolean }> = ({ admin = false }) => {
                         onChange={(e) => setRole(e.target.value)}
                     >
                         {admin && <option value="">All</option>}
+                        <option value="Manager">Manager</option>
                         <option value="Project_Manager">Project_Manager</option>
                         <option value="Developer">Developer</option>
                         <option value="Tester">Tester</option>

@@ -223,7 +223,7 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
                             </select>
                             {errors.branch_id && <p className="text-red-500">{errors.branch_id}</p>}
                         </div>
-                        <button className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">Register</button>
+                        <button className="block w-full bg-blue-500 text-white font-bold p-4 rounded-lg">{edit?<span>Update</span>:<span>Register</span>}</button>
                     </form>
                 </div>
             </div>

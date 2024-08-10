@@ -10,7 +10,7 @@ import SubscriptionRepository from "../repository/implementations/SubscriptionRe
 
 let tenantRepository: ITenantRepository = new TenantRepository()
 let branchRepository: IBranchRepository = new BranchRepository()
-let subscriptionRepository:ISubscriptionRepository = new SubscriptionRepository()
+let subscriptionRepository: ISubscriptionRepository = new SubscriptionRepository()
 export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Response, next: NextFunction) => {
     try {
         if (!req.user?.decode?.tenantId) {
@@ -40,20 +40,25 @@ export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Res
         console.log(req.body);
 
         console.log(req.body.branch_id, req.user?.decode?.branchId);
-        
-        if (req.body.branch_id || req.user?.decode?.branchId) {
-            let branchId = req.body.branch_id ? req.body.branch_id : req.user?.decode?.branchId
-            const branch = await branchRepository.fetchBranchById(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(branchId))
-            if (branch) {
-                next()
-            } else {
-                return res.status(404).json({ error: "Branch not found" });
-            }
-        }
-        else {
-            return res.status(400).json({ error: "Branch ID not found" });
-        }
 
+
+        if (req.user.decode.role != 'Tenant_Admin') {
+            if (req.body.branch_id || req.user?.decode?.branchId) {
+                let branchId = req.body.branch_id ? req.body.branch_id : req.user?.decode?.branchId
+                const branch = await branchRepository.fetchBranchById(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(branchId))
+                if (branch) {
+                    next()
+                } else {
+                    return res.status(404).json({ error: "Branch not found" });
+                }
+            }
+            else {
+                return res.status(400).json({ error: "Branch ID not found" });
+            }
+
+        }else{
+            next()
+        }
     }
     catch (error: any) {
 
