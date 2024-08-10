@@ -222,7 +222,7 @@ const TenantForm: React.FC<{ planId: string }> = ({ planId }) => {
                 </div>
             </form>
             {
-                paymentForm && <Payment clientSecret={clientSecret} theme={null} />
+                paymentForm && <Payment clientSecret={clientSecret} theme={undefined} />
             }
         </div>
     );

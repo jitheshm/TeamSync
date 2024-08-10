@@ -199,7 +199,7 @@ function Index() {
             <SubscriptionDetails subscription={data} />
             {
                 clientSecret && (
-                    <Payment clientSecret={clientSecret} theme={null} />
+                    <Payment clientSecret={clientSecret} theme={"night"} />
                 )
             }
         </div>

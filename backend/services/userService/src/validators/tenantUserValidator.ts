@@ -13,8 +13,8 @@ export default (): Schema => {
             },
             custom: {
                 options: (value: string) => {
-                    if (!/^[A-Za-z]+$/.test(value)) {
-                        throw new Error('Name should contain only alphabets');
+                    if (!/^[A-Za-z]{3,}(\s[A-Za-z]+)*$/.test(value)) {
+                        throw new Error('Name should start with at least three letters and can include spaces thereafter');
                     }
                     return true;
                 },

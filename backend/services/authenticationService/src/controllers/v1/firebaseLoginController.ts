@@ -9,6 +9,7 @@ import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
 import jwt from 'jsonwebtoken';
 import Stripe from "stripe";
+import { generateAccessToken, generateRefreshToken } from "../../utils/token";
 
 const firebaseConfig = {
     apiKey: process.env.APIKEY,
@@ -80,8 +81,9 @@ export default async (req: Request, res: Response) => {
         if (!process.env.JWT_SECRET_KEY) {
             return res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
         }
-        const token = jwt.sign({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id, tenantId: userExist?.tenant?.[0]?._id,role:'Tenant_Admin' }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-        res.status(200).json({ message: "User verified", verified: true, token: token, name: decodedToken.name, tenantId: userExist?.tenant?.[0]?._id,role:'Tenant_Admin', id: userExist._id});
+        const accessToken = generateAccessToken({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id, tenantId: userExist?.tenant?.[0]?._id, role: 'Tenant_Admin' })
+        const refreshToken = generateRefreshToken({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id, tenantId: userExist?.tenant?.[0]?._id, role: 'Tenant_Admin' })
+        res.status(200).json({ message: "User verified", verified: true, accessToken, refreshToken, name: decodedToken.name, tenantId: userExist?.tenant?.[0]?._id, role: 'Tenant_Admin', id: userExist._id });
 
 
     } catch (error) {

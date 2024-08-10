@@ -12,7 +12,7 @@ import { string } from "zod";
 // This is your test publishable API key.
 const stripePromise = loadStripe("pk_test_51PUVQpRsEcnIFbVXyhvSXV7ihZqEE5YO6BgPnWe3CmdO3rmik4WVzAmvlWNTdfHlOuCzgKO24u5Y8caOZ7WARnL700XKBuDF5v");
 
-export default function Payment({ clientSecret, theme }: { clientSecret: string, theme: string | null }) {
+export default function Payment({ clientSecret, theme }: { clientSecret: string, theme: "stripe" | "night" | "flat" | undefined}) {
 
 
 
