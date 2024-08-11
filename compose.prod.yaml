@@ -27,23 +27,12 @@ services:
     networks:
       - team_sync_network
 
-
-  stripe-cli:
-    image: stripe/stripe-cli
-    container_name: stripe-cli
-    command: "listen --api-key ${STRIPE_API_KEY} --forward-to nginx:80/api/subscription-service/v1/webhook"
-    env_file:
-      - ./backend/.env
-    networks:
-      - team_sync_network
   
   userservice:
     build: ./backend/services/userService
     container_name: team-sync-user-service
     image: jitheshmjithooz/team-sync-user-service
     restart: unless-stopped
-    env_file:
-      - ./backend/services/userService/.env
     depends_on:
       - kafka
     ports:
@@ -56,8 +45,6 @@ services:
     container_name: team-sync-notification-service
     image: jitheshmjithooz/team-sync-notification-service
     restart: unless-stopped
-    env_file:
-      - ./backend/services/notificationService/.env
     depends_on:
       - kafka
     ports:
@@ -70,8 +57,6 @@ services:
     container_name: team-sync-authentication-service
     image: jitheshmjithooz/team-sync-authentication-service
     restart: unless-stopped
-    env_file:
-      - ./backend/services/authenticationService/.env
     depends_on:
       - kafka
     ports:
@@ -84,8 +69,6 @@ services:
     container_name: team-sync-subscription-service
     image: jitheshmjithooz/team-sync-subscription-service
     restart: unless-stopped
-    env_file:
-      - ./backend/services/subscriptionService/.env
     depends_on:
       - kafka
     ports:
@@ -98,8 +81,6 @@ services:
     container_name: team-sync-tenant-service
     image: jitheshmjithooz/team-sync-tenant-service
     restart: unless-stopped
-    env_file:
-      - ./backend/services/tenantService/.env
     depends_on:
       - kafka
     ports:
@@ -112,8 +93,6 @@ services:
     container_name: team-sync-project-service
     image: jitheshmjithooz/team-sync-project-service
     restart: unless-stopped
-    env_file:
-      -  ./backend/services/projectService/.env
     depends_on:
       - kafka
     ports:
@@ -126,8 +105,6 @@ services:
     container_name: team-sync-communication-service
     image: jitheshmjithooz/team-sync-communication-service
     restart: unless-stopped
-    env_file:
-      -  ./backend/services/communicationService/.env
     depends_on:
       - kafka
     ports:
