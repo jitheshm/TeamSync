@@ -9,9 +9,9 @@ function Page() {
     const [roomId, setRoomId] = useState('')
     const router = useRouter()
 
-    const handleCreateRoom = () => {
-        const roomId = nanoid()
-        router.push(`/employee/project_manager/dashboard/meeting/${roomId}`)
+    const handleListMeetings = () => {
+        
+        router.push(`/employee/project_manager/dashboard/meeting/list/schedule`)
     }
 
     const handleJoinRoom = () => {
@@ -24,7 +24,7 @@ function Page() {
         router.push(`/employee/project_manager/dashboard/meeting/schedule`)
     }
     return (
-        <MeetingForm handleCreateRoom={handleCreateRoom} handleJoinRoom={handleJoinRoom} onRoomChange={onRoomChange} handleScheduleMeeting={handleScheduleMeeting} />
+        <MeetingForm handleListMeetings={handleListMeetings} handleJoinRoom={handleJoinRoom} onRoomChange={onRoomChange} handleScheduleMeeting={handleScheduleMeeting} />
     )
 }
 

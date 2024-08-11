@@ -9,10 +9,13 @@ import MeetingProducer from "../events/producers/MeetingProducer";
 import IMeetingEnitity from "../entities/MeetingEntity";
 import mongoose from "mongoose";
 import { nanoid } from "nanoid";
+import MeetingService from "../services/implementations/MeetingService";
+import { IMeetingService } from "../services/interfaces/IMeetingService";
 
 
 const meetingRepository: IMeetingRepository = new MeetingRepository()
 const kafkaConnection: IKafkaConnection = new KafkaConnection()
+const meetingService:IMeetingService = new MeetingService(meetingRepository);
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {
 
@@ -22,10 +25,10 @@ export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Respo
         }
 
         const dataObj = req.body as IMeetingEnitity
-        dataObj.scheduledBy = new mongoose.Types.ObjectId(req.user?.decode?.userId as string)
+        dataObj.scheduledBy = new mongoose.Types.ObjectId(req.user?.decode?.id as string)
         dataObj.meetingLink = nanoid()
 
-        await meetingRepository.createMeeting(req.user?.decode?.tenantId as string, req.body);
+        await meetingService.createMeeting(req.user?.decode?.tenantId as string, req.body);
         const tenantId = req.user?.decode?.tenantId as string;
 
         const producer = await kafkaConnection?.getProducerInstance();
