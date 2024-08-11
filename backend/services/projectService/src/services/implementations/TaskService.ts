@@ -3,12 +3,16 @@ import { ITaskService } from "../interfaces/ITaskService";
 import { ITaskRepository } from "../../repository/interfaces/ITaskRepository";
 import IDecodedUser from "../../interfaces/IDecodeUser";
 import { ITasks } from "../../entities/TaskEntity";
+import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+import TaskProducer from "../../events/kafka/producers/TaskProducer";
 
 export default class TaskService implements ITaskService {
     private taskRepository: ITaskRepository;
+    private kafkaConnection?: IKafkaConnection;
 
-    constructor(taskRepository: ITaskRepository) {
+    constructor(taskRepository: ITaskRepository, kafkaConnection?: IKafkaConnection) {
         this.taskRepository = taskRepository;
+        this.kafkaConnection = kafkaConnection;
     }
 
     async createTask(user: IDecodedUser, body: Partial<ITasks>, projectId: string): Promise<ITasks> {
@@ -26,7 +30,12 @@ export default class TaskService implements ITaskService {
         body.task_id = '#task' + new Date().getTime() + Math.floor(Math.random() * 1000);
         body.project_id = new mongoose.Types.ObjectId(projectId);
 
-        return await this.taskRepository.create(body as ITasks, user.decode?.tenantId);
+        const newTask = await this.taskRepository.create(body as ITasks, user.decode?.tenantId);
+
+        const producer = await this.kafkaConnection?.getProducerInstance();
+        const tenantTaskProducer = new TaskProducer(producer!, user.decode?.tenantId, 'tasks');
+        tenantTaskProducer.sendMessage('create', newTask);
+        return newTask
     }
 
     async fetchProjectAllTask(tenantId: string, branchId: mongoose.Types.ObjectId, projectId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (ITasks & mongoose.Document)[], totalCount: number }> {

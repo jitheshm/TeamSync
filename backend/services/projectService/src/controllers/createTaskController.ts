@@ -7,9 +7,12 @@ import IDecodedUser from "../interfaces/IDecodeUser";
 import { ITasks } from "../entities/TaskEntity";
 import { ITaskService } from "../services/interfaces/ITaskService";
 import TaskService from "../services/implementations/TaskService";
+import { IKafkaConnection } from "../interfaces/IKafkaConnection";
+import { KafkaConnection } from "../config/kafka/KafkaConnection";
 
 const taskRepository: ITaskRepository = new TaskRepository();
-const taskService: ITaskService = new TaskService(taskRepository);
+const kafkaConnection:IKafkaConnection = new KafkaConnection();
+const taskService: ITaskService = new TaskService(taskRepository,kafkaConnection);
 
 export default async (req: Request & Partial<{ user: IDecodedUser }>, res: Response) => {
     try {

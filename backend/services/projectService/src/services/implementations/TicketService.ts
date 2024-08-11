@@ -3,13 +3,21 @@ import IDecodedUser from "../../interfaces/IDecodeUser";
 import { ITicketRepository } from "../../repository/interfaces/ITicketRepository";
 import { ITickets } from "../../entities/TicketEntity";
 import { ITicketService } from "../interfaces/ITicketService";
+import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+import TicketProducer from "../../events/kafka/producers/TicketProducer";
+import { ITaskRepository } from "../../repository/interfaces/ITaskRepository";
 
 export default class TicketService implements ITicketService {
 
     private ticketRepostitory: ITicketRepository;
+    private kafkaConnection?: IKafkaConnection;
+    private taskRepository?: ITaskRepository
 
-    constructor(ticketRepository: ITicketRepository) {
+
+    constructor(ticketRepository: ITicketRepository,kafkaConnection?:IKafkaConnection, taskRepository?: ITaskRepository) {
         this.ticketRepostitory = ticketRepository;
+        this.kafkaConnection = kafkaConnection;
+        this.taskRepository = taskRepository;
     }
 
     async createTicket(user: IDecodedUser, body: Partial<ITickets>, projectId: string, taskId: string): Promise<ITickets> {
@@ -18,7 +26,13 @@ export default class TicketService implements ITicketService {
         body.project_id = new mongoose.Types.ObjectId(projectId);
         body.task_id = new mongoose.Types.ObjectId(taskId);
 
-        return await this.ticketRepostitory.create(body as ITickets, user.decode?.tenantId);
+        const newTicket= await this.ticketRepostitory.create(body as ITickets, user.decode?.tenantId);
+        const task=await this.taskRepository?.fetchSpecificTaskById(user.decode?.tenantId, newTicket.task_id);      
+                                                   
+        const producer = await this.kafkaConnection?.getProducerInstance();
+        const tenantTicketProducer = new TicketProducer(producer!, user.decode?.tenantId, 'tickets');
+        tenantTicketProducer.sendMessage('create', {newTicket,developer_id:task!.developer_id});
+        return newTicket
     }
     async updateTicket(ticketId: string, bodyObj: Partial<ITickets >, tenantId: string): Promise<ITickets | null> {
         try {

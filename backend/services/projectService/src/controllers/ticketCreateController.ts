@@ -10,9 +10,13 @@ import { ITickets } from "../entities/TicketEntity";
 import TicketRepository from "../repository/implementations/TicketRepository";
 import TicketService from "../services/implementations/TicketService";
 import { ITicketService } from "../services/interfaces/ITicketService";
+import { IKafkaConnection } from "../interfaces/IKafkaConnection";
+import { KafkaConnection } from "../config/kafka/KafkaConnection";
 
 const ticketRepository: ITicketRepository = new TicketRepository();
-const ticketService: ITicketService = new TicketService(ticketRepository);
+const kafkaConnection:IKafkaConnection = new KafkaConnection();
+const taskRepository: ITaskRepository = new TaskRepository();
+const ticketService: ITicketService = new TicketService(ticketRepository,kafkaConnection,taskRepository);
 
 export default async (req: Request & Partial<{
     user: IDecodedUser,

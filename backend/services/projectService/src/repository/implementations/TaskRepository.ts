@@ -265,6 +265,23 @@ export default class TaskRepository implements ITaskRepository {
 
     }
 
+    async fetchSpecificTaskById(dbId: string, taskId: mongoose.Types.ObjectId) {
+        try {
+            console.log(dbId);
+
+            const TaskModel = switchDb<ITasks>(`${process.env.SERVICE}_${dbId}`, 'tasks')
+            const data = await TaskModel.findOne({ _id: taskId, is_deleted: false })
+            console.log(data);
+
+            return data
+        } catch (error) {
+            console.log('Error in Task Repository fetch method');
+
+            console.log(error);
+
+            throw error
+        }
+    }
     
 
 
