@@ -20,11 +20,11 @@ const addressSchema = z.object({
 });
 
 const tenantSchema = z.object({
-    company_name: z.string().min(3, 'Company name must contain at least 3 letters'),
-    company_type: z.string().min(3, 'Company type must contain at least 3 letters'),
+    company_name: z.string().trim().min(3, 'Company name must contain at least 3 letters'),
+    company_type: z.string().trim().min(3, 'Company type must contain at least 3 letters'),
     address: addressSchema,
-    phone_no: z.string().regex(/^\d+$/, 'Phone number must contain only digits'),
-    domain: z.string().url('Invalid domain').optional().nullable(),
+    phone_no: z.string().trim().regex(/^\d+$/, 'Phone number must contain only digits'),
+    domain: z.string().trim().url('Invalid domain').optional().nullable(),
 });
 
 export interface TenantFormData {

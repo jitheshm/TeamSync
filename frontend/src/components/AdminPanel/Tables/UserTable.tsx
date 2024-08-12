@@ -153,7 +153,7 @@ const UserTable: React.FC = () => {
 
             </div>
             <div className="w-full overflow-x-auto h-[400px]  shadow-lg mt-20 mx-10 ">
-                <table className="min-w-[70rem] h-full  w-full whitespace-no-wrap">
+                <table className="min-w-[70rem]  w-full whitespace-no-wrap h-fit">
                     <thead>
                         <tr className={`text-lg font-semibold tracking-wide text-left shadow uppercase ${main === 'bg-gray-100' ? 'bg-gray-100 text-gray-600 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
                             <th className="px-4 py-3 text-center">Id</th>
@@ -166,6 +166,7 @@ const UserTable: React.FC = () => {
                     <tbody className={`divide-y  divide-gray-600 ${!dark ? 'bg-gray-100 text-gray-950 border border-gray-300' : 'bg-[#1A1C23] text-gray-300 border-b border-gray-700'}`}>
                         {users.length > 0 ? (
                             users.map((user, index) => (
+
                                 <tr key={index}>
                                     <td className="px-4 py-3 text-center">{user.user_id}</td>
                                     <td className="px-4 py-3 text-center">{`${user.first_name} ${user?.last_name}`}</td>
@@ -181,7 +182,13 @@ const UserTable: React.FC = () => {
                                         <button onClick={() => handleDelete(user._id)} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button>
                                     </td>
                                 </tr>
+
+
+
+
                             ))
+
+
                         ) : (
                             <tr>
                                 <td colSpan={5} className="py-3 text-center">
