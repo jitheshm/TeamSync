@@ -111,7 +111,12 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                                                 <div className="relative max-w-xl px-7 py-2 text-gray-100 bg-[#202C33] rounded shadow">
 
                                                     <div className='absolute top-0 right-3'>
-                                                        <DropDown msgId={msg._id} handleMessageDelete={handleMessageDelete} />
+                                                        {
+                                                            msg.sender === id && (
+                                                                <DropDown msgId={msg._id} handleMessageDelete={handleMessageDelete} />
+                                                            )
+                                                        }
+
 
                                                     </div>
                                                     {isGroupChat && msg.sender !== id && (

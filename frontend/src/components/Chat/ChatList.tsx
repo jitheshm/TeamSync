@@ -41,7 +41,8 @@ function ChatList({ recent, handleRoomChange, activeRoom, setIsModalOpen }: { re
                                                 <span className="font-medium text-white">{
                                                     chat.type === 'group' ? chat.name : chat.members.filter((member: any) => member._id !== id)[0].name
                                                 }</span>
-                                                <span className="text-sm text-gray-400 truncate w-32">Hey, Joel, I here to help you out please tell me</span> </div>
+                                                
+                                                </div>
                                         </div>
                                         {
                                             chat.notification?.count && <span className="inline-flex items-center justify-center w-8 h-8 ms-2 text-xs font-semibold  bg-green-600 rounded-full">  {chat.notification.count}
