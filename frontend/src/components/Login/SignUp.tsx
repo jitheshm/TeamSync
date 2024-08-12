@@ -8,14 +8,14 @@ import { z } from 'zod';
 const nameRegex = /^[A-Za-z\s]+$/;
 
 const signUpSchema = z.object({
-    first_name: z.string()
+    first_name: z.string().trim()
         .min(3, { message: "First Name must be at least 3 characters long" })
         .regex(nameRegex, { message: "First Name must only contain alphabetic characters" }),
-    last_name: z.string()
+    last_name: z.string().trim()
         .min(1, { message: "Last Name is required" }).regex(nameRegex, { message: "Last Name must only contain alphabetic characters" }),
-    email: z.string().min(1, "Email is required").email("Invalid email format"),
-    password: z.string().min(6, "Password must be at least 6 characters long"),
-    confirm_password: z.string().min(6, "Confirm Password must be at least 6 characters long")
+    email: z.string().trim().min(1, "Email is required").email("Invalid email format"),
+    password: z.string().trim().min(6, "Password must be at least 6 characters long"),
+    confirm_password: z.string().trim().min(6, "Confirm Password must be at least 6 characters long")
 }).refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match",
     path: ["confirm_password"]
@@ -103,7 +103,7 @@ const SignUp: React.FC<SignUpProps> = ({ setOtpPage, setEmail }) => {
             setErrors(formattedErrors);
         }
     };
- 
+
     return (
         <div className="w-3/4 mt-16 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
             <form className="space-y-6" onSubmit={handleSubmit}>
