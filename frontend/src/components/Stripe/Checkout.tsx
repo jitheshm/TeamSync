@@ -17,6 +17,7 @@ export default function CheckoutForm({ clientSecret }: CheckoutFormProps) {
 
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [attempt, setAttempt] = useState<number>(0);
 
   useEffect(() => {
     if (!stripe) {
@@ -37,8 +38,13 @@ export default function CheckoutForm({ clientSecret }: CheckoutFormProps) {
           setMessage("Your payment is processing.");
           break;
         case "requires_payment_method":
-          console.log(paymentIntent);
-          setMessage("Your payment was not successful, please try again.");
+          {
+            console.log(paymentIntent);
+            if (attempt > 0) {
+              setMessage("Your payment was not successful, please try again.");
+            }
+            setAttempt(attempt + 1);
+          }
           break;
         default:
           setMessage("Something went wrong.");
@@ -72,7 +78,7 @@ export default function CheckoutForm({ clientSecret }: CheckoutFormProps) {
     setIsLoading(false);
   };
 
-  const paymentElementOptions:StripePaymentElementOptions = {
+  const paymentElementOptions: StripePaymentElementOptions = {
     layout: "tabs"
   }
 
