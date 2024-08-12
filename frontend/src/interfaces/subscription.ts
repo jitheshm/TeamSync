@@ -4,6 +4,13 @@ interface IFeatures {
     support: 'basic' | 'expert';
 }
 
+export interface ITransaction{
+    amount: string;
+    date: Date;
+    status: string;
+    transaction_id: string;
+}
+
 export interface IPlan {
     _id:string;
     plan_id: string;
@@ -58,10 +65,5 @@ export interface ISubscriptionDetails {
     cancel_date: Date | null
     status: String;
     payment_method: String;
-    transactions: {
-        amount: String;
-        date: Date;
-        status: String;
-        transaction_id: String;
-    }[] | null;
+    transactions: ITransaction[] | null;
 }

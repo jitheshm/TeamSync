@@ -26,10 +26,22 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
         }
     }
 
-    async update(data: ISubscriptions) {
+    async update(data: ISubscriptions, transaction?: any) {
         try {
             const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
-            const res = await SubscriptionModel.findOneAndUpdate({ stripe_subscription_id: data.stripe_subscription_id }, data, { new: true })
+            let res = null
+            if (transaction) {
+                res = await SubscriptionModel.findOneAndUpdate({ stripe_subscription_id: data.stripe_subscription_id }, {
+                    $set: data,
+                    $push: {
+                        transactions: transaction
+                    }
+                }, { new: true })
+
+            } else {
+
+                res = await SubscriptionModel.findOneAndUpdate({ stripe_subscription_id: data.stripe_subscription_id }, data, { new: true })
+            }
             return res
         } catch (error) {
             console.log('Error in SubscriptionRepository update method');
@@ -258,7 +270,7 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
 
             ]).exec()
             console.log(data);
-            
+
 
             return data
 

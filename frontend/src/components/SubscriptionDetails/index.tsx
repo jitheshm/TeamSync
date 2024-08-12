@@ -5,11 +5,12 @@ import { fetchSubscriptionForUser, cancelSubscription, updateSubscriptionPlan, f
 import { useDispatch } from 'react-redux'
 import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
-import { ISubscriptionDetails, ITenants } from '@/interfaces/subscription'
+import { ISubscriptionDetails, ITenants, ITransaction } from '@/interfaces/subscription'
 import SubscriptionDetails from './SubscriptionDetails'
 import Swal from 'sweetalert2'
 import { errorModal } from '@/utils/alerts/errorAlert'
 import Payment from '../Stripe/Payment'
+import Transactiion from './Transactiion'
 
 
 
@@ -20,9 +21,12 @@ interface IPlans {
 
 }
 
+
+
 function Index() {
 
     const [data, setData] = useState<ISubscriptionDetails | null>(null)
+    const [transaction, setTransaction] = useState<ITransaction[]>([])
     const [error, setError] = useState<string | null>(null)
     const [plans, setPlans] = useState<IPlans[]>([])
     const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
@@ -38,6 +42,7 @@ function Index() {
             console.log(res);
 
             setData(res.data)
+            setTransaction(res.data.transactions)
             setSelectedPlan(res.data.plan_id)
         }).catch((err) => {
             if (err.response.status === 401) {
@@ -197,6 +202,7 @@ function Index() {
             </div>
             <CompanyDetails tenant={data?.tenant as ITenants | null} />
             <SubscriptionDetails subscription={data} />
+            <Transactiion transactions={transaction} />
             {
                 clientSecret && (
                     <Payment clientSecret={clientSecret} theme={"night"} />

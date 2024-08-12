@@ -18,7 +18,7 @@ export default async (subscription: Stripe.Subscription, planId: string, tenantI
         stripe_customer_id: subscription.customer as string,
         status: 'pending',
         payment_method: "card",
-        renewal_date: new Date(subscription.current_period_end * 1000)
+        renewal_date: new Date(subscription.current_period_end * 1000),
 
     }
     console.log(subObj);

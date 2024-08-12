@@ -81,7 +81,13 @@ export default async (request: Request, response: Response) => {
                     stripe_subscription_id: eventObj.subscription as string,
                     status: "paid"
                 }
-                const result = await subscriptionRepository.update(dataObj)
+                const transaction={
+                    amount: Number(eventObj.amount_due/100),
+                    date: new Date(),
+                    status: "success",
+                    transaction_id: '#txn'+new Date().getTime()+Math.floor(Math.random()*1000)
+                }
+                const result = await subscriptionRepository.update(dataObj,transaction)
                 if (result) {
                     let producer = await kafkaConnection.getProducerInstance()
                     let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
@@ -100,7 +106,13 @@ export default async (request: Request, response: Response) => {
                     stripe_subscription_id: eventObj.subscription as string,
                     status: "failed"
                 }
-                const result = await subscriptionRepository.update(dataObj)
+                const transaction={
+                    amount: eventObj.amount_paid,
+                    date: new Date(),
+                    status: "failed",
+                    transaction_id: eventObj.id
+                }
+                const result = await subscriptionRepository.update(dataObj,transaction)
                 if (result) {
                     let producer = await kafkaConnection.getProducerInstance()
                     let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
