@@ -48,4 +48,5 @@ export interface IUserService {
         context: string;
         tenantId?: string;
     }): Promise<VerifyOtpResponse>
+    resendOtp(email: string, context: string, tenantId?: string): Promise<void>
 }

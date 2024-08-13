@@ -10,7 +10,6 @@ import userAuth from "../../middlewares/userAuth";
 import tokenVerifyController from "../../controllers/v1/tokenVerifyController";
 import tenantLoginValidator from "../../validators/tenantLoginValidator";
 import tenantLoginController from "../../controllers/v1/tenantLoginController";
-import resendOtpController from "../../controllers/v1/resendOtpController";
 import resendValidator from "../../validators/resendValidator";
 import { container } from "../../config/inversify/inversify";
 import IUserController from "../../controllers/v1/interfaces/IUserController";
@@ -36,6 +35,7 @@ router.get('/token/verify', userAuth, tokenVerifyController)
 router.post('/login/firebase',
     (req: Request, res: Response, next: NextFunction) => userController.firebaseLogin(req, res, next))
 router.post('/tenant/login', checkSchema(tenantLoginValidator()), tenantLoginController)
-router.post('/resend-otp', checkSchema(resendValidator()), resendOtpController)
+router.post('/resend-otp', checkSchema(resendValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.resendOtp(req, res, next))
 
 export default router 

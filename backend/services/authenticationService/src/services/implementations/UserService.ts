@@ -235,4 +235,29 @@ export default class UserService implements IUserService {
         }
     }
 
+    async resendOtp(email: string, context: string, tenantId?: string) {
+        if (!tenantId) {
+            const userData = await this.userRepository.fetchUser(email);
+            if (!userData) {
+                throw new NotFound("User not found");
+            }
+            if (userData.is_blocked) {
+                throw new CustomError("User is blocked", 403);
+            }
+        } else {
+
+            const userData = await this.tenantUserRepository.fetchSpecificUser(tenantId, email);
+
+
+            if (!userData) {
+                throw new CustomError("Invalid email address", 401);
+            }
+
+
+        }
+
+
+        sendOtp(email, context);
+    }
+
 }

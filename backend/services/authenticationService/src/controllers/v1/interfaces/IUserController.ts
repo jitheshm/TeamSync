@@ -6,4 +6,5 @@ export default interface IUserController {
     login(req: Request, res: Response, next: NextFunction): Promise<void>
     newToken(req: Request, res: Response, next: NextFunction): Promise<void>
     verifyOtp(req: Request, res: Response, next: NextFunction): Promise<void>
+    resendOtp(req: Request, res: Response, next: NextFunction): Promise<void>
 }

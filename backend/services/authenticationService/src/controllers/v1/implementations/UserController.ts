@@ -84,4 +84,15 @@ export class UserController implements IUserController {
         }
     }
 
+    async resendOtp(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { email, context, tenantId }: { email: string, context: string, tenantId?: string } = req.body;
+            await this.userService.resendOtp(email, context, tenantId)
+            res.status(200).json({ message: "OTP sent successfully" });
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
 }
