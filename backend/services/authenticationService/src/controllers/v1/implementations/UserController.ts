@@ -29,4 +29,18 @@ export class UserController implements IUserController {
 
         }
     }
+
+    async forgetPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const email = req.body?.email as string
+            await this.userService.forgetPassword(email)
+            res.status(200).json({ message: "OTP sent successfully" });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 }

@@ -2,4 +2,5 @@ import { NextFunction,Request,Response } from "express";
 
 export default interface IUserController{
     firebaseLogin(req: Request, res: Response, next: NextFunction):Promise<void>
+    forgetPassword(req: Request, res: Response, next: NextFunction):Promise<void>
 }

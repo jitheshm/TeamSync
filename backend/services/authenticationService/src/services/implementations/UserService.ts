@@ -8,6 +8,9 @@ import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import UserProducer from "../../events/kafka/producers/UserProducer";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token";
 import { IUserService } from "../interfaces/IUserService";
+import { NotFound } from "../../errors/NotFound";
+import CustomError from "../../utils/CustomError";
+import { sendOtp } from "../../utils/otp";
 
 
 const firebaseConfig = {
@@ -86,6 +89,18 @@ export default class UserService implements IUserService {
         }
         const accessToken = generateAccessToken({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id, tenantId: userExist?.tenant?.[0]?._id, role: 'Tenant_Admin' })
         const refreshToken = generateRefreshToken({ email: decodedToken.email ?? "", name: decodedToken.name, id: userExist._id, tenantId: userExist?.tenant?.[0]?._id, role: 'Tenant_Admin' })
-        return { accessToken, refreshToken,decodedToken,userExist }
+        return { accessToken, refreshToken, decodedToken, userExist }
+    }
+
+    async forgetPassword(email: string) {
+        const userData = await this.userRepository.fetchUser(email);
+        if (!userData) {
+            throw new NotFound("User not found")
+        }
+        if (userData.is_blocked) {
+            throw new CustomError("user is blocked", 403)
+        }
+
+        sendOtp(email, 'forgot-password')
     }
 }

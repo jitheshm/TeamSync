@@ -5,7 +5,6 @@ import otpValidator from "../../validators/otpValidator";
 import loginController from "../../controllers/v1/loginController";
 import loginValidator from "../../validators/loginValidator";
 import forgetValidator from "../../validators/forgetValidator";
-import forgetPasswordController from "../../controllers/v1/forgetPasswordController";
 import resetPasswordValidator from "../../validators/resetPasswordValidator";
 import resetPasswordController from "../../controllers/v1/resetPasswordController";
 import otpAuth from "../../middlewares/otpAuth";
@@ -18,6 +17,7 @@ import resendValidator from "../../validators/resendValidator";
 import newTokenController from "../../controllers/v1/newTokenController";
 import { container } from "../../config/inversify/inversify";
 import IUserController from "../../controllers/v1/interfaces/IUserController";
+import formValidation from "../../middlewares/formValidation";
 
 
 
@@ -29,7 +29,8 @@ const userController = container.get<IUserController>("IUserController");
 router.post('/verify-otp', checkSchema(otpValidator()), otpVerifyController)
 router.post('/login', checkSchema(loginValidator()), loginController)
 router.post('/token/new', newTokenController);
-router.post('/forget-password', checkSchema(forgetValidator()), forgetPasswordController)
+router.post('/forget-password', checkSchema(forgetValidator()),formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.forgetPassword(req, res, next))
 router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), resetPasswordController)
 router.get('/token/verify', userAuth, tokenVerifyController)
 router.post('/login/firebase',
