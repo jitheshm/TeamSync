@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import decodedUser from "../interfaces/IDecodeUser";
+import IDecodedUser from "../interfaces/IDecodeUser";
 
 
 export default async (req: Request & Partial<{ user: Partial<decodedUser>}>, res: Response, next: NextFunction) => {

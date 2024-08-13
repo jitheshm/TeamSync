@@ -49,4 +49,5 @@ export interface IUserService {
         tenantId?: string;
     }): Promise<VerifyOtpResponse>
     resendOtp(email: string, context: string, tenantId?: string): Promise<void>
+    resetPassword(email: string, newPassword: string): Promise<void>
 }

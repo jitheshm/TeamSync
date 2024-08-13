@@ -19,7 +19,7 @@ import { ISubscriptionRepository } from "../../repository/interface/ISubscriptio
 import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
 import mongoose from "mongoose";
 import { IOtpRepository } from "../../repository/interface/IOtpRepository";
-
+import hash from "../../utils/bcrypt";
 
 
 const firebaseConfig = {
@@ -258,6 +258,22 @@ export default class UserService implements IUserService {
 
 
         sendOtp(email, context);
+    }
+
+    async resetPassword(email:string,newPassword:string){
+
+        const password = hash(newPassword)
+        const updateUserObj = await this.userRepository.updateUser({ email: email, password: password })
+
+        if (!updateUserObj) {
+            throw new NotFound("user not found")
+        } else {
+            const producer = await this.kafkaConnection.getProducerInstance()
+            const userProducer = new UserProducer(producer, 'main', 'users')
+            userProducer.sendMessage('update', updateUserObj)
+            
+        }
+
     }
 
 }

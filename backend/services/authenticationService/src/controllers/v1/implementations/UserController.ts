@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { InternalServerError } from "../../../errors/InternalServerError";
 import IUserController from "../interfaces/IUserController";
 import { UnauthorizedError } from "../../../errors/Unauthorized";
+import IDecodedUser from "../../../interfaces/IDecodeUser";
 
 @injectable()
 export class UserController implements IUserController {
@@ -89,6 +90,18 @@ export class UserController implements IUserController {
             const { email, context, tenantId }: { email: string, context: string, tenantId?: string } = req.body;
             await this.userService.resendOtp(email, context, tenantId)
             res.status(200).json({ message: "OTP sent successfully" });
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    async resetPassword(req: Request & Partial<{user:IDecodedUser}>, res: Response, next: NextFunction) {
+        try {
+            const { new_password }: { new_password: string } = req.body;
+            const email = req.user?.email as string;
+            await this.userService.resetPassword(email, new_password)
+            res.status(200).json({ message: "Password updated successfully" });
         } catch (error) {
             console.log(error)
             next(error)
