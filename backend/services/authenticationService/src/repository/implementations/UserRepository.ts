@@ -3,7 +3,9 @@ import { IUsers } from "../../entities/UserEntity";
 import CustomError from "../../utils/CustomError";
 import switchDb from "../../utils/switchDb";
 import { IUserRepository } from "../interface/IUserRepository";
+import { injectable } from "inversify";
 
+@injectable()
 export default class UserRepository implements IUserRepository {
 
     async create(user: Partial<IUsers>): Promise<IUsers & Document> {

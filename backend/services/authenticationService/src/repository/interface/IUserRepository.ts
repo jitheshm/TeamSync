@@ -3,7 +3,7 @@ import { IUsers } from "../../entities/UserEntity";
 import { ITenants } from "../../entities/TenantEntity";
 import ISubscriptions from "../../entities/SubscriptionEntity";
 
-interface IFetchReturn extends IUsers {
+export interface IFetchReturn extends IUsers {
     tenant?: ITenants[]
     subscription?:ISubscriptions[]
 }
