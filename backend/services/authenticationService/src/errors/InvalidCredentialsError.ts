@@ -1,7 +1,7 @@
 import { CustomError } from "./CustomError";
 
 export class InvalidCredentialsError extends CustomError {
-    constructor() {
-        super("Invalid user name or password", 401);
+    constructor(message?: string) {
+        super(message ? message : "Invalid user name or password", 401);
     }
 }

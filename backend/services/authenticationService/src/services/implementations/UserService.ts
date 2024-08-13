@@ -11,6 +11,9 @@ import { IUserService } from "../interfaces/IUserService";
 import { NotFound } from "../../errors/NotFound";
 import CustomError from "../../utils/CustomError";
 import { sendOtp } from "../../utils/otp";
+import bcrypt from 'bcryptjs';
+import { InvalidCredentialsError } from "../../errors/InvalidCredentialsError";
+
 
 
 const firebaseConfig = {
@@ -102,5 +105,27 @@ export default class UserService implements IUserService {
         }
 
         sendOtp(email, 'forgot-password')
+    }
+
+    async login(email: string, password: string) {
+        const userData = await this.userRepository.fetchUser(email);
+        if (!userData) {
+            throw new NotFound("User not found")
+        }
+        const resObj = await bcrypt.compare(password, userData.password)
+
+        if (!resObj) {
+            throw new InvalidCredentialsError("Invalid email or password")
+        }
+        if (userData.is_blocked) {
+            throw new CustomError("User is blocked", 403)
+        }
+        if (!userData.is_verified) {
+            throw new CustomError("User is not verified", 403)
+        }
+
+        const accessToken = generateAccessToken({ email: userData.email, name: userData.first_name, id: userData._id, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' })
+        const refreshToken = generateRefreshToken({ email: userData.email, name: userData.first_name, id: userData._id, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' })
+        return { accessToken, refreshToken, userData }
     }
 }

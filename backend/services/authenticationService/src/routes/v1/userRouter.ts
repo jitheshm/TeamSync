@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from "express";
 import { checkSchema } from "express-validator";
 import otpVerifyController from "../../controllers/v1/otpVerifyController";
 import otpValidator from "../../validators/otpValidator";
-import loginController from "../../controllers/v1/loginController";
 import loginValidator from "../../validators/loginValidator";
 import forgetValidator from "../../validators/forgetValidator";
 import resetPasswordValidator from "../../validators/resetPasswordValidator";
@@ -27,9 +26,10 @@ const userController = container.get<IUserController>("IUserController");
 
 
 router.post('/verify-otp', checkSchema(otpValidator()), otpVerifyController)
-router.post('/login', checkSchema(loginValidator()), loginController)
+router.post('/login', checkSchema(loginValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.login(req, res, next))
 router.post('/token/new', newTokenController);
-router.post('/forget-password', checkSchema(forgetValidator()),formValidation,
+router.post('/forget-password', checkSchema(forgetValidator()), formValidation,
     (req: Request, res: Response, next: NextFunction) => userController.forgetPassword(req, res, next))
 router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), resetPasswordController)
 router.get('/token/verify', userAuth, tokenVerifyController)
