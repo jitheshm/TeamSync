@@ -71,4 +71,17 @@ export class UserController implements IUserController {
         }
     }
 
+    async verifyOtp(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { email, otp, context, tenantId } = req.body;
+            const response = await this.userService.verifyOtp({ email, otp, context, tenantId })
+            res.status(200).json(response);
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 }

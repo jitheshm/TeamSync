@@ -7,7 +7,7 @@ import { IUsers } from "../../entities/UserEntity";
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import UserProducer from "../../events/kafka/producers/UserProducer";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token";
-import { IUserService } from "../interfaces/IUserService";
+import { IUserService, VerifyOtpResponse } from "../interfaces/IUserService";
 import { NotFound } from "../../errors/NotFound";
 import CustomError from "../../utils/CustomError";
 import { sendOtp } from "../../utils/otp";
@@ -18,6 +18,7 @@ import { UnauthorizedError } from "../../errors/Unauthorized";
 import { ISubscriptionRepository } from "../../repository/interface/ISubscriptionRepository";
 import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
 import mongoose from "mongoose";
+import { IOtpRepository } from "../../repository/interface/IOtpRepository";
 
 
 
@@ -36,26 +37,31 @@ const app = initializeApp(firebaseConfig);
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
 
 
+
 @injectable()
 export default class UserService implements IUserService {
     private userRepository: IUserRepository;
     private kafkaConnection: IKafkaConnection
     private subscriptionRepository: ISubscriptionRepository;
     private tenantUserRepository: ITenantUserRepository;
+    private otpRepository: IOtpRepository;
+
 
     constructor(
         @inject("IUserRepository") userRepository: IUserRepository,
         @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
         @inject("ISubscriptionRepository") subscriptionRepository: ISubscriptionRepository,
         @inject("ITenantUserRepository") tenantUserRepository: ITenantUserRepository,
-        
+        @inject("IOtpRepository") otpRepository: IOtpRepository
+
 
 
     ) {
         this.userRepository = userRepository;
         this.kafkaConnection = kafkaConnection
         this.subscriptionRepository = subscriptionRepository
-        this.tenantUserRepository=tenantUserRepository
+        this.tenantUserRepository = tenantUserRepository
+        this.otpRepository = otpRepository
     }
 
     async firebaseLogin(token: string) {
@@ -158,11 +164,11 @@ export default class UserService implements IUserService {
             const subscriptionData = await this.subscriptionRepository.fetchSubscription(new mongoose.Types.ObjectId(payload.tenantId));
 
             if (!subscriptionData) throw new UnauthorizedError();
-            if (subscriptionData.status !== 'paid')  throw new CustomError("Company account suspended", 403);
+            if (subscriptionData.status !== 'paid') throw new CustomError("Company account suspended", 403);
 
             const userData = await this.tenantUserRepository.fetchSpecificUser(payload.tenantId, payload.email);
             if (!userData) throw new UnauthorizedError();
-            if (userData.is_deleted) throw new UnauthorizedError(); 
+            if (userData.is_deleted) throw new UnauthorizedError();
 
         }
 
@@ -173,10 +179,60 @@ export default class UserService implements IUserService {
             id: payload.id,
             tenantId: payload.tenantId,
             role: payload.role,
-            branchId: payload.branchId??""
+            branchId: payload.branchId ?? ""
         }
 
         const newAccessToken = generateAccessToken(data);
         return newAccessToken
     }
+
+    async verifyOtp({ email, otp, context, tenantId }: { email: string, otp: string, context: string, tenantId?: string }): Promise<VerifyOtpResponse> {
+        const otpExist = await this.otpRepository.fetchOtp(email);
+        if (!otpExist) {
+            throw new NotFound("OTP not found");
+        }
+        if (otpExist.context !== context || otpExist.otp !== otp) {
+            throw new CustomError("Invalid or expired OTP.", 401);
+        }
+
+        switch (context) {
+            case 'signup': {
+                const userObj = await this.userRepository.verifyUser(email);
+                const producer = await this.kafkaConnection.getProducerInstance();
+                const userProducer = new UserProducer(producer, 'main', 'users');
+                userProducer.sendMessage('update', userObj);
+
+                const token = jwt.sign({ email: userObj.email, name: userObj.first_name, id: userObj._id }, process.env.JWT_SECRET_KEY!, { expiresIn: '1h' });
+                return { message: "User verified successfully", verified: true, token, name: userObj.first_name, role: 'Tenant_Admin', id: userObj._id };
+            }
+
+            case 'forgot-password': {
+                const token = jwt.sign({ email }, process.env.JWT_OTP_SECRET_KEY!, { expiresIn: '1h' });
+                return { message: "OTP verified successfully", token };
+            }
+
+            case 'tenant_login': {
+                if (!tenantId) {
+                    throw new CustomError("Tenant ID is required", 400);
+                }
+
+                const subscriptionData = await this.subscriptionRepository.fetchSubscription(new mongoose.Types.ObjectId(tenantId));
+                if (!subscriptionData) throw new UnauthorizedError();
+                if (subscriptionData.status !== 'paid') throw new CustomError("Company account suspended", 403);
+
+                const userObj = await this.tenantUserRepository.fetchSpecificUser(tenantId, email);
+                if (!userObj) {
+                    throw new CustomError("Invalid email address", 401);
+                }
+
+                const accessToken = generateAccessToken({ email, name: userObj.name, id: userObj._id, tenantId, role: userObj.role, branchId: userObj.branch_id });
+                const refreshToken = generateRefreshToken({ email, name: userObj.name, id: userObj._id, tenantId, role: userObj.role, branchId: userObj.branch_id });
+                return { message: "User verified", verified: true, accessToken, refreshToken, name: userObj.name as string, tenantId, role: userObj.role as string, id: userObj._id };
+            }
+
+            default:
+                throw new CustomError("Invalid context provided", 400);
+        }
+    }
+
 }

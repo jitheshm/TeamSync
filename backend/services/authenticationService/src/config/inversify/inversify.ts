@@ -17,6 +17,8 @@ import { ISubscriptionRepository } from "../../repository/interface/ISubscriptio
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
 import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
+import { IOtpRepository } from "../../repository/interface/IOtpRepository";
+import OtpRepository from "../../repository/implementations/OtpRepository";
 
 
 const container = new Container();
@@ -30,6 +32,7 @@ container.bind<IUserService>("IUserService").to(UserService);
 container.bind<IUserRepository>("IUserRepository").to(UserRepository);
 container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(SubscriptionRepository);
 container.bind<ITenantUserRepository>("ITenantUserRepository").to(TenantUserRepository);
+container.bind<IOtpRepository>("IOtpRepository").to(OtpRepository);
 
 
 
