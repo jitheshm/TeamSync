@@ -9,9 +9,10 @@ import { AdminController } from "../../controllers/v1/implementations/AdminContr
 
 const container = new Container();
 
-container.bind<IAdminRepository>("IAdminRepository").to(AdminRepository);
-container.bind<IAdminService>("IAdminService").to(AdminService);
 container.bind<IAdminController>("IAdminController").to(AdminController);
+container.bind<IAdminService>("IAdminService").to(AdminService);
+container.bind<IAdminRepository>("IAdminRepository").to(AdminRepository);
+
 
 
 export { container };

@@ -10,12 +10,16 @@ export class AdminController implements IAdminController {
     private adminService: IAdminService;
 
     constructor(@inject("IAdminService") adminService: IAdminService) {
+        if(!adminService) {
+            console.log("AdminController: adminService is null or undefined");
+        }
+        
         this.adminService = adminService;
-    }
+    } 
 
     async login(req: Request, res: Response, next: NextFunction) {
         try {
-
+            console.log(this)
             const result = validationResult(req);
             if (!result.isEmpty()) {
                 throw new FValidationError(result.array(), 400);

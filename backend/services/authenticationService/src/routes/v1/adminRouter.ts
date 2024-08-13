@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction,Request,Response, Router } from "express";
 import { checkSchema } from "express-validator";
 import adminLoginValidator from "../../validators/adminLoginValidator";
 import adminAuth from "../../middlewares/adminAuth";
@@ -13,7 +13,7 @@ const router = Router()
 const adminController = container.get<IAdminController>("IAdminController");
 
 
-router.post('/login', checkSchema(adminLoginValidator()), adminController.login)
+router.post('/login', checkSchema(adminLoginValidator()), (req:Request, res:Response, next:NextFunction) => adminController.login(req, res, next))
 router.get('/token/verify', adminAuth, admintokenVerifyController)
 router.post('/token/new', adminNewTokenController);
 
