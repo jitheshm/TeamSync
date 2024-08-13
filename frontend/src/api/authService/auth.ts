@@ -79,15 +79,7 @@ export const adminLogin = async (formData: AdminFormValues) => {
     }
 }
 
-export const verifyAdminToken = async (token: string) => {
-    try {
-        const response = await adminInstance.get('/auth-service/v1/admin/token/verify')
 
-        return response.data
-    } catch (error) {
-        throw error
-    }
-}
 
 export const tenantLogin = async (formData: LoginFormValues) => {
     try {

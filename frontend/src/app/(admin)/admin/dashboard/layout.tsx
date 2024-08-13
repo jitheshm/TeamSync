@@ -1,5 +1,4 @@
 "use client"
-import { verifyAdminToken } from "@/api/authService/auth"
 import AdminLayout from "@/components/Layout/AdminLayout"
 import { verify } from "@/features/admin/adminSlice"
 import { useRouter } from "next/navigation"
@@ -31,22 +30,7 @@ export default function DashboardLayout({
         if (verified) {
             setLoading(false)
         } else {
-            // const token = Cookies.get('team-sync-admin-token')
-            // if (token) {
-            //     verifyAdminToken(token).then((data) => {
-            //         dispatch(verify())
-            //         setLoading(false)
-
-            //     }).catch((error) => {
-            //         console.log(error);
-            //         router.push('/admin/login')
-
-
-
-            //     })
-            // } else {
-            //     router.push('/admin/login')
-            // }
+            
             router.push('/admin/login')
         }
     }, [verified])
