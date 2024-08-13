@@ -10,4 +10,5 @@ export interface IUserService {
         refreshToken: string;
         userData: IFetchReturn & Document;
     }>
+    newToken(refreshToken: string): Promise<string>
 }

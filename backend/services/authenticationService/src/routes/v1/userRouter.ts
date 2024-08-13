@@ -13,7 +13,6 @@ import tenantLoginValidator from "../../validators/tenantLoginValidator";
 import tenantLoginController from "../../controllers/v1/tenantLoginController";
 import resendOtpController from "../../controllers/v1/resendOtpController";
 import resendValidator from "../../validators/resendValidator";
-import newTokenController from "../../controllers/v1/newTokenController";
 import { container } from "../../config/inversify/inversify";
 import IUserController from "../../controllers/v1/interfaces/IUserController";
 import formValidation from "../../middlewares/formValidation";
@@ -28,7 +27,8 @@ const userController = container.get<IUserController>("IUserController");
 router.post('/verify-otp', checkSchema(otpValidator()), otpVerifyController)
 router.post('/login', checkSchema(loginValidator()), formValidation,
     (req: Request, res: Response, next: NextFunction) => userController.login(req, res, next))
-router.post('/token/new', newTokenController);
+router.post('/token/new', 
+    (req: Request, res: Response, next: NextFunction) => userController.newToken(req, res, next))
 router.post('/forget-password', checkSchema(forgetValidator()), formValidation,
     (req: Request, res: Response, next: NextFunction) => userController.forgetPassword(req, res, next))
 router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), resetPasswordController)

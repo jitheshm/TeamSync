@@ -13,6 +13,11 @@ import CustomError from "../../utils/CustomError";
 import { sendOtp } from "../../utils/otp";
 import bcrypt from 'bcryptjs';
 import { InvalidCredentialsError } from "../../errors/InvalidCredentialsError";
+import jwt from 'jsonwebtoken';
+import { UnauthorizedError } from "../../errors/Unauthorized";
+import { ISubscriptionRepository } from "../../repository/interface/ISubscriptionRepository";
+import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
+import mongoose from "mongoose";
 
 
 
@@ -28,19 +33,29 @@ const firebaseConfig = {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 const app = initializeApp(firebaseConfig);
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
+
 
 @injectable()
 export default class UserService implements IUserService {
     private userRepository: IUserRepository;
     private kafkaConnection: IKafkaConnection
+    private subscriptionRepository: ISubscriptionRepository;
+    private tenantUserRepository: ITenantUserRepository;
 
     constructor(
         @inject("IUserRepository") userRepository: IUserRepository,
-        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ISubscriptionRepository") subscriptionRepository: ISubscriptionRepository,
+        @inject("ITenantUserRepository") tenantUserRepository: ITenantUserRepository,
+        
+
 
     ) {
         this.userRepository = userRepository;
         this.kafkaConnection = kafkaConnection
+        this.subscriptionRepository = subscriptionRepository
+        this.tenantUserRepository=tenantUserRepository
     }
 
     async firebaseLogin(token: string) {
@@ -127,5 +142,41 @@ export default class UserService implements IUserService {
         const accessToken = generateAccessToken({ email: userData.email, name: userData.first_name, id: userData._id, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' })
         const refreshToken = generateRefreshToken({ email: userData.email, name: userData.first_name, id: userData._id, tenantId: userData?.tenant?.[0]?._id, role: 'Tenant_Admin' })
         return { accessToken, refreshToken, userData }
+    }
+
+    async newToken(refreshToken: string) {
+
+        const payload: jwt.JwtPayload = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET) as jwt.JwtPayload;
+
+        if (payload.role === 'Tenant_Admin') {
+            const userData = await this.userRepository.fetchUser(payload.email);
+            if (!userData) throw new UnauthorizedError();
+            if (userData.is_blocked) throw new CustomError("User is blocked", 403);
+            if (!userData.is_verified) throw new CustomError("User is not verified", 403);
+        } else {
+
+            const subscriptionData = await this.subscriptionRepository.fetchSubscription(new mongoose.Types.ObjectId(payload.tenantId));
+
+            if (!subscriptionData) throw new UnauthorizedError();
+            if (subscriptionData.status !== 'paid')  throw new CustomError("Company account suspended", 403);
+
+            const userData = await this.tenantUserRepository.fetchSpecificUser(payload.tenantId, payload.email);
+            if (!userData) throw new UnauthorizedError();
+            if (userData.is_deleted) throw new UnauthorizedError(); 
+
+        }
+
+
+        const data = {
+            email: payload.email,
+            name: payload.first_name,
+            id: payload.id,
+            tenantId: payload.tenantId,
+            role: payload.role,
+            branchId: payload.branchId??""
+        }
+
+        const newAccessToken = generateAccessToken(data);
+        return newAccessToken
     }
 }

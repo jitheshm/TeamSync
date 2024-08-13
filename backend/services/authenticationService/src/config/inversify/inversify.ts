@@ -13,6 +13,10 @@ import UserService from "../../services/implementations/UserService";
 import { IUserService } from "../../services/interfaces/IUserService";
 import { IUserRepository } from "../../repository/interface/IUserRepository";
 import UserRepository from "../../repository/implementations/UserRepository";
+import { ISubscriptionRepository } from "../../repository/interface/ISubscriptionRepository";
+import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
+import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
+import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
 
 
 const container = new Container();
@@ -24,6 +28,8 @@ container.bind<IKafkaConnection>("IKafkaConnection").to(KafkaConnection);
 container.bind<IUserController>("IUserController").to(UserController);
 container.bind<IUserService>("IUserService").to(UserService);
 container.bind<IUserRepository>("IUserRepository").to(UserRepository);
+container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(SubscriptionRepository);
+container.bind<ITenantUserRepository>("ITenantUserRepository").to(TenantUserRepository);
 
 
 
