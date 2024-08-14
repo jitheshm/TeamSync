@@ -24,6 +24,9 @@ import BranchRepository from "../../repository/implementations/BranchRepository"
 import IBranchService from "../../services/interfaces/IBranchService";
 import BranchService from "../../services/implementations/BranchService";
 import BranchConsumer from "../../events/kafka/consumers/BranchConsumer";
+import ISubscriptionService from "../../services/interfaces/ISubscriptionService";
+import SubscriptionService from "../../services/implementations/SubscriptionService";
+import SubscriptionConsumer from "../../events/kafka/consumers/SubscriptionConsumer";
 
 
 const container = new Container();
@@ -40,7 +43,9 @@ container.bind<ITenantUserRepository>("ITenantUserRepository").to(TenantUserRepo
 container.bind<IOtpRepository>("IOtpRepository").to(OtpRepository);
 container.bind<IBranchRepository>("IBranchRepository").to(BranchRepository);
 container.bind<IBranchService>("IBranchService").to(BranchService);
-container.bind<IConsumer>("IBranchConsumer").to(BranchConsumer)
+container.bind<IConsumer>("IBranchConsumer").to(BranchConsumer);
+container.bind<ISubscriptionService>("ISubscriptionService").to(SubscriptionService);
+container.bind<IConsumer>("ISubscriptionConsumer").to(SubscriptionConsumer);
 
 
 
