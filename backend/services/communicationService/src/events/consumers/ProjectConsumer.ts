@@ -1,12 +1,11 @@
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import IConsumer from "../../interfaces/IConsumer";
 import ProjectRepository from "../../repository/implementations/ProjectRepository";
 import ChatRepository from "../../repository/implementations/ChatRepository";
 import ProjectService from "../../services/implementations/ProjectService";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
 import { IChatRepository } from "../../repository/interfaces/IChatRepository";
 import { IProjectService } from "../../services/interfaces/IProjectService";
+import { IConsumer, IKafkaConnection } from "teamsync-common";
 
 const kafkaConnection: IKafkaConnection = new KafkaConnection();
 const projectRepository: IProjectRepository = new ProjectRepository();

@@ -1,6 +1,6 @@
 import { Producer } from "kafkajs";
-import IProducer from "../../interfaces/IProducer";
 import IMeetingEnitity from "../../entities/MeetingEntity";
+import { IProducer } from "teamsync-common";
 
 
 

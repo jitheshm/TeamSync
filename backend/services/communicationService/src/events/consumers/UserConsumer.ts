@@ -1,6 +1,5 @@
+import { IConsumer, IKafkaConnection } from "teamsync-common";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import IConsumer from "../../interfaces/IConsumer";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import UserRepository from "../../repository/implementations/UserRepository";
 import { IUserRepository } from "../../repository/interfaces/IUserRepository";
 import UserService from "../../services/implementations/UserService";

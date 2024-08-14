@@ -1,6 +1,5 @@
+import { IConsumer, IKafkaConnection } from "teamsync-common";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import IConsumer from "../../interfaces/IConsumer";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
 import SubscriptionService from "../../services/implementations/SubscriptionService";

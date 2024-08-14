@@ -3,7 +3,6 @@ import { validationResult } from "express-validator";
 import IDecodedUser from "../interfaces/IDecodeUser";
 import { IMeetingRepository } from "../repository/interfaces/IMeetingRepository";
 import MeetingRepository from "../repository/implementations/MeetingRepository";
-import { IKafkaConnection } from "../interfaces/IKafkaConnection";
 import { KafkaConnection } from "../config/kafka/KafkaConnection";
 import MeetingProducer from "../events/producers/MeetingProducer";
 import IMeetingEnitity from "../entities/MeetingEntity";
@@ -11,6 +10,7 @@ import mongoose from "mongoose";
 import { nanoid } from "nanoid";
 import MeetingService from "../services/implementations/MeetingService";
 import { IMeetingService } from "../services/interfaces/IMeetingService";
+import { IKafkaConnection } from "teamsync-common";
 
 
 const meetingRepository: IMeetingRepository = new MeetingRepository()

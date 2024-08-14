@@ -1,5 +1,5 @@
+import { IConsumer } from "teamsync-common";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import IConsumer from "../../interfaces/IConsumer";
 import PlanRepository from "../../repository/implementations/PlanRepository";
 import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
 import PlanService from "../../services/implementations/PlanService";
