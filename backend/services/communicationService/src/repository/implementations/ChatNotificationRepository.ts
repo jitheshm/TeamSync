@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 import IChatNotfication from "../../entities/ChatNotification";
 import switchDb from "../../utils/switchDb";
 import { IChatNotificationRepository } from "../interfaces/IChatNotificationRepository";
+import { injectable } from "inversify";
 
+@injectable()
 export default class ChatNotificationRepository implements IChatNotificationRepository {
     async create(dbId: string, chat_id: mongoose.Types.ObjectId, userIds: mongoose.Types.ObjectId[]) {
         try {

@@ -1,31 +1,19 @@
 import { Namespace, Server, Socket } from 'socket.io';
 import userAuth from '../middlewares/userAuth';
-import { ITenantUserRepository } from '../repository/interfaces/ITenantUserRepository';
-import TenantUserRepository from '../repository/implementations/TenantUserRepository';
 import IMessage from '../entities/MessageEntity';
 import { IChatNotificationService } from '../services/interfaces/IChatNotificationService';
-import ChatNotoficationService from '../services/implementations/ChatNotificationService';
-import { IChatNotificationRepository } from '../repository/interfaces/IChatNotificationRepository';
-import ChatNotificationRepository from '../repository/implementations/ChatNotificationRepository';
 import mongoose from 'mongoose';
-import ChatService from '../services/implementations/ChatService';
 import { IChatService } from '../services/interfaces/IChatService';
-import ChatRepository from '../repository/implementations/ChatRepository';
 import { IMessageService } from '../services/interfaces/IMessageService';
-import MessageService from '../services/implementations/MessageService';
-import MessageRepository from '../repository/implementations/MessageRepository';
 import { ITenantUserService } from '../services/interfaces/ITenantUserService';
-import TenantUserService from '../services/implementations/TenantUserService';
-import { IChatRepository } from '../repository/interfaces/IChatRepository';
+import { container } from '../config/inversify/inversify';
 
-const tenantUserRepository: ITenantUserRepository = new TenantUserRepository()
-const chatNotificationRepository: IChatNotificationRepository = new ChatNotificationRepository()
-const chatRepository: IChatRepository = new ChatRepository()
-const chatService: IChatService = new ChatService(chatRepository)
-const messageRepository = new MessageRepository()
-const messageService: IMessageService = new MessageService(messageRepository)
-const chatNotificationService: IChatNotificationService = new ChatNotoficationService(chatNotificationRepository)
-const tenantUserService: ITenantUserService = new TenantUserService(tenantUserRepository)
+
+
+const chatService = container.get<IChatService>("IChatService");
+const messageService = container.get<IMessageService>("IMessageService");
+const chatNotificationService = container.get<IChatNotificationService>("IChatNotificationService");
+const tenantUserService = container.get<ITenantUserService>("ITenantUserService");
 const userActivity = new Map()
 const ServerActiveUsers = new Map()
 
@@ -69,13 +57,9 @@ const socketHandler = (io: Namespace) => {
                     callback({ status: 'success', message: `Joined room ${joinId}`, groupId: joinId });
 
 
-                    const prevMessages = await messageService.fetchMessages(socket.data.user.tenantId, joinId)
+                    const { prevMessages, recentChats } = await chatService.joinRoom(socket.data.user.tenantId, socket.data.user.id, joinId)
 
                     socket.emit('previous_messages', { status: 'success', message: 'Previous messages', data: prevMessages })
-                    await chatNotificationService.deleteChatNotification(socket.data.user.tenantId, new mongoose.Types.ObjectId(joinId), new mongoose.Types.ObjectId(socket.data.user.id))
-
-                    recentChats = await chatService.fetchAllChats(socket.data.user.tenantId, socket.data.user.id)
-
 
                     // socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: await fetchAllChats(socket.data.user.tenantId, socket.data.user.id) })
                     socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: recentChats })
@@ -105,40 +89,11 @@ const socketHandler = (io: Namespace) => {
             socket.on('new_chat', async (email) => {
                 try {
                     const roomId = [email, socket.data.user.email].sort().join('-')
-                    const chatObj = await chatService.fetchChats(socket.data.user.tenantId, roomId);
 
-                    console.log(chatObj, ">>>>>>.");
-
-                    if (!chatObj) {
-
-                        const userData = await tenantUserService.fetchTenantUserByEmail(email, socket.data.user.tenantId)
-
-                        if (!userData) {
-                            console.log("User not found");
-
-                            socket.emit('recent_chats', { status: 'user not found', message: 'Recent chats', data: recentChats })
-
-                            return
-                        }
-
-                        console.log(roomId);
-
-                        const dataObj = {
-                            group_id: roomId,
-                            // chat_id: roomId,
-                            type: 'personal',
-                            members: [userData._id, socket.data.user.id]
-                        }
-                        console.log(dataObj.members, ">>>>>>hai.");
-
-                        await chatService.createChat(socket.data.user.tenantId, dataObj)
-
-
-
+                    const recentChats = await chatService.newChat(socket.data.user.tenantId, roomId, socket.data.user.id, email)
+                    if (!recentChats) {
+                        return
                     }
-
-                    recentChats = await chatService.fetchAllChats(socket.data.user.tenantId, socket.data.user.id)
-
 
                     // socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: await fetchAllChats(socket.data.user.tenantId, socket.data.user.id) })
                     socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: recentChats })

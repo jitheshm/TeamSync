@@ -1,7 +1,8 @@
+import mongoose from "mongoose";
 import { ObjectId } from "mongoose";
 
 export interface ITenantUsers {
-    _id: ObjectId;
+    _id: mongoose.Types.ObjectId;
     email: String;
     created_at: Date;
     name: String;

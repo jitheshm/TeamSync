@@ -2,16 +2,21 @@ import mongoose from "mongoose";
 import IMessage from "../../entities/MessageEntity";
 import { IMessageRepository } from "../../repository/interfaces/IMessageRepository";
 import { IMessageService } from "../interfaces/IMessageService";
+import { inject, injectable } from "inversify";
 
 
 
+@injectable()
 
 export default class MessageService implements IMessageService {
     private messageRepository: IMessageRepository;
 
-    constructor(messageRepository: IMessageRepository) {
+    constructor(
+        @inject("IMessageRepository") messageRepository: IMessageRepository,
+
+    ) {
         this.messageRepository = messageRepository;
-        
+
     }
 
     async createMessage(dbId: string, data: IMessage): Promise<void> {
