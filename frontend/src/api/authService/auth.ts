@@ -18,15 +18,7 @@ export const login = async (formData: LoginFormData) => {
     }
 }
 
-export const verifyToken = async (token: string) => {
-    try {
-        const response = await instance.get('/auth-service/v1/token/verify')
 
-        return response.data
-    } catch (error) {
-        throw error
-    }
-}
 
 export const forgetPassword = async (formData: ForgotPasswordFormData) => {
     try {

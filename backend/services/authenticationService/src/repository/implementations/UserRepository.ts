@@ -1,9 +1,9 @@
 import { Document } from "mongoose";
 import { IUsers } from "../../entities/UserEntity";
-import CustomError from "../../utils/CustomError";
 import switchDb from "../../utils/switchDb";
 import { IUserRepository } from "../interface/IUserRepository";
 import { injectable } from "inversify";
+import { CustomError } from "../../errors/CustomError";
 
 @injectable()
 export default class UserRepository implements IUserRepository {

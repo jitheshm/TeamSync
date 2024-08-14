@@ -1,5 +1,4 @@
 "use client"
-import { verifyToken } from '@/api/authService/auth'
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useDispatch, useSelector } from 'react-redux'

@@ -9,7 +9,6 @@ import UserProducer from "../../events/kafka/producers/UserProducer";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token";
 import { IUserService, VerifyOtpResponse } from "../interfaces/IUserService";
 import { NotFound } from "../../errors/NotFound";
-import CustomError from "../../utils/CustomError";
 import { sendOtp } from "../../utils/otp";
 import bcrypt from 'bcryptjs';
 import { InvalidCredentialsError } from "../../errors/InvalidCredentialsError";
@@ -20,6 +19,7 @@ import { ITenantUserRepository } from "../../repository/interface/ITenantUserRep
 import mongoose from "mongoose";
 import { IOtpRepository } from "../../repository/interface/IOtpRepository";
 import hash from "../../utils/bcrypt";
+import { CustomError } from "../../errors/CustomError";
 
 
 const firebaseConfig = {
@@ -284,7 +284,7 @@ export default class UserService implements IUserService {
         if (userData.role !== role) {
             throw new InvalidCredentialsError("Invalid email address")
         }
-        
+
         if (userData.is_deleted) {
             throw new CustomError("User is deleted", 403)
         }

@@ -5,8 +5,6 @@ import loginValidator from "../../validators/loginValidator";
 import forgetValidator from "../../validators/forgetValidator";
 import resetPasswordValidator from "../../validators/resetPasswordValidator";
 import otpAuth from "../../middlewares/otpAuth";
-import userAuth from "../../middlewares/userAuth";
-import tokenVerifyController from "../../controllers/v1/tokenVerifyController";
 import tenantLoginValidator from "../../validators/tenantLoginValidator";
 import resendValidator from "../../validators/resendValidator";
 import { container } from "../../config/inversify/inversify";
@@ -30,7 +28,6 @@ router.post('/forget-password', checkSchema(forgetValidator()), formValidation,
     (req: Request, res: Response, next: NextFunction) => userController.forgetPassword(req, res, next))
 router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), formValidation,
     (req: Request, res: Response, next: NextFunction) => userController.resetPassword(req, res, next))
-router.get('/token/verify', userAuth, tokenVerifyController)
 router.post('/login/firebase',
     (req: Request, res: Response, next: NextFunction) => userController.firebaseLogin(req, res, next))
 router.post('/tenant/login', checkSchema(tenantLoginValidator()), formValidation,

@@ -4,7 +4,6 @@ import LoginLanding from '@/components/Login'
 import React, { useEffect, useState } from 'react'
 import UserLayout from '@/components/Layout/UserLayout'
 import Cookies from 'js-cookie';
-import { verifyToken } from '@/api/authService/auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { verify } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
