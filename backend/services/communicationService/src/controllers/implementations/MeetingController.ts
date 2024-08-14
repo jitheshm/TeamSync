@@ -31,4 +31,16 @@ export class MeetingController implements IMeetingController {
         }
     }
 
+    async fetchMeetings(req: Request & Partial<{ user: IDecodedUser }>, res: Response, next: NextFunction) {
+        try {
+            const { search, page, limit } = req.query as { search: string | null, page: string, limit: string };
+            const data = await this.meetingService.fetchMeetings(req.user?.decode?.tenantId as string, new mongoose.Types.ObjectId(req.user?.decode?.id as string), search ?? null, page ? Number(page) : 1, limit ? Number(limit) : 10);
+            res.status(200).json({ data: data.data, total: data.totalCount });
+
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
+
 }

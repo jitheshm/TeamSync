@@ -5,4 +5,7 @@ export interface IMeetingController {
     createMeeting(req: Request & Partial<{
         user: IDecodedUser;
     }>, res: Response, next: NextFunction): Promise<void>
+    fetchMeetings(req: Request & Partial<{
+        user: IDecodedUser;
+    }>, res: Response, next: NextFunction): Promise<void>
 }

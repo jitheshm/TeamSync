@@ -1,8 +1,6 @@
 import { Router } from "express";
-import userAuth from "../../middlewares/userAuth";
 import userApiAuth from "../../middlewares/userApiAuth";
 import tenantAuth from "../../middlewares/tenantAuth";
-import fetchMeetingsController from "../../controllers/fetchMeetingsController";
 import { container } from "../../config/inversify/inversify";
 import { IMeetingController } from "../../controllers/interfaces/IMeetingController";
 
@@ -13,6 +11,8 @@ const meetingController = container.get<IMeetingController>("IMeetingController"
 router.post('/meeting', userApiAuth, tenantAuth,
     (req, res, next) => meetingController.createMeeting(req, res, next));
 
-router.get('/meetings', userApiAuth, tenantAuth, fetchMeetingsController)
+router.get('/meetings', userApiAuth, tenantAuth,
+    (req, res, next) => meetingController.fetchMeetings(req, res, next)
+)
 
 export default router
