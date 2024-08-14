@@ -96,12 +96,23 @@ export class UserController implements IUserController {
         }
     }
 
-    async resetPassword(req: Request & Partial<{user:IDecodedUser}>, res: Response, next: NextFunction) {
+    async resetPassword(req: Request & Partial<{ user: IDecodedUser }>, res: Response, next: NextFunction) {
         try {
             const { new_password }: { new_password: string } = req.body;
             const email = req.user?.email as string;
             await this.userService.resetPassword(email, new_password)
             res.status(200).json({ message: "Password updated successfully" });
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    async tenantLogin(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { email, role, tenantId }: { email: string, role: string, tenantId: string } = req.body
+            await this.userService.tenantLogin(email, role, tenantId)
+            res.status(200).json({ message: "OTP sent to email" });
         } catch (error) {
             console.log(error)
             next(error)

@@ -11,4 +11,5 @@ export default interface IUserController {
     resetPassword(req: Request & Partial<{
         user: IDecodedUser;
     }>, res: Response, next: NextFunction): Promise<void>
+    tenantLogin(req: Request, res: Response, next: NextFunction): Promise<void>
 }

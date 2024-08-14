@@ -260,7 +260,7 @@ export default class UserService implements IUserService {
         sendOtp(email, context);
     }
 
-    async resetPassword(email:string,newPassword:string){
+    async resetPassword(email: string, newPassword: string) {
 
         const password = hash(newPassword)
         const updateUserObj = await this.userRepository.updateUser({ email: email, password: password })
@@ -271,9 +271,24 @@ export default class UserService implements IUserService {
             const producer = await this.kafkaConnection.getProducerInstance()
             const userProducer = new UserProducer(producer, 'main', 'users')
             userProducer.sendMessage('update', updateUserObj)
-            
+
         }
 
+    }
+
+    async tenantLogin(email: string, role: string, tenantId: string) {
+        const userData = await this.tenantUserRepository.fetchSpecificUser(tenantId, email);
+        if (!userData) {
+            throw new InvalidCredentialsError("Invalid email address")
+        }
+        if (userData.role !== role) {
+            throw new InvalidCredentialsError("Invalid email address")
+        }
+        
+        if (userData.is_deleted) {
+            throw new CustomError("User is deleted", 403)
+        }
+        sendOtp(email, 'tenant_login')
     }
 
 }
