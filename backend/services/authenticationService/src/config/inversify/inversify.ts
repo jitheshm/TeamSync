@@ -32,6 +32,7 @@ import TenantRepository from "../../repository/implementations/TenantRepository"
 import ITenantService from "../../services/interfaces/ITenantService";
 import TenantService from "../../services/implementations/TenantService";
 import TenantConsumer from "../../events/kafka/consumers/TenantConsumer";
+import TenantUserConsumer from "../../events/kafka/consumers/TenantUserConsumer";
 
 
 const container = new Container();
@@ -54,6 +55,8 @@ container.bind<IConsumer>("ISubscriptionConsumer").to(SubscriptionConsumer);
 container.bind<ITenantRepository>("ITenantRepository").to(TenantRepository);
 container.bind<ITenantService>("ITenantService").to(TenantService);
 container.bind<IConsumer>("ITenantConsumer").to(TenantConsumer);
+container.bind<IConsumer>("ITenantUserConsumer").to(TenantUserConsumer);
+
 
 
 

@@ -287,4 +287,22 @@ export default class UserService implements IUserService {
         sendOtp(email, 'tenant_login')
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async handleTenantUserEvents(dataObj: any) {
+        switch (dataObj.eventType) {
+            case 'create':
+
+                await this.tenantUserRepository.create(dataObj.data, dataObj.dbName)
+                break;
+            case 'update':
+
+                await this.tenantUserRepository.update(dataObj.data, dataObj.dbName, dataObj.data._id)
+                break;
+
+
+        }
+    }
+
+
+
 }
