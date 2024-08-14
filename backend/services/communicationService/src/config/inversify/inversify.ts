@@ -23,6 +23,10 @@ import { ITenantUserService } from "../../services/interfaces/ITenantUserService
 import TenantUserService from "../../services/implementations/TenantUserService";
 import { ITenantUserRepository } from "../../repository/interfaces/ITenantUserRepository";
 import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
+import { IBranchRepository } from "../../repository/interfaces/IBranchRepository";
+import { IBranchService } from "../../services/interfaces/IBranchService";
+import BranchService from "../../services/implementations/BranchService";
+import BranchRepository from "../../repository/implementations/BranchRepository";
 
 
 
@@ -40,6 +44,8 @@ container.bind<IChatNotificationService>("IChatNotificationService").to(ChatNoti
 container.bind<IChatNotificationRepository>("IChatNotificationRepository").to(ChatNotificationRepository);
 container.bind<ITenantUserService>("ITenantUserService").to(TenantUserService);
 container.bind<ITenantUserRepository>("ITenantUserRepository").to(TenantUserRepository);
+container.bind<IBranchRepository>("IBranchRepository").to(BranchRepository);
+container.bind<IBranchService>("IBranchService").to(BranchService);
 
 
 
