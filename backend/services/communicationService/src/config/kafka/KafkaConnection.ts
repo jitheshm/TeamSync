@@ -1,3 +1,4 @@
+import { injectable } from "inversify";
 import { Consumer, Kafka, Producer } from "kafkajs"
 import { IKafkaConnection } from "teamsync-common";
 // import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
@@ -8,6 +9,7 @@ const kafkaInstance = new Kafka({
 
 })
 
+@injectable()
 export class KafkaConnection implements IKafkaConnection {
 
     private static producer: Producer;

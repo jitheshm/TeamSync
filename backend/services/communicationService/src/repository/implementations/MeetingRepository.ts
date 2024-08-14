@@ -2,8 +2,9 @@ import mongoose, { Document } from "mongoose";
 import IMeetingEnitity from "../../entities/MeetingEntity";
 import switchDb from "../../utils/switchDb";
 import { IMeetingRepository } from "../interfaces/IMeetingRepository";
+import { injectable } from "inversify";
 
-
+@injectable()
 export default class MeetingRepository implements IMeetingRepository {
     constructor() {
     }
