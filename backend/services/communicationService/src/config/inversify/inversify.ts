@@ -38,6 +38,11 @@ import { IProjectService } from "../../services/interfaces/IProjectService";
 import ProjectService from "../../services/implementations/ProjectService";
 import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
 import ProjectRepository from "../../repository/implementations/ProjectRepository";
+import SubscriptionConsumer from "../../events/consumers/SubscriptionConsumer";
+import { ISubscriptionService } from "../../services/interfaces/ISubscriptionService";
+import SubscriptionService from "../../services/implementations/SubscriptionService";
+import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
+import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 
 
 
@@ -64,6 +69,9 @@ container.bind<IPlanRepository>("IPlanRepository").to(PlanRepository);
 container.bind<IConsumer>("IProjectConsumer").to(ProjectConsumer);
 container.bind<IProjectService>("IProjectService").to(ProjectService);
 container.bind<IProjectRepository>("IProjectRepository").to(ProjectRepository);
+container.bind<IConsumer>("ISubscriptionConsumer").to(SubscriptionConsumer);
+container.bind<ISubscriptionService>("ISubscriptionService").to(SubscriptionService);
+container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(SubscriptionRepository)
 
 
 

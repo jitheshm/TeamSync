@@ -1,18 +1,23 @@
 import { IConsumer, IKafkaConnection } from "teamsync-common";
-import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
-import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
-import SubscriptionService from "../../services/implementations/SubscriptionService";
 import { ISubscriptionService } from "../../services/interfaces/ISubscriptionService";
+import { inject, injectable } from "inversify";
 
-const kafkaConnection:IKafkaConnection = new KafkaConnection();
-const subscriptionRepository:ISubscriptionRepository = new SubscriptionRepository();
-const subscriptionService:ISubscriptionService = new SubscriptionService(subscriptionRepository);
 
+@injectable()
 export default class SubscriptionConsumer implements IConsumer {
+    private kafkaConnection: IKafkaConnection;
+    private subscriptionService: ISubscriptionService;
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ISubscriptionService") subscriptionService: ISubscriptionService
+    ) {
+        this.kafkaConnection = kafkaConnection;
+        this.subscriptionService = subscriptionService;
+    }
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_sub_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_sub_group`);
             await consumer.subscribe({ topic: "sub-events", fromBeginning: true });
 
             await consumer.run({
@@ -25,7 +30,7 @@ export default class SubscriptionConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await subscriptionService.handleEvent(dataObj.eventType, dataObj.data);
+                            await this.subscriptionService.handleEvent(dataObj.eventType, dataObj.data);
                         }
                     }
                 },
