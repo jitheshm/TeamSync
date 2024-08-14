@@ -51,7 +51,10 @@ export interface IUserService {
     resendOtp(email: string, context: string, tenantId?: string): Promise<void>
     resetPassword(email: string, newPassword: string): Promise<void>
     tenantLogin(email: string, role: string, tenantId: string): Promise<void>
+    
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     handleTenantUserEvents(dataObj: any): Promise<void>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    handleUserEvents(dataObj: any): Promise<void>
 
 }

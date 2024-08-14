@@ -6,7 +6,7 @@ import { getAuth } from "firebase-admin/auth";
 import { IUsers } from "../../entities/UserEntity";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token";
 import { IUserService, VerifyOtpResponse } from "../interfaces/IUserService";
-import { sendOtp } from "../../utils/otp";
+import { generateOtp, sendOtp } from "../../utils/otp";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { ISubscriptionRepository } from "../../repository/interface/ISubscriptionRepository";
@@ -16,6 +16,7 @@ import { IOtpRepository } from "../../repository/interface/IOtpRepository";
 import hash from "../../utils/bcrypt";
 import { CustomError, IKafkaConnection, InvalidCredentialsError, NotFound, UnauthorizedError } from "teamsync-common";
 import UserProducer from "../../events/kafka/producers/UserProducer";
+import OtpProducer from "../../events/kafka/producers/OtpProducer";
 
 
 const firebaseConfig = {
@@ -298,6 +299,58 @@ export default class UserService implements IUserService {
 
                 await this.tenantUserRepository.update(dataObj.data, dataObj.dbName, dataObj.data._id)
                 break;
+
+
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async handleUserEvents(dataObj: any) {
+        switch (dataObj.eventType) {
+            case 'create':
+
+
+                {
+                    await this.userRepository.create(dataObj.data)
+                    const otp = generateOtp()
+                    
+                    const otpObj = {
+                        email: dataObj.data.email,
+                        otp: `${otp}`,
+                        context: 'signup'
+                    }
+                    await this.otpRepository.create(otpObj, dataObj.data.email)
+
+
+                    const producer = await this.kafkaConnection.getProducerInstance()
+                    const otpProducer = new OtpProducer(producer, 'main', 'otps')
+                    otpProducer.sendMessage('create', otpObj)
+                    break;
+                }
+
+
+
+            case 'update':
+                await this.userRepository.updateUser(dataObj.data)
+                break;
+
+            case 'resendOtp':
+                {
+                    const otp = generateOtp()
+                    const otpObj = {
+                        email: dataObj.data.email,
+                        otp: `${otp}`,
+                        context: 'signup'
+                    }
+                    await this.otpRepository.create(otpObj, dataObj.data.email)
+
+
+                    const producer = await this.kafkaConnection.getProducerInstance()
+                    const otpProducer = new OtpProducer(producer, 'main', 'otps')
+                    otpProducer.sendMessage('create', otpObj)
+                    break
+
+                }
 
 
         }

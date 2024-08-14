@@ -1,81 +1,39 @@
 
-import UserRepository from "../../../repository/implementations/UserRepository";
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import { generateOtp } from "../../../utils/otp";
-import OtpRepository from "../../../repository/implementations/OtpRepository";
-import OtpProducer from "../producers/OtpProducer";
-import { IConsumer } from "teamsync-common";
+import { IConsumer, IKafkaConnection } from "teamsync-common";
+import { IUserService } from "../../../services/interfaces/IUserService";
+import { inject, injectable } from "inversify";
 
-
+@injectable()
 export default class UserConsumer implements IConsumer {
+
+    private kafkaConnection: IKafkaConnection
+    private userService: IUserService
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("IUserService") userService: IUserService
+    ) {
+        this.kafkaConnection = kafkaConnection
+        this.userService = userService
+    }
 
     async consume() {
         try {
-            let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_user_group`)
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_user_group`)
             await consumer.subscribe({ topic: 'user-events', fromBeginning: true })
             await consumer.run({
-                eachMessage: async ({ topic, partition, message }) => {
+                eachMessage: async ({ message }) => {
                     console.log("iam new user consumer");
-                    let userRepository = new UserRepository()
-                    let data = message.value?.toString()
+                    const data = message.value?.toString()
                     console.log(data);
                     console.log("iam new user consumer");
 
                     if (data) {
-                        let dataObj = JSON.parse(data)
+                        const dataObj = JSON.parse(data)
                         console.log(data)
                         const origin = message.headers?.origin?.toString();
                         if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
-
-
-                                    {
-                                        await userRepository.create(dataObj.data)
-                                        let otp = generateOtp()
-                                        let otpRepository = new OtpRepository()
-                                        let otpObj = {
-                                            email: dataObj.data.email,
-                                            otp: `${otp}`,
-                                            context: 'signup'
-                                        }
-                                        await otpRepository.create(otpObj, dataObj.data.email)
-
-
-                                        let producer = await kafkaConnection.getProducerInstance()
-                                        let otpProducer = new OtpProducer(producer, 'main', 'otps')
-                                        otpProducer.sendMessage('create', otpObj)
-                                        break;
-                                    }
-
-
-
-                                case 'update':
-                                    await userRepository.updateUser(dataObj.data)
-                                    break;
-                                    
-                                case 'resendOtp':
-                                    {
-                                        let otp = generateOtp()
-                                        let otpRepository = new OtpRepository()
-                                        let otpObj = {
-                                            email: dataObj.data.email,
-                                            otp: `${otp}`,
-                                            context: 'signup'
-                                        }
-                                        await otpRepository.create(otpObj, dataObj.data.email)
-
-
-                                        let producer = await kafkaConnection.getProducerInstance()
-                                        let otpProducer = new OtpProducer(producer, 'main', 'otps')
-                                        otpProducer.sendMessage('create', otpObj)
-                                        break
-
-                                    }
-                               
-                                    
-                            }
+                            this.userService.handleUserEvents(dataObj)
                         }
 
                     }
