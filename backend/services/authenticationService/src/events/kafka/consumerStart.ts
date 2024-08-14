@@ -10,10 +10,10 @@ import { container } from "../../config/inversify/inversify"
 export const connectConsumers = () => {
     const branchConsumer = container.get<IConsumer>("IBranchConsumer");
     const subscriptionConsumer = container.get<IConsumer>("ISubscriptionConsumer");
+    const tenantConsumer = container.get<IConsumer>("ITenantConsumer");
 
 
     let userConsumer: UserConsumer = new UserConsumer()
-    let tenantConsumer: TenantConsumer = new TenantConsumer()
 
     let tenantUserConsumer: IConsumer = new TenantUserConsumer()
     subscriptionConsumer.consume()
