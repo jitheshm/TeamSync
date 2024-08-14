@@ -3,11 +3,12 @@ import mongoose, { ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import { IBranchRepository } from "../interface/IBranchRepository";
 import { IBranches } from "../../entities/BranchEntity";
+import { injectable } from "inversify";
 
 
 
 
-
+@injectable()
 export default class BranchRepository implements IBranchRepository {
 
     async create(data: IBranches, dbId: string) {

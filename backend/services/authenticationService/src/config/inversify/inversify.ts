@@ -18,7 +18,12 @@ import { ITenantUserRepository } from "../../repository/interface/ITenantUserRep
 import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
 import { IOtpRepository } from "../../repository/interface/IOtpRepository";
 import OtpRepository from "../../repository/implementations/OtpRepository";
-import { IKafkaConnection } from "teamsync-common";
+import { IConsumer, IKafkaConnection } from "teamsync-common";
+import { IBranchRepository } from "../../repository/interface/IBranchRepository";
+import BranchRepository from "../../repository/implementations/BranchRepository";
+import IBranchService from "../../services/interfaces/IBranchService";
+import BranchService from "../../services/implementations/BranchService";
+import BranchConsumer from "../../events/kafka/consumers/BranchConsumer";
 
 
 const container = new Container();
@@ -33,7 +38,9 @@ container.bind<IUserRepository>("IUserRepository").to(UserRepository);
 container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(SubscriptionRepository);
 container.bind<ITenantUserRepository>("ITenantUserRepository").to(TenantUserRepository);
 container.bind<IOtpRepository>("IOtpRepository").to(OtpRepository);
-
+container.bind<IBranchRepository>("IBranchRepository").to(BranchRepository);
+container.bind<IBranchService>("IBranchService").to(BranchService);
+container.bind<IConsumer>("IBranchConsumer").to(BranchConsumer)
 
 
 

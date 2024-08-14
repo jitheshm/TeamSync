@@ -1,8 +1,9 @@
-import { inject } from "inversify";
+import { inject, injectable } from "inversify";
 import { IBranchRepository } from "../../repository/interface/IBranchRepository";
 import IBranchService from "../interfaces/IBranchService";
 
-export default class BrachService implements IBranchService {
+@injectable()
+export default class BranchService implements IBranchService {
     private branchRepository: IBranchRepository;
 
     constructor(

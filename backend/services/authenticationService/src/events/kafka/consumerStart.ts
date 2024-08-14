@@ -5,11 +5,15 @@ import SubscriptionConsumer from "./consumers/SubscriptionConsumer"
 import TenantConsumer from "./consumers/TenantConsumer"
 import TenantUserConsumer from "./consumers/TenantUserConsumer"
 import UserConsumer from "./consumers/UserConsumer"
+import { container } from "../../config/inversify/inversify"
 
 export const connectConsumers = () => {
+    const branchConsumer = container.get<IConsumer>("IBranchConsumer");
+
+
     let userConsumer: UserConsumer = new UserConsumer()
     let tenantConsumer: TenantConsumer = new TenantConsumer()
-    let branchConsumer: IConsumer = new BranchConsumer()
+
     let tenantUserConsumer: IConsumer = new TenantUserConsumer()
     let subscriptionConsumer: IConsumer = new SubscriptionConsumer
     subscriptionConsumer.consume()
@@ -17,5 +21,5 @@ export const connectConsumers = () => {
     tenantConsumer.consume()
     branchConsumer.consume()
     tenantUserConsumer.consume()
-    
+
 } 
