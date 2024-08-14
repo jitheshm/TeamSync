@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+import { UnauthorizedError } from "teamsync-common";
 
 
 export default async (req: Request & Partial<{ user: string | jwt.JwtPayload }>, res: Response, next: NextFunction) => {
@@ -8,8 +9,11 @@ export default async (req: Request & Partial<{ user: string | jwt.JwtPayload }>,
 
         if (token) {
 
-            if (!process.env.JWT_ADMIN_SECRET_KEY)
-                throw new Error('JWT_Admin_SECRET_KEY not found in .env file');
+            if (!process.env.JWT_ADMIN_SECRET_KEY) {
+                console.log('JWT_Admin_SECRET_KEY not found in .env file');
+                throw new UnauthorizedError();
+            }
+
 
             const decode = jwt.verify(token, process.env.JWT_ADMIN_SECRET_KEY);
 
@@ -18,19 +22,16 @@ export default async (req: Request & Partial<{ user: string | jwt.JwtPayload }>,
                 req.user = decode
                 next()
             } else {
-                res.status(401).json({ error: "unauthorised" })
+                throw new UnauthorizedError()
             }
         } else {
-            res.status(401).json({ error: "unauthorised" })
+            throw new UnauthorizedError()
         }
 
     }
-    catch (error: any) {
+    catch (error) {
         console.log(error);
-        if (error.message === 'jwt expired' || error.message === 'jwt malformed'|| error.message === 'invalid signature')
-            return res.status(401).json({ error: "Token expired or Invalid" });
-
-        res.status(500).json({ error: "An unexpected error occurred. Please try again later." })
+        next(new UnauthorizedError())
     }
 
 }
