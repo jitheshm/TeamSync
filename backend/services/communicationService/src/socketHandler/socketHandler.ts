@@ -90,12 +90,12 @@ const socketHandler = (io: Namespace) => {
                 try {
                     const roomId = [email, socket.data.user.email].sort().join('-')
 
-                    const recentChats = await chatService.newChat(socket.data.user.tenantId, roomId, socket.data.user.id, email)
+                    const recentChats = await chatService.newChat(socket.data.user.tenantId, roomId, new mongoose.Types.ObjectId(socket.data.user.id), email)
                     if (!recentChats) {
                         return
                     }
 
-                    // socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: await fetchAllChats(socket.data.user.tenantId, socket.data.user.id) })
+                    // socket.emit(online'recent_chats', { status: 'success', message: 'Recent chats', data: await fetchAllChats(socket.data.user.tenantId, socket.data.user.id) })
                     socket.emit('recent_chats', { status: 'success', message: 'Recent chats', data: recentChats })
 
                     // callback({ status: 'success', message: `Chat started with ${email}`, groupId: roomId });
