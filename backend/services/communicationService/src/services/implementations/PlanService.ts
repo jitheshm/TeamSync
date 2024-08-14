@@ -1,12 +1,16 @@
 import { Document } from "mongoose";
 import { IPlanService } from "../interfaces/IPlanService";
 import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 
 export default class PlanService implements IPlanService {
     private planRepository: IPlanRepository;
 
-    constructor(planRepository: IPlanRepository) {
+    constructor(
+        @inject("IPlanRepository") planRepository: IPlanRepository
+    ) {
         this.planRepository = planRepository;
     }
 

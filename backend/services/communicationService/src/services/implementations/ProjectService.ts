@@ -5,12 +5,17 @@ import mongoose from "mongoose";
 import { IProjectService } from "../interfaces/IProjectService";
 import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
 import { IChatRepository } from "../../repository/interfaces/IChatRepository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class ProjectService implements IProjectService {
     private projectRepository: IProjectRepository;
     private chatRepository: IChatRepository;
 
-    constructor(projectRepository: IProjectRepository, chatRepository: IChatRepository) {
+    constructor(
+        @inject("IProjectRepository") projectRepository: IProjectRepository,
+        @inject("IChatRepository") chatRepository: IChatRepository
+    ) {
         this.projectRepository = projectRepository;
         this.chatRepository = chatRepository;
     }

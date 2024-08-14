@@ -6,16 +6,24 @@ import { IProjectRepository } from "../../repository/interfaces/IProjectReposito
 import { IChatRepository } from "../../repository/interfaces/IChatRepository";
 import { IProjectService } from "../../services/interfaces/IProjectService";
 import { IConsumer, IKafkaConnection } from "teamsync-common";
+import { inject, injectable } from "inversify";
 
-const kafkaConnection: IKafkaConnection = new KafkaConnection();
-const projectRepository: IProjectRepository = new ProjectRepository();
-const chatRepository: IChatRepository = new ChatRepository();
-const projectService: IProjectService = new ProjectService(projectRepository, chatRepository);
 
+@injectable()
 export default class ProjectConsumer implements IConsumer {
+    private kafkaConnection: IKafkaConnection;
+    private projectService: IProjectService;
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("IProjectService") projectService: IProjectService
+    ) {
+        this.kafkaConnection = kafkaConnection;
+        this.projectService = projectService;
+    }
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_project_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_project_group`);
             await consumer.subscribe({ topic: "project-events", fromBeginning: true });
 
             await consumer.run({
@@ -28,7 +36,7 @@ export default class ProjectConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await projectService.handleEvent(dataObj.eventType, dataObj.data, dataObj.dbName);
+                            await this.projectService.handleEvent(dataObj.eventType, dataObj.data, dataObj.dbName);
                         }
                     }
                 },

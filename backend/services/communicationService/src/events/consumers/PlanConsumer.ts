@@ -1,19 +1,23 @@
 import { IConsumer } from "teamsync-common";
 import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import PlanRepository from "../../repository/implementations/PlanRepository";
-import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
-import PlanService from "../../services/implementations/PlanService";
 import { IPlanService } from "../../services/interfaces/IPlanService";
+import { inject, injectable } from "inversify";
 
-const planRepository:IPlanRepository = new PlanRepository();
-const planService:IPlanService = new PlanService(planRepository);
 
+@injectable()
 export default class PlanConsumer implements IConsumer {
     private kafkaConnection: KafkaConnection;
+    private planService: IPlanService;
 
-    constructor() {
-        this.kafkaConnection = new KafkaConnection();
+    constructor(
+        @inject("KafkaConnection") kafkaConnection: KafkaConnection,
+        @inject("IPlanService") planService: IPlanService
+    ) {
+        this.kafkaConnection = kafkaConnection;
+        this.planService = planService;
     }
+
+    
 
     async consume() {
         try {
@@ -30,7 +34,7 @@ export default class PlanConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await planService.handleEvent(dataObj.eventType, dataObj.data);
+                            await this.planService.handleEvent(dataObj.eventType, dataObj.data);
                         }
                     }
                 },

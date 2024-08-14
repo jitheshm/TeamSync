@@ -5,7 +5,7 @@ import MeetingService from "../../services/implementations/MeetingService";
 import { IMeetingRepository } from "../../repository/interfaces/IMeetingRepository";
 import { IMeetingController } from "../../controllers/interfaces/IMeetingController";
 import { MeetingController } from "../../controllers/implementations/MeetingController";
-import { IKafkaConnection } from "teamsync-common";
+import { IConsumer, IKafkaConnection } from "teamsync-common";
 import { KafkaConnection } from "../kafka/KafkaConnection";
 import { IChatService } from "../../services/interfaces/IChatService";
 import ChatService from "../../services/implementations/ChatService";
@@ -27,6 +27,17 @@ import { IBranchRepository } from "../../repository/interfaces/IBranchRepository
 import { IBranchService } from "../../services/interfaces/IBranchService";
 import BranchService from "../../services/implementations/BranchService";
 import BranchRepository from "../../repository/implementations/BranchRepository";
+import BranchConsumer from "../../events/consumers/BranchConsumer";
+import PlanConsumer from "../../events/consumers/PlanConsumer";
+import { IPlanService } from "../../services/interfaces/IPlanService";
+import PlanService from "../../services/implementations/PlanService";
+import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
+import PlanRepository from "../../repository/implementations/PlanRepository";
+import ProjectConsumer from "../../events/consumers/ProjectConsumer";
+import { IProjectService } from "../../services/interfaces/IProjectService";
+import ProjectService from "../../services/implementations/ProjectService";
+import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
+import ProjectRepository from "../../repository/implementations/ProjectRepository";
 
 
 
@@ -46,6 +57,13 @@ container.bind<ITenantUserService>("ITenantUserService").to(TenantUserService);
 container.bind<ITenantUserRepository>("ITenantUserRepository").to(TenantUserRepository);
 container.bind<IBranchRepository>("IBranchRepository").to(BranchRepository);
 container.bind<IBranchService>("IBranchService").to(BranchService);
+container.bind<IConsumer>("IBranchConsumer").to(BranchConsumer);
+container.bind<IConsumer>("IPlanConsumer").to(PlanConsumer);
+container.bind<IPlanService>("IPlanService").to(PlanService);
+container.bind<IPlanRepository>("IPlanRepository").to(PlanRepository);
+container.bind<IConsumer>("IProjectConsumer").to(ProjectConsumer);
+container.bind<IProjectService>("IProjectService").to(ProjectService);
+container.bind<IProjectRepository>("IProjectRepository").to(ProjectRepository);
 
 
 
