@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { FValidationError } from "../errors/ValidationError";
+import { FValidationError } from "teamsync-common";
 
 export default (req: Request, res: Response, next: NextFunction) => {
     try {

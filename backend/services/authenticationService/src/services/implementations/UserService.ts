@@ -4,22 +4,18 @@ import Stripe from "stripe";
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { IUsers } from "../../entities/UserEntity";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
-import UserProducer from "../../events/kafka/producers/UserProducer";
 import { generateAccessToken, generateRefreshToken } from "../../utils/token";
 import { IUserService, VerifyOtpResponse } from "../interfaces/IUserService";
-import { NotFound } from "../../errors/NotFound";
 import { sendOtp } from "../../utils/otp";
 import bcrypt from 'bcryptjs';
-import { InvalidCredentialsError } from "../../errors/InvalidCredentialsError";
 import jwt from 'jsonwebtoken';
-import { UnauthorizedError } from "../../errors/Unauthorized";
 import { ISubscriptionRepository } from "../../repository/interface/ISubscriptionRepository";
 import { ITenantUserRepository } from "../../repository/interface/ITenantUserRepository";
 import mongoose from "mongoose";
 import { IOtpRepository } from "../../repository/interface/IOtpRepository";
 import hash from "../../utils/bcrypt";
-import { CustomError } from "../../errors/CustomError";
+import { CustomError, IKafkaConnection, InvalidCredentialsError, NotFound, UnauthorizedError } from "teamsync-common";
+import UserProducer from "../../events/kafka/producers/UserProducer";
 
 
 const firebaseConfig = {

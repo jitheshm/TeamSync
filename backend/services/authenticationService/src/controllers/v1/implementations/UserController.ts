@@ -1,10 +1,9 @@
 import { inject, injectable } from "inversify";
 import { IUserService } from "../../../services/interfaces/IUserService";
 import { NextFunction, Request, Response } from "express";
-import { InternalServerError } from "../../../errors/InternalServerError";
 import IUserController from "../interfaces/IUserController";
-import { UnauthorizedError } from "../../../errors/Unauthorized";
 import IDecodedUser from "../../../interfaces/IDecodeUser";
+import { InternalServerError, UnauthorizedError } from "teamsync-common";
 
 @injectable()
 export class UserController implements IUserController {

@@ -3,7 +3,7 @@ import { IUsers } from "../../entities/UserEntity";
 import switchDb from "../../utils/switchDb";
 import { IUserRepository } from "../interface/IUserRepository";
 import { injectable } from "inversify";
-import { CustomError } from "../../errors/CustomError";
+import { CustomError } from "teamsync-common";
 
 @injectable()
 export default class UserRepository implements IUserRepository {

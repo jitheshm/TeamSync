@@ -1,6 +1,6 @@
 import { Consumer, Kafka, Producer } from "kafkajs"
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import { injectable } from "inversify";
+import { IKafkaConnection } from "teamsync-common";
 // import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 
 const kafkaInstance = new Kafka({

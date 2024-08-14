@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { CustomError } from '../errors/CustomError';
-import { FValidationError } from '../errors/ValidationError';
+import { CustomError, FValidationError } from 'teamsync-common';
+
 
 
 export default (err: CustomError | FValidationError, req: Request, res: Response, next: NextFunction) => {

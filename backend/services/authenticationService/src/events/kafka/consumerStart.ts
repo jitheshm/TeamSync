@@ -1,5 +1,5 @@
 
-import IConsumer from "../../interfaces/IConsumer"
+import { IConsumer } from "teamsync-common"
 import BranchConsumer from "./consumers/BranchConsumer"
 import SubscriptionConsumer from "./consumers/SubscriptionConsumer"
 import TenantConsumer from "./consumers/TenantConsumer"

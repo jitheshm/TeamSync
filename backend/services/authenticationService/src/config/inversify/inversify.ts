@@ -5,7 +5,6 @@ import { IAdminService } from "../../services/interfaces/IAdminService";
 import AdminService from "../../services/implementations/AdminService";
 import IAdminController from "../../controllers/v1/interfaces/IAdminController";
 import { AdminController } from "../../controllers/v1/implementations/AdminController";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import { KafkaConnection } from "../kafka/KafkaConnection";
 import IUserController from "../../controllers/v1/interfaces/IUserController";
 import { UserController } from "../../controllers/v1/implementations/UserController";
@@ -19,6 +18,7 @@ import { ITenantUserRepository } from "../../repository/interface/ITenantUserRep
 import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
 import { IOtpRepository } from "../../repository/interface/IOtpRepository";
 import OtpRepository from "../../repository/implementations/OtpRepository";
+import { IKafkaConnection } from "teamsync-common";
 
 
 const container = new Container();

@@ -1,6 +1,6 @@
+import { IKafkaConnection } from "teamsync-common";
 import { KafkaConnection } from "../config/kafka/KafkaConnection";
 import OtpProducer from "../events/kafka/producers/OtpProducer";
-import { IKafkaConnection } from "../interfaces/IKafkaConnection";
 import OtpRepository from "../repository/implementations/OtpRepository";
 import { IOtpRepository } from "../repository/interface/IOtpRepository";
 

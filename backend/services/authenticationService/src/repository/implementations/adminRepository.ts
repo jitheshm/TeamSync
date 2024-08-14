@@ -1,8 +1,8 @@
 import { injectable } from "inversify";
 import { IAdmin } from "../../entities/AdminEntity";
-import { InternalServerError } from "../../errors/InternalServerError";
 import switchDb from "../../utils/switchDb";
 import { IAdminRepository } from "../interface/IAdminRepository";
+import { InternalServerError } from "teamsync-common";
 
 
 @injectable()

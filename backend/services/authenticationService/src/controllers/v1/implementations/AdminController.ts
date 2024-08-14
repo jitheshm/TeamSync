@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import IAdminController from "../interfaces/IAdminController";
 import { IAdminService } from "../../../services/interfaces/IAdminService";
 import { NextFunction, Request, Response } from "express";
-import { UnauthorizedError } from "../../../errors/Unauthorized";
+import { UnauthorizedError } from "teamsync-common";
 
 
 @injectable()

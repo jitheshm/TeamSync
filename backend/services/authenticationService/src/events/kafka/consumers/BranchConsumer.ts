@@ -1,6 +1,6 @@
 
+import { IConsumer } from "teamsync-common";
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import IConsumer from "../../../interfaces/IConsumer";
 import BranchRepository from "../../../repository/implementations/BranchRepository";
 
 

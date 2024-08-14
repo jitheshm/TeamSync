@@ -1,12 +1,11 @@
 import { inject, injectable } from "inversify";
 import { IAdminRepository } from "../../repository/interface/IAdminRepository";
 import { IAdminService } from "../interfaces/IAdminService";
-import { InvalidCredentialsError } from "../../errors/InvalidCredentialsError";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { generateAdminAccessToken, generateAdminRefreshToken } from "../../utils/adminToken";
 import { generateAccessToken } from "../../utils/token";
-import { UnauthorizedError } from "../../errors/Unauthorized";
+import { InvalidCredentialsError, UnauthorizedError } from "teamsync-common";
 
 const REFRESH_TOKEN_SECRET = process.env.ADMIN_REFRESH_TOKEN_SECRET as string;
 
