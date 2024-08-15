@@ -13,4 +13,5 @@ export interface IProjectController {
     getSpecificProject(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     projectDelete(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     projectStatusUpdate(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    projectUpdate(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

@@ -3,7 +3,6 @@ import userAuth from "../../middlewares/userAuth";
 import tenantAuth from "../../middlewares/tenantAuth";
 import { checkSchema } from "express-validator";
 import projectValidator from "../../validators/projectValidator";
-import projectUpdateController from "../../controllers/projectUpdateController";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import taskUpdateController from "../../controllers/taskUpdateController";
@@ -37,7 +36,7 @@ const ticketController = container.get<ITicketController>("ITicketController");
 router.get('/projects/recent', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchBranchRecentProjects(req, res, next)
 )
-router.get('/projects/recent/tenant', userAuth, 
+router.get('/projects/recent/tenant', userAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchRecentProjects(req, res, next)
 )
 router.get('/projects/stats', userAuth, tenantAuth,
@@ -49,18 +48,20 @@ router.get('/projects/branches/stats', userAuth,
 router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.createProject(req, res, next))
 
-router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), projectUpdateController)
-router.put('/projects/:projectId/status', userAuth, tenantAuth, 
+router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.projectUpdate(req, res, next))
+
+router.put('/projects/:projectId/status', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.projectStatusUpdate(req, res, next)
 )
-router.delete('/projects/:projectId', userAuth, tenantAuth, 
+router.delete('/projects/:projectId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.projectDelete(req, res, next)
 )
 router.get('/projects', userAuth, tenantAuth, getAllProjectController)
-router.get('/projects/:projectId', userAuth, tenantAuth, 
+router.get('/projects/:projectId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.getSpecificProject(req, res, next)
 )
-router.get('/projects/:projectId/details', userAuth, tenantAuth, 
+router.get('/projects/:projectId/details', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.getProjectDetails(req, res, next)
 )
 
@@ -69,7 +70,7 @@ router.post('/projects/:projectId/tasks', userAuth, tenantAuth, checkSchema(task
 )
 
 router.get('/tenants/users/available', userAuth, fetchAvailableTenantUsersController)
-router.get('/projects/:projectId/users/available', userAuth, tenantAuth, 
+router.get('/projects/:projectId/users/available', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchProjectUsers(req, res, next)
 )
 router.get('/projects/:projectId/tasks', userAuth, tenantAuth,
@@ -88,19 +89,19 @@ router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, 
 router.get('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.fetchProjectTickets(req, res, next)
 )
-router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth, 
+router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.fetchTicketDetails(req, res, next)
 )
-router.get('/projects/tasks/stats', userAuth, tenantAuth, 
+router.get('/projects/tasks/stats', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchTaskStats(req, res, next)
 )
-router.get('/projects/ticket/stats', userAuth, tenantAuth, 
+router.get('/projects/ticket/stats', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.fetchTicketStats(req, res, next)
 )
 router.post('/todo', userAuth, tenantAuth, formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => todoController.createTodo(req, res, next)
 )
-router.get('/todo', userAuth, tenantAuth, 
+router.get('/todo', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => todoController.fetchTodo(req, res, next)
 )
 router.put('/todo/:todoId', userAuth, tenantAuth, updateTodoController)
