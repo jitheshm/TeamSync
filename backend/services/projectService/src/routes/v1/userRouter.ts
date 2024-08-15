@@ -12,7 +12,6 @@ import fetchAvailableTenantUsersController from "../../controllers/fetchAvailabl
 import fetchProjectUsers from "../../controllers/fetchProjectUsers";
 import taskUpdateController from "../../controllers/taskUpdateController";
 import taskDeleteController from "../../controllers/taskDeleteController";
-import fetchProjectTasksDetails from "../../controllers/fetchProjectTasksDetails";
 import projectStatusUpdateController from "../../controllers/projectStatusUpdateController";
 import taskStatusUpdateController from "../../controllers/taskStatusUpdateController";
 import ticketCreateController from "../../controllers/ticketCreateController";
@@ -75,7 +74,9 @@ router.get('/projects/:projectId/tasks', userAuth, tenantAuth,
 )
 router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, checkSchema(taskValidator()), taskUpdateController)
 router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskDeleteController)
-router.get('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, fetchProjectTasksDetails)
+router.get('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchProjectTaskDetails(req, res, next)
+)
 router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth, taskStatusUpdateController)
 router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, checkSchema(ticketValidators()), ticketCreateController)
 router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), ticketUpdateController)
