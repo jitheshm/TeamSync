@@ -11,4 +11,5 @@ export interface IProjectController {
     fetchRecentProjects(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     getProjectDetails(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     getSpecificProject(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    projectDelete(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

@@ -182,6 +182,35 @@ export class ProjectController implements IProjectController {
         }
     }
 
+    async projectDelete(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            if (req.user?.decode?.role !== 'Tenant_Admin') {
+                if (req.user?.decode?.role !== 'Manager') {
+                    throw new UnauthorizedError()
+                }
+                req.body.branch_id = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+            } else {
+                if (!req.body.branch_id) {
+                    throw new CustomError("Branch id must be provided", 400)
+                }
+            }
+
+            const deletedProject = await this.projectService.deleteProject(req.body as Partial<IProjects>, req.user?.decode?.tenantId as string, req.params.projectId);
+
+            if (!deletedProject) {
+                throw new CustomError("Project not found", 404)
+            }
+
+            res.status(200).json({ message: "Project deleted successfully", data: deletedProject });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 
 }

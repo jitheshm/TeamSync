@@ -4,7 +4,6 @@ import tenantAuth from "../../middlewares/tenantAuth";
 import { checkSchema } from "express-validator";
 import projectValidator from "../../validators/projectValidator";
 import projectUpdateController from "../../controllers/projectUpdateController";
-import projectDeleteController from "../../controllers/projectDeleteController";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import taskUpdateController from "../../controllers/taskUpdateController";
@@ -53,7 +52,9 @@ router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), 
 
 router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), projectUpdateController)
 router.put('/projects/:projectId/status', userAuth, tenantAuth, projectStatusUpdateController)
-router.delete('/projects/:projectId', userAuth, tenantAuth, projectDeleteController)
+router.delete('/projects/:projectId', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.projectDelete(req, res, next)
+)
 router.get('/projects', userAuth, tenantAuth, getAllProjectController)
 router.get('/projects/:projectId', userAuth, tenantAuth, 
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.getSpecificProject(req, res, next)
