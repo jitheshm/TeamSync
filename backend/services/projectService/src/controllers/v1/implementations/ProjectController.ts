@@ -63,4 +63,25 @@ export class ProjectController implements IProjectController {
         }
     }
 
+    async fetchBranchRecentProjects(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const pmId = req.query.pmId ? new mongoose.Types.ObjectId(req.query.pmId as string) : undefined
+            const branchId = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+
+            const projects = await this.projectService.fetchRecentProjects(req.user?.decode.tenantId, branchId, pmId);
+            console.log(projects);
+
+
+            res.status(200).json({ message: "project fetch successfully", data: projects });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
+
+
 }

@@ -26,7 +26,6 @@ import fetchTicketDetails from "../../controllers/fetchTicketDetails";
 import fetchProjectStats from "../../controllers/fetchProjectStats";
 import fetchTaskStats from "../../controllers/fetchTaskStats";
 import fetchTicketStats from "../../controllers/fetchTicketStats";
-import fetchBranchRecentProjects from "../../controllers/fetchBranchRecentProjects";
 import fetchRecentProjects from "../../controllers/fetchRecentProjects";
 import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
@@ -47,7 +46,9 @@ const todoController = container.get<ITodoController>("ITodoController");
 const projectController = container.get<IProjectController>("IProjectController");
 
 
-router.get('/projects/recent', userAuth, tenantAuth, fetchBranchRecentProjects)
+router.get('/projects/recent', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchBranchRecentProjects(req, res, next)
+)
 router.get('/projects/recent/tenant', userAuth, fetchRecentProjects)
 router.get('/projects/stats', userAuth, tenantAuth, fetchProjectStats)
 router.get('/projects/branches/stats', userAuth,
