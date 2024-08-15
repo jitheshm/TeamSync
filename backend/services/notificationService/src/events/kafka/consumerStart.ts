@@ -2,7 +2,6 @@
 
 import { container } from "../../config/inversify/inversify"
 import IConsumer from "../../interfaces/IConsumer"
-import TicketConsumer from "./consumers/TicketConsumer"
 
 export const connectConsumers = () => {
     const branchConsumer=container.get<IConsumer>("IBranchConsumer")
@@ -11,9 +10,9 @@ export const connectConsumers = () => {
     const projectConsumer=container.get<IConsumer>("IProjectConsumer")
     const taskConsumer=container.get<IConsumer>("ITaskConsumer")
     const tenantUserConsumer=container.get<IConsumer>("ITenantUserConsumer")
+    const ticketConsumer=container.get<IConsumer>("ITicketConsumer")
 
 
-    let ticketConsumer: IConsumer = new TicketConsumer()
 
     otpConsumer.consume()
     branchConsumer.consume()

@@ -1,19 +1,24 @@
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
+import { inject, injectable } from "inversify";
 import IConsumer from "../../../interfaces/IConsumer";
 import { IKafkaConnection } from "../../../interfaces/IKafkaConnection";
-import TenantUserRepository from "../../../repository/implementations/TenantUserRepository";
-import { ITenantUserRepository } from "../../../repository/interfaces/ITenantUserRepository";
-import TicketService from "../../../services/implementations/TicketService";
 import { ITicketService } from "../../../services/interfaces/ITicketService";
 
-const kafkaConnection:IKafkaConnection = new KafkaConnection();
-const tenantUserRepository:ITenantUserRepository = new TenantUserRepository();
-const ticketService:ITicketService = new TicketService(tenantUserRepository);
-
+@injectable()
 export default class TicketConsumer implements IConsumer {
+    private kafkaConnection: IKafkaConnection;
+    private ticketService: ITicketService
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ITicketService") ticketService: ITicketService
+    ) {
+        this.kafkaConnection = kafkaConnection
+        this.ticketService = ticketService
+    }
+
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_ticket_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_ticket_group`);
             await consumer.subscribe({ topic: "ticket-events", fromBeginning: true });
 
             await consumer.run({
@@ -26,7 +31,7 @@ export default class TicketConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await ticketService.handleCreateTicketEvent(dataObj);
+                            await this.ticketService.handleCreateTicketEvent(dataObj);
                         }
                     }
                 },

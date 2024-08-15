@@ -22,6 +22,9 @@ import OtpConsumer from "../../events/kafka/consumers/OtpConsumer";
 import TaskConsumer from "../../events/kafka/consumers/TaskConsumer";
 import { ITaskService } from "../../services/interfaces/ITaskService";
 import TaskService from "../../services/implementations/TaskService";
+import TicketConsumer from "../../events/kafka/consumers/TicketConsumer";
+import { ITicketService } from "../../services/interfaces/ITicketService";
+import TicketService from "../../services/implementations/TicketService";
 
 
 
@@ -42,6 +45,8 @@ container.bind<IMeetingService>("IMeetingService").to(MeetingService);
 container.bind<IConsumer>("IOtpConsumer").to(OtpConsumer);
 container.bind<IConsumer>("ITaskConsumer").to(TaskConsumer);
 container.bind<ITaskService>("ITaskService").to(TaskService);
+container.bind<IConsumer>("ITicketConsumer").to(TicketConsumer);
+container.bind<ITicketService>("ITicketService").to(TicketService);
 // container.bind<IMiddlewareService>("IMiddlewareService").to(MiddlewareServices);
 
 
