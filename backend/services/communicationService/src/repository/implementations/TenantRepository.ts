@@ -2,7 +2,9 @@ import mongoose, { Types } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import { ITenants } from "../../entities/TenantEntity";
 import { ITenantRepository } from "../interfaces/ITenantRepository";
+import { injectable } from "inversify";
 
+@injectable()
 export default class TenantRepository implements ITenantRepository {
     async create(data: ITenants): Promise<mongoose.Schema.Types.ObjectId> {
         try {

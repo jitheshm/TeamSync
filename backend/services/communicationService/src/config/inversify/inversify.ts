@@ -43,6 +43,11 @@ import { ISubscriptionService } from "../../services/interfaces/ISubscriptionSer
 import SubscriptionService from "../../services/implementations/SubscriptionService";
 import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
+import TenantConsumer from "../../events/consumers/TenantConsumer";
+import { ITenantService } from "../../services/interfaces/ITenantService";
+import TenantService from "../../services/implementations/TenantService";
+import { ITenantRepository } from "../../repository/interfaces/ITenantRepository";
+import TenantRepository from "../../repository/implementations/TenantRepository";
 
 
 
@@ -72,6 +77,9 @@ container.bind<IProjectRepository>("IProjectRepository").to(ProjectRepository);
 container.bind<IConsumer>("ISubscriptionConsumer").to(SubscriptionConsumer);
 container.bind<ISubscriptionService>("ISubscriptionService").to(SubscriptionService);
 container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(SubscriptionRepository)
+container.bind<IConsumer>("ITenantConsumer").to(TenantConsumer)
+container.bind<ITenantService>("ITenantService").to(TenantService);
+container.bind<ITenantRepository>("ITenantRepository").to(TenantRepository);
 
 
 

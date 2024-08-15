@@ -10,7 +10,7 @@ export default class PlanConsumer implements IConsumer {
     private planService: IPlanService;
 
     constructor(
-        @inject("KafkaConnection") kafkaConnection: KafkaConnection,
+        @inject("IKafkaConnection") kafkaConnection: KafkaConnection,
         @inject("IPlanService") planService: IPlanService
     ) {
         this.kafkaConnection = kafkaConnection;

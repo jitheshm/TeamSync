@@ -10,9 +10,9 @@ export const connectConsumers = () => {
     const planConsumer = container.get<IConsumer>("IPlanConsumer");
     const projectConsumer = container.get<IConsumer>("IProjectConsumer");
     const subscriptionConsumer=container.get<IConsumer>("ISubscriptionConsumer");
+    const tenantConsumer=container.get<IConsumer>("ITenantConsumer");
 
     let userConsumer: IConsumer = new UserConsumer()
-    let tenantConsumer: IConsumer = new TenantConsumer()
     let tenantUserConsumer: IConsumer = new TenantUserConsumer()
     userConsumer.consume()
     tenantConsumer.consume()
