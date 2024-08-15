@@ -3,10 +3,11 @@ import mongoose, { ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import { ITodo } from "../../entities/TodoEntity";
 import { ITodoRepository } from "../interfaces/ITodoRepository";
+import { injectable } from "inversify";
 
 
 
-
+@injectable()
 export default class TodoRepository implements ITodoRepository {
 
     async create(data: Partial<ITodo>, dbId: string) {

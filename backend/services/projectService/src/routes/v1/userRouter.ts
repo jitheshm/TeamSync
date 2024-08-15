@@ -30,13 +30,13 @@ import fetchTicketStats from "../../controllers/fetchTicketStats";
 import fetchBranchRecentProjects from "../../controllers/fetchBranchRecentProjects";
 import fetchRecentProjects from "../../controllers/fetchRecentProjects";
 import fetchBranchProjectCount from "../../controllers/fetchBranchProjectCount";
-import createTodoController from "../../controllers/createTodoController";
 import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
 import { CustomRequest, formValidation } from "teamsync-common";
 import { ITaskController } from "../../controllers/v1/interfaces/ITaskController";
 import { container } from "../../config/inversify/inversify";
+import { ITodoController } from "../../controllers/v1/interfaces/ITodoController";
 
 
 
@@ -44,6 +44,7 @@ import { container } from "../../config/inversify/inversify";
 const router = Router();
 
 const taskController = container.get<ITaskController>("ITaskController");
+const todoController = container.get<ITodoController>("ITodoController");
 
 
 router.get('/projects/recent', userAuth, tenantAuth, fetchBranchRecentProjects)
@@ -58,8 +59,8 @@ router.get('/projects', userAuth, tenantAuth, getAllProjectController)
 router.get('/projects/:projectId', userAuth, tenantAuth, getSpecificProjectController)
 router.get('/projects/:projectId/details', userAuth, tenantAuth, getProjectDetails)
 
-router.post('/projects/:projectId/tasks', userAuth, tenantAuth, checkSchema(taskValidator()), formValidation, 
-    (req:CustomRequest, res: Response, next: NextFunction) => taskController.createTask(req, res, next)
+router.post('/projects/:projectId/tasks', userAuth, tenantAuth, checkSchema(taskValidator()), formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => taskController.createTask(req, res, next)
 )
 
 router.get('/tenants/users/available', userAuth, fetchAvailableTenantUsersController)
@@ -77,7 +78,9 @@ router.get('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, f
 router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth, fetchTicketDetails)
 router.get('/projects/tasks/stats', userAuth, tenantAuth, fetchTaskStats)
 router.get('/projects/ticket/stats', userAuth, tenantAuth, fetchTicketStats)
-router.post('/todo', userAuth, tenantAuth, createTodoController)
+router.post('/todo', userAuth, tenantAuth, formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => todoController.createTodo(req, res, next)
+)
 router.get('/todo', userAuth, tenantAuth, fetchTodoController)
 router.put('/todo/:todoId', userAuth, tenantAuth, updateTodoController)
 

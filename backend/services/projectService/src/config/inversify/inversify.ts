@@ -19,6 +19,10 @@ import TenantService from "../../services/implementations/TenantService";
 import TenantConsumer from "../../events/kafka/consumers/TenantConsumer";
 import TenantUserConsumer from "../../events/kafka/consumers/TenantUserConsumer";
 import UserConsumer from "../../events/kafka/consumers/UserConsumer";
+import { ITodoController } from "../../controllers/v1/interfaces/ITodoController";
+import { TodoController } from "../../controllers/v1/implementations/TodoController";
+import { ITodoRepository } from "../../repository/interfaces/ITodoRepository";
+import TodoRepository from "../../repository/implementations/TodoRepository";
 
 
 const container = new Container();
@@ -35,6 +39,8 @@ container.bind<ITenantService>("ITenantService").to(TenantService);
 container.bind<IConsumer>("ITenantConsumer").to(TenantConsumer);
 container.bind<IConsumer>("ITenantUserConsumer").to(TenantUserConsumer);
 container.bind<IConsumer>("IUserConsumer").to(UserConsumer);
+container.bind<ITodoController>("ITodocontroller").to(TodoController);
+container.bind<ITodoRepository>("ITodoRepository").to(TodoRepository);
 
 
 
