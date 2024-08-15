@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { NextFunction, Request, Response } from "express";
-import { CustomRequest, UnauthorizedError } from "teamsync-common";
+import { CustomError, CustomRequest, UnauthorizedError } from "teamsync-common";
 import { ITicketService } from "../../../services/interfaces/ITicketService";
 import { ITicketController } from "../interfaces/ITicketController";
 import mongoose from "mongoose";
@@ -88,6 +88,24 @@ export class TicketController implements ITicketController {
             const newTicket = await this.ticketService.createTicket(user, bodyObj, projectId, taskId);
 
             res.status(201).json({ message: "Ticket added successfully", newTicket });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
+    async deleteTicket(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const resultObj = await this.ticketService.deleteTicket(new mongoose.Types.ObjectId(req.params.ticketId), req.user?.decode?.tenantId);
+
+            if (!resultObj) {
+                throw new CustomError("Ticket not found", 404);
+            }
+
+            res.status(200).json({ message: "Ticket deleted successfully" });
 
         } catch (error) {
             console.log(error);

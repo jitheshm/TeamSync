@@ -6,4 +6,5 @@ export interface ITicketController {
     fetchTicketDetails(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     fetchTicketStats(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     createTicket(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    deleteTicket(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }
