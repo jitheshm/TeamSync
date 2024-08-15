@@ -82,6 +82,23 @@ export class ProjectController implements IProjectController {
         }
     }
 
+    async fetchProjectStats(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const branchId = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+            const stats = await this.projectService.fetchProjectStats(req.user?.decode.tenantId, branchId);
+            console.log(stats);
+
+
+            res.status(200).json({ message: "project status fetch successfully", data: stats });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 
 }

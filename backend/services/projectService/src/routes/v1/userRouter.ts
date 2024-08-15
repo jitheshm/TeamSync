@@ -23,7 +23,6 @@ import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusCo
 import ticketDeleteController from "../../controllers/ticketDeleteController";
 import fetchProjectTickets from "../../controllers/fetchProjectTickets";
 import fetchTicketDetails from "../../controllers/fetchTicketDetails";
-import fetchProjectStats from "../../controllers/fetchProjectStats";
 import fetchTaskStats from "../../controllers/fetchTaskStats";
 import fetchTicketStats from "../../controllers/fetchTicketStats";
 import fetchRecentProjects from "../../controllers/fetchRecentProjects";
@@ -46,11 +45,13 @@ const todoController = container.get<ITodoController>("ITodoController");
 const projectController = container.get<IProjectController>("IProjectController");
 
 
-router.get('/projects/recent', userAuth, tenantAuth, 
+router.get('/projects/recent', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchBranchRecentProjects(req, res, next)
 )
 router.get('/projects/recent/tenant', userAuth, fetchRecentProjects)
-router.get('/projects/stats', userAuth, tenantAuth, fetchProjectStats)
+router.get('/projects/stats', userAuth, tenantAuth,
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchProjectStats(req, res, next)
+)
 router.get('/projects/branches/stats', userAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchBranchProjectCount(req, res, next)
 )
