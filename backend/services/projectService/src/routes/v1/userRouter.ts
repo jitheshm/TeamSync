@@ -18,7 +18,6 @@ import ticketValidators from "../../validators/ticketValidators";
 import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
 import ticketDeleteController from "../../controllers/ticketDeleteController";
-import fetchTicketStats from "../../controllers/fetchTicketStats";
 import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
@@ -92,7 +91,9 @@ router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth,
 router.get('/projects/tasks/stats', userAuth, tenantAuth, 
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchTaskStats(req, res, next)
 )
-router.get('/projects/ticket/stats', userAuth, tenantAuth, fetchTicketStats)
+router.get('/projects/ticket/stats', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => ticketController.fetchTicketStats(req, res, next)
+)
 router.post('/todo', userAuth, tenantAuth, formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => todoController.createTodo(req, res, next)
 )
