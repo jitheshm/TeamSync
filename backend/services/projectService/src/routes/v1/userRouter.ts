@@ -8,7 +8,6 @@ import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import taskUpdateController from "../../controllers/taskUpdateController";
 import taskDeleteController from "../../controllers/taskDeleteController";
-import projectStatusUpdateController from "../../controllers/projectStatusUpdateController";
 import taskStatusUpdateController from "../../controllers/taskStatusUpdateController";
 import ticketCreateController from "../../controllers/ticketCreateController";
 import ticketValidators from "../../validators/ticketValidators";
@@ -51,7 +50,9 @@ router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), 
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.createProject(req, res, next))
 
 router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), projectUpdateController)
-router.put('/projects/:projectId/status', userAuth, tenantAuth, projectStatusUpdateController)
+router.put('/projects/:projectId/status', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.projectStatusUpdate(req, res, next)
+)
 router.delete('/projects/:projectId', userAuth, tenantAuth, 
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.projectDelete(req, res, next)
 )

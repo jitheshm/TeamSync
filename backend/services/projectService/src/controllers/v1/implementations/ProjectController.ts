@@ -211,6 +211,41 @@ export class ProjectController implements IProjectController {
         }
     }
 
+    async projectStatusUpdate(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            if (req.user?.decode?.role !== 'Tenant_Admin') {
+                if (req.user?.decode?.role !== 'Manager' && req.user?.decode?.role !== 'Project_Manager') {
+                    throw new UnauthorizedError()
+                }
+                req.body.branch_id = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+            } else {
+                if (!req.body.branch_id) {
+                    throw new CustomError("Branch id must be provided", 400)
+                }
+            }
+
+            const bodyObj: Partial<IProjects> = req.body as Partial<IProjects>;
+            const statusData = {
+                stage: bodyObj.stage,
+                branch_id: bodyObj.branch_id
+            };
+
+            const updatedProject = await this.projectService.updateProjectStatus(statusData, req.user?.decode?.tenantId as string, req.params.projectId);
+
+            if (!updatedProject) {
+                throw new CustomError("Project not found", 404)
+            }
+
+            res.status(200).json({ message: "Project updated successfully", data: updatedProject });
+
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 
 }
