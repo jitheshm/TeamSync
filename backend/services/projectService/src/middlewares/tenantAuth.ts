@@ -7,11 +7,12 @@ import { IBranchRepository } from "../repository/interfaces/IBranchRepository";
 import BranchRepository from "../repository/implementations/BranchRepository";
 import { ISubscriptionRepository } from "../repository/interfaces/ISubscriptionRepository";
 import SubscriptionRepository from "../repository/implementations/SubscriptionRepository";
+import { CustomRequest } from "teamsync-common";
 
 let tenantRepository: ITenantRepository = new TenantRepository()
 let branchRepository: IBranchRepository = new BranchRepository()
 let subscriptionRepository:ISubscriptionRepository = new SubscriptionRepository()
-export default async (req: Request & Partial<{ user: jwt.JwtPayload }>, res: Response, next: NextFunction) => {
+export default async (req: CustomRequest, res: Response, next: NextFunction) => {
     try {
         if (!req.user?.decode?.tenantId) {
             return res.status(400).json({ error: "Tenant ID not found" });

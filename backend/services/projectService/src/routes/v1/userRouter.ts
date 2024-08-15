@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction, Router, Request, Response } from "express";
 import userAuth from "../../middlewares/userAuth";
 import tenantAuth from "../../middlewares/tenantAuth";
 import projectController from "../../controllers/projectController";
@@ -35,11 +35,17 @@ import createTodoController from "../../controllers/createTodoController";
 import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
+import { CustomRequest, formValidation } from "teamsync-common";
+import { ITaskController } from "../../controllers/v1/interfaces/ITaskController";
+import { container } from "../../config/inversify/inversify";
 
 
 
 
 const router = Router();
+
+const taskController = container.get<ITaskController>("ITaskController");
+
 
 router.get('/projects/recent', userAuth, tenantAuth, fetchBranchRecentProjects)
 router.get('/projects/recent/tenant', userAuth, fetchRecentProjects)
@@ -52,11 +58,15 @@ router.delete('/projects/:projectId', userAuth, tenantAuth, projectDeleteControl
 router.get('/projects', userAuth, tenantAuth, getAllProjectController)
 router.get('/projects/:projectId', userAuth, tenantAuth, getSpecificProjectController)
 router.get('/projects/:projectId/details', userAuth, tenantAuth, getProjectDetails)
-router.post('/projects/:projectId/tasks', userAuth, tenantAuth,checkSchema(taskValidator()), createTaskController)
+
+router.post('/projects/:projectId/tasks', userAuth, tenantAuth, checkSchema(taskValidator()), formValidation, 
+    (req:CustomRequest, res: Response, next: NextFunction) => taskController.createTask(req, res, next)
+)
+
 router.get('/tenants/users/available', userAuth, fetchAvailableTenantUsersController)
 router.get('/projects/:projectId/users/available', userAuth, tenantAuth, fetchProjectUsers)
 router.get('/projects/:projectId/tasks', userAuth, tenantAuth, fetchProjectTasks)
-router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth,checkSchema(taskValidator()), taskUpdateController)
+router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, checkSchema(taskValidator()), taskUpdateController)
 router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskDeleteController)
 router.get('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, fetchProjectTasksDetails)
 router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth, taskStatusUpdateController)

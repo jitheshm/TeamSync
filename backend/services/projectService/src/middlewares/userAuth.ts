@@ -2,13 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import UserRepository from "../repository/implementations/UserRepository";
 import { IUserRepository } from "../repository/interfaces/IUserRepository";
-import { IUsers } from "../entities/UserEntity";
-import { Document } from "mongoose";
-import decodedUser from "../interfaces/IDecodeUser";
+import { CustomRequest } from "teamsync-common";
 
 
 const userRepository: IUserRepository = new UserRepository()
-export default async (req: Request & Partial<{ user: Partial<decodedUser> }>, res: Response, next: NextFunction) => {
+export default async (req: CustomRequest, res: Response, next: NextFunction) => {
     try {
         const token = req.header('Authorization');
 
