@@ -18,7 +18,6 @@ import ticketValidators from "../../validators/ticketValidators";
 import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
 import ticketDeleteController from "../../controllers/ticketDeleteController";
-import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
 import { CustomRequest, formValidation } from "teamsync-common";
@@ -97,7 +96,9 @@ router.get('/projects/ticket/stats', userAuth, tenantAuth,
 router.post('/todo', userAuth, tenantAuth, formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => todoController.createTodo(req, res, next)
 )
-router.get('/todo', userAuth, tenantAuth, fetchTodoController)
+router.get('/todo', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => todoController.fetchTodo(req, res, next)
+)
 router.put('/todo/:todoId', userAuth, tenantAuth, updateTodoController)
 
 

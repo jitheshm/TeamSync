@@ -36,4 +36,18 @@ export class TodoController implements ITodoController {
         }
     }
 
+    async fetchTodo(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const user = req.user as IDecodedUser;
+
+            const data = await this.todoService.fetchTodoList(req.user?.decode.tenantId, new mongoose.Types.ObjectId(user._id))
+            res.status(200).json({ message: "Todo fetch successfully", data: data })
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 }
