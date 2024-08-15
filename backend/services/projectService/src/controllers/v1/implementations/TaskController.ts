@@ -4,7 +4,7 @@ import { ITaskController } from "../interfaces/ITaskController";
 import IDecodedUser from "../../../interfaces/IDecodeUser";
 import { ITasks } from "../../../entities/TaskEntity";
 import { NextFunction, Request, Response } from "express";
-import { CustomRequest } from "teamsync-common";
+import { CustomError, CustomRequest } from "teamsync-common";
 import mongoose from "mongoose";
 
 @injectable()
@@ -78,6 +78,26 @@ export class TaskController implements ITaskController {
 
 
             res.status(200).json({ message: "project fetch successfully", data: result });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
+    async taskDelete(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const bodyObj: Partial<ITasks> = req.body as Partial<ITasks>;
+            bodyObj.branch_id = new mongoose.Types.ObjectId(req.user?.decode.branchId);
+
+            const resultObj = await this.taskService.deleteTask(bodyObj, new mongoose.Types.ObjectId(req.params.taskId), req.user?.decode?.tenantId);
+
+            if (!resultObj) {
+                throw new CustomError("Task not found", 404);
+            }
+
+            res.status(200).json({ message: "Task deleted successfully" });
 
         } catch (error) {
             console.log(error);

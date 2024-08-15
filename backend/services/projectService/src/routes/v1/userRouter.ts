@@ -6,7 +6,6 @@ import projectValidator from "../../validators/projectValidator";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import taskUpdateController from "../../controllers/taskUpdateController";
-import taskDeleteController from "../../controllers/taskDeleteController";
 import taskStatusUpdateController from "../../controllers/taskStatusUpdateController";
 import ticketCreateController from "../../controllers/ticketCreateController";
 import ticketValidators from "../../validators/ticketValidators";
@@ -77,7 +76,9 @@ router.get('/projects/:projectId/tasks', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchProjectTasks(req, res, next)
 )
 router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, checkSchema(taskValidator()), taskUpdateController)
-router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, taskDeleteController)
+router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => taskController.taskDelete(req, res, next)
+)
 router.get('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchProjectTaskDetails(req, res, next)
 )
