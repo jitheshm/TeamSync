@@ -3,6 +3,7 @@ import { ITenantUserService } from "../interfaces/ITenantUserService";
 import { ITenantUserRepository } from "../../repository/interfaces/ITenantUserRepository";
 import { ITenantUsers } from "../../entities/TenantUserEntity";
 import { inject, injectable } from "inversify";
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 @injectable()
 export default class TenantUserService implements ITenantUserService {
@@ -42,6 +43,8 @@ export default class TenantUserService implements ITenantUserService {
             throw new Error("Failed to handle tenant user event");
         }
     }
+
+    
 
 
 }

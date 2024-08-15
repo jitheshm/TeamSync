@@ -54,6 +54,8 @@ import { IUserService } from "../../services/interfaces/IUserService";
 import UserService from "../../services/implementations/UserService";
 import { IUserRepository } from "../../repository/interfaces/IUserRepository";
 import UserRepository from "../../repository/implementations/UserRepository";
+import { IMiddlewareService } from "../../services/interfaces/IMiddlewareService";
+import { MiddlewareServices } from "../../services/implementations/MiddlewareServices";
 
 
 
@@ -90,6 +92,7 @@ container.bind<IConsumer>("ITenantUserConsumer").to(TenantUserConsumer);
 container.bind<IConsumer>("IUserConsumer").to(UserConsumer);
 container.bind<IUserService>("IUserService").to(UserService);
 container.bind<IUserRepository>("IUserRepository").to(UserRepository);
+container.bind<IMiddlewareService>("IMiddlewareService").to(MiddlewareServices);
 
 
 

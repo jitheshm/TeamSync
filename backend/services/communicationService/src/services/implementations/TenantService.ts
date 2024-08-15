@@ -33,36 +33,6 @@ export default class TenantService implements ITenantService {
         }
     }
 
-    async tenantAuth(decode:any, body:any, params:any) {
-        if (!decode?.tenantId) {
-            throw new CustomError("Branch ID not found", 400)
-        }
-        const tenant = await this.tenantRepository.getTenantById(decode?.tenantId)
-        console.log(tenant);
-
-        if (!tenant) {
-            throw new NotFound("Tenant not found");
-        }
-
-        if (!body.branch_id) {
-            if (params.branchId) {
-                body.branch_id = params.branchId
-            }
-        }
-
-        if (body.branch_id || decode?.branchId) {
-            let branchId = body.branch_id ? body.branch_id : decode?.branchId
-            const branch = await this.branchRepository.fetchBranchById(decode?.tenantId, new mongoose.Types.ObjectId(branchId))
-            if (branch) {
-                return
-            } else {
-                throw new NotFound("Branch not found")
-            }
-        }
-        else {
-            throw new CustomError("Branch ID not found", 400)
-
-        }
-    }
+    
 
 }
