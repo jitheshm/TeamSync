@@ -2,25 +2,25 @@ import mongoose, { Document } from "mongoose";
 import { ITenantRepository } from "../../repository/interfaces/ITenantRepository";
 import { IProjectService } from "../interfaces/IProjectService";
 import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
-import { ITenants } from "../../entities/TenantEntity";
 import { IProjects } from "../../entities/ProjectEntity";
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import ProjectProducer from "../../events/kafka/producers/ProjectProducer";
+import { inject, injectable } from "inversify";
 
 
-interface ProjectServiceProps {
-    tenantRepository?: ITenantRepository;
-    projectRepository: IProjectRepository;
-    kafkaConnection?: IKafkaConnection;
 
-}
 
+@injectable()
 export default class ProjectService implements IProjectService {
     private tenantRepository?: ITenantRepository;
     private projectRepository: IProjectRepository;
     private kafkaConnection?: IKafkaConnection;
 
-    constructor({ tenantRepository, projectRepository, kafkaConnection }: ProjectServiceProps) {
+    constructor(
+        @inject("IProjectRepository") projectRepository: IProjectRepository,
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ITenantRepository") tenantRepository: ITenantRepository
+    ) {
         this.tenantRepository = tenantRepository;
         this.projectRepository = projectRepository;
         this.kafkaConnection = kafkaConnection;

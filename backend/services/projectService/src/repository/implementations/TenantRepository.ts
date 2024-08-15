@@ -2,7 +2,9 @@ import mongoose, { Types } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import { ITenants } from "../../entities/TenantEntity";
 import { ITenantRepository } from "../interfaces/ITenantRepository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class TenantRepository implements ITenantRepository {
     async create(data: ITenants): Promise<mongoose.Schema.Types.ObjectId> {
         try {
@@ -20,7 +22,7 @@ export default class TenantRepository implements ITenantRepository {
     async getTenantById(tenantId: Types.ObjectId): Promise<ITenants | null> {
         try {
             const TenantModel = switchDb<ITenants>(`${process.env.SERVICE}_main`, 'tenants');
-            return await TenantModel.findOne({_id:tenantId,is_deleted:false})
+            return await TenantModel.findOne({ _id: tenantId, is_deleted: false })
         } catch (error) {
             console.log('Error in TenantRepository getTenantById method');
             console.log(error);

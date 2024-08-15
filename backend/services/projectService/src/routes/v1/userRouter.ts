@@ -1,7 +1,6 @@
 import { NextFunction, Router, Request, Response } from "express";
 import userAuth from "../../middlewares/userAuth";
 import tenantAuth from "../../middlewares/tenantAuth";
-import projectController from "../../controllers/projectController";
 import { checkSchema } from "express-validator";
 import projectValidator from "../../validators/projectValidator";
 import projectUpdateController from "../../controllers/projectUpdateController";
@@ -29,7 +28,6 @@ import fetchTaskStats from "../../controllers/fetchTaskStats";
 import fetchTicketStats from "../../controllers/fetchTicketStats";
 import fetchBranchRecentProjects from "../../controllers/fetchBranchRecentProjects";
 import fetchRecentProjects from "../../controllers/fetchRecentProjects";
-import fetchBranchProjectCount from "../../controllers/fetchBranchProjectCount";
 import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
@@ -37,6 +35,7 @@ import { CustomRequest, formValidation } from "teamsync-common";
 import { ITaskController } from "../../controllers/v1/interfaces/ITaskController";
 import { container } from "../../config/inversify/inversify";
 import { ITodoController } from "../../controllers/v1/interfaces/ITodoController";
+import { IProjectController } from "../../controllers/v1/interfaces/IProjectController";
 
 
 
@@ -45,13 +44,18 @@ const router = Router();
 
 const taskController = container.get<ITaskController>("ITaskController");
 const todoController = container.get<ITodoController>("ITodoController");
+const projectController = container.get<IProjectController>("IProjectController");
 
 
 router.get('/projects/recent', userAuth, tenantAuth, fetchBranchRecentProjects)
 router.get('/projects/recent/tenant', userAuth, fetchRecentProjects)
 router.get('/projects/stats', userAuth, tenantAuth, fetchProjectStats)
-router.get('/projects/branches/stats', userAuth, fetchBranchProjectCount)
-router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), projectController)
+router.get('/projects/branches/stats', userAuth,
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchBranchProjectCount(req, res, next)
+)
+router.post('/projects', userAuth, tenantAuth, checkSchema(projectValidator()), formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.createProject(req, res, next))
+
 router.put('/projects/:projectId', userAuth, tenantAuth, checkSchema(projectValidator()), projectUpdateController)
 router.put('/projects/:projectId/status', userAuth, tenantAuth, projectStatusUpdateController)
 router.delete('/projects/:projectId', userAuth, tenantAuth, projectDeleteController)
