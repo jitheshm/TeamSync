@@ -158,6 +158,30 @@ export class ProjectController implements IProjectController {
         }
     }
 
+    async getSpecificProject(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            if (req.user?.decode?.role !== 'Tenant_Admin') {
+                if (req.user?.decode?.role !== 'Manager') {
+                    throw new UnauthorizedError()
+                }
+                req.body.branch_id = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+            } else {
+                if (!req.body.branch_id) {
+                    throw new CustomError("Branch id must be provided", 400)
+                }
+            }
+
+            const resultObj = await this.projectService.fetchSpecificProject(req.user?.decode?.tenantId as string, new mongoose.Types.ObjectId(req.params.projectId), new mongoose.Types.ObjectId(req.user?.decode?.branchId as string));
+            res.status(200).json({ message: "Project fetched successfully", data: resultObj });
+
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 
 }
