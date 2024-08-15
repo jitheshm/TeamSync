@@ -21,7 +21,6 @@ import ticketDeleteController from "../../controllers/ticketDeleteController";
 import fetchTicketDetails from "../../controllers/fetchTicketDetails";
 import fetchTaskStats from "../../controllers/fetchTaskStats";
 import fetchTicketStats from "../../controllers/fetchTicketStats";
-import fetchRecentProjects from "../../controllers/fetchRecentProjects";
 import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
@@ -46,7 +45,9 @@ const ticketController = container.get<ITicketController>("ITicketController");
 router.get('/projects/recent', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchBranchRecentProjects(req, res, next)
 )
-router.get('/projects/recent/tenant', userAuth, fetchRecentProjects)
+router.get('/projects/recent/tenant', userAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchRecentProjects(req, res, next)
+)
 router.get('/projects/stats', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchProjectStats(req, res, next)
 )

@@ -120,6 +120,20 @@ export class ProjectController implements IProjectController {
         }
     }
 
+    async fetchRecentProjects(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const projects = await this.projectService.fetchRecentProjects(req.user?.decode.tenantId);
+            console.log(projects);
+            res.status(200).json({ message: "project fetch successfully", data: projects });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 
 }
