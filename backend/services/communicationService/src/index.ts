@@ -9,6 +9,7 @@ import connect from './config/db/connect';
 import { connectConsumers } from './events/consumerStart';
 import socketHandler from './socketHandler/socketHandler';
 import router from './routes/router';
+import errorHandler from './middlewares/errorHandler';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ connect().then(() => {
 });
 
 app.use('/', router)
+app.use(errorHandler);
 
 
 const server = http.createServer(app);
