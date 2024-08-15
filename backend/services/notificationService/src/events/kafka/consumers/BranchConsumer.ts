@@ -1,19 +1,20 @@
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
+import { inject, injectable } from "inversify";
 import IConsumer from "../../../interfaces/IConsumer";
-import BranchRepository from "../../../repository/implementations/BranchRepository";
-import { IBranchRepository } from "../../../repository/interfaces/IBranchRepository";
-import BranchService from "../../../services/implementations/BranchService";
 import { IBranchService } from "../../../services/interfaces/IBranchService";
+import { IKafkaConnection } from "../../../interfaces/IKafkaConnection";
 
 
-const branchRepository: IBranchRepository = new BranchRepository();
-const branchService: IBranchService = new BranchService(branchRepository);
-
+@injectable()
 export default class BranchConsumer implements IConsumer {
-    private kafkaConnection: KafkaConnection;
+    private kafkaConnection: IKafkaConnection;
+    private branchService: IBranchService
 
-    constructor() {
-        this.kafkaConnection = new KafkaConnection();
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("IBranchService") branchService: IBranchService
+    ) {
+        this.kafkaConnection = kafkaConnection
+        this.branchService = branchService
     }
 
     async consume() {
@@ -31,7 +32,7 @@ export default class BranchConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await branchService.handleEvent(dataObj.eventType, dataObj.data, dataObj.dbName);
+                            await this.branchService.handleEvent(dataObj.eventType, dataObj.data, dataObj.dbName);
                         }
                     }
                 },

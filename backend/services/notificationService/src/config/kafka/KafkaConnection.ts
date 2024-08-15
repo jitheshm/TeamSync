@@ -1,5 +1,6 @@
 import { Consumer, Kafka, Producer } from "kafkajs"
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
+import { injectable } from "inversify";
 
 const kafkaInstance = new Kafka({
     clientId: process.env.SERVICE,
@@ -7,6 +8,7 @@ const kafkaInstance = new Kafka({
 
 })
 
+@injectable()
 export class KafkaConnection implements IKafkaConnection {
 
     private static producer: Producer;

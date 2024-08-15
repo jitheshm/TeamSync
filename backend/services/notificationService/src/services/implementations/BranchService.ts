@@ -1,11 +1,15 @@
 import { Document } from "mongoose";
 import { IBranchService } from "../interfaces/IBranchService";
 import { IBranchRepository } from "../../repository/interfaces/IBranchRepository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class BranchService implements IBranchService {
     private branchRepository: IBranchRepository;
 
-    constructor(branchRepository: IBranchRepository) {
+    constructor(
+        @inject("IBranchRepository") branchRepository: IBranchRepository
+    ) {
         this.branchRepository = branchRepository;
     }
 
@@ -27,5 +31,5 @@ export default class BranchService implements IBranchService {
         }
     }
 
-    
+
 }
