@@ -9,4 +9,5 @@ export interface IProjectController {
     fetchProjectStats(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     fetchProjectUsers(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     fetchRecentProjects(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    getProjectDetails(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

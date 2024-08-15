@@ -7,7 +7,6 @@ import projectUpdateController from "../../controllers/projectUpdateController";
 import projectDeleteController from "../../controllers/projectDeleteController";
 import getSpecificProjectController from "../../controllers/getSpecificProjectController";
 import getAllProjectController from "../../controllers/getAllProjectController";
-import getProjectDetails from "../../controllers/getProjectDetails";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import taskUpdateController from "../../controllers/taskUpdateController";
 import taskDeleteController from "../../controllers/taskDeleteController";
@@ -58,7 +57,9 @@ router.put('/projects/:projectId/status', userAuth, tenantAuth, projectStatusUpd
 router.delete('/projects/:projectId', userAuth, tenantAuth, projectDeleteController)
 router.get('/projects', userAuth, tenantAuth, getAllProjectController)
 router.get('/projects/:projectId', userAuth, tenantAuth, getSpecificProjectController)
-router.get('/projects/:projectId/details', userAuth, tenantAuth, getProjectDetails)
+router.get('/projects/:projectId/details', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.getProjectDetails(req, res, next)
+)
 
 router.post('/projects/:projectId/tasks', userAuth, tenantAuth, checkSchema(taskValidator()), formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.createTask(req, res, next)
