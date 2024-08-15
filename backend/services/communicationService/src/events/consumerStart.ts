@@ -12,8 +12,8 @@ export const connectConsumers = () => {
     const subscriptionConsumer=container.get<IConsumer>("ISubscriptionConsumer");
     const tenantConsumer=container.get<IConsumer>("ITenantConsumer");
     const tenantUserConsumer=container.get<IConsumer>("ITenantUserConsumer");
+    const userConsumer=container.get<IConsumer>("IUserConsumer");
 
-    let userConsumer: IConsumer = new UserConsumer()
     userConsumer.consume()
     tenantConsumer.consume()
     branchConsumer.consume()

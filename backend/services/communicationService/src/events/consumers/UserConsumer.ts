@@ -1,18 +1,24 @@
 import { IConsumer, IKafkaConnection } from "teamsync-common";
-import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import UserRepository from "../../repository/implementations/UserRepository";
-import { IUserRepository } from "../../repository/interfaces/IUserRepository";
-import UserService from "../../services/implementations/UserService";
 import { IUserService } from "../../services/interfaces/IUserService";
+import { inject, injectable } from "inversify";
 
-const kafkaConnection:IKafkaConnection = new KafkaConnection();
-const userRepository:IUserRepository = new UserRepository();
-const userService:IUserService = new UserService(userRepository);
 
+
+@injectable()
 export default class UserConsumer implements IConsumer {
+    private kafkaConnection: IKafkaConnection;
+    private userService: IUserService
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("IUserService") userService: IUserService
+    ) {
+        this.kafkaConnection = kafkaConnection
+        this.userService = userService
+    }
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_user_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_user_group`);
             await consumer.subscribe({ topic: "user-events", fromBeginning: true });
 
             await consumer.run({
@@ -25,7 +31,7 @@ export default class UserConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await userService.handleEvent(dataObj.eventType, dataObj.data);
+                            await this.userService.handleEvent(dataObj.eventType, dataObj.data);
                         }
                     }
                 },
