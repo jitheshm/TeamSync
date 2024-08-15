@@ -114,6 +114,24 @@ export class TicketController implements ITicketController {
         }
     }
 
+    async updateTicket(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const bodyObj = req.body
+            const resultObj = await this.ticketService.updateTicket(req.params.ticketId, bodyObj, req.user?.decode?.tenantId);
+            if (!resultObj) {
+                throw new CustomError("Ticket not found", 404);
+            }
+
+            res.status(200).json({ message: "Task updated successfully", task: resultObj });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 
 }

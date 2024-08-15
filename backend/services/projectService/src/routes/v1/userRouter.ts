@@ -6,7 +6,6 @@ import projectValidator from "../../validators/projectValidator";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import ticketValidators from "../../validators/ticketValidators";
-import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
 import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
@@ -84,12 +83,13 @@ router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth,
 )
 router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, checkSchema(ticketValidators()), formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.createTicket(req, res, next))
-    
-router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), ticketUpdateController)
+
+router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => ticketController.updateTicket(req, res, next))
 router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', userAuth, tenantAuth, ticketUpdateStatusController)
 router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.deleteTicket(req, res, next)
- )
+)
 router.get('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.fetchProjectTickets(req, res, next)
 )
