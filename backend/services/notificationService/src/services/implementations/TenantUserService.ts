@@ -1,12 +1,15 @@
 import { Document } from "mongoose";
 import { ITenantUserService } from "../interfaces/ITenantUserService";
 import { ITenantUserRepository } from "../../repository/interfaces/ITenantUserRepository";
+import { inject, injectable } from "inversify";
 
-
+@injectable()
 export default class TenantUserService implements ITenantUserService {
     private tenantUserRepository: ITenantUserRepository;
 
-    constructor(tenantUserRepository: ITenantUserRepository) {
+    constructor(
+        @inject("ITenantUserRepository") tenantUserRepository: ITenantUserRepository
+    ) {
         this.tenantUserRepository = tenantUserRepository;
     }
 
@@ -14,12 +17,12 @@ export default class TenantUserService implements ITenantUserService {
         try {
             switch (eventType) {
                 case "create":
-                     await this.tenantUserRepository.create(data, dbName);
-                     break;
+                    await this.tenantUserRepository.create(data, dbName);
+                    break;
                 case "update":
-                     await this.tenantUserRepository.update(data, dbName, data._id);
-                     break;
-                
+                    await this.tenantUserRepository.update(data, dbName, data._id);
+                    break;
+
                 default:
                     throw new Error(`Unsupported event type: ${eventType}`);
             }
@@ -29,5 +32,5 @@ export default class TenantUserService implements ITenantUserService {
         }
     }
 
-   
+
 }
