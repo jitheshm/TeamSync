@@ -9,7 +9,6 @@ import projectDeleteController from "../../controllers/projectDeleteController";
 import getSpecificProjectController from "../../controllers/getSpecificProjectController";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import getProjectDetails from "../../controllers/getProjectDetails";
-import createTaskController from "../../controllers/createTaskController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import fetchProjectUsers from "../../controllers/fetchProjectUsers";
 import fetchProjectTasks from "../../controllers/fetchProjectTasks";
