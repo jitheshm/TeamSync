@@ -7,4 +7,5 @@ export interface IProjectController {
     createProject(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     fetchBranchRecentProjects(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     fetchProjectStats(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    fetchProjectUsers(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

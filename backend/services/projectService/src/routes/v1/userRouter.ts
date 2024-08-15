@@ -9,7 +9,6 @@ import getSpecificProjectController from "../../controllers/getSpecificProjectCo
 import getAllProjectController from "../../controllers/getAllProjectController";
 import getProjectDetails from "../../controllers/getProjectDetails";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
-import fetchProjectUsers from "../../controllers/fetchProjectUsers";
 import taskUpdateController from "../../controllers/taskUpdateController";
 import taskDeleteController from "../../controllers/taskDeleteController";
 import projectStatusUpdateController from "../../controllers/projectStatusUpdateController";
@@ -69,7 +68,9 @@ router.post('/projects/:projectId/tasks', userAuth, tenantAuth, checkSchema(task
 )
 
 router.get('/tenants/users/available', userAuth, fetchAvailableTenantUsersController)
-router.get('/projects/:projectId/users/available', userAuth, tenantAuth, fetchProjectUsers)
+router.get('/projects/:projectId/users/available', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchProjectUsers(req, res, next)
+)
 router.get('/projects/:projectId/tasks', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchProjectTasks(req, res, next)
 )

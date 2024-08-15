@@ -6,15 +6,16 @@ import { IProjects } from "../../entities/ProjectEntity";
 import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import ProjectProducer from "../../events/kafka/producers/ProjectProducer";
 import { inject, injectable } from "inversify";
+import { CustomError } from "teamsync-common";
 
 
 
 
 @injectable()
 export default class ProjectService implements IProjectService {
-    private tenantRepository?: ITenantRepository;
+    private tenantRepository: ITenantRepository;
     private projectRepository: IProjectRepository;
-    private kafkaConnection?: IKafkaConnection;
+    private kafkaConnection: IKafkaConnection;
 
     constructor(
         @inject("IProjectRepository") projectRepository: IProjectRepository,
@@ -31,7 +32,15 @@ export default class ProjectService implements IProjectService {
     }
 
     async fetchProjectUsers(tenantId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId) {
-        return await this.projectRepository.fetchProjectUsers(tenantId, projectId, branchId);
+        const tenant = await this.tenantRepository.getTenantById(new mongoose.Types.ObjectId(tenantId));
+        if (!tenant) {
+            throw new CustomError("Tenant not found", 404);
+        }
+        const availableUsers = await this.projectRepository.fetchProjectUsers(tenantId, projectId, branchId);
+        if (!availableUsers) {
+            throw new CustomError("Users not found", 404);
+        }
+        return availableUsers;
     }
 
     async fetchAllPManagerProjects(tenantId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (IProjects & Document)[], totalCount: number }> {

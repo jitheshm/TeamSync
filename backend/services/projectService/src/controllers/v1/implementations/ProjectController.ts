@@ -99,6 +99,27 @@ export class ProjectController implements IProjectController {
         }
     }
 
+    async fetchProjectUsers(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            if (!req.user?.decode?.tenantId) {
+                throw new CustomError("Tenant id must be provided", 400)
+            }
+
+            const tenantId = req.user.decode.tenantId;
+            const projectId = new mongoose.Types.ObjectId(req.params.projectId);
+            const branchId = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+
+            const availableUsers = await this.projectService.fetchProjectUsers(tenantId, projectId, branchId);
+            res.status(200).json({ data: availableUsers });
+
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 
 }
