@@ -1,18 +1,25 @@
 import { IConsumer, IKafkaConnection } from "teamsync-common";
-import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import TenantUserRepository from "../../repository/implementations/TenantUserRepository";
-import { ITenantUserRepository } from "../../repository/interfaces/ITenantUserRepository";
-import TenantUserService from "../../services/implementations/TenantUserService";
 import { ITenantUserService } from "../../services/interfaces/ITenantUserService";
+import { inject, injectable } from "inversify";
 
-const kafkaConnection:IKafkaConnection = new KafkaConnection();
-const tenantUserRepository:ITenantUserRepository = new TenantUserRepository();
-const tenantUserService:ITenantUserService = new TenantUserService(tenantUserRepository);
 
+@injectable()
 export default class TenantUserConsumer implements IConsumer {
+
+    private kafkaConnection: IKafkaConnection;
+    private tenantUserService: ITenantUserService;
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ITenantUserService") tenantUserService: ITenantUserService
+    ){
+        this.kafkaConnection = kafkaConnection;
+        this.tenantUserService = tenantUserService;
+    }
+
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_users_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_users_group`);
             await consumer.subscribe({ topic: "tenant-user-events", fromBeginning: true });
 
             await consumer.run({
@@ -25,7 +32,7 @@ export default class TenantUserConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await tenantUserService.handleEvent(dataObj.eventType, dataObj.data, dataObj.dbName);
+                            await this.tenantUserService.handleEvent(dataObj.eventType, dataObj.data, dataObj.dbName);
                         }
                     }
                 },

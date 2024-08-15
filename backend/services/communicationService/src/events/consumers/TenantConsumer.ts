@@ -1,22 +1,17 @@
 import { IConsumer, IKafkaConnection } from "teamsync-common";
-import { ITenantRepository } from "../../repository/interfaces/ITenantRepository";
-import TenantService from "../../services/implementations/TenantService";
 import { ITenantService } from "../../services/interfaces/ITenantService";
 import { inject, injectable } from "inversify";
 
 
 @injectable()
 export default class TenantConsumer implements IConsumer {
-    private tenantRepository: ITenantRepository;
     private tenantService: ITenantService;
     private kafkaConnection: IKafkaConnection;
 
     constructor(
-        @inject("ITenantRepository") tenantRepository: ITenantRepository,
         @inject("ITenantService") tenantService: ITenantService,
         @inject("IKafkaConnection") kafkaConnection: IKafkaConnection
     ) {
-        this.tenantRepository = tenantRepository;
         this.tenantService = tenantService;
         this.kafkaConnection = kafkaConnection;
     }

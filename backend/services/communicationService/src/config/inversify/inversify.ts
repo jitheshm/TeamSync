@@ -48,6 +48,7 @@ import { ITenantService } from "../../services/interfaces/ITenantService";
 import TenantService from "../../services/implementations/TenantService";
 import { ITenantRepository } from "../../repository/interfaces/ITenantRepository";
 import TenantRepository from "../../repository/implementations/TenantRepository";
+import TenantUserConsumer from "../../events/consumers/TenantUserConsumer";
 
 
 
@@ -80,6 +81,7 @@ container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(Subscripti
 container.bind<IConsumer>("ITenantConsumer").to(TenantConsumer)
 container.bind<ITenantService>("ITenantService").to(TenantService);
 container.bind<ITenantRepository>("ITenantRepository").to(TenantRepository);
+container.bind<IConsumer>("ITenantUserConsumer").to(TenantUserConsumer);
 
 
 
