@@ -1,9 +1,11 @@
 import { inject, injectable } from "inversify";
 import { NextFunction, Request, Response } from "express";
-import { CustomRequest } from "teamsync-common";
+import { CustomRequest, UnauthorizedError } from "teamsync-common";
 import { ITicketService } from "../../../services/interfaces/ITicketService";
 import { ITicketController } from "../interfaces/ITicketController";
 import mongoose from "mongoose";
+import IDecodedUser from "../../../interfaces/IDecodeUser";
+import { ITickets } from "../../../entities/TicketEntity";
 
 
 @injectable()
@@ -67,5 +69,33 @@ export class TicketController implements ITicketController {
 
         }
     }
+
+    async createTicket(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const user = req.user as IDecodedUser;
+            const bodyObj: Partial<ITickets> = req.body as Partial<ITickets>;
+            const projectId: string = req.params.projectId;
+            const taskId: string = req.params.taskId;
+
+
+            if (user.decode?.role !== 'Tenant_Admin') {
+                if (user.decode?.role !== 'Tester') {
+                    throw new UnauthorizedError()
+                }
+            }
+
+            const newTicket = await this.ticketService.createTicket(user, bodyObj, projectId, taskId);
+
+            res.status(201).json({ message: "Ticket added successfully", newTicket });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
+
 
 }

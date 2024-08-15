@@ -5,7 +5,6 @@ import { checkSchema } from "express-validator";
 import projectValidator from "../../validators/projectValidator";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
-import ticketCreateController from "../../controllers/ticketCreateController";
 import ticketValidators from "../../validators/ticketValidators";
 import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
@@ -75,16 +74,18 @@ router.get('/projects/:projectId/tasks', userAuth, tenantAuth,
 )
 router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, checkSchema(taskValidator()), formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.taskUpdate(req, res, next))
-router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, 
+router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.taskDelete(req, res, next)
 )
 router.get('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchProjectTaskDetails(req, res, next)
 )
-router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth, 
+router.put('/projects/:projectId/tasks/:taskId/status', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.taskStatusUpdate(req, res, next)
 )
-router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, checkSchema(ticketValidators()), ticketCreateController)
+router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, checkSchema(ticketValidators()), formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => ticketController.createTicket(req, res, next))
+    
 router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), ticketUpdateController)
 router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', userAuth, tenantAuth, ticketUpdateStatusController)
 router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, ticketDeleteController)
