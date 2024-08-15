@@ -40,4 +40,17 @@ export class TicketController implements ITicketController {
         }
     }
 
+    async fetchTicketDetails(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const resultObj = await this.ticketService.fetchSpecificTicketDetails(req.user?.decode?.tenantId as string, new mongoose.Types.ObjectId(req.params.ticketId));
+
+            res.status(200).json({ message: "ticket fetched successfully", data: resultObj });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 }

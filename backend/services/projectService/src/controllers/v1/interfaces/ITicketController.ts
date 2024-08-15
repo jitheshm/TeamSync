@@ -3,4 +3,5 @@ import { CustomRequest } from "teamsync-common";
 
 export interface ITicketController {
     fetchProjectTickets(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    fetchTicketDetails(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

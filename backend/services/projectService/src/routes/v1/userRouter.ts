@@ -18,7 +18,6 @@ import ticketValidators from "../../validators/ticketValidators";
 import ticketUpdateController from "../../controllers/ticketUpdateController";
 import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
 import ticketDeleteController from "../../controllers/ticketDeleteController";
-import fetchTicketDetails from "../../controllers/fetchTicketDetails";
 import fetchTicketStats from "../../controllers/fetchTicketStats";
 import fetchTodoController from "../../controllers/fetchTodoController";
 import updateTodoController from "../../controllers/updateTodoController";
@@ -87,7 +86,9 @@ router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, 
 router.get('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.fetchProjectTickets(req, res, next)
 )
-router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth, fetchTicketDetails)
+router.get('/projects/:projectId/tickets/:ticketId', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => ticketController.fetchTicketDetails(req, res, next)
+)
 router.get('/projects/tasks/stats', userAuth, tenantAuth, 
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchTaskStats(req, res, next)
 )
