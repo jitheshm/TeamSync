@@ -69,4 +69,21 @@ export class TaskController implements ITaskController {
         }
     }
 
+    async fetchTaskStats(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const branchId = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+            const userId = new mongoose.Types.ObjectId(req.user?._id)
+
+            const result = await this.taskService.fetchTaskStats(req.user?.decode.tenantId, branchId, userId)
+
+
+            res.status(200).json({ message: "project fetch successfully", data: result });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 }
