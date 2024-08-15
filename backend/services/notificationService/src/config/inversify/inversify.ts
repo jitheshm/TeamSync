@@ -15,6 +15,9 @@ import ProjectConsumer from "../../events/kafka/consumers/ProjectConsumer";
 import ProjectService from "../../services/implementations/ProjectService";
 import { IProjectService } from "../../services/interfaces/IProjectService";
 import TenantUserConsumer from "../../events/kafka/consumers/TenantUserConsumer";
+import MeetingConsumer from "../../events/kafka/consumers/MeeetingConsumer";
+import MeetingService from "../../services/implementations/MeetingService";
+import { IMeetingService } from "../../services/interfaces/IMeetingService";
 
 
 
@@ -30,6 +33,8 @@ container.bind<IConsumer>("IBranchConsumer").to(BranchConsumer);
 container.bind<IConsumer>("IProjectConsumer").to(ProjectConsumer);
 container.bind<IProjectService>("IProjectService").to(ProjectService);
 container.bind<IConsumer>("ITenantUserConsumer").to(TenantUserConsumer);
+container.bind<IConsumer>("IMeetingConsumer").to(MeetingConsumer);
+container.bind<IMeetingService>("IMeetingService").to(MeetingService);
 // container.bind<IMiddlewareService>("IMiddlewareService").to(MiddlewareServices);
 
 

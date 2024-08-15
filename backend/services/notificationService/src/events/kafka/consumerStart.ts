@@ -12,11 +12,11 @@ import TicketConsumer from "./consumers/TicketConsumer"
 
 export const connectConsumers = () => {
     const branchConsumer=container.get<IConsumer>("IBranchConsumer")
+    const meetingConsumer=container.get<IConsumer>("IMeetingConsumer")
 
     let otpConsumer: OtpConsumer = new OtpConsumer()
     let tenantUserConsumer: IConsumer = new TenantUserConsumer()
     let projectConsumer: IConsumer = new ProjectConsumer()
-    let meetingConsumer: IConsumer = new MeetingConsumer()
     let ticketConsumer: IConsumer = new TicketConsumer()
     let taskConsumer: IConsumer = new TaskConsumer()
 

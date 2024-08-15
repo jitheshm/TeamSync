@@ -1,16 +1,24 @@
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
+import { inject, injectable } from "inversify";
 import IConsumer from "../../../interfaces/IConsumer";
-import TenantUserRepository from "../../../repository/implementations/TenantUserRepository";
-import MeetingService from "../../../services/implementations/MeetingService";
+import { IKafkaConnection } from "../../../interfaces/IKafkaConnection";
+import { IMeetingService } from "../../../services/interfaces/IMeetingService";
 
-const kafkaConnection = new KafkaConnection();
-const tenantUserRepository = new TenantUserRepository();
-const meetingService = new MeetingService(tenantUserRepository);
 
+
+@injectable()
 export default class MeetingConsumer implements IConsumer {
+    private meetingService: IMeetingService;
+    private kafkaConnection: IKafkaConnection;
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("IMeetingService") meetingService: IMeetingService
+    ) {
+        this.kafkaConnection = kafkaConnection;
+        this.meetingService = meetingService;
+    }
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_meeting_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_meeting_group`);
             await consumer.subscribe({ topic: "meeting-events", fromBeginning: true });
 
             await consumer.run({
@@ -23,7 +31,7 @@ export default class MeetingConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await meetingService.handleCreateMeetingEvent(dataObj);
+                            await this.meetingService.handleCreateMeetingEvent(dataObj);
                         }
                     }
                 },
