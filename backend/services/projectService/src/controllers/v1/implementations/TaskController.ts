@@ -5,6 +5,7 @@ import IDecodedUser from "../../../interfaces/IDecodeUser";
 import { ITasks } from "../../../entities/TaskEntity";
 import { NextFunction, Request, Response } from "express";
 import { CustomRequest } from "teamsync-common";
+import mongoose from "mongoose";
 
 @injectable()
 export class TaskController implements ITaskController {
@@ -23,6 +24,30 @@ export class TaskController implements ITaskController {
             const projectId: string = req.params.projectId;
             const newProject = await this.taskService.createTask(user, bodyObj, projectId);
             res.status(201).json({ message: "Task added successfully", newProject });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
+    async fetchProjectTasks(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const search = req.query.search as string | null;
+            const page = Number(req.query.page || 1);
+            const limit = Number(req.query.limit || 1000);
+
+            const data = await this.taskService.fetchProjectAllTask(
+                req.user?.decode?.tenantId as string,
+                new mongoose.Types.ObjectId(req.user?.decode?.branchId as string),
+                new mongoose.Types.ObjectId(req.params.projectId),
+                search,
+                page,
+                limit
+            );
+
+            res.status(200).json({ message: "Tasks fetched successfully", data: data });
 
         } catch (error) {
             console.log(error);

@@ -4,4 +4,5 @@ import { CustomRequest } from "teamsync-common";
 
 export interface ITaskController {
     createTask(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    fetchProjectTasks(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }
