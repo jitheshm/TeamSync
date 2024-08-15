@@ -9,4 +9,5 @@ export interface ITaskController {
     fetchTaskStats(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     taskDelete(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     taskStatusUpdate(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    taskUpdate(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

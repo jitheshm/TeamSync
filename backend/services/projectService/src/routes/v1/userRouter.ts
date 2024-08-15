@@ -5,7 +5,6 @@ import { checkSchema } from "express-validator";
 import projectValidator from "../../validators/projectValidator";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
-import taskUpdateController from "../../controllers/taskUpdateController";
 import ticketCreateController from "../../controllers/ticketCreateController";
 import ticketValidators from "../../validators/ticketValidators";
 import ticketUpdateController from "../../controllers/ticketUpdateController";
@@ -74,7 +73,8 @@ router.get('/projects/:projectId/users/available', userAuth, tenantAuth,
 router.get('/projects/:projectId/tasks', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.fetchProjectTasks(req, res, next)
 )
-router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, checkSchema(taskValidator()), taskUpdateController)
+router.put('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, checkSchema(taskValidator()), formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => taskController.taskUpdate(req, res, next))
 router.delete('/projects/:projectId/tasks/:taskId', userAuth, tenantAuth, 
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.taskDelete(req, res, next)
 )

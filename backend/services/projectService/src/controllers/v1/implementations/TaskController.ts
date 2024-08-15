@@ -130,4 +130,24 @@ export class TaskController implements ITaskController {
         }
     }
 
+    async taskUpdate(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const bodyObj: Partial<ITasks> = req.body as Partial<ITasks>;
+            bodyObj.branch_id = new mongoose.Types.ObjectId(req.user?.decode.branchId);
+    
+            const resultObj = await this.taskService.updateTask(req.params.taskId, bodyObj, req.user?.decode?.tenantId);
+    
+            if (!resultObj) {
+                throw new CustomError("Task not found", 404);
+            }
+    
+            res.status(200).json({ message: "Task updated successfully", task: resultObj });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 }
