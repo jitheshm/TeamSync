@@ -11,9 +11,10 @@ export const connectConsumers = () => {
     const branchConsumer=container.get<IConsumer>("IBranchConsumer")
     const meetingConsumer=container.get<IConsumer>("IMeetingConsumer")
     const otpConsumer=container.get<IConsumer>("IOtpConsumer")
+    const projectConsumer=container.get<IConsumer>("IProjectConsumer")
+
 
     let tenantUserConsumer: IConsumer = new TenantUserConsumer()
-    let projectConsumer: IConsumer = new ProjectConsumer()
     let ticketConsumer: IConsumer = new TicketConsumer()
     let taskConsumer: IConsumer = new TaskConsumer()
 
