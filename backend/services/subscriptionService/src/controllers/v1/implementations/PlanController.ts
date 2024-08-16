@@ -75,4 +75,23 @@ export class PlanController implements IPlanController {
         }
     }
 
+    async getSpecificPlan(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const planId = new mongoose.Types.ObjectId(req.params.planId);
+            const plans = await this.planService.getSpecificPlan(planId)
+            if (plans) {
+                res.status(200).json({ data: plans })
+            }
+            else {
+                throw new CustomError("Plan not found", 404)
+            }
+
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+
+
 }

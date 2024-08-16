@@ -77,4 +77,9 @@ export class PlanService implements IPlanService {
             data = await this.planRepository.fetchAvailablePlans(1, 100, null);
         return data
     }
+
+    async getSpecificPlan(planId: mongoose.Types.ObjectId) {
+        const plans = await this.planRepository.fetchById(planId)
+        return plans
+    }
 }

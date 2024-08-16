@@ -12,4 +12,5 @@ export interface IPlanService {
         data: any[];
         total: any;
     }>
+    getSpecificPlan(planId: mongoose.Types.ObjectId): Promise<IPlan | null>
 }

@@ -8,7 +8,7 @@ export default async (req: Request, res: Response) => {
 
     try {
         const planId = new mongoose.Types.ObjectId(req.params.planId);
-        const plans = await planRepository.fetchById(planId)
+        
         if (plans) {
             res.status(200).json({ data: plans })
         }
