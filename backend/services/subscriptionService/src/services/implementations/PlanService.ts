@@ -67,4 +67,14 @@ export class PlanService implements IPlanService {
             data = await this.planRepository.fetchAll(1, 100, null);
         return data
     }
+
+    async getAvailablePlans(page: string | null, limit: string | null, name: string | null) {
+        let data
+        if (page && limit) {
+            data = await this.planRepository.fetchAvailablePlans(Number(page), Number(limit), name as string | null);
+
+        } else
+            data = await this.planRepository.fetchAvailablePlans(1, 100, null);
+        return data
+    }
 }

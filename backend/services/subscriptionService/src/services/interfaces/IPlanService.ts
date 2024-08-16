@@ -8,4 +8,8 @@ export interface IPlanService {
         data: any[];
         total: any;
     }>
+    getAvailablePlans(page: string | null, limit: string | null, name: string | null): Promise<{
+        data: any[];
+        total: any;
+    }>
 }
