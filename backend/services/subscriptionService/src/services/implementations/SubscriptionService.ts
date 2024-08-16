@@ -72,4 +72,9 @@ export class SubscriptionService implements ISubscriptionService {
         let data = await this.subscriptionRepository.findSubscriptionByUserId(userId)
         return data
     }
+
+    async getAllSubscription(page: number, limit: number, name: string | null) {
+        const subscriptions = await this.subscriptionRepository.fetchAllSubscriptions(name, page, limit)
+        return subscriptions
+    }
 }

@@ -64,5 +64,20 @@ export class SubscriptionController implements ISubscriptionController {
         }
     }
 
+    async getAllSubscription(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const name = req.query.name as string | null
+            const page = Number(req.query.page || 1)
+            const limit = Number(req.query.limit || 1000)
+            const subscriptions = await this.subscriptionService.getAllSubscription(page, limit, name)
+            res.status(200).json({ data: subscriptions })
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 }
