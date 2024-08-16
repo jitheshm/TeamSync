@@ -51,6 +51,8 @@ export class PlanService implements IPlanService {
         planProducer.sendMessage('create', planObj)
     }
 
+
+
     async deletePlan(id: mongoose.Types.ObjectId) {
         let resObj = await this.planRepository.update({ is_deleted: true }, id);
         return resObj;

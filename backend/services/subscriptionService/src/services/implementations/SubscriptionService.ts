@@ -116,4 +116,9 @@ export class SubscriptionService implements ISubscriptionService {
         let data = await this.subscriptionRepository.findSubscriptionByUserId(userId)
         return data
     }
+
+    async fetchPlanStats() {
+        const result = await this.subscriptionRepository.fetchPlanStats()
+        return result
+    }
 }

@@ -114,5 +114,16 @@ export class SubscriptionController implements ISubscriptionController {
         }
     }
 
+    async fetchPlanStats(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const result = await this.subscriptionService.fetchPlanStats()
+            res.status(200).json({ data: result });
+
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
 
 }

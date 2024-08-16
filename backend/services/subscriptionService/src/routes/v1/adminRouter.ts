@@ -6,7 +6,6 @@ import updatePlanController from "../../controllers/v1/updatePlanController";
 import getAllPlansController from "../../controllers/v1/getAllPlansController";
 import getSpecificPlanController from "../../controllers/v1/getSpecificPlanController";
 import fetchProfit from "../../controllers/v1/fetchProfit";
-import fetchPlanStats from "../../controllers/v1/fetchPlanStats";
 import { container } from "../../config/inversify/inversify";
 import { ISubscriptionController } from "../../controllers/v1/interfaces/ISubscriptionController";
 import { CustomRequest, formValidation } from "teamsync-common";
@@ -21,7 +20,9 @@ const planController = container.get<IPlanController>("IPlanController")
 router.post('/subscription-plans', adminAuth, checkSchema(planValidator()), formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => planController.createPlan(req, res, next))
 router.get('/subscription-plans', adminAuth, getAllPlansController)
-router.get('/subscription-plans/stats', adminAuth, fetchPlanStats)
+router.get('/subscription-plans/stats', adminAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.fetchPlanStats(req, res, next)
+)
 router.get('/subscription-plans/:planId', adminAuth, getSpecificPlanController)
 router.put('/subscription-plans/:planId', adminAuth, checkSchema(planValidator()), updatePlanController)
 router.patch('/subscription-plans/:planId', adminAuth, check('active').isBoolean().withMessage('active must be a boolean value (true or false)'), updatePlanController)

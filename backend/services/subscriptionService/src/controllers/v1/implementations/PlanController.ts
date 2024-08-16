@@ -33,6 +33,8 @@ export class PlanController implements IPlanController {
         }
     }
 
+    
+
     async deletePlan(req: CustomRequest, res: Response, next: NextFunction) {
         try {
             const id = new mongoose.Types.ObjectId(req.params.planId);
