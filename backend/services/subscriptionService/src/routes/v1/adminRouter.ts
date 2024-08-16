@@ -1,7 +1,6 @@
 import { NextFunction, Response, Router } from "express";
 import { check, checkSchema } from "express-validator";
 import planValidator from "../../validators/planValidator";
-import planController from "../../controllers/v1/planController";
 import adminAuth from "../../middlewares/adminAuth";
 import updatePlanController from "../../controllers/v1/updatePlanController";
 import getAllPlansController from "../../controllers/v1/getAllPlansController";
@@ -10,7 +9,7 @@ import fetchProfit from "../../controllers/v1/fetchProfit";
 import fetchPlanStats from "../../controllers/v1/fetchPlanStats";
 import { container } from "../../config/inversify/inversify";
 import { ISubscriptionController } from "../../controllers/v1/interfaces/ISubscriptionController";
-import { CustomRequest } from "teamsync-common";
+import { CustomRequest, formValidation } from "teamsync-common";
 import { IPlanController } from "../../controllers/v1/interfaces/IPlanController";
 
 
@@ -19,7 +18,8 @@ const subscriptionController = container.get<ISubscriptionController>("ISubscrip
 const planController = container.get<IPlanController>("IPlanController")
 
 
-router.post('/subscription-plans', adminAuth, checkSchema(planValidator()), planController)
+router.post('/subscription-plans', adminAuth, checkSchema(planValidator()), formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => planController.createPlan(req, res, next))
 router.get('/subscription-plans', adminAuth, getAllPlansController)
 router.get('/subscription-plans/stats', adminAuth, fetchPlanStats)
 router.get('/subscription-plans/:planId', adminAuth, getSpecificPlanController)

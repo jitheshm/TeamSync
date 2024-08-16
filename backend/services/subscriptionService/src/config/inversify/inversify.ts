@@ -14,6 +14,8 @@ import { Producer } from "kafkajs";
 import { ISubscriptionService } from "../../services/interfaces/ISubscriptionService";
 import { SubscriptionService } from "../../services/implementations/SubscriptionService";
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
+import IPlan from "../../entities/PlanEntity";
+import PlanProducer from "../../events/kafka/producers/PlanProducer";
 
 
 const container = new Container();
@@ -32,6 +34,12 @@ container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(Subscripti
 container.bind<IProducer<ISubscriptions>>("ISubscriptionProducer").toFactory((context: interfaces.Context) => {
     return (producer: Producer, dbName: string, modelName: string) => {
         return new SubscriptionProducer(producer, dbName, modelName)
+    }
+})
+
+container.bind<IProducer<IPlan>>("IPlanProducer").toFactory((context: interfaces.Context) => {
+    return (producer: Producer, dbName: string, modelName: string) => {
+        return new PlanProducer(producer, dbName, modelName)
     }
 })
 
