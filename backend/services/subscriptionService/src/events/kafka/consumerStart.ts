@@ -1,11 +1,12 @@
 
+import { container } from "../../config/inversify/inversify"
 import IConsumer from "../../interfaces/IConsumer"
 import TenantConsumer from "./consumers/TenantConsumer"
 import UserConsumer from "./consumers/UserConsumer"
 
 export const connectConsumers = () => {
-    let userConsumer:UserConsumer = new UserConsumer()
-    let tenantConsumer:TenantConsumer = new TenantConsumer()
+    const userConsumer= container.get<IConsumer>("IUserConsumer")
+    const tenantConsumer= container.get<IConsumer>("ITenantConsumer")
     tenantConsumer.consume()
     userConsumer.consume()
 } 
