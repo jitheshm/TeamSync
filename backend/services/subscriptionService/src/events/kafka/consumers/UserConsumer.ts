@@ -2,10 +2,20 @@
 import UserRepository from "../../../repository/implementations/UserRepository";
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
+import { inject, injectable } from "inversify";
+import { IUserService } from "../../../services/interfaces/IUserService";
 
 
 
+@injectable()
 export default class UserConsumer implements IConsumer {
+    private userService: IUserService
+
+    constructor(
+        @inject("IUserService") userService: IUserService
+    ) {
+        this.userService = userService
+    }
 
     async consume() {
         try {
@@ -26,15 +36,7 @@ export default class UserConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
-
-                                    await userRepository.create(dataObj.data)
-                                    break;
-                                case 'update':
-                                    await userRepository.updateUser(dataObj.data)
-                                    break;
-                            }
+                            this.userService.handleKafkaEvent(dataObj.eventType, dataObj.data)
                         }
 
                     }

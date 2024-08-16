@@ -16,6 +16,10 @@ import { SubscriptionService } from "../../services/implementations/Subscription
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 import IPlan from "../../entities/PlanEntity";
 import PlanProducer from "../../events/kafka/producers/PlanProducer";
+import { IUserService } from "../../services/interfaces/IUserService";
+import { UserService } from "../../services/implementations/UserService";
+import { ITenantService } from "../../services/interfaces/ITenantService";
+import { TenantService } from "../../services/implementations/TenantService";
 
 
 const container = new Container();
