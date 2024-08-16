@@ -10,6 +10,7 @@ export interface ITenantUserRepository {
     delete(data:Partial<ITenantUsers>,dbId: string, userId: mongoose.Types.ObjectId): Promise<ITenantUsers | null>
     fetchTenantSpecificUser(dbId: string, userId: mongoose.Types.ObjectId): Promise<(ITenantUsers & Document) | null>
     fetchAvailableTenantUsers(dbId: string, branchId: mongoose.Types.ObjectId, role: string): Promise<(ITenantUsers&Document)[]>
+    fetchTenantUserByEmail(email: string, dbId: string): Promise<ITenantUsers | null>
 
 
 }

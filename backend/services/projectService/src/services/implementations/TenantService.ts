@@ -2,12 +2,15 @@ import mongoose from "mongoose";
 import { ITenants } from "../../entities/TenantEntity";
 import { ITenantRepository } from "../../repository/interfaces/ITenantRepository";
 import { ITenantService } from "../interfaces/ITenantService";
+import { inject, injectable } from "inversify";
 
-
+@injectable()
 export default class TenantService implements ITenantService {
     private tenantRepository: ITenantRepository;
 
-    constructor(tenantRepository: ITenantRepository) {
+    constructor(
+        @inject("ITenantRepository") tenantRepository: ITenantRepository
+    ) {
         this.tenantRepository = tenantRepository;
     }
 

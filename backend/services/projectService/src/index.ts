@@ -21,7 +21,7 @@ app.use(fileUpload());
 connect().then(() => {
   connectConsumers()
 
-}) //connect to db
+}) //connect to db 
 
 app.use('/', router)
 app.use(errorHandler)

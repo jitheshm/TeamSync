@@ -1,7 +1,7 @@
 import { Producer } from "kafkajs";
-import IProducer from "../../../interfaces/IProducer";
 import { ITenantUsers } from "../../../entities/TenantUserEntity";
 import { IProjects } from "../../../entities/ProjectEntity";
+import { IProducer } from "teamsync-common";
 
 
 export default class ProjectProducer implements IProducer<IProjects> {

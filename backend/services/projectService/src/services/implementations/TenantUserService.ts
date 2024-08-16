@@ -5,11 +5,11 @@ import { ITenantService } from "../interfaces/ITenantService";
 import IDecodedUser from "../../interfaces/IDecodeUser";
 import { ITenantUsers } from "../../entities/TenantUserEntity";
 import { CustomError, UnauthorizedError } from "teamsync-common";
-import { inject } from "inversify";
+import { inject, injectable } from "inversify";
 
 
 
-
+@injectable()
 export default class TenantUserService implements ITenantUserService {
     private tenantUserRepository: ITenantUserRepository;
     private tenantService?: ITenantService;
