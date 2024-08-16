@@ -1,15 +1,17 @@
 
+import { inject, injectable } from "inversify";
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import IConsumer from "../../../interfaces/IConsumer";
-import UserRepository from "../../../repository/implementations/UserRepository";
-import { UserService } from "../../../services/implementations/UserService";
+import { IUserService } from "../../../services/interfaces/IUserService";
+import { IConsumer } from "teamsync-common";
 
+@injectable()
 export default class UserConsumer implements IConsumer {
-    private userService: UserService;
+    private userService: IUserService;
 
-    constructor() {
-        const userRepository = new UserRepository();
-        this.userService = new UserService(userRepository);
+    constructor(
+        @inject("IUserService") userService: IUserService
+    ) {
+        this.userService = userService
     }
 
     async consume() {

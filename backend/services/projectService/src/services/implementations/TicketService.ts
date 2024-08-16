@@ -3,10 +3,10 @@ import IDecodedUser from "../../interfaces/IDecodeUser";
 import { ITicketRepository } from "../../repository/interfaces/ITicketRepository";
 import { ITickets } from "../../entities/TicketEntity";
 import { ITicketService } from "../interfaces/ITicketService";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import TicketProducer from "../../events/kafka/producers/TicketProducer";
 import { ITaskRepository } from "../../repository/interfaces/ITaskRepository";
 import { inject, injectable } from "inversify";
+import { IKafkaConnection } from "teamsync-common";
 
 @injectable()
 export default class TicketService implements ITicketService {

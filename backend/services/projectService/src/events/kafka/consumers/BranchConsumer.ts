@@ -1,23 +1,24 @@
-// src/events/kafka/consumers/BranchConsumer.ts
 
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import IConsumer from "../../../interfaces/IConsumer";
-import BranchRepository from "../../../repository/implementations/BranchRepository";
-import { BranchService } from "../../../services/implementations/BranchService";
+import { IConsumer, IKafkaConnection } from "teamsync-common";
+import { inject, injectable } from "inversify";
+import { IBranchService } from "../../../services/interfaces/IBranchService";
 
-const kafkaConnection = new KafkaConnection();
-
+@injectable()
 export default class BranchConsumer implements IConsumer {
-    private branchService: BranchService;
+    private branchService: IBranchService;
+    private kafkaConnection: IKafkaConnection
 
-    constructor() {
-        const branchRepository = new BranchRepository();
-        this.branchService = new BranchService(branchRepository);
+    constructor(
+        @inject("IBranchService") branchService: IBranchService,
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection
+    ) {
+        this.branchService = branchService
+        this.kafkaConnection = kafkaConnection
     }
 
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_branches_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_branches_group`);
             await consumer.subscribe({ topic: 'branch-events', fromBeginning: true });
 
             await consumer.run({

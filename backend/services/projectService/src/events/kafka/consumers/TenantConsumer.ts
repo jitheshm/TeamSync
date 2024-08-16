@@ -1,16 +1,18 @@
 // src/events/kafka/consumers/TenantConsumer.ts
 
+import { IConsumer } from "teamsync-common";
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import IConsumer from "../../../interfaces/IConsumer";
-import TenantRepository from "../../../repository/implementations/TenantRepository";
-import TenantService from "../../../services/implementations/TenantService";
+import { ITenantService } from "../../../services/interfaces/ITenantService";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class TenantConsumer implements IConsumer {
-    private tenantService: TenantService;
+    private tenantService: ITenantService;
 
-    constructor() {
-        const tenantRepository = new TenantRepository();
-        this.tenantService = new TenantService(tenantRepository);
+    constructor(
+        @inject("ITenantService") tenantService: ITenantService
+    ) {
+        this.tenantService = tenantService
     }
 
     async consume() {

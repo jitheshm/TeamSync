@@ -4,7 +4,9 @@ import { IUserService } from "../interfaces/IUserService";
 import { IUserRepository } from "../../repository/interfaces/IUserRepository";
 import { IUsers } from "../../entities/UserEntity";
 import { Document } from "mongoose";
+import { injectable } from "inversify";
 
+@injectable()
 export class UserService implements IUserService {
     private userRepository: IUserRepository;
 

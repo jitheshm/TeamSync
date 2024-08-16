@@ -31,6 +31,8 @@ import { IProjectRepository } from "../../repository/interfaces/IProjectReposito
 import ProjectRepository from "../../repository/implementations/ProjectRepository";
 import { ITenantUserController } from "../../controllers/v1/interfaces/ITenantUserController";
 import { TenantUserController } from "../../controllers/v1/implementations/TenantUserController";
+import { ISubscriptionService } from "../../services/interfaces/ISubscriptionService";
+import { SubscriptionService } from "../../services/implementations/SubscriptionService";
 
 
 const container = new Container();
@@ -53,6 +55,7 @@ container.bind<IProjectController>("IProjectController").to(ProjectController);
 container.bind<IProjectService>("IProjectService").to(ProjectService);
 container.bind<IProjectRepository>("IProjectRepository").to(ProjectRepository);
 container.bind<ITenantUserController>("ITenantUserController").to(TenantUserController)
+container.bind<ISubscriptionService>("ISubscriptionService").to(SubscriptionService);
 
 
 

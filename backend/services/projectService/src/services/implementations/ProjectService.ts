@@ -3,10 +3,9 @@ import { ITenantRepository } from "../../repository/interfaces/ITenantRepository
 import { IProjectService } from "../interfaces/IProjectService";
 import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
 import { IProjects } from "../../entities/ProjectEntity";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import ProjectProducer from "../../events/kafka/producers/ProjectProducer";
 import { inject, injectable } from "inversify";
-import { CustomError } from "teamsync-common";
+import { CustomError, IKafkaConnection } from "teamsync-common";
 
 
 

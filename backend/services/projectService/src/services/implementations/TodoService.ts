@@ -1,5 +1,4 @@
 import mongoose, { Document } from "mongoose";
-import IDecodedUser from "../../interfaces/IDecodeUser";
 import { ITodoRepository } from "../../repository/interfaces/ITodoRepository";
 import { ITodo } from "../../entities/TodoEntity";
 import { ITodoService } from "../interfaces/ITodoService";
