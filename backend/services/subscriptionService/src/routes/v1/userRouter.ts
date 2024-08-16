@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction, Router, Response } from "express";
 import subscriptionController from "../../controllers/v1/stripeSubscriptionController";
 import userAuth from "../../middlewares/userAuth";
 import webhookController from "../../controllers/v1/webhookController";
@@ -10,8 +10,13 @@ import cancelSubscriptionController from "../../controllers/v1/cancelSubscriptio
 import updateSubscriptionController from "../../controllers/v1/updateSubscriptionController";
 import getAvailablePlans from "../../controllers/v1/getAvailablePlans";
 import paymentRetryController from "../../controllers/v1/paymentRetryController";
+import { container } from "../../config/inversify/inversify";
+import { ISubscriptionController } from "../../controllers/v1/interfaces/ISubscriptionController";
+import { CustomRequest } from "teamsync-common";
 
 const router = Router();
+
+const subscriptionController = container.get<ISubscriptionController>("ISubscriptionController")
 
 
 router.post('/subscriptions', userAuth, subscriptionController)
@@ -19,7 +24,9 @@ router.post('/subscriptions/retry', userAuth, paymentRetryController)
 router.get('/subscription-plans', getAvailablePlans)
 router.get('/subscription', userAuth, getSubscriptionDetailsController)
 router.patch('/subscriptions/:subscriptionId/customers/:customerId', userAuth, updateSubscriptionController)
-router.patch('/subscriptions/:subscriptionId/cancel', userAuth, cancelSubscriptionController)
+router.patch('/subscriptions/:subscriptionId/cancel', userAuth,
+    (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.cancelSubscription(req, res, next)
+)
 
 
 
