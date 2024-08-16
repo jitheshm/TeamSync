@@ -19,7 +19,9 @@ const router = Router();
 const subscriptionController = container.get<ISubscriptionController>("ISubscriptionController")
 
 
-router.post('/subscriptions', userAuth, subscriptionController)
+router.post('/subscriptions', userAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.createSubscription(req, res, next)
+)
 router.post('/subscriptions/retry', userAuth, paymentRetryController)
 router.get('/subscription-plans', getAvailablePlans)
 router.get('/subscription', userAuth, getSubscriptionDetailsController)

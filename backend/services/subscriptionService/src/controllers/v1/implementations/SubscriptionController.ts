@@ -14,6 +14,24 @@ export class SubscriptionController implements ISubscriptionController {
         this.subscriptionService = subscriptionService
     }
 
+    async createSubscription(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            let customerId = req.user?.stripe_customer_id
+            let planId = req.body.plan_id
+            let tenantId = req.body.tenantId
+            let userId = req.user?._id
+            console.log(customerId, planId, tenantId, userId);
+
+            const subscription = await this.subscriptionService.createSubscription(customerId, planId, tenantId, userId)
+            res.json(subscription);
+
+
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
     async cancelSubscription(req: CustomRequest, res: Response, next: NextFunction) {
         try {
             let subscriptionId = req.params.subscriptionId as string
