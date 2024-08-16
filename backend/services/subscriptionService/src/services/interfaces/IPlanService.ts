@@ -13,4 +13,5 @@ export interface IPlanService {
         total: any;
     }>
     getSpecificPlan(planId: mongoose.Types.ObjectId): Promise<IPlan | null>
+    updatePlan(bodyObj: Partial<IPlan>, planId: string): Promise<void>
 }

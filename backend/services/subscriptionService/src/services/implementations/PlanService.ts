@@ -4,7 +4,7 @@ import { IPlanService } from "../interfaces/IPlanService";
 import mongoose from "mongoose";
 import IPlan from "../../entities/PlanEntity";
 import Stripe from "stripe";
-import { IKafkaConnection, IProducer } from "teamsync-common";
+import { CustomError, IKafkaConnection, IProducer } from "teamsync-common";
 import { Producer } from "kafkajs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
@@ -81,5 +81,18 @@ export class PlanService implements IPlanService {
     async getSpecificPlan(planId: mongoose.Types.ObjectId) {
         const plans = await this.planRepository.fetchById(planId)
         return plans
+    }
+
+    async updatePlan(bodyObj: Partial<IPlan>, planId: string) {
+        const { price, currency, bill_cycle, ...dataObj } = bodyObj
+
+        const id = new mongoose.Types.ObjectId(planId);
+        let resObj = await this.planRepository.update(dataObj, id);
+        if (!resObj)
+            throw new CustomError("Plan not found", 404);
+
+        let producer = await this.kafkaConnection.getProducerInstance()
+        let planProducer = this.createPlanProducer(producer, 'main', 'plans')
+        planProducer.sendMessage('update', resObj)
     }
 }

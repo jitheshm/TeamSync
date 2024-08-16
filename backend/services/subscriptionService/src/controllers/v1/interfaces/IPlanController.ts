@@ -7,4 +7,5 @@ export interface IPlanController {
     fetchAllPlans(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     getAvailablePlans(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     getSpecificPlan(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    updatePlan(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

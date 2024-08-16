@@ -92,6 +92,20 @@ export class PlanController implements IPlanController {
         }
     }
 
+    async updatePlan(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const bodyObj: Partial<IPlan> = req.body;
+
+            await this.planService.updatePlan(bodyObj, req.params.planId)
+            res.status(200).json({ message: "Plan updated successfully" });
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+
+
 
 
 }
