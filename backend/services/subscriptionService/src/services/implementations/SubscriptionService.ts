@@ -67,4 +67,9 @@ export class SubscriptionService implements ISubscriptionService {
         subscriptionProducer.sendMessage('create', saveData)
         return subscription;
     }
+
+    async fetchSubscriptionDetails(userId: mongoose.Types.ObjectId) {
+        let data = await this.subscriptionRepository.findSubscriptionByUserId(userId)
+        return data
+    }
 }

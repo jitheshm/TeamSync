@@ -4,7 +4,6 @@ import webhookController from "../../controllers/v1/webhookController";
 import express from "express";
 import getAllPlansController from "../../controllers/v1/getAllPlansController";
 import getUserSubscriptionController from "../../controllers/v1/getUserSubscriptionController";
-import getSubscriptionDetailsController from "../../controllers/v1/getSubscriptionDetailsController";
 import updateSubscriptionController from "../../controllers/v1/updateSubscriptionController";
 import getAvailablePlans from "../../controllers/v1/getAvailablePlans";
 import paymentRetryController from "../../controllers/v1/paymentRetryController";
@@ -17,12 +16,14 @@ const router = Router();
 const subscriptionController = container.get<ISubscriptionController>("ISubscriptionController")
 
 
-router.post('/subscriptions', userAuth, 
+router.post('/subscriptions', userAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.createSubscription(req, res, next)
 )
 router.post('/subscriptions/retry', userAuth, paymentRetryController)
 router.get('/subscription-plans', getAvailablePlans)
-router.get('/subscription', userAuth, getSubscriptionDetailsController)
+router.get('/subscription', userAuth,
+    (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.fetchSubscriptionDetails(req, res, next)
+)
 router.patch('/subscriptions/:subscriptionId/customers/:customerId', userAuth, updateSubscriptionController)
 router.patch('/subscriptions/:subscriptionId/cancel', userAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.cancelSubscription(req, res, next)

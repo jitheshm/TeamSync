@@ -1,8 +1,9 @@
 import { inject, injectable } from "inversify";
 import { ISubscriptionController } from "../interfaces/ISubscriptionController";
 import { ISubscriptionService } from "../../../services/interfaces/ISubscriptionService";
-import { CustomRequest } from "teamsync-common";
+import { CustomError, CustomRequest } from "teamsync-common";
 import { NextFunction, Response } from "express";
+import mongoose from "mongoose";
 
 @injectable()
 export class SubscriptionController implements ISubscriptionController {
@@ -44,5 +45,24 @@ export class SubscriptionController implements ISubscriptionController {
 
         }
     }
+
+    async fetchSubscriptionDetails(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            let userId = new mongoose.Types.ObjectId(req.user?.decode?.id);
+
+            let data = await this.subscriptionService.fetchSubscriptionDetails(userId)
+            if (data) {
+                res.status(200).json({ data: data })
+            } else {
+                throw new CustomError("No subscription found", 404)
+            }
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 }
