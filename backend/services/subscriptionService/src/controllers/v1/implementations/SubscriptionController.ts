@@ -79,5 +79,22 @@ export class SubscriptionController implements ISubscriptionController {
         }
     }
 
+    async updateSubscription(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            let customerId = req.params.customerId as string
+            let subscriptionId = req.params.subscriptionId as string
+            let planId = req.body.plan_id as string
+
+            const subscription = await this.subscriptionService.updateSubscription(customerId, subscriptionId, planId)
+
+            res.json(subscription);
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 }

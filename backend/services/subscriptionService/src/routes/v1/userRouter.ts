@@ -4,7 +4,6 @@ import webhookController from "../../controllers/v1/webhookController";
 import express from "express";
 import getAllPlansController from "../../controllers/v1/getAllPlansController";
 import getUserSubscriptionController from "../../controllers/v1/getUserSubscriptionController";
-import updateSubscriptionController from "../../controllers/v1/updateSubscriptionController";
 import getAvailablePlans from "../../controllers/v1/getAvailablePlans";
 import paymentRetryController from "../../controllers/v1/paymentRetryController";
 import { container } from "../../config/inversify/inversify";
@@ -24,7 +23,9 @@ router.get('/subscription-plans', getAvailablePlans)
 router.get('/subscription', userAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.fetchSubscriptionDetails(req, res, next)
 )
-router.patch('/subscriptions/:subscriptionId/customers/:customerId', userAuth, updateSubscriptionController)
+router.patch('/subscriptions/:subscriptionId/customers/:customerId', userAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.updateSubscription(req, res, next)
+)
 router.patch('/subscriptions/:subscriptionId/cancel', userAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.cancelSubscription(req, res, next)
 )

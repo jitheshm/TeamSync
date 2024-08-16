@@ -10,4 +10,5 @@ export interface ISubscriptionService {
         data: any[];
         total: any;
     }>
+    updateSubscription(customerId: string, subscriptionId: string, planId: string): Promise<Stripe.Response<Stripe.Subscription>>
 }

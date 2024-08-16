@@ -11,6 +11,9 @@ import { ISubscriptionRepository } from "../../repository/interfaces/ISubscripti
 import ISubscriptions from "../../entities/SubscriptionEntity";
 import SubscriptionProducer from "../../events/kafka/producers/SubscriptionProducer";
 import { Producer } from "kafkajs";
+import { ISubscriptionService } from "../../services/interfaces/ISubscriptionService";
+import { SubscriptionService } from "../../services/implementations/SubscriptionService";
+import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 
 
 const container = new Container();

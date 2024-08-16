@@ -77,4 +77,38 @@ export class SubscriptionService implements ISubscriptionService {
         const subscriptions = await this.subscriptionRepository.fetchAllSubscriptions(name, page, limit)
         return subscriptions
     }
+
+    async updateSubscription(customerId: string, subscriptionId: string, planId: string) {
+        const subscriptions = await stripe.subscriptions.list({
+            customer: customerId,
+        });
+
+        const subscription = await stripe.subscriptions.update(
+            subscriptionId,
+            {
+                items: [
+                    {
+                        id: subscriptions.data[0].items.data[0].id,
+                        price: planId,
+                    },
+                ],
+            }
+        );
+
+        const dataObj = {
+            stripe_subscription_id: subscriptionId as string,
+            plan_id: planId
+
+
+        }
+        const result = await this.subscriptionRepository.update(dataObj)
+
+
+        if (result) {
+            let producer = await this.kafkaConnection.getProducerInstance()
+            let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
+            subscriptionProducer.sendMessage('update', result)
+        }
+        return subscription
+    }
 }
