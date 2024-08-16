@@ -1,12 +1,10 @@
 import { NextFunction, Router, Response } from "express";
-import subscriptionController from "../../controllers/v1/stripeSubscriptionController";
 import userAuth from "../../middlewares/userAuth";
 import webhookController from "../../controllers/v1/webhookController";
 import express from "express";
 import getAllPlansController from "../../controllers/v1/getAllPlansController";
 import getUserSubscriptionController from "../../controllers/v1/getUserSubscriptionController";
 import getSubscriptionDetailsController from "../../controllers/v1/getSubscriptionDetailsController";
-import cancelSubscriptionController from "../../controllers/v1/cancelSubscriptionController";
 import updateSubscriptionController from "../../controllers/v1/updateSubscriptionController";
 import getAvailablePlans from "../../controllers/v1/getAvailablePlans";
 import paymentRetryController from "../../controllers/v1/paymentRetryController";

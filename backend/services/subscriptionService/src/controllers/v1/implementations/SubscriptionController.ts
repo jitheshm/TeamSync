@@ -23,7 +23,7 @@ export class SubscriptionController implements ISubscriptionController {
             console.log(customerId, planId, tenantId, userId);
 
             const subscription = await this.subscriptionService.createSubscription(customerId, planId, tenantId, userId)
-            res.json(subscription);
+            res.json({ message: "Subscription created successfully", subscription });
 
 
         } catch (error) {
