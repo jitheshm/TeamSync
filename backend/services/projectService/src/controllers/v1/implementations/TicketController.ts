@@ -6,6 +6,7 @@ import { ITicketController } from "../interfaces/ITicketController";
 import mongoose from "mongoose";
 import IDecodedUser from "../../../interfaces/IDecodeUser";
 import { ITickets } from "../../../entities/TicketEntity";
+import { ITasks } from "../../../entities/TaskEntity";
 
 
 @injectable()
@@ -119,6 +120,29 @@ export class TicketController implements ITicketController {
 
             const bodyObj = req.body
             const resultObj = await this.ticketService.updateTicket(req.params.ticketId, bodyObj, req.user?.decode?.tenantId);
+            if (!resultObj) {
+                throw new CustomError("Ticket not found", 404);
+            }
+
+            res.status(200).json({ message: "Task updated successfully", task: resultObj });
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
+    async TicketUpdateStatus(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const bodyObj: Partial<ITasks> = req.body as Partial<ITasks>;
+            const statusData = {
+                status: bodyObj.status,
+            };
+
+            const resultObj = await this.ticketService.updateStatus(req.params.ticketId, statusData, req.user?.decode?.tenantId);
+
             if (!resultObj) {
                 throw new CustomError("Ticket not found", 404);
             }

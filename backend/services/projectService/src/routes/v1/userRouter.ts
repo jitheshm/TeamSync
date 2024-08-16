@@ -6,7 +6,6 @@ import projectValidator from "../../validators/projectValidator";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import ticketValidators from "../../validators/ticketValidators";
-import ticketUpdateStatusController from "../../controllers/ticketUpdateStatusController";
 import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
 import { CustomRequest, formValidation } from "teamsync-common";
@@ -86,7 +85,9 @@ router.post('/projects/:projectId/tasks/:taskId/tickets', userAuth, tenantAuth, 
 
 router.put('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth, checkSchema(ticketValidators()), formValidation,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.updateTicket(req, res, next))
-router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', userAuth, tenantAuth, ticketUpdateStatusController)
+router.patch('/projects/:projectId/tasks/:taskId/tickets/:ticketId/status', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => ticketController.TicketUpdateStatus(req, res, next)
+)
 router.delete('/projects/:projectId/tasks/:taskId/tickets/:ticketId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => ticketController.deleteTicket(req, res, next)
 )

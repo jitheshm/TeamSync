@@ -8,4 +8,5 @@ export interface ITicketController {
     createTicket(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     deleteTicket(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     updateTicket(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    TicketUpdateStatus(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }
