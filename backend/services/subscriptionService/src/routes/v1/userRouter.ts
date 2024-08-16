@@ -17,7 +17,9 @@ const planController = container.get<IPlanController>("IPlanController")
 router.post('/subscriptions', userAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.createSubscription(req, res, next)
 )
-router.post('/subscriptions/retry', userAuth, paymentRetryController)
+router.post('/subscriptions/retry', userAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.paymentRetry(req, res, next)
+)
 router.get('/subscription-plans', 
     (req: CustomRequest, res: Response, next: NextFunction) => planController.getAvailablePlans(req, res, next)
 )

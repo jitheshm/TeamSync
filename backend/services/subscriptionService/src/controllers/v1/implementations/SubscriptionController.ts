@@ -130,7 +130,19 @@ export class SubscriptionController implements ISubscriptionController {
             const result = await this.subscriptionService.fetchProfit()
             res.status(200).json({ data: result });
         } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
 
+    async paymentRetry(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const invoiceId = req.body.invoiceId as string;
+            const paymentIntent = await this.subscriptionService.paymentRetry(invoiceId)
+            res.status(200).json({ paymentIntent });
+        } catch (error) {
+            console.log(error)
+            next(error)
         }
     }
 

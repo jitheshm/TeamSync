@@ -16,4 +16,5 @@ export interface ISubscriptionService {
     fetchProfit(): Promise<{
         total_earned: number;
     }>
+    paymentRetry(invoiceId: string): Promise<Stripe.Response<Stripe.PaymentIntent>>
 }

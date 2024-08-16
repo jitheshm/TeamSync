@@ -4,7 +4,7 @@ import { ISubscriptionService } from "../interfaces/ISubscriptionService";
 import Stripe from "stripe";
 import mongoose from "mongoose";
 import SubscriptionProducer from "../../events/kafka/producers/SubscriptionProducer";
-import { IKafkaConnection, IProducer } from "teamsync-common";
+import { CustomError, IKafkaConnection, IProducer } from "teamsync-common";
 import ISubscriptions from "../../entities/SubscriptionEntity";
 import { Producer } from "kafkajs";
 
@@ -125,5 +125,22 @@ export class SubscriptionService implements ISubscriptionService {
     async fetchProfit() {
         const result = await this.subscriptionRepository.fetchMonthlyProfit()
         return result
+    }
+
+    async paymentRetry(invoiceId: string) {
+        const invoice = await stripe.invoices.retrieve(invoiceId);
+        if (invoice.status === 'paid') {
+            throw new CustomError("Invoice has already been paid.", 400);
+        }
+        if (invoice.status === 'open') {
+            const paymentIntent = await stripe.paymentIntents.retrieve(invoice.payment_intent as string)
+            if (paymentIntent.status === 'succeeded') {
+                throw new CustomError("Invoice has already been paid.", 400);
+            }
+            return paymentIntent
+        }
+        else {
+            throw new CustomError("Invoice is not open.", 400);
+        }
     }
 }
