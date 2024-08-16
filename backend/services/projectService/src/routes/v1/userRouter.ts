@@ -3,7 +3,6 @@ import userAuth from "../../middlewares/userAuth";
 import tenantAuth from "../../middlewares/tenantAuth";
 import { checkSchema } from "express-validator";
 import projectValidator from "../../validators/projectValidator";
-import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import ticketValidators from "../../validators/ticketValidators";
 import taskValidator from "../../validators/taskValidator";
 import { CustomRequest, formValidation } from "teamsync-common";
@@ -12,6 +11,7 @@ import { container } from "../../config/inversify/inversify";
 import { ITodoController } from "../../controllers/v1/interfaces/ITodoController";
 import { IProjectController } from "../../controllers/v1/interfaces/IProjectController";
 import { ITicketController } from "../../controllers/v1/interfaces/ITicketController";
+import { ITenantUserController } from "../../controllers/v1/interfaces/ITenantUserController";
 
 
 
@@ -22,6 +22,7 @@ const taskController = container.get<ITaskController>("ITaskController");
 const todoController = container.get<ITodoController>("ITodoController");
 const projectController = container.get<IProjectController>("IProjectController");
 const ticketController = container.get<ITicketController>("ITicketController");
+const tenantUserController = container.get<ITenantUserController>("ITenantUserController");
 
 
 router.get('/projects/recent', userAuth, tenantAuth,
@@ -62,7 +63,9 @@ router.post('/projects/:projectId/tasks', userAuth, tenantAuth, checkSchema(task
     (req: CustomRequest, res: Response, next: NextFunction) => taskController.createTask(req, res, next)
 )
 
-router.get('/tenants/users/available', userAuth, fetchAvailableTenantUsersController)
+router.get('/tenants/users/available', userAuth, 
+    (req:CustomRequest,res:Response,next:NextFunction)=>tenantUserController.fetchAvailableTenantUsers(req,res,next)
+)
 router.get('/projects/:projectId/users/available', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchProjectUsers(req, res, next)
 )

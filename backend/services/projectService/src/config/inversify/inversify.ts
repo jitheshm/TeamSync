@@ -29,6 +29,8 @@ import { IProjectService } from "../../services/interfaces/IProjectService";
 import ProjectService from "../../services/implementations/ProjectService";
 import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
 import ProjectRepository from "../../repository/implementations/ProjectRepository";
+import { ITenantUserController } from "../../controllers/v1/interfaces/ITenantUserController";
+import { TenantUserController } from "../../controllers/v1/implementations/TenantUserController";
 
 
 const container = new Container();
@@ -50,6 +52,7 @@ container.bind<ITodoRepository>("ITodoRepository").to(TodoRepository);
 container.bind<IProjectController>("IProjectController").to(ProjectController);
 container.bind<IProjectService>("IProjectService").to(ProjectService);
 container.bind<IProjectRepository>("IProjectRepository").to(ProjectRepository);
+container.bind<ITenantUserController>("ITenantUserController").to(TenantUserController)
 
 
 
