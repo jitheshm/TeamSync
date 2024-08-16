@@ -5,7 +5,6 @@ import adminAuth from "../../middlewares/adminAuth";
 import updatePlanController from "../../controllers/v1/updatePlanController";
 import getAllPlansController from "../../controllers/v1/getAllPlansController";
 import getSpecificPlanController from "../../controllers/v1/getSpecificPlanController";
-import fetchProfit from "../../controllers/v1/fetchProfit";
 import { container } from "../../config/inversify/inversify";
 import { ISubscriptionController } from "../../controllers/v1/interfaces/ISubscriptionController";
 import { CustomRequest, formValidation } from "teamsync-common";
@@ -37,6 +36,8 @@ router.get('/subscriptions/users/:userId', adminAuth,
 router.get('/subscriptions', adminAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.getAllSubscription(req, res, next)
 )
-router.get('/subscriptions/profit', adminAuth, fetchProfit)
+router.get('/subscriptions/profit', adminAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.fetchProfit(req, res, next)
+)
 
 export default router

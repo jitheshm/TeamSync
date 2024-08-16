@@ -121,4 +121,9 @@ export class SubscriptionService implements ISubscriptionService {
         const result = await this.subscriptionRepository.fetchPlanStats()
         return result
     }
+
+    async fetchProfit() {
+        const result = await this.subscriptionRepository.fetchMonthlyProfit()
+        return result
+    }
 }
