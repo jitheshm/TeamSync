@@ -1,6 +1,5 @@
 import { NextFunction, Router, Response } from "express";
 import userAuth from "../../middlewares/userAuth";
-import webhookController from "../../controllers/v1/webhookController";
 import express from "express";
 import { container } from "../../config/inversify/inversify";
 import { ISubscriptionController } from "../../controllers/v1/interfaces/ISubscriptionController";
@@ -38,7 +37,9 @@ router.patch('/subscriptions/:subscriptionId/cancel', userAuth,
 // See your keys here: https://dashboard.stripe.com/apikeys
 
 
-router.post('/webhook', webhookController);
+router.post('/webhook', 
+    (req: express.Request, res: Response, next: NextFunction) => subscriptionController.webhookHandler(req, res, next)
+);
 
 
 export default router

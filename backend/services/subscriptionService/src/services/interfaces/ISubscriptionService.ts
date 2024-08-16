@@ -17,4 +17,5 @@ export interface ISubscriptionService {
         total_earned: number;
     }>
     paymentRetry(invoiceId: string): Promise<Stripe.Response<Stripe.PaymentIntent>>
+    webhookHandler(sig: string | string[] | Buffer, bodyObj: any): Promise<void>
 }

@@ -2,8 +2,10 @@ import { inject, injectable } from "inversify";
 import { ISubscriptionController } from "../interfaces/ISubscriptionController";
 import { ISubscriptionService } from "../../../services/interfaces/ISubscriptionService";
 import { CustomError, CustomRequest } from "teamsync-common";
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, Request } from "express";
 import mongoose from "mongoose";
+
+
 
 @injectable()
 export class SubscriptionController implements ISubscriptionController {
@@ -140,6 +142,19 @@ export class SubscriptionController implements ISubscriptionController {
             const invoiceId = req.body.invoiceId as string;
             const paymentIntent = await this.subscriptionService.paymentRetry(invoiceId)
             res.status(200).json({ paymentIntent });
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+    async webhookHandler(req: Request, res: Response, next: NextFunction) {
+
+        try {
+            const sig = req.headers['stripe-signature'] as string | string[] | Buffer;
+            await this.subscriptionService.webhookHandler(sig, req.body)
+            res.status(200).send("Webhook received");
+
         } catch (error) {
             console.log(error)
             next(error)

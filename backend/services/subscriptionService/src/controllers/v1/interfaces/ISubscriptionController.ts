@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response,Request } from "express";
 import { CustomRequest } from "teamsync-common";
 
 export interface ISubscriptionController {
@@ -11,4 +11,5 @@ export interface ISubscriptionController {
     fetchPlanStats(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     fetchProfit(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     paymentRetry(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    webhookHandler(req: Request, res: Response, next: NextFunction): Promise<void>
 }

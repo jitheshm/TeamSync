@@ -3,12 +3,13 @@ import { ISubscriptionRepository } from "../../repository/interfaces/ISubscripti
 import { ISubscriptionService } from "../interfaces/ISubscriptionService";
 import Stripe from "stripe";
 import mongoose from "mongoose";
-import SubscriptionProducer from "../../events/kafka/producers/SubscriptionProducer";
 import { CustomError, IKafkaConnection, IProducer } from "teamsync-common";
 import ISubscriptions from "../../entities/SubscriptionEntity";
 import { Producer } from "kafkajs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+
+const endpointSecret = process.env.ENDPOINT_SECRET as string;
 
 @injectable()
 export class SubscriptionService implements ISubscriptionService {
@@ -106,7 +107,7 @@ export class SubscriptionService implements ISubscriptionService {
 
         if (result) {
             let producer = await this.kafkaConnection.getProducerInstance()
-            let subscriptionProducer = new SubscriptionProducer(producer, 'main', 'subscription')
+            let subscriptionProducer = this.createSubscriptionProducer(producer, 'main', 'subscription')
             subscriptionProducer.sendMessage('update', result)
         }
         return subscription
@@ -142,5 +143,118 @@ export class SubscriptionService implements ISubscriptionService {
         else {
             throw new CustomError("Invoice is not open.", 400);
         }
+    }
+
+    async webhookHandler(sig: string | string[] | Buffer, bodyObj: any) {
+        let event;
+
+        try {
+            event = stripe.webhooks.constructEvent(bodyObj, sig, endpointSecret);
+        } catch (err: any) {
+            console.log(err);
+            throw new CustomError(`Webhook Error: ${err.message}`, 400);
+
+        }
+
+        // Handle the event
+        switch (event.type) {
+
+            case 'customer.subscription.deleted': {
+                const eventObj = event.data.object
+                console.log(eventObj);
+                console.log('customer.subscription.deleted captured');
+
+
+                const dataObj = {
+                    stripe_subscription_id: eventObj.id as string,
+                    status: "cancelled",
+                    cancel_date: new Date()
+                }
+                const result = await this.subscriptionRepository.update(dataObj)
+                if (result) {
+                    let producer = await this.kafkaConnection.getProducerInstance()
+                    let subscriptionProducer = this.createSubscriptionProducer(producer, 'main', 'subscription')
+                    subscriptionProducer.sendMessage('update', result)
+                }
+
+                break;
+            }
+
+            case 'invoice.created':
+                {
+                    const eventObj = event.data.object
+                    console.log(eventObj);
+                    console.log("invoice created event captures");
+
+                    const dataObj = {
+                        stripe_subscription_id: eventObj.subscription as string,
+                        status: "pending",
+                        stripe_latest_invoice: eventObj.id
+                    }
+                    const result = await this.subscriptionRepository.update(dataObj)
+                    if (result) {
+                        let producer = await this.kafkaConnection.getProducerInstance()
+                        let subscriptionProducer = this.createSubscriptionProducer(producer, 'main', 'subscription')
+                        subscriptionProducer.sendMessage('update', result)
+                    }
+                }
+                break;
+            case 'invoice.payment_succeeded':
+                {
+                    const eventObj = event.data.object
+                    console.log(eventObj);
+                    console.log("invoice.payment_succeeded captured");
+
+                    const dataObj = {
+                        stripe_subscription_id: eventObj.subscription as string,
+                        status: "paid"
+                    }
+                    const transaction = {
+                        amount: Number(eventObj.amount_due / 100),
+                        date: new Date(),
+                        status: "success",
+                        transaction_id: '#txn' + new Date().getTime() + Math.floor(Math.random() * 1000)
+                    }
+                    const result = await this.subscriptionRepository.update(dataObj, transaction)
+                    if (result) {
+                        let producer = await this.kafkaConnection.getProducerInstance()
+                        let subscriptionProducer = this.createSubscriptionProducer(producer, 'main', 'subscription')
+                        subscriptionProducer.sendMessage('update', result)
+                    }
+                }
+
+                break;
+            case 'invoice.payment_failed':
+                {
+                    const eventObj = event.data.object
+                    console.log(eventObj);
+                    console.log("invoice.payment_failed captured");
+
+                    const dataObj = {
+                        stripe_subscription_id: eventObj.subscription as string,
+                        status: "failed"
+                    }
+                    const transaction = {
+                        amount: eventObj.amount_paid,
+                        date: new Date(),
+                        status: "failed",
+                        transaction_id: eventObj.id
+                    }
+                    const result = await this.subscriptionRepository.update(dataObj, transaction)
+                    if (result) {
+                        let producer = await this.kafkaConnection.getProducerInstance()
+                        let subscriptionProducer = this.createSubscriptionProducer(producer, 'main', 'subscription')
+                        subscriptionProducer.sendMessage('update', result)
+                    }
+                }
+                break;
+
+            // ... handle other event types
+            default:
+                console.log(`Unhandled event type ${event.type}`);
+        }
+
+        
+        
     }
 }
