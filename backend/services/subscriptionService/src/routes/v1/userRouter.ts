@@ -2,7 +2,6 @@ import { NextFunction, Router, Response } from "express";
 import userAuth from "../../middlewares/userAuth";
 import webhookController from "../../controllers/v1/webhookController";
 import express from "express";
-import paymentRetryController from "../../controllers/v1/paymentRetryController";
 import { container } from "../../config/inversify/inversify";
 import { ISubscriptionController } from "../../controllers/v1/interfaces/ISubscriptionController";
 import { CustomRequest } from "teamsync-common";
