@@ -20,6 +20,8 @@ import { IUserService } from "../../services/interfaces/IUserService";
 import { UserService } from "../../services/implementations/UserService";
 import { ITenantService } from "../../services/interfaces/ITenantService";
 import { TenantService } from "../../services/implementations/TenantService";
+import { IMiddlewareService } from "../../services/interfaces/IMiddlewareService";
+import { MiddlewareServices } from "../../services/implementations/MiddlewareServices";
 
 
 const container = new Container();
