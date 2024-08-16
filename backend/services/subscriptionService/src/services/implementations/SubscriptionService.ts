@@ -111,4 +111,9 @@ export class SubscriptionService implements ISubscriptionService {
         }
         return subscription
     }
+
+    async getUserSubscription(userId: mongoose.Types.ObjectId) {
+        let data = await this.subscriptionRepository.findSubscriptionByUserId(userId)
+        return data
+    }
 }

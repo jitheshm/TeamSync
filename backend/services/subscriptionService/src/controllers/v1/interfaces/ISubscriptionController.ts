@@ -7,4 +7,5 @@ export interface ISubscriptionController {
     fetchSubscriptionDetails(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     getAllSubscription(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     updateSubscription(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    getUserSubscription(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

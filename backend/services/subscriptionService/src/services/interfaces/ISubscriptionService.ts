@@ -11,4 +11,5 @@ export interface ISubscriptionService {
         total: any;
     }>
     updateSubscription(customerId: string, subscriptionId: string, planId: string): Promise<Stripe.Response<Stripe.Subscription>>
+    getUserSubscription(userId: mongoose.Types.ObjectId): Promise<ISubscriptions | null>
 }

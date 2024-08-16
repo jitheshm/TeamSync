@@ -96,5 +96,23 @@ export class SubscriptionController implements ISubscriptionController {
         }
     }
 
+    async getUserSubscription(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            let userId = new mongoose.Types.ObjectId(req.params.userId);
+
+            let data = await this.subscriptionService.getUserSubscription(userId)
+            if (data) {
+                res.status(200).json({ data: data })
+            } else {
+                throw new CustomError("No subscription found", 404)
+            }
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 
 }

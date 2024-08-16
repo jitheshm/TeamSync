@@ -6,7 +6,6 @@ import adminAuth from "../../middlewares/adminAuth";
 import updatePlanController from "../../controllers/v1/updatePlanController";
 import deletePlanController from "../../controllers/v1/deletePlanController";
 import getAllPlansController from "../../controllers/v1/getAllPlansController";
-import getUserSubscriptionController from "../../controllers/v1/getUserSubscriptionController";
 import getSpecificPlanController from "../../controllers/v1/getSpecificPlanController";
 import fetchProfit from "../../controllers/v1/fetchProfit";
 import fetchPlanStats from "../../controllers/v1/fetchPlanStats";
@@ -28,7 +27,9 @@ router.patch('/subscription-plans/:planId', adminAuth, check('active').isBoolean
 router.delete('/subscription-plans/:planId', adminAuth, deletePlanController)
 
 
-router.get('/subscriptions/users/:userId', adminAuth, getUserSubscriptionController)
+router.get('/subscriptions/users/:userId', adminAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.getUserSubscription(req, res, next)
+)
 router.get('/subscriptions', adminAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => subscriptionController.getAllSubscription(req, res, next)
 )
