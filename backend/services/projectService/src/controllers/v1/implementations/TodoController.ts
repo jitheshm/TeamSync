@@ -50,4 +50,21 @@ export class TodoController implements ITodoController {
         }
     }
 
+    async updateTodo(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const user = req.user as IDecodedUser;
+            const bodyObj: Partial<ITodo> = req.body as Partial<ITodo>;
+            const todoId = new mongoose.Types.ObjectId(req.params.todoId)
+
+            await this.todoService.updateTodo(bodyObj, req.user?.decode.tenantId, todoId)
+            res.status(200).json({ message: "Todo updated successfully" })
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
 }

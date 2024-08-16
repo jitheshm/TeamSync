@@ -6,7 +6,6 @@ import projectValidator from "../../validators/projectValidator";
 import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import ticketValidators from "../../validators/ticketValidators";
-import updateTodoController from "../../controllers/updateTodoController";
 import taskValidator from "../../validators/taskValidator";
 import { CustomRequest, formValidation } from "teamsync-common";
 import { ITaskController } from "../../controllers/v1/interfaces/ITaskController";
@@ -109,7 +108,9 @@ router.post('/todo', userAuth, tenantAuth, formValidation,
 router.get('/todo', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => todoController.fetchTodo(req, res, next)
 )
-router.put('/todo/:todoId', userAuth, tenantAuth, updateTodoController)
+router.put('/todo/:todoId', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => todoController.updateTodo(req, res, next)
+)
 
 
 
