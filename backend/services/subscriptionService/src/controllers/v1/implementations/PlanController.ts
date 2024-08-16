@@ -33,7 +33,7 @@ export class PlanController implements IPlanController {
         }
     }
 
-    
+
 
     async deletePlan(req: CustomRequest, res: Response, next: NextFunction) {
         try {
@@ -49,4 +49,18 @@ export class PlanController implements IPlanController {
             next(error)
         }
     }
+
+    async fetchAllPlans(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            const { name, page, limit } = req.query
+            const data=await this.planService.fetchAllPlan(page as string | null, limit as string | null, name as string | null);
+            res.status(200).json({ data: data });
+
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+
+
 }

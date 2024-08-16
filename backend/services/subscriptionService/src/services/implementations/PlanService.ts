@@ -57,4 +57,14 @@ export class PlanService implements IPlanService {
         let resObj = await this.planRepository.update({ is_deleted: true }, id);
         return resObj;
     }
+
+    async fetchAllPlan(page: string | null, limit: string | null, name: string | null) {
+        let data
+        if (page && limit) {
+            data = await this.planRepository.fetchAll(Number(page), Number(limit), name as string | null);
+
+        } else
+            data = await this.planRepository.fetchAll(1, 100, null);
+        return data
+    }
 }
