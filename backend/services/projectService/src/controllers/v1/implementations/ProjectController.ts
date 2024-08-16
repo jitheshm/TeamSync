@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express";
 import { CustomError, CustomRequest, UnauthorizedError } from "teamsync-common";
 import { IProjectService } from "../../../services/interfaces/IProjectService";
 import { IProjectController } from "../interfaces/IProjectController";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { IProjects } from "../../../entities/ProjectEntity";
 
 @injectable()
@@ -267,6 +267,41 @@ export class ProjectController implements IProjectController {
             }
 
             res.status(200).json({ message: "Project updated successfully", data: updatedProject });
+
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
+    async fetchAllProjects(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+            if (req.user?.decode?.role !== 'Tenant_Admin') {
+                req.body.branch_id = new mongoose.Types.ObjectId(req.user?.decode?.branchId as string);
+            } else {
+                if (!req.body.branch_id) {
+                    throw new CustomError("Branch id must be provided", 400)
+                }
+            }
+
+            const search = req.query.search as string | null;
+            const page = Number(req.query.page || 1);
+            const limit = Number(req.query.limit || 1000);
+            let resultObj: { data: (IProjects & Document)[], totalCount: number };
+
+            if (req.query.pm) {
+                resultObj = await this.projectService.fetchAllPManagerProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user?._id), search, page, limit);
+            } else if (req.query.dev) {
+                resultObj = await this.projectService.fetchAllDeveloperProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user?._id), search, page, limit);
+            } else if (req.query.test) {
+                resultObj = await this.projectService.fetchAllTesterProjects(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), new mongoose.Types.ObjectId(req.user?._id), search, page, limit);
+            } else {
+                resultObj = await this.projectService.fetchAllProject(req.user?.decode?.tenantId, new mongoose.Types.ObjectId(req.user?.decode?.branchId as string), search, page, limit);
+            }
+
+            res.status(200).json({ message: "project fetch successfully", data: resultObj });
 
 
         } catch (error) {

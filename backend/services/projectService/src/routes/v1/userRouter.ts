@@ -3,7 +3,6 @@ import userAuth from "../../middlewares/userAuth";
 import tenantAuth from "../../middlewares/tenantAuth";
 import { checkSchema } from "express-validator";
 import projectValidator from "../../validators/projectValidator";
-import getAllProjectController from "../../controllers/getAllProjectController";
 import fetchAvailableTenantUsersController from "../../controllers/fetchAvailableTenantUsersController";
 import ticketValidators from "../../validators/ticketValidators";
 import taskValidator from "../../validators/taskValidator";
@@ -49,7 +48,9 @@ router.put('/projects/:projectId/status', userAuth, tenantAuth,
 router.delete('/projects/:projectId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.projectDelete(req, res, next)
 )
-router.get('/projects', userAuth, tenantAuth, getAllProjectController)
+router.get('/projects', userAuth, tenantAuth, 
+    (req: CustomRequest, res: Response, next: NextFunction) => projectController.fetchAllProjects(req, res, next)
+)
 router.get('/projects/:projectId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => projectController.getSpecificProject(req, res, next)
 )
