@@ -1,9 +1,8 @@
-import { Router } from "express";
+import { NextFunction, Router,Response } from "express";
 import { checkSchema } from "express-validator";
 import tenantValidator from "../../validator/tenantValidator";
 import createTenantController from "../../controllers/v1/createTenantController";
 import userAuth from "../../middlewares/userAuth";
-import createBranchController from "../../controllers/v1/createBranchController";
 import getAllBranchController from "../../controllers/v1/getAllBranchController";
 import updateBranchController from "../../controllers/v1/updateBranchController";
 import deleteBranchController from "../../controllers/v1/deleteBranchController";
@@ -11,13 +10,19 @@ import branchValidator from "../../validator/branchValidator";
 import tenantAuth from "../../middlewares/tenantAuth";
 import getSpecificBranchController from "../../controllers/v1/getSpecificBranchController";
 import getSpecificTenantController from "../../controllers/v1/getSpecificTenantController";
+import { CustomRequest, formValidation } from "teamsync-common";
+import { container } from "../../config/inversify/inversify";
+import { IBranchController } from "../../controllers/v1/interfaces/IBranchController";
 
 
 
 const router = Router();
 
+const branchController = container.get<IBranchController>("IBranchController")
+
 router.post('/tenants', userAuth, checkSchema(tenantValidator()), createTenantController)
-router.post('/tenants/branches', userAuth, tenantAuth, checkSchema(branchValidator()), createBranchController)
+router.post('/tenants/branches', userAuth, tenantAuth, checkSchema(branchValidator()), formValidation,
+    (req: CustomRequest, res: Response, next: NextFunction) => branchController.createBranch(req, res, next))
 router.get('/tenants/branches', userAuth, tenantAuth, getAllBranchController)
 router.get('/tenants/:name', getSpecificTenantController)
 router.get('/tenants/branches/:branchId', userAuth, tenantAuth, getSpecificBranchController)

@@ -3,11 +3,12 @@ import mongoose, { ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import { IBranchRepository } from "../interfaces/IBranchRepository";
 import { IBranches } from "../../entities/BranchEntity";
+import { injectable } from "inversify";
 
 
 
 
-
+@injectable()
 export default class BranchRepository implements IBranchRepository {
 
     async create(data: IBranches, dbId: string) {
@@ -24,27 +25,27 @@ export default class BranchRepository implements IBranchRepository {
             throw error
         }
     }
-    async fetchBranches(dbId: string,name: string | null, page: number, limit: number) {
+    async fetchBranches(dbId: string, name: string | null, page: number, limit: number) {
         try {
             console.log(dbId);
 
             const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
             let data = null;
-    
+
             const matchStage: any = {
                 is_deleted: false
             };
-    
-    
+
+
             if (name) {
                 matchStage.location = { $regex: `^${name}`, $options: 'i' };
             }
-    
+
             const aggregationPipeline = [
                 {
                     $match: matchStage
                 },
-               
+
                 {
                     $skip: (page - 1) * limit
                 },
@@ -52,9 +53,9 @@ export default class BranchRepository implements IBranchRepository {
                     $limit: limit
                 }
             ];
-    
+
             data = await BranchModel.aggregate(aggregationPipeline).exec();
-    
+
             const countPipeline = [
                 {
                     $match: matchStage
@@ -63,10 +64,10 @@ export default class BranchRepository implements IBranchRepository {
                     $count: 'total'
                 }
             ];
-    
+
             const totalCountResult = await BranchModel.aggregate(countPipeline).exec();
             const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0;
-    
+
             return { data, total };
         } catch (error) {
             console.log('Error in Branch Repository fetchUser method');
@@ -110,7 +111,7 @@ export default class BranchRepository implements IBranchRepository {
     async fetchBranchByLocation(dbId: string, branchLocation: string) {
         try {
             const BranchModel = switchDb<IBranches>(`${process.env.SERVICE}_${dbId}`, 'branches')
-            const res: IBranches | null = await BranchModel.findOne({ location: branchLocation,is_deleted:false })
+            const res: IBranches | null = await BranchModel.findOne({ location: branchLocation, is_deleted: false })
             return res
         } catch (error) {
             console.log('Error in Branch Repository create method');
