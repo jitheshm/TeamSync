@@ -77,4 +77,14 @@ export class BranchService implements IBranchService {
         const datas = await this.branchRepository.fetchSpecificBranches(tenantId, new mongoose.Types.ObjectId(branchId))
         return datas
     }
+
+    async updateBranch(tenantId: string, branchId: mongoose.Types.ObjectId, bodyObj: Partial<IBranches>) {
+        const branch = await this.branchRepository.update(bodyObj as IBranches, tenantId, branchId);
+        if (!branch) {
+            throw new CustomError("branch not found", 404)
+        }
+        let producer = await this.kafkaConnection.getProducerInstance()
+        let branchProducer = this.createBranchProducer(producer, tenantId, 'branches')
+        branchProducer.sendMessage('update', branch)
+    }
 }

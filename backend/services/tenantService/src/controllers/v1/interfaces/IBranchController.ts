@@ -6,4 +6,5 @@ export interface IBranchController {
     deleteBranch(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     getAllBranches(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
     getSpecificBranch(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    updateBranch(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

@@ -9,4 +9,5 @@ export interface IBranchService {
         total: number;
     }>
     getSpecificBranch(tenantId: string, branchId: string): Promise<(IBranches & Document) | null>
+    updateBranch(tenantId: string, branchId: mongoose.Types.ObjectId, bodyObj: Partial<IBranches>): Promise<void>
 }

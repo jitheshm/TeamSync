@@ -27,7 +27,9 @@ router.get('/tenants/:name', getSpecificTenantController)
 router.get('/tenants/branches/:branchId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => branchController.getSpecificBranch(req, res, next)
 )
-router.put('/tenants/branches/:branchId', userAuth, tenantAuth, checkSchema(branchValidator()), updateBranchController)
+router.put('/tenants/branches/:branchId', userAuth, tenantAuth, checkSchema(branchValidator()), formValidation,
+(req: CustomRequest, res: Response, next: NextFunction) => branchController.updateBranch(req, res, next)
+)
 router.delete('/tenants/branches/:branchId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => branchController.deleteBranch(req, res, next)
 )
