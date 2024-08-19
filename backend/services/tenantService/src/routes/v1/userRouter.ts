@@ -5,7 +5,6 @@ import createTenantController from "../../controllers/v1/createTenantController"
 import userAuth from "../../middlewares/userAuth";
 import getAllBranchController from "../../controllers/v1/getAllBranchController";
 import updateBranchController from "../../controllers/v1/updateBranchController";
-import deleteBranchController from "../../controllers/v1/deleteBranchController";
 import branchValidator from "../../validator/branchValidator";
 import tenantAuth from "../../middlewares/tenantAuth";
 import getSpecificBranchController from "../../controllers/v1/getSpecificBranchController";
