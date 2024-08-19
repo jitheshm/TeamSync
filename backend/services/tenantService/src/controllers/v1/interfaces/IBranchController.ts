@@ -3,4 +3,5 @@ import { CustomRequest } from "teamsync-common";
 
 export interface IBranchController {
     createBranch(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    deleteBranch(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

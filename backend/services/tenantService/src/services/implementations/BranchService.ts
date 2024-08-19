@@ -54,4 +54,15 @@ export class BranchService implements IBranchService {
         let branchProducer = this.createBranchProducer(producer, tenantId, 'branches')
         branchProducer.sendMessage('create', branch)
     }
+
+    async deleteBranch(tenantId:string,branchId:mongoose.Types.ObjectId) {
+
+        const branch = await this.branchRepository.delete(tenantId, branchId);
+        if (!branch) {
+            throw new CustomError("branch not found",404)
+        }
+        let producer = await this.kafkaConnection.getProducerInstance()
+        let branchProducer = this.createBranchProducer(producer, tenantId, 'branches')
+        branchProducer.sendMessage('update', branch)
+    }
 }
