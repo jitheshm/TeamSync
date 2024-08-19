@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { IBranches } from "../../entities/BranchEntity";
 
 export interface IBranchService {
@@ -8,4 +8,5 @@ export interface IBranchService {
         data: (IBranches & mongoose.Document<unknown, any, any>)[];
         total: number;
     }>
+    getSpecificBranch(tenantId: string, branchId: string): Promise<(IBranches & Document) | null>
 }

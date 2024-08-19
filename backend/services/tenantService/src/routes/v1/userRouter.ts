@@ -6,7 +6,6 @@ import userAuth from "../../middlewares/userAuth";
 import updateBranchController from "../../controllers/v1/updateBranchController";
 import branchValidator from "../../validator/branchValidator";
 import tenantAuth from "../../middlewares/tenantAuth";
-import getSpecificBranchController from "../../controllers/v1/getSpecificBranchController";
 import getSpecificTenantController from "../../controllers/v1/getSpecificTenantController";
 import { CustomRequest, formValidation } from "teamsync-common";
 import { container } from "../../config/inversify/inversify";
@@ -25,7 +24,9 @@ router.get('/tenants/branches', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => branchController.getAllBranches(req, res, next)
 )
 router.get('/tenants/:name', getSpecificTenantController)
-router.get('/tenants/branches/:branchId', userAuth, tenantAuth, getSpecificBranchController)
+router.get('/tenants/branches/:branchId', userAuth, tenantAuth,
+    (req: CustomRequest, res: Response, next: NextFunction) => branchController.getSpecificBranch(req, res, next)
+)
 router.put('/tenants/branches/:branchId', userAuth, tenantAuth, checkSchema(branchValidator()), updateBranchController)
 router.delete('/tenants/branches/:branchId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => branchController.deleteBranch(req, res, next)

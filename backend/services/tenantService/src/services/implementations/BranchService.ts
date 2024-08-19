@@ -72,4 +72,9 @@ export class BranchService implements IBranchService {
         return datas
 
     }
+
+    async getSpecificBranch(tenantId: string, branchId: string) {
+        const datas = await this.branchRepository.fetchSpecificBranches(tenantId, new mongoose.Types.ObjectId(branchId))
+        return datas
+    }
 }

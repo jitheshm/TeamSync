@@ -41,7 +41,7 @@ export class BranchController implements IBranchController {
             const branchId = new mongoose.Types.ObjectId(req.params.branchId)
             await this.branchService.deleteBranch(tenantId, branchId)
 
-            res.status(201).json({ message: "branch delete successfully" });
+            res.status(200).json({ message: "branch delete successfully" });
 
         } catch (error) {
             console.log(error);
@@ -58,7 +58,23 @@ export class BranchController implements IBranchController {
             const page = Number(req.query.page || 1)
             const limit = Number(req.query.limit || 1000)
             const datas = await this.branchService.getAllBranches(tenantId, name, page, limit)
-            res.status(201).json({ message: "succesfully fetched", data: datas });
+            res.status(200).json({ message: "succesfully fetched", data: datas });
+
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+
+        }
+    }
+
+    async getSpecificBranch(req: CustomRequest, res: Response, next: NextFunction) {
+        try {
+
+            const tenantId = req.user?.decode?.tenantId;
+            const branchId = req.params.branchId
+            const datas = await this.branchService.getSpecificBranch(tenantId, branchId)
+            res.status(200).json({ message: "succesfully fetched", data: datas });
 
 
         } catch (error) {
