@@ -35,4 +35,9 @@ export class TenantService implements ITenantService {
         tenantProducer.sendMessage('create', tenant)
         return tenant
     }
+
+    async fetchSpecificTenant(tenantName: string) {
+        const data = await this.tenantRepository.getTenantByName(tenantName)
+        return data
+    }
 }

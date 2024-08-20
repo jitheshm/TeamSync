@@ -3,4 +3,5 @@ import { CustomRequest } from "teamsync-common";
 
 export interface ITenantController {
     createTenant(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
+    fetchSpecificTenant(req: CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

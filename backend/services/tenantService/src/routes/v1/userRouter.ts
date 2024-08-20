@@ -4,7 +4,6 @@ import tenantValidator from "../../validator/tenantValidator";
 import userAuth from "../../middlewares/userAuth";
 import branchValidator from "../../validator/branchValidator";
 import tenantAuth from "../../middlewares/tenantAuth";
-import getSpecificTenantController from "../../controllers/v1/getSpecificTenantController";
 import { CustomRequest, formValidation } from "teamsync-common";
 import { container } from "../../config/inversify/inversify";
 import { IBranchController } from "../../controllers/v1/interfaces/IBranchController";
@@ -24,7 +23,10 @@ router.post('/tenants/branches', userAuth, tenantAuth, checkSchema(branchValidat
 router.get('/tenants/branches', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => branchController.getAllBranches(req, res, next)
 )
-router.get('/tenants/:name', getSpecificTenantController)
+router.get('/tenants/:name',
+    (req: CustomRequest, res: Response, next: NextFunction) => tenantController.fetchSpecificTenant(req, res, next)
+
+)
 router.get('/tenants/branches/:branchId', userAuth, tenantAuth,
     (req: CustomRequest, res: Response, next: NextFunction) => branchController.getSpecificBranch(req, res, next)
 )
