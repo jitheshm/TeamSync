@@ -25,6 +25,8 @@ import { IBranches } from "../../entities/BranchEntity";
 import BranchProducer from "../../events/kafka/producers/BranchProducer";
 import { IBranchController } from "../../controllers/v1/interfaces/IBranchController";
 import { BranchController } from "../../controllers/v1/implementations/BranchController";
+import { ITenants } from "../../entities/TenantEntity";
+import TenantProducer from "../../events/kafka/producers/TenantProducer";
 
 
 const container = new Container();
@@ -47,6 +49,12 @@ container.bind<IBranchController>("IBranchController").to(BranchController);
 container.bind<IProducer<IBranches>>("IBranchProducer").toFactory((context: interfaces.Context) => {
     return (producer: Producer, dbName: string, modelName: string) => {
         return new BranchProducer(producer, dbName, modelName)
+    }
+})
+
+container.bind<IProducer<ITenants>>("ITenantProducer").toFactory((context: interfaces.Context) => {
+    return (producer: Producer, dbName: string, modelName: string) => {
+        return new TenantProducer(producer, dbName, modelName)
     }
 })
 
