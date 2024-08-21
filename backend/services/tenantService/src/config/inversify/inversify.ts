@@ -8,7 +8,6 @@ import TenantRepository from "../../repository/implementations/TenantRepository"
 import UserConsumer from "../../events/kafka/consumers/UserConsumer";
 import { Producer } from "kafkajs";
 import { ISubscriptionService } from "../../services/interfaces/ISubscriptionService";
-import { SubscriptionService } from "../../services/implementations/SubscriptionService";
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 import { IUserService } from "../../services/interfaces/IUserService";
 import { UserService } from "../../services/implementations/UserService";
@@ -31,6 +30,9 @@ import { PlanService } from "../../services/implementations/PlanService";
 import { IPlanService } from "../../services/interfaces/IPlanService";
 import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
 import PlanRepository from "../../repository/implementations/PlanRepository";
+import SubscriptionConsumer from "../../events/kafka/consumers/SubscriptionConsumer";
+import PlanConsumer from "../../events/kafka/consumers/PlanConsumer";
+import { SubscriptionService } from "../../services/implementations/SubscriptionService";
 
 
 const container = new Container();
@@ -45,6 +47,8 @@ container.bind<ITenantService>("ITenantService").to(TenantService);
 container.bind<IPlanService>("IPlanService").to(PlanService);
 container.bind<IPlanRepository>("IPlanRepository").to(PlanRepository);
 container.bind<IConsumer>("IUserConsumer").to(UserConsumer);
+container.bind<IConsumer>("ISubscriptionConsumer").to(SubscriptionConsumer)
+container.bind<IConsumer>("IPlanConsumer").to(PlanConsumer)
 container.bind<ISubscriptionService>("ISubscriptionService").to(SubscriptionService);
 container.bind<IMiddlewareService>("IMiddlewareService").to(MiddlewareServices);
 container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(SubscriptionRepository);
