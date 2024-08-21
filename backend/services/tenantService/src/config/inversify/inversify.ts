@@ -9,8 +9,6 @@ import UserConsumer from "../../events/kafka/consumers/UserConsumer";
 import { Producer } from "kafkajs";
 import { ISubscriptionService } from "../../services/interfaces/ISubscriptionService";
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
-import { IUserService } from "../../services/interfaces/IUserService";
-import { UserService } from "../../services/implementations/UserService";
 import { ITenantService } from "../../services/interfaces/ITenantService";
 import { TenantService } from "../../services/implementations/TenantService";
 import { IMiddlewareService } from "../../services/interfaces/IMiddlewareService";
@@ -33,6 +31,8 @@ import PlanRepository from "../../repository/implementations/PlanRepository";
 import SubscriptionConsumer from "../../events/kafka/consumers/SubscriptionConsumer";
 import PlanConsumer from "../../events/kafka/consumers/PlanConsumer";
 import { SubscriptionService } from "../../services/implementations/SubscriptionService";
+import { UserService } from "../../services/implementations/UserService";
+import { IUserService } from "../../services/interfaces/IUserService";
 
 
 const container = new Container();

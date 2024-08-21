@@ -8,7 +8,7 @@ import UserConsumer from "./consumers/UserConsumer"
 export const connectConsumers = () => {
     const subscriptionConsumer = container.get<IConsumer>("ISubscriptionConsumer")
     const planConsumer = container.get<IConsumer>("IPlanConsumer")
-    let userConsumer: UserConsumer = new UserConsumer()
+    const userConsumer = container.get<IConsumer>("IUserConsumer")
     userConsumer.consume()
     subscriptionConsumer.consume()
     planConsumer.consume()
