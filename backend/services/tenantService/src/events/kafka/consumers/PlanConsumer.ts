@@ -1,22 +1,30 @@
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
+import { inject, injectable } from "inversify";
 import IConsumer from "../../../interfaces/IConsumer";
-import PlanRepository from "../../../repository/implementations/PlanRepository";
+import { IPlanService } from "../../../services/interfaces/IPlanService";
+import { IKafkaConnection } from "teamsync-common";
 
 
 
 
-
+@injectable()
 export default class PlanConsumer implements IConsumer {
+    private planService: IPlanService
+    private kafkaConnection:IKafkaConnection
 
+    constructor(
+        @inject("IPlanService") planService: IPlanService,
+        @inject("IKafkaConnection") kafkaConnection:IKafkaConnection
+    ) {
+        this.planService = planService
+        this.kafkaConnection=kafkaConnection
+    }
     async consume() {
         try {
-            let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_plan_group`)
+            let consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_plan_group`)
             await consumer.subscribe({ topic: 'plan-events', fromBeginning: true })
             await consumer.run({
                 eachMessage: async ({ topic, partition, message }) => {
                     console.log("iam new plan consumer");
-                    let planRepository = new PlanRepository()
                     let data = message.value?.toString()
                     console.log(data);
                     console.log("iam new plan consumer");
@@ -27,14 +35,8 @@ export default class PlanConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
-                                    await planRepository.create(dataObj.data)
-                                    break;
-                                case 'update':
-                                    await planRepository.update(dataObj.data,dataObj.data._id)
-                                    break;
-                            }
+
+                            this.planService.handleKafkaEvent(dataObj)
                         }
 
                     }

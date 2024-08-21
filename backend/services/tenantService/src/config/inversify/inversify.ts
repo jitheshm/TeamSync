@@ -27,6 +27,10 @@ import { IBranchController } from "../../controllers/v1/interfaces/IBranchContro
 import { BranchController } from "../../controllers/v1/implementations/BranchController";
 import { ITenants } from "../../entities/TenantEntity";
 import TenantProducer from "../../events/kafka/producers/TenantProducer";
+import { PlanService } from "../../services/implementations/PlanService";
+import { IPlanService } from "../../services/interfaces/IPlanService";
+import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
+import PlanRepository from "../../repository/implementations/PlanRepository";
 
 
 const container = new Container();
@@ -38,6 +42,8 @@ container.bind<IBranchRepository>("IBranchRepository").to(BranchRepository);
 container.bind<IBranchService>("IBranchService").to(BranchService)
 container.bind<ITenantRepository>("ITenantRepository").to(TenantRepository);
 container.bind<ITenantService>("ITenantService").to(TenantService);
+container.bind<IPlanService>("IPlanService").to(PlanService);
+container.bind<IPlanRepository>("IPlanRepository").to(PlanRepository);
 container.bind<IConsumer>("IUserConsumer").to(UserConsumer);
 container.bind<ISubscriptionService>("ISubscriptionService").to(SubscriptionService);
 container.bind<IMiddlewareService>("IMiddlewareService").to(MiddlewareServices);
