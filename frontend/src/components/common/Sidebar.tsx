@@ -17,7 +17,7 @@ function Sidebar({ icons }: { icons: Icon[] }) {
                 {
                     icons.map((ele) => {
                         return (
-                            <div key={ele.name} className='mx-auto w-11 h-11 my-2'>
+                            <div key={ele.name} className='mx-auto w-11 h-11 my-4'>
                                 <MenuButton Icon={ele.icon}  tooltip={ele.name} link={ele.link}/>
                             </div>
                         )

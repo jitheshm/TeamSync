@@ -12,6 +12,9 @@ import { RxDashboard } from "react-icons/rx";
 import { LuUsers } from "react-icons/lu";
 import { FaLaptopCode } from "react-icons/fa";
 import { PiBuildingsLight } from "react-icons/pi";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import { IoVideocamOutline } from "react-icons/io5";
+import { SlNote } from "react-icons/sl";
 
 interface TenantManagerLayoutProps {
     children: React.ReactNode;
@@ -30,17 +33,27 @@ const TenantManagerLayout: React.FC<TenantManagerLayoutProps> = ({ children }) =
         {
           icon: LuUsers,
           name: 'Users',
-          link:''
+          link:'/employee/manager/dashboard/users'
         },
         {
           icon: FaLaptopCode,
           name: 'Projects',
-          link:''
+          link:'/employee/manager/dashboard/projects'
         },
         {
-          icon: PiBuildingsLight,
-          name: 'Branches',
-          link:''
+          icon: IoChatbubbleEllipsesOutline,
+          name: 'Chats',
+          link:'/employee/manager/dashboard/chats'
+        },
+        {
+          icon: IoVideocamOutline,
+          name: 'Meeting',
+          link:'/employee/manager/dashboard/meeting'
+        },
+        {
+          icon: SlNote,
+          name: 'Todo',
+          link:'/employee/manager/dashboard/todo'
         }
       ]
 

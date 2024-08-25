@@ -21,7 +21,7 @@ function MenuButton({ Icon, tooltip, link }: { Icon: IconType, tooltip: string, 
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <div className={`w-full h-full flex justify-center items-center rounded-xl   ${pathname === link ? 'bg-primary text-primary-foreground' : 'text-textcolor'}`}>
-                            <Icon size={18} />
+                            <Icon size={20} />
                         </div>
                     </TooltipTrigger>
                     <TooltipContent>
