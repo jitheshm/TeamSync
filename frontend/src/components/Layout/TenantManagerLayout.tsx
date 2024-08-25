@@ -4,43 +4,67 @@ import Header from '../Headers/Header';
 import Sidebar from '../Sidebars/TenantManagerSidebar';
 import { useSelector } from 'react-redux';
 import { ThemeState } from '@/features/theme/themeSlice';
+import ManagerSidebar from '../manager/ManagerSidebar';
+import Appbar from '../common/Appbar';
+import { ScrollArea } from '../ui/scroll-area';
+import ManagerMobileNav from '../manager/ManagerMobileNav';
+import { RxDashboard } from "react-icons/rx";
+import { LuUsers } from "react-icons/lu";
+import { FaLaptopCode } from "react-icons/fa";
+import { PiBuildingsLight } from "react-icons/pi";
 
 interface TenantManagerLayoutProps {
     children: React.ReactNode;
 }
 
-interface RootState {
-    theme: ThemeState
-}
+
 
 const TenantManagerLayout: React.FC<TenantManagerLayoutProps> = ({ children }) => {
 
-
-
-    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-    const { background, text, main } = useSelector((state: RootState) => state.theme)
-
+    const icons = [
+        {
+          icon: RxDashboard,
+          name: 'Dashboard',
+          link:'/employee/manager/dashboard'
+        },
+        {
+          icon: LuUsers,
+          name: 'Users',
+          link:''
+        },
+        {
+          icon: FaLaptopCode,
+          name: 'Projects',
+          link:''
+        },
+        {
+          icon: PiBuildingsLight,
+          name: 'Branches',
+          link:''
+        }
+      ]
 
     return (
-        <div className="flex h-screen ">
-            {/* Overlay */}
-            {sidebarOpen && (
-                <div
-                    className={`fixed inset-0 z-20 transition-opacity ${background} opacity-50 lg:hidden`}
-                    onClick={() => setSidebarOpen(false)}
-                ></div>
-            )}
-
-            <Sidebar sidebarOpen={sidebarOpen} />
-
-            <div className="flex flex-col flex-1 overflow-hidden">
-                <Header setSidebarOpen={setSidebarOpen} />
-                <div className={`h-screen ${main} overflow-auto flex justify-center`}>
-
-                    {children}
+        <>
+            <div className="md:flex hidden ">
+                <ManagerSidebar icons={icons}/>
+                <div className="w-full">
+                    <Appbar icons={icons}/>
+                    <ScrollArea className="h-[calc(100vh-3.5rem)] ">
+                        {/* body goes here */}
+                        {children}
+                    </ScrollArea>
                 </div>
             </div>
-        </div>
+            <div className="md:hidden">
+                <ManagerMobileNav />
+                <ScrollArea className="h-[calc(100vh-3.5rem)] ">
+                        {/* body goes here */}
+                        {children}
+                    </ScrollArea>
+
+            </div>
+        </>
     );
 };
 
