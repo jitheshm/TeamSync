@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "@/components/StoreProvider/StoreProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { NextUIProvider } from "@nextui-org/react";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,9 +32,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <StoreProvider>
-            {children}
-          </StoreProvider>
+          <NextUIProvider>
+            <StoreProvider>
+              {children}
+            </StoreProvider>
+          </NextUIProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -8,7 +8,7 @@ function MenuButtonMobile({ Icon, iconName,link }: { Icon: IconType, iconName: s
     const pathname=usePathname()
     return (
         <Link href={link}>
-            <div className={`flex gap-4 p-2 rounded-lg items-center ${pathname === link ? 'bg-primary text-primary-foreground' : 'text-textcolor'}`}>
+            <div className={`flex gap-4 p-2 rounded-lg items-center ${pathname === link ? 'bg-primary text-text-white' : 'text-textcolor'}`}>
                 <Icon size={18} />
                 <p>
                     {iconName}
