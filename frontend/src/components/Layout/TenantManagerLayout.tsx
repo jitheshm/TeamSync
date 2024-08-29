@@ -70,7 +70,7 @@ const TenantManagerLayout: React.FC<TenantManagerLayoutProps> = ({ children }) =
                 </div>
             </div>
             <div className="md:hidden">
-                <ManagerMobileNav />
+                <ManagerMobileNav icons={icons}/>
                 <ScrollArea className="h-[calc(100vh-3.5rem)] ">
                         {/* body goes here */}
                         {children}

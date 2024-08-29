@@ -1,35 +1,17 @@
 "use client"
 import React from 'react'
-import { LuUsers } from "react-icons/lu";
-import { FaLaptopCode } from "react-icons/fa";
-import { PiBuildingsLight } from "react-icons/pi";
-import { RxDashboard } from "react-icons/rx";
 import MobileNavbar from '../common/MobileNavbar';
+import { IconType } from 'react-icons/lib';
 
 
-function ManagerMobileNav() {
-    const icons = [
-        {
-            icon: RxDashboard,
-            name: 'Dashboard',
-            link: '/'
-        },
-        {
-            icon: LuUsers,
-            name: 'Users',
-            link: ''
-        },
-        {
-            icon: FaLaptopCode,
-            name: 'Projects',
-            link: ''
-        },
-        {
-            icon: PiBuildingsLight,
-            name: 'Branches',
-            link: ''
-        }
-    ]
+function ManagerMobileNav({ icons }: {
+    icons: {
+      icon: IconType;
+      name: string;
+      link: string;
+    }[]
+  }) {
+    
     return (
         // <></>
         <MobileNavbar icons={icons} />

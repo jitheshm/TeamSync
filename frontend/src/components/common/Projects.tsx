@@ -36,6 +36,7 @@ function Projects({ role }: { role: string }) {
     }, [search]);
 
     useEffect(() => {
+        setLoading(true)
         let fetchProjects = null;
 
         if (role === 'Manager') {
@@ -135,27 +136,29 @@ function Projects({ role }: { role: string }) {
 
                 <div className='md:min-h-[calc(100vh-10rem)] md:px-10 md:pt-10 md:border border-border w-full'>
 
-                    {
-                        !loading ? <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-1'>
-                            {
-                                projects.map((project, index) => (
+                    <div className='h-5/6'>
+                        {
+                            !loading ? <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-1'>
+                                {
+                                    projects.map((project, index) => (
 
-                                    <ProjectCard key={project._id} data={project} handleDelete={handleDelete} role={role} />
-                                ))
-                            }
+                                        <ProjectCard key={project._id} data={project} handleDelete={handleDelete} role={role} />
+                                    ))
+                                }
 
-                        </div> :
-                            <ProjectSkelton />
-                    }
+                            </div> :
+                                <ProjectSkelton />
+                        }
+                    </div>
 
                     {
                         total > 0 && <div className='flex justify-center mt-2 h-1/6'>
 
-                            <Pagination total={Math.ceil(total / limit)} initialPage={page} color="success" />
+                            <Pagination total={Math.ceil(total / limit)} initialPage={page} color="success" onChange={handlePageChange} />
                         </div>
                     }
                 </div>
-                <div className='w-full mt-10 md:mt-0 lg:w-96 md:h-[calc(100vh-10rem)] border border-border'>
+                <div className='w-full mt-10 mb-10 md:mb-0 md:mt-0 lg:w-96 md:h-[calc(100vh-10rem)] border border-border'>
                     <div className='font-semibold text-center mt-5'>
                         On Going Projects
                     </div>
