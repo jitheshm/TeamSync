@@ -1,6 +1,6 @@
 "use client";
 import { fetchAllProjects, fetchAllProjectsByPManager, fetchAllProjectsDeveloper, fetchAllProjectsTester, projectDelete, updateProjectStatus } from '@/api/projectService/project';
-import Empty from '@/components/Empty/Empty';
+import Empty from '@/components/common/Empty';
 import { ThemeState } from '@/features/theme/themeSlice';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';

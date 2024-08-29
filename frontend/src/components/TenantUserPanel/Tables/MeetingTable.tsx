@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchMeeting } from '@/api/communicationService.ts/communication';
-import Empty from '@/components/Empty/Empty';
+import Empty from '@/components/common/Empty';
 import { ThemeState } from '@/features/theme/themeSlice';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';

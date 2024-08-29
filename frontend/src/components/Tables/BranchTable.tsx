@@ -1,7 +1,7 @@
 "use client";
 
 import { deleteBranch, fetchBranches } from '@/api/tenantService/tenant';
-import Empty from '@/components/Empty/Empty';
+import Empty from '@/components/common/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

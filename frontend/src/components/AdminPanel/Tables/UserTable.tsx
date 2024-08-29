@@ -1,6 +1,6 @@
 "use client"
 import { blockUser, deleteUser, fetchUsers, unBlockUser } from '@/api/userService/user';
-import Empty from '@/components/Empty/Empty';
+import Empty from '@/components/common/Empty';
 import { logout } from '@/features/admin/adminSlice';
 import { ThemeState } from '@/features/theme/themeSlice';
 import Link from 'next/link';

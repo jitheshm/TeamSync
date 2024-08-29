@@ -8,7 +8,7 @@ import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
 import Cards from '../TenantUserPanel/Cards/Cards'
 import Barchart from '../Charts/Barchart'
-import Empty from '../Empty/Empty'
+import Empty from '../common/Empty'
 
 function TenantAdminDashboard() {
     const [projects, setProjects] = useState<IProjects[]>([])

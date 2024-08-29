@@ -5,7 +5,7 @@ import { Pagination } from "@nextui-org/react";
 import StatusCard from './Cards/StatusCard';
 import MainButton from './Buttons/MainButton';
 import { fetchAllProjects, fetchAllProjectsByPManager, fetchAllProjectsDeveloper, fetchAllProjectsTester, projectDelete, updateProjectStatus } from '@/api/projectService/project';
-import Empty from '@/components/Empty/Empty';
+import Empty from '@/components/common/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -138,21 +138,25 @@ function Projects({ role }: { role: string }) {
 
                     <div className='h-5/6'>
                         {
-                            !loading ? <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-1'>
-                                {
-                                    projects.map((project, index) => (
+                            !loading ?
+                                projects.length > 0 ?
+                                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-1'>
+                                        {
+                                            projects.map((project, index) => (
 
-                                        <ProjectCard key={project._id} data={project} handleDelete={handleDelete} role={role} />
-                                    ))
-                                }
+                                                <ProjectCard key={project._id} data={project} handleDelete={handleDelete} role={role} />
+                                            ))
+                                        }
 
-                            </div> :
+                                    </div> :
+                                    <Empty />
+                                :
                                 <ProjectSkelton />
                         }
                     </div>
 
                     {
-                        total > 0 && <div className='flex justify-center mt-2 h-1/6'>
+                        !loading && total > 0 && <div className='flex justify-center mt-2 h-1/6'>
 
                             <Pagination total={Math.ceil(total / limit)} initialPage={page} color="success" onChange={handlePageChange} />
                         </div>

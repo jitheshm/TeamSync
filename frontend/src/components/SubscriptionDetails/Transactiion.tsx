@@ -1,6 +1,6 @@
 import { ITransaction } from '@/interfaces/subscription'
 import React from 'react'
-import Empty from '../Empty/Empty'
+import Empty from '../common/Empty'
 import { useSelector } from 'react-redux';
 import { ThemeState } from '@/features/theme/themeSlice';
 
