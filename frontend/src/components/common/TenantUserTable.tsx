@@ -10,7 +10,8 @@ import {
     User,
     Tooltip,
     Avatar,
-    Pagination
+    Pagination,
+    Spinner
 } from "@nextui-org/react";
 import MoreButton from './Buttons/MoreButton';
 import Link from 'next/link';
@@ -144,8 +145,8 @@ function TenantUserTable({ admin = false, options }: { admin: boolean, options: 
                         <TableColumn align="center">Actions</TableColumn>
                     </TableHeader>
                     {
-                        users.length > 0 ? (
-                            <TableBody>
+                        !loading && users.length > 0 ? (
+                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
                                 {users.map((user, index) => {
                                     const bgColor = randomColor();
                                     const textFont = fontColorContrast(bgColor);
@@ -213,7 +214,7 @@ function TenantUserTable({ admin = false, options }: { admin: boolean, options: 
                                 })}
                             </TableBody>
                         ) :
-                            <TableBody emptyContent={"No data found."}>{[]}</TableBody>
+                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
                     }
                 </Table>
                 {
