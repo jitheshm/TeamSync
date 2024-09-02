@@ -20,7 +20,7 @@ function MenuButton({ Icon, tooltip, link }: { Icon: IconType, tooltip: string, 
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <div className={`w-full h-full flex justify-center items-center rounded-xl ${tooltip!='Dashboard' ? pathname.startsWith(link) ? 'bg-primary text-text-white' : 'text-textcolor': pathname===link? 'bg-primary text-text-white' : 'text-textcolor'}  `}>
+                        <div className={`w-full h-full flex justify-center items-center rounded-xl ${tooltip!='Dashboard' ? pathname.startsWith(link) ? 'bg-primary text-white' : 'text-textcolor': pathname===link? 'bg-primary text-white' : 'text-textcolor'}  `}>
                             <Icon size={20} />
                         </div>
                     </TooltipTrigger>

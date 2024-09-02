@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { NextUIProvider } from "@nextui-org/react";
 
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "TeamSync",
@@ -25,7 +25,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
         <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
       </head>
-      <body className={inter.className}>
+      <body >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
