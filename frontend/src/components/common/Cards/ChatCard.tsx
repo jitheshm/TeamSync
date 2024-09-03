@@ -21,8 +21,10 @@ interface ChatCardProps {
 
 function ChatCard({ chat, handleRoomChange }: ChatCardProps) {
     const { id, verified } = useSelector((state: RootState) => state.user)
-    const bgColor = useMemo(randomColor,[])
-    const textFont = fontColorContrast(bgColor[0])
+    const bgColor = useMemo(randomColor, []).toString()
+    console.log(bgColor);
+    
+    const textFont = fontColorContrast(bgColor)
 
 
     return (
@@ -34,7 +36,12 @@ function ChatCard({ chat, handleRoomChange }: ChatCardProps) {
                 <div className='w-full flex items-center'>
                     {chat.type === 'group' ? chat.name : chat.members.filter((member: any) => member._id !== id)[0].name}
                 </div>
+
             </div>
+            {
+                chat.notification?.count && <span className="inline-flex items-center justify-center w-5 h-5 ms-2 text-xs font-semibold  bg-green-600 rounded-full">  {chat.notification?.count}
+                </span>
+            }
 
         </div>
     )

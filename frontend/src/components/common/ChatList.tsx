@@ -5,6 +5,7 @@ import ChatCard from './Cards/ChatCard'
 import { useSelector } from 'react-redux'
 import randomColor from 'randomcolor'
 import fontColorContrast from 'font-color-contrast'
+import NewChatModal from './NewChatModal'
 
 interface UserState {
     name: string
@@ -16,10 +17,10 @@ interface RootState {
     user: UserState
 }
 
-function ChatList({ recent, handleRoomChange, activeRoom, setIsModalOpen }: { recent: any[], handleRoomChange: (chat: any, bgColor: string, textFont: string) => void, activeRoom: string | null, setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
+function ChatList({ recent, handleRoomChange, activeRoom, handleNewChat,setNewChatEmail }: { recent: any[], handleRoomChange: (chat: any, bgColor: string, textFont: string) => void, activeRoom: string | null, handleNewChat: ()=>void ,setNewChatEmail:React.Dispatch<React.SetStateAction<string>>}) {
     const { id, verified } = useSelector((state: RootState) => state.user)
     return (
-        <div className={` border-r border-border ${activeRoom ? 'hidden md:block md:w-4/12' : 'block w-screen  md:w-4/12'} `}>
+        <div className={` border-r border-border relative ${activeRoom ? 'hidden md:block md:w-6/12 lg:w-4/12' : 'block w-screen  md:w-6/12 lg:w-4/12'} `}>
             <div className='p-3'>
                 <Input type="text" placeholder="Search here" />
             </div>
@@ -33,6 +34,7 @@ function ChatList({ recent, handleRoomChange, activeRoom, setIsModalOpen }: { re
 
 
             </div>
+            <NewChatModal handleNewChat={handleNewChat} setNewChatEmail={setNewChatEmail}/>
         </div>
     )
 }

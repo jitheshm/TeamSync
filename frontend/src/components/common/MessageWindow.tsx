@@ -5,6 +5,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Socket } from 'socket.io-client'
 import { ScrollArea } from '../ui/scroll-area'
+import { useAlertDialog } from '@/hooks/useAlertDialog'
 
 interface UserState {
     name: string
@@ -38,6 +39,8 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
     const textFont = fontColorContrast(bgColor)
     const [newMessage, setNewMessage] = useState('')
     const { id, verified, name } = useSelector((state: RootState) => state.user)
+    const { confirm } = useAlertDialog();
+
 
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -57,28 +60,21 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
         setNewMessage('')
     }
 
-    const handleMessageDelete = (msgId: string) => {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result: any) => {
-            if (result.isConfirmed) {
-                socket.emit('delete_message', {
-                    msgId
-                }, (data: { status: string, message: string }) => {
-                    if (data.status === 'success') {
-                        setMessage((prev) => {
-                            return prev.filter((msg) => msg._id !== msgId)
-                        })
-                    }
-                })
-            }
-        })
+    const handleMessageDelete = async(msgId: string) => {
+        const result = await confirm();
+        if (result.isConfirm) {
+            socket.emit('delete_message', {
+                msgId
+            }, (data: { status: string, message: string }) => {
+                if (data.status === 'success') {
+                    setMessage((prev) => {
+                        return prev.filter((msg) => msg._id !== msgId)
+                    })
+                }
+            })
+        }
+
+
     }
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +107,7 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
                                 <ul  >
                                     {
                                         message.map((msg, index) => (
-                                            <li key={index} className={`flex ${msg.sender === id ? 'justify-end' : 'justify-start'}`}>
+                                            <li key={index} className={` my-5 flex ${msg.sender === id ? 'justify-end' : 'justify-start'}`}>
                                                 <div>
                                                     {isGroupChat && msg.sender !== id && (
                                                         <span className="block  font-bold text-orange-600">{msg.sender_name}</span>
@@ -123,7 +119,7 @@ function MessageWindow({ userName, message, socket, activeRoom, isGroupChat, set
 
                                                         <span className="block font-bold text-white ">{msg.message}</span>
                                                     </div>
-                                                    <p className="block text-xs text-gray-700 dark:text-gray-300 text-start mt-1">{new Date(msg.timestamp).toLocaleString()}</p>
+                                                    <p className="block text-xs text-gray-700 dark:text-gray-100/70 text-start mt-2">{new Date(msg.timestamp).toLocaleString()}</p>
                                                 </div>
 
 

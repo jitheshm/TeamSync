@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-
+import { Bounce, toast, Zoom } from 'react-toastify';
 import ChatList from './ChatList'
 import MessageWindow from './MessageWindow'
 import IMessage from '@/interfaces/Messages'
@@ -27,7 +27,6 @@ function Chat() {
     const [recent, setRecent] = useState([])
     const [message, setMessage] = useState<IMessage[]>([])
     const [socket, setSocket] = useState<Socket | null>(null)
-    const [isModalOpen, setIsModalOpen] = useState(false)
     const [newChatEmail, setNewChatEmail] = useState('')
     const [isGroup, setIsGroup] = useState(false)
     const { id, verified } = useSelector((state: RootState) => state.user)
@@ -68,21 +67,19 @@ function Chat() {
             socket.on('notify_user', (data) => {
                 console.log(data);
 
-                // const Toast = Swal.mixin({
-                //     toast: true,
-                //     position: "top-end",
-                //     showConfirmButton: false,
-                //     timer: 3000,
-                //     timerProgressBar: true,
-                //     didOpen: (toast) => {
-                //         toast.onmouseenter = Swal.stopTimer;
-                //         toast.onmouseleave = Swal.resumeTimer;
-                //     }
-                // });
-                // Toast.fire({
+                toast(data.message, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Zoom,
+                });
 
-                //     title: data.message
-                // });
+
             }
             )
         }
@@ -131,18 +128,15 @@ function Chat() {
             socket.emit('new_chat', newChatEmail)
             // console.log('Starting chat with:', newChatEmail)
 
-            setIsModalOpen(false)
         }
     }
 
-    const onClose = () => {
-        setIsModalOpen(false)
-    }
+
 
     return (
         <div className='md:p-5'>
             <div className=' w-full h-[calc(100vh-3.5rem)] md:h-[calc(100vh-6rem)] md:border border-border flex'>
-                <ChatList recent={recent} handleRoomChange={handleRoomChange} activeRoom={activeRoom} setIsModalOpen={setIsModalOpen} />
+                <ChatList recent={recent} handleRoomChange={handleRoomChange} activeRoom={activeRoom} handleNewChat={handleNewChat} setNewChatEmail={setNewChatEmail} />
                 <MessageWindow iconStyle={iconStyle!} userName={activeName as string} message={message} socket={socket as Socket} activeRoom={activeRoom} isGroupChat={isGroup} setActiveRoom={setActiveRoom} setMessage={setMessage} />
             </div>
         </div>
