@@ -50,11 +50,11 @@ const TenantManagerLayout: React.FC<TenantManagerLayoutProps> = ({ children }) =
           name: 'Meeting',
           link:'/employee/manager/dashboard/meeting'
         },
-        {
-          icon: SlNote,
-          name: 'Todo',
-          link:'/employee/manager/dashboard/todo'
-        }
+        // {
+        //   icon: SlNote,
+        //   name: 'Todo',
+        //   link:'/employee/manager/dashboard/todo'
+        // }
       ]
 
     return (

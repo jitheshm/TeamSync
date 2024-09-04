@@ -10,10 +10,10 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export function SelectComponent({ placeholder, options, active, handleValueChange }: { placeholder: string, options: { value: string, name: string }[], active: string, handleValueChange: (value: string) => void }) {
+export function SelectComponent({ placeholder, options, active, handleValueChange, className }: { placeholder: string, options: { value: string, name: string }[], active: string, className?: string, handleValueChange: (value: string) => void }) {
     return (
         <Select value={active} onValueChange={handleValueChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className={`w-[180px] ${className}`}>
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent className="bg-background">

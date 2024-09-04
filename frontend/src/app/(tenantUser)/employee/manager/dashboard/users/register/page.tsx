@@ -1,4 +1,4 @@
-import UserForm from '@/components/TenantUserPanel/Forms/UserForm'
+import UserForm from '@/components/common/Forms/UserForm'
 import React from 'react'
 
 function page() {
