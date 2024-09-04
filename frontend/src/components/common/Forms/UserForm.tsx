@@ -61,11 +61,11 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
 
             setBranches(res.data.data)
         }).catch((err) => {
-            // if (err.response?.status === 401) {
-            //     dispatch(logout())
+            if (err.response?.status === 401) {
+                dispatch(logout())
 
-            //     router.push('/login')
-            // }
+                router.push('/login')
+            }
         })
     }, [])
 
