@@ -18,6 +18,7 @@ const userSchema = z.object({
     email: z.string().trim().email("Invalid email address").nonempty("Email is required"),
     phone_no: z.string().trim().min(6, "Phone number must be at least 6 characters long").nonempty("Phone number is required"),
     role: z.string().trim().nonempty("Role is required"),
+    branch_id: z.string().trim().nonempty("Branch is required"),
 });
 
 // Define the interface for form data
@@ -38,10 +39,10 @@ interface FormErrors {
     branch_id?: string;
 }
 
-const roles = [ { name: 'Project_Manager', value: 'Project_Manager' }, { name: 'Developer', value: 'Developer' }, { name: 'Tester', value: 'Tester' }];
+const roles = [{ name: 'Manager', value: 'Manager' }, { name: 'Project_Manager', value: 'Project_Manager' }, { name: 'Developer', value: 'Developer' }, { name: 'Tester', value: 'Tester' }];
 
 
-function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
+function AdminPanelUserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     const [formData, setFormData] = useState<TenantRegisterFormData>({
         name: '',
         email: '',
@@ -49,11 +50,24 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
         role: '',
         branch_id: '',
     });
+    const [branches, setBranches] = useState<IBranches[]>([])
     const [errors, setErrors] = useState<FormErrors>({});
     const router = useRouter();
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        fetchBranches('', 1, 1000).then((res) => {
+            console.log(res);
 
+            setBranches(res.data.data)
+        }).catch((err) => {
+            if (err.response?.status === 401) {
+                dispatch(logout())
+
+                router.push('/login')
+            }
+        })
+    }, [])
 
     useEffect(() => {
         if (edit && userId) {
@@ -85,10 +99,7 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     }
 
     const handleSubmit = (e: FormEvent) => {
-    console.log("hai");
-    
         e.preventDefault();
-         
         try {
             userSchema.parse(formData);
             console.log('Form data is valid:', formData);
@@ -96,31 +107,34 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
             if (edit && userId) {
                 tenantUserUpdate(formData, userId).then((res) => {
                     console.log(res);
-                    router.push('/employee/manager/dashboard/users')
+                    router.push('/dashboard/users')
                 }).catch((err) => {
                     if (err.response?.status === 401) {
                         dispatch(logout())
 
-                        router.push('/employee/login')
-                    }else{
-                        errorModal(err.response.data.errors||err.response.data.error)
+                        router.push('/login')
+                    }
+                    else {
+                        errorModal(err.response.data.errors || err.response.data.error)
                     }
                 })
             } else {
                 tenantUserRegister(formData).then((res) => {
                     console.log(res);
-                    router.push('/employee/manager/dashboard/users')
+                    router.push('/dashboard/users')
                 }).catch((err) => {
                     if (err.response?.status === 401) {
                         dispatch(logout())
-                        router.push('/employee/login')
-                    }else{
-                        errorModal(err.response.data.errors||err.response.data.error)
+
+                        router.push('/login')
+                    }
+                    else {
+                        console.log(err)
+                        errorModal(err.response.data.errors || err.response.data.error)
                     }
                 })
             }
         } catch (err) {
-        console.log(err)
             if (err instanceof ZodError) {
                 // Set validation errors
                 const formattedErrors: FormErrors = {};
@@ -190,7 +204,13 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
 
                                 {errors.role && <p className="text-red-500 text-small">{errors.role}</p>}
                             </div>
-                            
+                            <div className="mb-5 w-full sm:w-5/12">
+                                <label htmlFor="branch_id" className="block mb-2 font-bold text-gray-100">Branch</label>
+                                <SelectComponent className='w-full' placeholder='Select a Branch' active={formData.branch_id} options={branches.map((branch) => ({ name: branch.location, value: branch._id }))} handleValueChange={handleBranchChange} />
+
+
+                                {errors.branch_id && <p className="text-red-500 text-small">{errors.branch_id}</p>}
+                            </div>
                         </div>
                         <button className="block w-full bg-primary text-white font-bold p-4 rounded-lg">{edit ? <span>Update</span> : <span>Register</span>}</button>
                     </form>
@@ -200,4 +220,4 @@ function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
     );
 }
 
-export default UserForm;
+export default AdminPanelUserForm;
