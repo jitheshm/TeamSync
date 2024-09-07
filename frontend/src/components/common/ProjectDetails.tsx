@@ -56,7 +56,7 @@ function ProjectDetails({ projectId, role }: { projectId: string, role: string }
     };
 
     return (
-        <div className='md:px-16'>
+        <div className='md:px-16 p-4'>
             <div className='my-5 flex flex-wrap justify-between'>
                 <p className='w-full md:w-auto'>
                     Project Details

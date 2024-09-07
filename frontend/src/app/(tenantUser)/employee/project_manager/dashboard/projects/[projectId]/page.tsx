@@ -1,10 +1,9 @@
-import ProjectDetails from '@/components/TenantUserPanel/ProjectDetails/ProjectDetails'
+import ProjectDetails from '@/components/common/ProjectDetails'
 import React from 'react'
 
 function page({ params }: { params: { projectId: string } }) {
   return (
-    <ProjectDetails projectId={params.projectId}/>
-
+    <ProjectDetails projectId={params.projectId} role='Project_Manager'/>
   )
 }
 

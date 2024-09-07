@@ -1,9 +1,9 @@
-import ProjectTable from '@/components/TenantUserPanel/Tables/ProjectTable'
+import Projects from '@/components/common/Projects'
 import React from 'react'
 
 function page() {
     return (
-        <ProjectTable role='Project_Manager'/>
+        <Projects role='Project_Manager' />
     )
 }
 
