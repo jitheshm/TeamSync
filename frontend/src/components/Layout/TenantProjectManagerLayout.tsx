@@ -5,8 +5,8 @@ import { IoChatbubbleEllipsesOutline, IoVideocamOutline } from "react-icons/io5"
 import { RxDashboard } from "react-icons/rx";
 import Appbar from "../common/Appbar";
 import { ScrollArea } from "../ui/scroll-area";
-import ProjectManagerSidebar from "../projectManager/ProjectManagerSidebar";
-import ProjectManagerMobileNav from "../projectManager/ProjectManagerMobileNav";
+import Sidebar from "../common/Sidebar";
+import MobileNavbar from "../common/MobileNavbar";
 
 
 interface TenantProjectManagerLayoutProps {
@@ -48,7 +48,7 @@ const TenantProjectManagerLayout: React.FC<TenantProjectManagerLayoutProps> = ({
     return (
         <>
             <div className="md:flex hidden ">
-                <ProjectManagerSidebar icons={icons}/>
+                <Sidebar icons={icons}/>
                 <div className="w-full">
                     <Appbar icons={icons}/>
                     <ScrollArea className="h-[calc(100vh-3.5rem)] ">
@@ -58,7 +58,7 @@ const TenantProjectManagerLayout: React.FC<TenantProjectManagerLayoutProps> = ({
                 </div>
             </div>
             <div className="md:hidden">
-                <ProjectManagerMobileNav icons={icons}/>
+                <MobileNavbar icons={icons}/>
                 <ScrollArea className="h-[calc(100vh-3.5rem)] ">
                         {/* body goes here */}
                         {children}

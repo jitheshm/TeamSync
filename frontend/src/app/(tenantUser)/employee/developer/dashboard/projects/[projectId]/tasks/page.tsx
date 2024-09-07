@@ -1,10 +1,10 @@
-import TaskForm from '@/components/TenantUserPanel/Forms/TaskForm'
-import TaskTable from '@/components/TenantUserPanel/Tables/TaskTable'
+
+import Task from '@/components/common/Task'
 import React from 'react'
 
 function page({ params }: { params: { projectId: string } }) {
   return (
-    <TaskTable projectId={params.projectId} role='Developer'/>
+    <Task projectId={params.projectId} role='Developer'/>
   )
 }
 
