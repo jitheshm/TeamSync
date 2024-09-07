@@ -63,8 +63,9 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     const [defaultFormData, setDefaultFormData] = useState({
         developers: [],
         testers: [],
-        project_manager: ''
+        project_manager: []
     })
+
     const [errors, setErrors] = useState<FormErrors>({});
     const [testers, setTesters] = useState([]);
     const [developer, setDeveloper] = useState([]);
@@ -100,10 +101,13 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     useEffect(() => {
         if (edit && id) {
             fetchSpecificProject(id).then((res) => {
-                console.log(res.data);
-                setDefaultFormData({ developers: res.data.developers, testers: res.data.testers, project_manager: res.data.project_manager })
+                // console.log(res.data);
+                // setDefaultFormData(res.data)
 
                 setFormData(res.data);
+                // console.log(res.data)
+                setDefaultFormData({ developers: res.data.developers, testers: res.data.testers, project_manager: res.data.project_manager })
+
             }).catch((err) => {
                 handleApiError(err);
 
@@ -114,9 +118,9 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
     useEffect(() => {
         console.log("a");
 
-        console.log(defaultFormData);
+        console.log(formData);
 
-    }, [defaultFormData])
+    }, [formData])
 
     // useEffect(() => {
     //     setDeveloper((prevState) => {
@@ -255,17 +259,23 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                 <label htmlFor="tester_id" className="block mb-2 font-bold text-gray-100">Tester</label>
                                 <Select
                                     selectionMode="multiple"
-                                    defaultSelectedKeys={defaultFormData.testers.map((dev: any) => (dev._id))}
+                                    selectedKeys={formData.testers_id}
                                     id="testers_id"
                                     name="testers_id"
                                     placeholder='Select a tester'
                                     onChange={handleTesterChange}
                                     className=""
-                                    key={defaultFormData.testers as any}
+                                    key={formData.testers_id as any}
                                 >
-                                    {testers.map((tester: any) => (
+
+
+
+                                    {testers.filter(
+                                        (tester: any) => !defaultFormData.testers.some((dTester: any) => dTester._id === tester._id)
+                                    ).concat(defaultFormData.testers).map((tester: any) => (
                                         <SelectItem key={tester._id}>{tester.name}</SelectItem>
                                     ))}
+
                                 </Select>
                                 {errors.testers_id && <p className="text-red-500">{errors.testers_id}</p>}
                             </div>
@@ -276,13 +286,16 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                     id="developers_id"
                                     name="developers_id"
                                     placeholder='Select a developer'
-                                    defaultSelectedKeys={defaultFormData.developers.map((dev: any) => (dev._id))}
+                                    selectedKeys={formData.developers_id}
                                     onChange={handleChange}
                                     className=""
-                                    key={defaultFormData.developers as any}
+                                    key={formData.developers_id as any}
 
                                 >
-                                    {developer.map((dev: any) => (
+
+                                    {developer.filter(
+                                        (dev: any) => !defaultFormData.developers.some((dDev: any) => dDev._id === dev._id)
+                                    ).concat(defaultFormData.developers).map((dev: any) => (
                                         <SelectItem key={dev._id}>{dev.name}</SelectItem>
                                     ))}
                                 </Select>
@@ -293,20 +306,27 @@ function ProjectForm({ edit = false, id }: { edit?: boolean, id?: string }) {
                                 <Select
                                     id="project_manager_id"
                                     name="project_manager_id"
-                                    placeholder='Select a Project Manager'
-                                    defaultSelectedKeys={[formData.project_manager_id]}
-                                    onChange={(e) => setFormData({ ...formData, project_manager_id: e.target.value })}
+                                    placeholder="Select a Project Manager"
+                                    selectedKeys={formData.project_manager_id ? [formData.project_manager_id] : []}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, project_manager_id: e.target.value })
+                                    }
                                 >
 
-                                    {projectManager.map((pm: any) => (
+
+
+                                    {projectManager.filter(
+                                        (pm: any) => !defaultFormData.project_manager.some((dpm: any) => dpm._id === pm._id)
+                                    ).concat(defaultFormData.project_manager).map((pm: any) => (
                                         <SelectItem key={pm._id}>{pm.name}</SelectItem>
                                     ))}
+
                                 </Select>
                                 {errors.project_manager_id && <p className="text-red-500">{errors.project_manager_id}</p>}
                             </div>
                             <div className="mb-5">
                                 <label htmlFor="start_date" className="block mb-2 font-bold text-gray-100">Start Date</label>
-                                
+
                                 <Input
                                     type="date"
                                     id="start_date"
