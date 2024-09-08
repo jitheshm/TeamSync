@@ -115,7 +115,7 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string; role: str
 
     const options = [{
         name: 'Open',
-        value: 'open'
+        value: 'pending'
     }, {
         name: 'In Progress',
         value: 'in_progress'
@@ -128,8 +128,8 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string; role: str
 
     return (
         <>
-            <div>
-                <div className='my-5 flex justify-between items-center'>
+            <div className='px-5'>
+                <div className='my-5  flex justify-between items-center'>
                     <p>
                         Ticket List
                     </p>
@@ -179,7 +179,7 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string; role: str
                                             </TableCell>
                                             <TableCell >
                                                 <div className="flex flex-col">
-                                                    <p className="text-bold text-sm capitalize">{ticket.created_at}</p>
+                                                    <p className="text-bold text-sm capitalize">{new Date(ticket.created_at).toLocaleDateString()}</p>
                                                 </div>
                                             </TableCell>
                                             <TableCell >

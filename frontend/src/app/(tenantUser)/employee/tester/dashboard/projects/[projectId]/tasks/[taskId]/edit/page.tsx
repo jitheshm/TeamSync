@@ -1,4 +1,4 @@
-import TaskForm from '@/components/TenantUserPanel/Forms/TaskForm'
+import TaskForm from '@/components/common/Forms/TaskForm'
 import React from 'react'
 
 function page({ params }: { params: { projectId: string, taskId: string } }) {

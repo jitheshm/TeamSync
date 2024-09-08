@@ -1,46 +1,69 @@
 "use client"
 import React, { useState } from 'react';
-import Header from '../Headers/Header';
-import Sidebar from '../Sidebars/TenantTesterSidebar';
-import { useSelector } from 'react-redux';
-import { ThemeState } from '@/features/theme/themeSlice';
+import { RxDashboard } from 'react-icons/rx';
+import { FaLaptopCode } from 'react-icons/fa';
+import { IoChatbubbleEllipsesOutline, IoVideocamOutline } from 'react-icons/io5';
+import Sidebar from '../common/Sidebar';
+import Appbar from '../common/Appbar';
+import { ScrollArea } from '../ui/scroll-area';
+import MobileNavbar from '../common/MobileNavbar';
 
 interface TenantTesterLayoutProps {
     children: React.ReactNode;
 }
 
-interface RootState {
-    theme: ThemeState
-}
+
 
 const TenantTesterLayout: React.FC<TenantTesterLayoutProps> = ({ children }) => {
-
-
-
-    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-    const { background, text, main } = useSelector((state: RootState) => state.theme)
-
+    const icons = [
+        {
+            icon: RxDashboard,
+            name: 'Dashboard',
+            link: '/employee/tester/dashboard'
+        },
+        {
+            icon: FaLaptopCode,
+            name: 'Projects',
+            link: '/employee/tester/dashboard/projects'
+        },
+        {
+            icon: IoChatbubbleEllipsesOutline,
+            name: 'Chats',
+            link: '/employee/tester/dashboard/chats'
+        },
+        {
+            icon: IoVideocamOutline,
+            name: 'Meeting',
+            link: '/employee/tester/dashboard/meeting'
+        },
+        // {
+        //   icon: SlNote,
+        //   name: 'Todo',
+        //   link:'/employee/manager/dashboard/todo'
+        // }
+    ]
 
     return (
-        <div className="flex h-screen ">
-            {/* Overlay */}
-            {sidebarOpen && (
-                <div
-                    className={`fixed inset-0 z-20 transition-opacity ${background} opacity-50 lg:hidden`}
-                    onClick={() => setSidebarOpen(false)}
-                ></div>
-            )}
-
-            <Sidebar sidebarOpen={sidebarOpen} />
-
-            <div className="flex flex-col flex-1 overflow-hidden">
-                <Header setSidebarOpen={setSidebarOpen} />
-                <div className={`h-screen ${main} overflow-auto flex justify-center`}>
-
-                    {children}
+        <>
+            <div className="md:flex hidden ">
+                <Sidebar icons={icons} />
+                <div className="w-full">
+                    <Appbar icons={icons} />
+                    <ScrollArea className="h-[calc(100vh-3.5rem)] ">
+                        {/* body goes here */}
+                        {children}
+                    </ScrollArea>
                 </div>
             </div>
-        </div>
+            <div className="md:hidden">
+                <MobileNavbar icons={icons} />
+                <ScrollArea className="h-[calc(100vh-3.5rem)] ">
+                    {/* body goes here */}
+                    {children}
+                </ScrollArea>
+
+            </div>
+        </>
     );
 };
 

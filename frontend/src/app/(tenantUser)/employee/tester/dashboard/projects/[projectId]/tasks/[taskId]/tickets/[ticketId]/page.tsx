@@ -1,4 +1,4 @@
-import TicketDetails from '@/components/TenantUserPanel/TicketDetails/TicketDetails'
+import TicketDetails from '@/components/common/TicketDetails'
 import React from 'react'
 
 function page({ params }: { params: { projectId: string, taskId: string, ticketId: string } }) {

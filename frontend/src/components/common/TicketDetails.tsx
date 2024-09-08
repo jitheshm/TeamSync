@@ -66,15 +66,15 @@ const TicketDetails = ({ projectId, taskId, ticketId }: { projectId: string, tas
                             <p className='dark:text-gray-400 text-sm text-gray-500'>Status</p>
                             <p>{ticket?.status}</p>
                         </div>
+
+
+                    </div>
+                    <div className='w-full md:w-4/12 flex flex-col gap-5'>
                         <div>
                             <p className='dark:text-gray-400 text-sm text-gray-500'>Developer </p>
                             <p className="w-2/3 text-gray-100">{ticket?.developer[0]?.name}</p>
 
                         </div>
-
-                    </div>
-                    <div className='w-full md:w-4/12 flex flex-col gap-5'>
-
                         <div>
                             <p className='dark:text-gray-400 text-sm text-gray-500'>Tester </p>
                             <p className="w-2/3 text-gray-100">{ticket?.tester[0]?.name}</p>

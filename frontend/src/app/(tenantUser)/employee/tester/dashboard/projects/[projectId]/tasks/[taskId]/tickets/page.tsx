@@ -1,4 +1,4 @@
-import TicketTable from '@/components/TenantUserPanel/Tables/TicketTable'
+import TicketTable from '@/components/common/TicketTable'
 import React from 'react'
 
 function page({ params }: { params: { projectId: string, taskId: string } }) {

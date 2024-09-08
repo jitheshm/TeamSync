@@ -1,5 +1,5 @@
+import TicketForm from '@/components/common/Forms/TicketForm'
 import React from 'react'
-import TicketForm from '@/components/TenantUserPanel/Forms/TicketForm'
 
 function Page({ params }: { params: { projectId: string, taskId: string } }) {
   return (
