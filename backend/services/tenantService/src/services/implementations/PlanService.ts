@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
 import { IPlanService } from "../interfaces/IPlanService";
 
-injectable()
+@injectable()
 export class PlanService implements IPlanService {
     private planRepository: IPlanRepository
 

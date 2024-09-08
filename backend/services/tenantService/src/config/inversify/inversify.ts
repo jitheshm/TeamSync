@@ -11,8 +11,8 @@ import { ISubscriptionService } from "../../services/interfaces/ISubscriptionSer
 import SubscriptionRepository from "../../repository/implementations/SubscriptionRepository";
 import { ITenantService } from "../../services/interfaces/ITenantService";
 import { TenantService } from "../../services/implementations/TenantService";
-import { IMiddlewareService } from "../../services/interfaces/IMiddlewareService";
-import { MiddlewareServices } from "../../services/implementations/MiddlewareServices";
+// import { IMiddlewareService } from "../../services/interfaces/IMiddlewareService";
+// import { MiddlewareServices } from "../../services/implementations/MiddlewareServices";
 import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
 import { IBranchRepository } from "../../repository/interfaces/IBranchRepository";
 import BranchRepository from "../../repository/implementations/BranchRepository";
@@ -33,6 +33,8 @@ import PlanConsumer from "../../events/kafka/consumers/PlanConsumer";
 import { SubscriptionService } from "../../services/implementations/SubscriptionService";
 import { UserService } from "../../services/implementations/UserService";
 import { IUserService } from "../../services/interfaces/IUserService";
+import { ITenantController } from "../../controllers/v1/interfaces/ITenantController";
+import { TenantController } from "../../controllers/v1/implementations/TenantController";
 
 
 const container = new Container();
@@ -50,9 +52,10 @@ container.bind<IConsumer>("IUserConsumer").to(UserConsumer);
 container.bind<IConsumer>("ISubscriptionConsumer").to(SubscriptionConsumer)
 container.bind<IConsumer>("IPlanConsumer").to(PlanConsumer)
 container.bind<ISubscriptionService>("ISubscriptionService").to(SubscriptionService);
-container.bind<IMiddlewareService>("IMiddlewareService").to(MiddlewareServices);
+// container.bind<IMiddlewareService>("IMiddlewareService").to(MiddlewareServices);
 container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(SubscriptionRepository);
 container.bind<IBranchController>("IBranchController").to(BranchController);
+container.bind<ITenantController>("ITenantController").to(TenantController);
 
 
 

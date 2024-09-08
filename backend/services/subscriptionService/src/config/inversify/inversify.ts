@@ -22,6 +22,14 @@ import { ITenantService } from "../../services/interfaces/ITenantService";
 import { TenantService } from "../../services/implementations/TenantService";
 import { IMiddlewareService } from "../../services/interfaces/IMiddlewareService";
 import { MiddlewareServices } from "../../services/implementations/MiddlewareServices";
+import { ISubscriptionController } from "../../controllers/v1/interfaces/ISubscriptionController";
+import { SubscriptionController } from "../../controllers/v1/implementations/SubscriptionController";
+import { IPlanController } from "../../controllers/v1/interfaces/IPlanController";
+import { PlanController } from "../../controllers/v1/implementations/PlanController";
+import { IPlanService } from "../../services/interfaces/IPlanService";
+import { PlanService } from "../../services/implementations/PlanService";
+import { IPlanRepository } from "../../repository/interfaces/IPlanRepository";
+import PlanRepository from "../../repository/implementations/PlanRepository";
 
 
 const container = new Container();
@@ -36,6 +44,10 @@ container.bind<IConsumer>("IUserConsumer").to(UserConsumer);
 container.bind<ISubscriptionService>("ISubscriptionService").to(SubscriptionService);
 container.bind<IMiddlewareService>("IMiddlewareService").to(MiddlewareServices);
 container.bind<ISubscriptionRepository>("ISubscriptionRepository").to(SubscriptionRepository);
+container.bind<ISubscriptionController>("ISubscriptionController").to(SubscriptionController)
+container.bind<IPlanController>("IPlanController").to(PlanController)
+container.bind<IPlanService>("IPlanService").to(PlanService)
+container.bind<IPlanRepository>("IPlanRepository").to(PlanRepository)
 
 container.bind<IProducer<ISubscriptions>>("ISubscriptionProducer").toFactory((context: interfaces.Context) => {
     return (producer: Producer, dbName: string, modelName: string) => {
