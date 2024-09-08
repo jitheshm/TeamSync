@@ -25,8 +25,8 @@ import { useAlertDialog } from '@/hooks/useAlertDialog';
 import { SelectComponent } from './Buttons/Select';
 import MainButton from './Buttons/MainButton';
 import { Input } from '../ui/input';
-import { ITicket } from '../TenantUserPanel/Tables/TicketTable';
 import { fetchAllTaskTickets, ticketDelete, updateTicketStatus } from '@/api/projectService/project';
+import { ITicket } from '@/interfaces/Ticket';
 
 
 interface IUser {
