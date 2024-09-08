@@ -15,6 +15,7 @@ export default async (req: Request & Partial<{ user: Partial<decodedUser> }>, re
             const { userObj, decode } = await middlewareService.userApiAuth(token)
             req.user = userObj
             req.user.decode = decode
+            next()
         } else {
             throw new UnauthorizedError()
         }
