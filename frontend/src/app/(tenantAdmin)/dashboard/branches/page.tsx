@@ -1,4 +1,4 @@
-import BranchTable from '@/components/Tables/BranchTable'
+import BranchTable from '@/components/common/BranchTable'
 import React from 'react'
 
 function page() {
