@@ -96,9 +96,7 @@ const BranchTable: React.FC = () => {
                         !loading && branches.length > 0 ? (
                             <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
                                 {branches.map((branch, index) => {
-                                    const bgColor = randomColor();
-                                    const textFont = fontColorContrast(bgColor);
-                                    const initial = branch.location.charAt(0).toUpperCase();
+
                                     return (
                                         <TableRow key={index}>
                                             <TableCell>
@@ -106,20 +104,7 @@ const BranchTable: React.FC = () => {
                                             </TableCell>
                                             <TableCell >
 
-                                                <User
-                                                    avatarProps={{
-                                                        radius: "lg",
-                                                        style: {
-                                                            fontSize: "20px",
-                                                            backgroundColor: bgColor,
-                                                            color: textFont,
-                                                            fontWeight: 'bold'
-                                                        },
-                                                        name: initial
-                                                    }}
-
-                                                    name={branch.location}
-                                                />
+                                                {branch.location}
 
                                             </TableCell>
 
