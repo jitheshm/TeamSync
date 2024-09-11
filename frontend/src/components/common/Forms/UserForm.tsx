@@ -38,10 +38,9 @@ interface FormErrors {
     branch_id?: string;
 }
 
-const roles = [ { name: 'Project_Manager', value: 'Project_Manager' }, { name: 'Developer', value: 'Developer' }, { name: 'Tester', value: 'Tester' }];
 
 
-function UserForm({ edit, userId }: { edit?: boolean, userId?: string }) {
+function UserForm({ edit, userId,roles }: { edit?: boolean, userId?: string,roles:{name:string,value:string}[] }) {
     const [formData, setFormData] = useState<TenantRegisterFormData>({
         name: '',
         email: '',
