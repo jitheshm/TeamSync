@@ -4,7 +4,7 @@ import React from 'react'
 
 function page({ params }: { params: { projectId: string, taskId: string } }) {
     return (
-        <TaskDetails projectId={params.projectId} taskId={params.taskId} />
+        <TaskDetails role='Tester' projectId={params.projectId} taskId={params.taskId} />
 
     )
 }

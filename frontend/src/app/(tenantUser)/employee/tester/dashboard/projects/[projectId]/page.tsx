@@ -3,7 +3,7 @@ import React from 'react'
 
 function page({ params }: { params: { projectId: string } }) {
   return (
-    <ProjectDetails projectId={params.projectId}/>
+    <ProjectDetails role='Tester' projectId={params.projectId}/>
 
   )
 }

@@ -162,7 +162,7 @@ function Projects({ role }: { role: string }) {
                         </div>
                     }
                 </div>
-                <div className='w-full mt-10 mb-10 md:mb-0 md:mt-0 lg:w-96 md:h-[calc(100vh-10rem)] border border-border'>
+                {/* <div className='w-full mt-10 mb-10 md:mb-0 md:mt-0 lg:w-96 md:h-[calc(100vh-10rem)] border border-border'>
                     <div className='font-semibold text-center mt-5'>
                         On Going Projects
                     </div>
@@ -173,7 +173,7 @@ function Projects({ role }: { role: string }) {
                         <StatusCard />
                         <StatusCard />
                     </div>
-                </div>
+                </div> */}
 
             </div>
         </div>

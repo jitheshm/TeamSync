@@ -18,9 +18,9 @@ function StatusCard() {
                     Project Name
                 </div>
             </div>
-            <div>
+            {/* <div>
                 <MoreButton />
-            </div>
+            </div> */}
         </div>
     )
 }
