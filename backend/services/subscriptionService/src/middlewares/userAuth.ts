@@ -13,6 +13,7 @@ export default async (req: CustomRequest, res: Response, next: NextFunction) => 
             const { userObj, decode } = await middlewareService.userApiAuth(token)
             req.user = userObj
             req.user.decode = decode
+            next()
         } else {
             throw new UnauthorizedError()
         }

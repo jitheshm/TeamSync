@@ -12,7 +12,7 @@ export default async (req: Request & Partial<{ user: string | jwt.JwtPayload }>,
         if (token) {
             const decode = await middlewareService.adminApiAuth(token)
             req.user = decode
-
+            next()
         } else {
             res.status(401).json({ error: "unauthorised" })
         }

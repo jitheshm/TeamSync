@@ -2,7 +2,9 @@ import { Document } from "mongoose";
 import { IUsers } from "../../entities/UserEntity";
 import switchDb from "../../utils/switchDb";
 import { IUserRepository } from "../interfaces/IUserRepository";
+import { injectable } from "inversify";
 
+@injectable()
 export default class UserRepository implements IUserRepository {
 
     async create(user: IUsers) {
