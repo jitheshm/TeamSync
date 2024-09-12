@@ -51,7 +51,7 @@ function TaskCard({ data, handleDelete, role, projectId }: { data: ITask, handle
                             (
                                 <>
 
-                                    <Link href={`/employee/developer/dashboard/projects/${data._id}`}>
+                                    <Link href={`/employee/developer/dashboard/projects/${projectId}/tasks/${data._id}`}>
                                         <DropdownMenuItem>
                                             View
                                         </DropdownMenuItem>
