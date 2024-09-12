@@ -1,6 +1,6 @@
 "use client";
-import React from 'react'
-import ProjectCard from './Cards/ProjectCard'
+import React, { useEffect, useState } from 'react';
+import ProjectCard from './Cards/ProjectCard';
 import { Pagination } from "@nextui-org/react";
 import StatusCard from './Cards/StatusCard';
 import MainButton from './Buttons/MainButton';
@@ -9,7 +9,6 @@ import Empty from '@/components/common/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import { Input } from '../ui/input';
@@ -18,38 +17,46 @@ import ProjectSkelton from './ProjectSkelton';
 import { ITask } from '@/interfaces/Task';
 import TaskCard from './Cards/TaskCard';
 
-
-
 function Task({ projectId, role }: { projectId: string, role: string }) {
 
     const [tasks, setTasks] = useState<ITask[]>([]);
     const [toggle, setToggle] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
+    const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
     const [page, setPage] = useState<number>(1);
     const [limit] = useState<number>(10);
     const [total, setTotal] = useState<number>(0);
     const router = useRouter();
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true)
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setPage(1);
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 500); 
+
+        return () => {
+            clearTimeout(timer);
+        };
     }, [search]);
 
     useEffect(() => {
-        setLoading(true)
-        fetchAllTasks(projectId, search, page, limit).then((result: any) => {
+        setPage(1);
+    }, [debouncedSearch]);
+
+    useEffect(() => {
+        setLoading(true);
+        fetchAllTasks(projectId, debouncedSearch, page, limit).then((result: any) => {
             setTasks(result.data.data);
             setTotal(result.data.totalCount);
-            setLoading(false)
+            setLoading(false);
         }).catch((err: any) => {
             if (err.response?.status === 401) {
                 dispatch(logout());
                 router.push('/employee/login');
             }
         });
-    }, [toggle, search, page, limit]);
+    }, [toggle, debouncedSearch, page, limit]);
 
     const handleDelete = (taskId: string) => {
         Swal.fire({
@@ -109,7 +116,7 @@ function Task({ projectId, role }: { projectId: string, role: string }) {
                     All Tasks
                 </div>
                 <div>
-                    <Input placeholder='Search Projects' onChange={(e) => setSearch(e.target.value)} value={search} />
+                    <Input placeholder='Search Tasks' onChange={(e) => setSearch(e.target.value)} value={search} />
                 </div>
 
                 {
@@ -131,11 +138,9 @@ function Task({ projectId, role }: { projectId: string, role: string }) {
                                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-1'>
                                         {
                                             tasks.map((task, index) => (
-
                                                 <TaskCard key={task._id} data={task} handleDelete={handleDelete} role={role} projectId={projectId} />
                                             ))
                                         }
-
                                     </div> :
                                     <Empty />
                                 :
@@ -145,7 +150,6 @@ function Task({ projectId, role }: { projectId: string, role: string }) {
 
                     {
                         !loading && total > 0 && <div className='flex justify-center mt-2 h-1/6'>
-
                             <Pagination total={Math.ceil(total / limit)} initialPage={page} color="success" onChange={handlePageChange} />
                         </div>
                     }
@@ -168,4 +172,4 @@ function Task({ projectId, role }: { projectId: string, role: string }) {
     )
 }
 
-export default Task
+export default Task;

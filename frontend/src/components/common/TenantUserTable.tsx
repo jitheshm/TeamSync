@@ -23,13 +23,9 @@ import { fetchTenantUsers, tenantUserDelete } from '@/api/userService/user';
 import { logout } from '@/features/user/userSlice';
 import { useAlertDialog } from '@/hooks/useAlertDialog';
 import { SelectComponent } from './Buttons/Select';
-import { Value } from '@radix-ui/react-select';
 import MainButton from './Buttons/MainButton';
 import { Input } from '../ui/input';
 import { getColorForLetter } from '@/utils/dpColor';
-
-
-
 
 interface IUser {
     _id: string;
@@ -53,10 +49,11 @@ interface RootState {
 }
 
 function TenantUserTable({ admin = false, options }: { admin: boolean, options: { name: string, value: string }[] }) {
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<IUser[]>([]);
     const [toggle, setToggle] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
+    const [debouncedSearch, setDebouncedSearch] = useState<string>(search);  // New state for debounced search
     const [page, setPage] = useState<number>(1);
     const [limit] = useState<number>(10);
     const [total, setTotal] = useState<number>(0);
@@ -67,22 +64,30 @@ function TenantUserTable({ admin = false, options }: { admin: boolean, options: 
     const { confirm } = useAlertDialog();
 
     useEffect(() => {
-        setPage(1);
-    }, [search, role]);
+        const delayDebounceFn = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 500);  
+
+        return () => clearTimeout(delayDebounceFn);  
+    }, [search]);
 
     useEffect(() => {
-        setLoading(true)
-        fetchTenantUsers(role, search, page, limit).then((result: any) => {
+        setPage(1);
+    }, [debouncedSearch, role]);
+
+    useEffect(() => {
+        setLoading(true);
+        fetchTenantUsers(role, debouncedSearch, page, limit).then((result: any) => {
             setUsers(result.data.data);
             setTotal(result.data.total);
-            setLoading(false)
+            setLoading(false);
         }).catch((err: any) => {
             if (err.response?.status === 401) {
                 dispatch(logout());
                 router.push('/login');
             }
         });
-    }, [toggle, search, page, limit, role]);
+    }, [toggle, debouncedSearch, page, limit, role]);
 
     const handleDelete = async (branchId: string, id: string, role: string) => {
         const result = await confirm();
@@ -175,9 +180,6 @@ function TenantUserTable({ admin = false, options }: { admin: boolean, options: 
                                                     <Tooltip content="More">
                                                         <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                                                             <MoreButton>
-                                                                {/* <Link href={admin ? `/dashboard/users/${user._id}` : `/employee/manager/dashboard/users/${user._id}`}>
-                                                                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                                                                </Link> */}
                                                                 <Link href={admin ? `/dashboard/users/${user._id}/edit` : `/employee/manager/dashboard/users/${user._id}/edit`}>
                                                                     <DropdownMenuItem>Edit</DropdownMenuItem>
                                                                 </Link>

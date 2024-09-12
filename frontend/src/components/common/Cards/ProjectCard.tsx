@@ -5,17 +5,18 @@ import MoreButton from '../Buttons/MoreButton'
 import { IProjects } from '@/interfaces/Project'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
+import { getColorForLetter } from '@/utils/dpColor'
 
 function ProjectCard({ data, handleDelete, role }: { data: IProjects, handleDelete: (projectId: string) => void, role: string }) {
 
-    const bgColor = randomColor()
-    const textFont = fontColorContrast(bgColor)
+    const initial=data.name.charAt(0).toUpperCase()
+    const { bgColor, textFont } = getColorForLetter(initial);
 
     return (
         <div className='border border-border rounded-2xl  h-32 p-3  shadow-lg m-4'>
             <div className='flex justify-between'>
                 <div className='w-8 h-8 font-semibold  flex justify-center items-center rounded-md ' style={{ backgroundColor: bgColor, color: textFont }}>
-                    {data.name.charAt(0).toUpperCase()}
+                    {initial}
                 </div>
                 <div>
                     <MoreButton >

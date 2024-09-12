@@ -12,13 +12,14 @@ import { logout } from '@/features/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { ITask } from '../TenantUserPanel/Tables/TaskTable';
+import { getColorForLetter } from '@/utils/dpColor';
 
 const TaskDetails = ({ projectId, taskId, role }: { projectId: string, taskId: string, role: string }) => {
 
     const [toggle, setToggle] = useState<boolean>(true);
     const [task, setTask] = useState<ITask>();
-    const bgColor = randomColor()
-    const textFont = fontColorContrast(bgColor)
+    const initial = task?.title.charAt(0).toUpperCase()
+    const { bgColor, textFont } = getColorForLetter(initial!);
     const dispatch = useDispatch()
     const router = useRouter()
 
@@ -80,7 +81,7 @@ const TaskDetails = ({ projectId, taskId, role }: { projectId: string, taskId: s
                             color: textFont,
                             fontWeight: 'bold'
                         },
-                        name: task?.title.charAt(0).toUpperCase()
+                        name: initial
                     }}
                 />
             </div>

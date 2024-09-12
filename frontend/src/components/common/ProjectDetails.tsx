@@ -11,13 +11,14 @@ import { SelectComponent } from './Buttons/Select';
 import { logout } from '@/features/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import { getColorForLetter } from '@/utils/dpColor';
 
 function ProjectDetails({ projectId, role }: { projectId: string, role: string }) {
 
     const [toggle, setToggle] = useState<boolean>(true);
     const [project, setProject] = useState<IProjects>();
-    const bgColor = randomColor()
-    const textFont = fontColorContrast(bgColor)
+    const initial = project?.name.charAt(0).toUpperCase()
+    const { bgColor, textFont } = getColorForLetter(initial!);
     const dispatch = useDispatch()
     const router = useRouter()
 
@@ -63,7 +64,7 @@ function ProjectDetails({ projectId, role }: { projectId: string, role: string }
                 </p>
                 <div className='w-full md:w-auto flex justify-end'>
                     {
-                        (role === 'Project_Manager'||role==='Manager') && (<SelectComponent placeholder='Select a status' active={project?.stage as string} options={options} handleValueChange={(value) => handleStatusChange(project?._id!, value)} />)
+                        (role === 'Project_Manager' || role === 'Manager') && (<SelectComponent placeholder='Select a status' active={project?.stage as string} options={options} handleValueChange={(value) => handleStatusChange(project?._id!, value)} />)
                     }
 
                 </div>
@@ -80,7 +81,7 @@ function ProjectDetails({ projectId, role }: { projectId: string, role: string }
                             color: textFont,
                             fontWeight: 'bold'
                         },
-                        name: project?.name.charAt(0).toUpperCase()
+                        name: initial
                     }}
                 />
             </div>

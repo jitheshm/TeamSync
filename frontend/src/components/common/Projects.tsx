@@ -1,42 +1,49 @@
 "use client";
-import React from 'react'
-import ProjectCard from './Cards/ProjectCard'
+import React, { useEffect, useState } from 'react';
+import ProjectCard from './Cards/ProjectCard';
 import { Pagination } from "@nextui-org/react";
-import StatusCard from './Cards/StatusCard';
 import MainButton from './Buttons/MainButton';
 import { fetchAllProjects, fetchAllProjectsByPManager, fetchAllProjectsDeveloper, fetchAllProjectsTester, projectDelete, updateProjectStatus } from '@/api/projectService/project';
 import Empty from '@/components/common/Empty';
 import { logout } from '@/features/user/userSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { Input } from '../ui/input';
 import { IProjects } from '@/interfaces/Project';
 import ProjectSkelton from './ProjectSkelton';
-
-
 
 function Projects({ role }: { role: string }) {
 
     const [projects, setProjects] = useState<IProjects[]>([]);
     const [toggle, setToggle] = useState<boolean>(true);
     const [search, setSearch] = useState<string>('');
+    const [debouncedSearch, setDebouncedSearch] = useState<string>(''); // Debounced search state
     const [page, setPage] = useState<number>(1);
     const [limit] = useState<number>(6);
     const [total, setTotal] = useState<number>(0);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
 
     const router = useRouter();
     const dispatch = useDispatch();
 
     useEffect(() => {
-        setPage(1);
+        const handler = setTimeout(() => {
+            setDebouncedSearch(search); 
+        }, 500); 
+
+        return () => {
+            clearTimeout(handler); 
+        };
     }, [search]);
 
     useEffect(() => {
-        setLoading(true)
+        setPage(1);
+    }, [debouncedSearch]);
+
+    useEffect(() => {
+        setLoading(true);
         let fetchProjects = null;
 
         if (role === 'Manager') {
@@ -49,17 +56,17 @@ function Projects({ role }: { role: string }) {
             fetchProjects = fetchAllProjectsTester;
         }
 
-        fetchProjects && fetchProjects(search, page, limit).then((result: any) => {
+        fetchProjects && fetchProjects(debouncedSearch, page, limit).then((result: any) => {
             setProjects(result.data.data);
             setTotal(Number(result.data.totalCount));
-            setLoading(false)
+            setLoading(false);
         }).catch((err: any) => {
             if (err.response.status === 401) {
                 dispatch(logout());
                 router.push('/employee/login');
             }
         });
-    }, [toggle, search, page, limit]);
+    }, [toggle, debouncedSearch, page, limit]);
 
     const handleDelete = (projectId: string) => {
         if (role === 'Manager') {
@@ -143,11 +150,9 @@ function Projects({ role }: { role: string }) {
                                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 sm:gap-1'>
                                         {
                                             projects.map((project, index) => (
-
                                                 <ProjectCard key={project._id} data={project} handleDelete={handleDelete} role={role} />
                                             ))
                                         }
-
                                     </div> :
                                     <Empty />
                                 :
@@ -157,27 +162,13 @@ function Projects({ role }: { role: string }) {
 
                     {
                         !loading && total > 0 && <div className='flex justify-center mt-2 h-1/6'>
-
                             <Pagination total={Math.ceil(total / limit)} initialPage={page} color="success" onChange={handlePageChange} />
                         </div>
                     }
                 </div>
-                {/* <div className='w-full mt-10 mb-10 md:mb-0 md:mt-0 lg:w-96 md:h-[calc(100vh-10rem)] border border-border'>
-                    <div className='font-semibold text-center mt-5'>
-                        On Going Projects
-                    </div>
-
-                    <div className='mt-5'>
-                        <StatusCard />
-                        <StatusCard />
-                        <StatusCard />
-                        <StatusCard />
-                    </div>
-                </div> */}
-
             </div>
         </div>
     )
 }
 
-export default Projects
+export default Projects;

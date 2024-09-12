@@ -6,11 +6,12 @@ import { ITicket } from '@/interfaces/Ticket';
 import { User } from '@nextui-org/react';
 import randomColor from 'randomcolor';
 import fontColorContrast from 'font-color-contrast';
+import { getColorForLetter } from '@/utils/dpColor';
 
 const TicketDetails = ({ projectId, taskId, ticketId }: { projectId: string, taskId: string, ticketId: string }) => {
     const [ticket, setTicket] = useState<ITicket>();
-    const bgColor = randomColor()
-    const textFont = fontColorContrast(bgColor)
+    const initial = ticket?.title.charAt(0).toUpperCase()
+    const { bgColor, textFont } = getColorForLetter(initial!);
     useEffect(() => {
         fetchSpecificTicketDetails(projectId, taskId, ticketId).then((res) => {
             console.log(res.data);
@@ -38,7 +39,7 @@ const TicketDetails = ({ projectId, taskId, ticketId }: { projectId: string, tas
                             color: textFont,
                             fontWeight: 'bold'
                         },
-                        name: ticket?.title.charAt(0).toUpperCase()
+                        name: initial
                     }}
                 />
             </div>
