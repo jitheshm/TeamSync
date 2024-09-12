@@ -3,14 +3,19 @@ import { ITaskService } from "../interfaces/ITaskService";
 import { ITaskRepository } from "../../repository/interfaces/ITaskRepository";
 import IDecodedUser from "../../interfaces/IDecodeUser";
 import { ITasks } from "../../entities/TaskEntity";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import TaskProducer from "../../events/kafka/producers/TaskProducer";
+import { inject, injectable } from "inversify";
+import { CustomError, IKafkaConnection, UnauthorizedError } from "teamsync-common";
 
+@injectable()
 export default class TaskService implements ITaskService {
     private taskRepository: ITaskRepository;
     private kafkaConnection?: IKafkaConnection;
 
-    constructor(taskRepository: ITaskRepository, kafkaConnection?: IKafkaConnection) {
+    constructor(
+        @inject("ITaskRepository") taskRepository: ITaskRepository,
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection
+    ) {
         this.taskRepository = taskRepository;
         this.kafkaConnection = kafkaConnection;
     }
@@ -18,12 +23,12 @@ export default class TaskService implements ITaskService {
     async createTask(user: IDecodedUser, body: Partial<ITasks>, projectId: string): Promise<ITasks> {
         if (user.decode?.role !== 'Tenant_Admin') {
             if (user.decode?.role !== 'Project_Manager') {
-                throw new Error("Unauthorized");
+                throw new UnauthorizedError()
             }
             body.branch_id = new mongoose.Types.ObjectId(user.decode?.branchId as string);
         } else {
             if (!body.branch_id) {
-                throw new Error("Branch id must needed");
+                throw new CustomError("Branch id must needed", 400);
             }
         }
 

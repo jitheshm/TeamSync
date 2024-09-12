@@ -4,11 +4,12 @@ import mongoose, { Mongoose, ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import ISubscriptions from "../../entities/SubscriptionEntity";
 import { ISubscriptionRepository } from "../interfaces/ISubscriptionRepository";
+import { injectable } from "inversify";
 
 
 
 
-
+@injectable()
 export default class SubscriptionRepository implements ISubscriptionRepository {
 
     async create(data: ISubscriptions) {
@@ -85,6 +86,20 @@ export default class SubscriptionRepository implements ISubscriptionRepository {
 
 
 
+    }
+
+    fetchSubscription(tenantId: mongoose.Types.ObjectId) {
+        try {
+            const SubscriptionModel = switchDb<ISubscriptions>(`${process.env.SERVICE}_main`, 'subscriptions')
+            const res = SubscriptionModel.findOne({ tenant_id: tenantId })
+            return res
+        } catch (error) {
+            console.log('Error in SubscriptionRepository fetchSubscription method');
+
+            console.log(error);
+
+            throw error
+        }
     }
 
     

@@ -1,6 +1,6 @@
 "use client";
 import { blockPlan, deletePlan, fetchPlans, unBlockPlan } from '@/api/subscriptionService/subscription';
-import Empty from '@/components/Empty/Empty';
+import Empty from '@/components/common/Empty';
 import { logout } from '@/features/admin/adminSlice';
 import { ThemeState } from '@/features/theme/themeSlice';
 import { IPlan } from '@/interfaces/subscription';

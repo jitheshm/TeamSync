@@ -3,10 +3,11 @@ import mongoose, { ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import { ITenantUsers } from "../../entities/TenantUserEntity";
 import { ITenantUserRepository } from "../interfaces/ITenantUserRepository";
+import { injectable } from "inversify";
 
 
 
-
+@injectable()
 export default class TenantUserRepository implements ITenantUserRepository {
 
     async create(data: ITenantUsers, dbId: string) {
@@ -290,6 +291,19 @@ export default class TenantUserRepository implements ITenantUserRepository {
             console.log('Error in Tenant User Repository fetchUser method');
             console.log(error);
             throw error;
+        }
+    }
+
+    async fetchTenantUserByEmail(email: string, dbId: string): Promise<ITenantUsers | null> {
+        try {
+            console.log(email, dbId);
+
+            const userModel = switchDb<ITenantUsers>(`${process.env.SERVICE}_${dbId}`, 'tenant_users')
+            return await userModel.findOne({ email: email })
+        } catch (error) {
+            console.log('Error in UserRepository fetchUserByEmail method');
+
+            throw error
         }
     }
 

@@ -3,11 +3,12 @@ import mongoose, { ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import { ITickets } from "../../entities/TicketEntity";
 import { ITicketRepository } from "../interfaces/ITicketRepository";
+import { injectable } from "inversify";
 
 
 
 
-
+@injectable()
 export default class TicketRepository implements ITicketRepository {
 
     async create(data: ITickets, dbId: string) {

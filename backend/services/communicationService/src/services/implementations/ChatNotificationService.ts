@@ -1,16 +1,19 @@
 import mongoose from "mongoose";
 import { IChatNotificationRepository } from "../../repository/interfaces/IChatNotificationRepository";
-import IChatNotfication from "../../entities/ChatNotification";
 import { IChatNotificationService } from "../interfaces/IChatNotificationService";
+import { inject, injectable } from "inversify";
 
 
 
 
+@injectable()
 
-export default class ChatNotoficationService implements IChatNotificationService {
+export default class ChatNotificationService implements IChatNotificationService {
     private chatNotificationRepository: IChatNotificationRepository;
 
-    constructor(chatNotificationRepository: IChatNotificationRepository) {
+    constructor(
+        @inject("IChatNotificationRepository") chatNotificationRepository: IChatNotificationRepository,
+    ) {
         this.chatNotificationRepository = chatNotificationRepository;
     }
 

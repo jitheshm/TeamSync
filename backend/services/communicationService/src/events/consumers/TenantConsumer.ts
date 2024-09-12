@@ -1,19 +1,25 @@
-import { KafkaConnection } from "../../config/kafka/KafkaConnection";
-import IConsumer from "../../interfaces/IConsumer";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
-import TenantRepository from "../../repository/implementations/TenantRepository";
-import { ITenantRepository } from "../../repository/interfaces/ITenantRepository";
-import TenantService from "../../services/implementations/TenantService";
+import { IConsumer, IKafkaConnection } from "teamsync-common";
 import { ITenantService } from "../../services/interfaces/ITenantService";
+import { inject, injectable } from "inversify";
 
-const kafkaConnection:IKafkaConnection = new KafkaConnection();
-const tenantRepository:ITenantRepository = new TenantRepository();
-const tenantService:ITenantService = new TenantService(tenantRepository);
 
+@injectable()
 export default class TenantConsumer implements IConsumer {
+    private tenantService: ITenantService;
+    private kafkaConnection: IKafkaConnection;
+
+    constructor(
+        @inject("ITenantService") tenantService: ITenantService,
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection
+    ) {
+        this.tenantService = tenantService;
+        this.kafkaConnection = kafkaConnection;
+    }
+
+
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenants_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenants_group`);
             await consumer.subscribe({ topic: "tenants-events", fromBeginning: true });
 
             await consumer.run({
@@ -26,7 +32,7 @@ export default class TenantConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await tenantService.handleEvent(dataObj.eventType, dataObj.data);
+                            await this.tenantService.handleEvent(dataObj.eventType, dataObj.data);
                         }
                     }
                 },

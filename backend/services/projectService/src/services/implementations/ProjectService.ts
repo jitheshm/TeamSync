@@ -2,25 +2,25 @@ import mongoose, { Document } from "mongoose";
 import { ITenantRepository } from "../../repository/interfaces/ITenantRepository";
 import { IProjectService } from "../interfaces/IProjectService";
 import { IProjectRepository } from "../../repository/interfaces/IProjectRepository";
-import { ITenants } from "../../entities/TenantEntity";
 import { IProjects } from "../../entities/ProjectEntity";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import ProjectProducer from "../../events/kafka/producers/ProjectProducer";
+import { inject, injectable } from "inversify";
+import { CustomError, IKafkaConnection } from "teamsync-common";
 
 
-interface ProjectServiceProps {
-    tenantRepository?: ITenantRepository;
-    projectRepository: IProjectRepository;
-    kafkaConnection?: IKafkaConnection;
 
-}
 
+@injectable()
 export default class ProjectService implements IProjectService {
-    private tenantRepository?: ITenantRepository;
+    private tenantRepository: ITenantRepository;
     private projectRepository: IProjectRepository;
-    private kafkaConnection?: IKafkaConnection;
+    private kafkaConnection: IKafkaConnection;
 
-    constructor({ tenantRepository, projectRepository, kafkaConnection }: ProjectServiceProps) {
+    constructor(
+        @inject("IProjectRepository") projectRepository: IProjectRepository,
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ITenantRepository") tenantRepository: ITenantRepository
+    ) {
         this.tenantRepository = tenantRepository;
         this.projectRepository = projectRepository;
         this.kafkaConnection = kafkaConnection;
@@ -31,7 +31,15 @@ export default class ProjectService implements IProjectService {
     }
 
     async fetchProjectUsers(tenantId: string, projectId: mongoose.Types.ObjectId, branchId: mongoose.Types.ObjectId) {
-        return await this.projectRepository.fetchProjectUsers(tenantId, projectId, branchId);
+        const tenant = await this.tenantRepository.getTenantById(new mongoose.Types.ObjectId(tenantId));
+        if (!tenant) {
+            throw new CustomError("Tenant not found", 404);
+        }
+        const availableUsers = await this.projectRepository.fetchProjectUsers(tenantId, projectId, branchId);
+        if (!availableUsers) {
+            throw new CustomError("Users not found", 404);
+        }
+        return availableUsers;
     }
 
     async fetchAllPManagerProjects(tenantId: string, branchId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, search: string | null, page: number, limit: number): Promise<{ data: (IProjects & Document)[], totalCount: number }> {

@@ -1,4 +1,4 @@
-import SubscriptionDetails from '@/components/SubscriptionDetails'
+import SubscriptionDetails from "@/components/common/SubscriptionDetails"
 
 
 function page() {

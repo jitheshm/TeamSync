@@ -1,4 +1,4 @@
-import ProjectForm from '@/components/TenantUserPanel/Forms/ProjectForm'
+import ProjectForm from '@/components/common/Forms/ProjectForm'
 import React from 'react'
 
 function page({ params }: { params: { projectId: string } }) {

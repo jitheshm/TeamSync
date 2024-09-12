@@ -1,35 +1,38 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { checkSchema } from "express-validator";
-import otpVerifyController from "../../controllers/v1/otpVerifyController";
 import otpValidator from "../../validators/otpValidator";
-import loginController from "../../controllers/v1/loginController";
 import loginValidator from "../../validators/loginValidator";
 import forgetValidator from "../../validators/forgetValidator";
-import forgetPasswordController from "../../controllers/v1/forgetPasswordController";
 import resetPasswordValidator from "../../validators/resetPasswordValidator";
-import resetPasswordController from "../../controllers/v1/resetPasswordController";
 import otpAuth from "../../middlewares/otpAuth";
-import userAuth from "../../middlewares/userAuth";
-import tokenVerifyController from "../../controllers/v1/tokenVerifyController";
-import firebaseLoginController from "../../controllers/v1/firebaseLoginController";
 import tenantLoginValidator from "../../validators/tenantLoginValidator";
-import tenantLoginController from "../../controllers/v1/tenantLoginController";
-import resendOtpController from "../../controllers/v1/resendOtpController";
 import resendValidator from "../../validators/resendValidator";
-import newTokenController from "../../controllers/v1/newTokenController";
+import { container } from "../../config/inversify/inversify";
+import IUserController from "../../controllers/v1/interfaces/IUserController";
+import formValidation from "../../middlewares/formValidation";
 
 
 
 const router = Router();
 
-router.post('/verify-otp', checkSchema(otpValidator()), otpVerifyController)
-router.post('/login', checkSchema(loginValidator()), loginController)
-router.post('/token/new', newTokenController);
-router.post('/forget-password', checkSchema(forgetValidator()), forgetPasswordController)
-router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), resetPasswordController)
-router.get('/token/verify', userAuth, tokenVerifyController)
-router.post('/login/firebase', firebaseLoginController)
-router.post('/tenant/login', checkSchema(tenantLoginValidator()), tenantLoginController)
-router.post('/resend-otp', checkSchema(resendValidator()), resendOtpController)
+const userController = container.get<IUserController>("IUserController");
+
+
+router.post('/verify-otp', checkSchema(otpValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.verifyOtp(req, res, next))
+router.post('/login', checkSchema(loginValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.login(req, res, next))
+router.post('/token/new',
+    (req: Request, res: Response, next: NextFunction) => userController.newToken(req, res, next))
+router.post('/forget-password', checkSchema(forgetValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.forgetPassword(req, res, next))
+router.post('/reset-password', otpAuth, checkSchema(resetPasswordValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.resetPassword(req, res, next))
+router.post('/login/firebase',
+    (req: Request, res: Response, next: NextFunction) => userController.firebaseLogin(req, res, next))
+router.post('/tenant/login', checkSchema(tenantLoginValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.tenantLogin(req, res, next))
+router.post('/resend-otp', checkSchema(resendValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => userController.resendOtp(req, res, next))
 
 export default router 

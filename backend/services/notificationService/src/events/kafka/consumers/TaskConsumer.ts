@@ -1,19 +1,24 @@
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
+import { inject, injectable } from "inversify";
 import IConsumer from "../../../interfaces/IConsumer";
 import { IKafkaConnection } from "../../../interfaces/IKafkaConnection";
-import TenantUserRepository from "../../../repository/implementations/TenantUserRepository";
-import { ITenantUserRepository } from "../../../repository/interfaces/ITenantUserRepository";
-import TaskService from "../../../services/implementations/TaskService";
 import { ITaskService } from "../../../services/interfaces/ITaskService";
 
-const kafkaConnection:IKafkaConnection = new KafkaConnection();
-const tenantUserRepository:ITenantUserRepository = new TenantUserRepository();
-const taskService:ITaskService = new TaskService(tenantUserRepository);
 
+@injectable()
 export default class TaskConsumer implements IConsumer {
+    private kafkaConnection: IKafkaConnection
+    private taskService: ITaskService
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ITaskService") taskService: ITaskService
+    ) {
+        this.kafkaConnection = kafkaConnection
+        this.taskService = taskService
+    }
     async consume() {
         try {
-            const consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_task_group`);
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenant_task_group`);
             await consumer.subscribe({ topic: "task-events", fromBeginning: true });
 
             await consumer.run({
@@ -26,7 +31,7 @@ export default class TaskConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin !== process.env.SERVICE) {
-                            await taskService.handleCreateTaskEvent(dataObj);
+                            await this.taskService.handleCreateTaskEvent(dataObj);
                         }
                     }
                 },

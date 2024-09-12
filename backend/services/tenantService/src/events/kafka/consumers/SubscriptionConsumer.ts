@@ -1,21 +1,31 @@
 
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
+import { inject, injectable } from "inversify";
 import IConsumer from "../../../interfaces/IConsumer";
-import SubscriptionRepository from "../../../repository/implementations/SubscriptionRepository";
+import { ISubscriptionService } from "../../../services/interfaces/ISubscriptionService";
+import { IKafkaConnection } from "teamsync-common";
 
 
-
+@injectable()
 export default class SubscriptionConsumer implements IConsumer {
+
+    private subscriptionService: ISubscriptionService
+    private kafkaConnection: IKafkaConnection
+
+    constructor(
+        @inject("ISubscriptionService") subscriptionService: ISubscriptionService,
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection
+    ) {
+        this.subscriptionService = subscriptionService
+        this.kafkaConnection = kafkaConnection
+    }
 
     async consume() {
         try {
-            let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_sub_group`)
+            let consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_sub_group`)
             await consumer.subscribe({ topic: 'sub-events', fromBeginning: true })
             await consumer.run({
                 eachMessage: async ({ topic, partition, message }) => {
                     console.log("iam new sub consumer");
-                    let subscriptionRepository = new SubscriptionRepository()
                     let data = message.value?.toString()
                     console.log(data);
                     console.log("iam new sub consumer");
@@ -26,15 +36,8 @@ export default class SubscriptionConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
+                            this.subscriptionService.handleKafkaEvent(dataObj)
 
-                                    await subscriptionRepository.create(dataObj.data)
-                                    break;
-                                case 'update':
-                                    await subscriptionRepository.update(dataObj.data)
-                                    break;
-                            }
                         }
 
                     }

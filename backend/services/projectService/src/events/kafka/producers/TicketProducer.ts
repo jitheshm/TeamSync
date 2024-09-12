@@ -1,8 +1,8 @@
 import { Producer } from "kafkajs";
-import IProducer from "../../../interfaces/IProducer";
 import { ITenantUsers } from "../../../entities/TenantUserEntity";
 import { ITickets } from "../../../entities/TicketEntity";
 import mongoose from "mongoose";
+import { IProducer } from "teamsync-common";
 
 
 export default class TicketProducer implements IProducer<{ newTicket: ITickets, developer_id: mongoose.Types.ObjectId }> {

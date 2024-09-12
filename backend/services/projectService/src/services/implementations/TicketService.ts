@@ -3,10 +3,12 @@ import IDecodedUser from "../../interfaces/IDecodeUser";
 import { ITicketRepository } from "../../repository/interfaces/ITicketRepository";
 import { ITickets } from "../../entities/TicketEntity";
 import { ITicketService } from "../interfaces/ITicketService";
-import { IKafkaConnection } from "../../interfaces/IKafkaConnection";
 import TicketProducer from "../../events/kafka/producers/TicketProducer";
 import { ITaskRepository } from "../../repository/interfaces/ITaskRepository";
+import { inject, injectable } from "inversify";
+import { IKafkaConnection } from "teamsync-common";
 
+@injectable()
 export default class TicketService implements ITicketService {
 
     private ticketRepostitory: ITicketRepository;
@@ -14,7 +16,11 @@ export default class TicketService implements ITicketService {
     private taskRepository?: ITaskRepository
 
 
-    constructor(ticketRepository: ITicketRepository,kafkaConnection?:IKafkaConnection, taskRepository?: ITaskRepository) {
+    constructor(
+        @inject("ITicketRepository") ticketRepository: ITicketRepository,
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ITaskRepository") taskRepository: ITaskRepository
+    ) {
         this.ticketRepostitory = ticketRepository;
         this.kafkaConnection = kafkaConnection;
         this.taskRepository = taskRepository;
@@ -26,15 +32,15 @@ export default class TicketService implements ITicketService {
         body.project_id = new mongoose.Types.ObjectId(projectId);
         body.task_id = new mongoose.Types.ObjectId(taskId);
 
-        const newTicket= await this.ticketRepostitory.create(body as ITickets, user.decode?.tenantId);
-        const task=await this.taskRepository?.fetchSpecificTaskById(user.decode?.tenantId, newTicket.task_id);      
-                                                   
+        const newTicket = await this.ticketRepostitory.create(body as ITickets, user.decode?.tenantId);
+        const task = await this.taskRepository?.fetchSpecificTaskById(user.decode?.tenantId, newTicket.task_id);
+
         const producer = await this.kafkaConnection?.getProducerInstance();
         const tenantTicketProducer = new TicketProducer(producer!, user.decode?.tenantId, 'tickets');
-        tenantTicketProducer.sendMessage('create', {newTicket,developer_id:task!.developer_id});
+        tenantTicketProducer.sendMessage('create', { newTicket, developer_id: task!.developer_id });
         return newTicket
     }
-    async updateTicket(ticketId: string, bodyObj: Partial<ITickets >, tenantId: string): Promise<ITickets | null> {
+    async updateTicket(ticketId: string, bodyObj: Partial<ITickets>, tenantId: string): Promise<ITickets | null> {
         try {
             const resultObj = await this.ticketRepostitory.update(bodyObj, tenantId, new mongoose.Types.ObjectId(ticketId));
             return resultObj;

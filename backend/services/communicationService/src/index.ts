@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express, { Application, Request, Response, NextFunction } from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -8,6 +9,7 @@ import connect from './config/db/connect';
 import { connectConsumers } from './events/consumerStart';
 import socketHandler from './socketHandler/socketHandler';
 import router from './routes/router';
+import errorHandler from './middlewares/errorHandler';
 
 dotenv.config();
 
@@ -23,6 +25,7 @@ connect().then(() => {
 });
 
 app.use('/', router)
+app.use(errorHandler);
 
 
 const server = http.createServer(app);

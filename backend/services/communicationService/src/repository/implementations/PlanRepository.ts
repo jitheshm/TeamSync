@@ -3,9 +3,11 @@ import mongoose, { ObjectId } from "mongoose";
 import IPlan from "../../entities/PlanEntity";
 import switchDb from "../../utils/switchDb";
 import { IPlanRepository } from "../interfaces/IPlanRepository";
+import { injectable } from "inversify";
 
 
 
+@injectable()
 
 export default class PlanRepository implements IPlanRepository {
 

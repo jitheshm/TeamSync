@@ -1,21 +1,20 @@
 
-import IConsumer from "../../interfaces/IConsumer"
-import BranchConsumer from "./consumers/BranchConsumer"
-import SubscriptionConsumer from "./consumers/SubscriptionConsumer"
-import TenantConsumer from "./consumers/TenantConsumer"
-import TenantUserConsumer from "./consumers/TenantUserConsumer"
-import UserConsumer from "./consumers/UserConsumer"
+import { IConsumer } from "teamsync-common"
+import { container } from "../../config/inversify/inversify"
 
 export const connectConsumers = () => {
-    let userConsumer: UserConsumer = new UserConsumer()
-    let tenantConsumer: TenantConsumer = new TenantConsumer()
-    let branchConsumer: IConsumer = new BranchConsumer()
-    let tenantUserConsumer: IConsumer = new TenantUserConsumer()
-    let subscriptionConsumer: IConsumer = new SubscriptionConsumer
+    const branchConsumer = container.get<IConsumer>("IBranchConsumer");
+    const subscriptionConsumer = container.get<IConsumer>("ISubscriptionConsumer");
+    const tenantConsumer = container.get<IConsumer>("ITenantConsumer");
+    const tenantUserConsumer = container.get<IConsumer>("ITenantUserConsumer");
+    const userConsumer = container.get<IConsumer>("IUserConsumer");
+
+
+
     subscriptionConsumer.consume()
     userConsumer.consume()
     tenantConsumer.consume()
     branchConsumer.consume()
     tenantUserConsumer.consume()
-    
+
 } 

@@ -1,5 +1,4 @@
 "use client"
-import { verifyToken } from "@/api/authService/auth"
 
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -40,23 +39,7 @@ export default function DashboardLayout({
             }
             setLoading(false)
         } else {
-            // const token = Cookies.get('team-sync-user-token')
-            // if (token) {
-            //     verifyToken(token).then((res) => {
-            //         console.log(res);
-            //         dispatch(verify({ name: res.user }))
-            //         setLoading(false)
-
-            //     }).catch((error) => {
-            //         console.log(error);
-            //         router.push('/login')
-
-
-
-            //     })
-            // } else {
-            //     router.push('/login')
-            // }
+           
             dispatch(logout())
             router.push('/login')
         }

@@ -2,11 +2,15 @@ import mongoose from "mongoose";
 import { ITenantUserRepository } from "../../repository/interfaces/ITenantUserRepository";
 import { sendMail } from "../../utils/projectMailService";
 import { IProjectService } from "../interfaces/IProjectService";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class ProjectService implements IProjectService {
     private tenantUserRepository: ITenantUserRepository;
 
-    constructor(tenantUserRepository: ITenantUserRepository) {
+    constructor(
+        @inject("ITenantUserRepository") tenantUserRepository: ITenantUserRepository
+    ) {
         this.tenantUserRepository = tenantUserRepository;
     }
 

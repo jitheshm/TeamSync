@@ -1,10 +1,14 @@
 import { IUserService } from "../interfaces/IUserService";
 import { IUserRepository } from "../../repository/interfaces/IUserRepository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class UserService implements IUserService {
     private userRepository: IUserRepository;
 
-    constructor(userRepository: IUserRepository) {
+    constructor(
+        @inject("IUserRepository") userRepository: IUserRepository
+    ) {
         this.userRepository = userRepository;
     }
 

@@ -2,11 +2,15 @@ import mongoose from "mongoose";
 import { ITenantUserRepository } from "../../repository/interfaces/ITenantUserRepository";
 import { ITicketService } from "../interfaces/ITicketService";
 import { sendBugTicketMail } from "../../utils/TicketMailService";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export default class TicketService implements ITicketService {
     private tenantUserRepository: ITenantUserRepository;
 
-    constructor(tenantUserRepository: ITenantUserRepository) {
+    constructor(
+        @inject("ITenantUserRepository") tenantUserRepository: ITenantUserRepository
+    ) {
         this.tenantUserRepository = tenantUserRepository;
     }
 

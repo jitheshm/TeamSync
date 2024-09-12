@@ -1,9 +1,16 @@
 "use client"
 import React, { useState } from 'react';
 import Header from '../Headers/Header';
-import Sidebar from '../Sidebars/TenantAdminSidebar';
 import { useSelector } from 'react-redux';
 import { ThemeState } from '@/features/theme/themeSlice';
+import { RxDashboard } from 'react-icons/rx';
+import Appbar from '../common/Appbar';
+import { ScrollArea } from '../ui/scroll-area';
+import MobileNavbar from '../common/MobileNavbar';
+import { PiBuildings } from "react-icons/pi";
+import { LuUsers } from 'react-icons/lu';
+import { SiCashapp } from "react-icons/si";
+import Sidebar from '../common/Sidebar';
 
 interface TenantAdminLayoutProps {
     children: React.ReactNode;
@@ -14,34 +21,50 @@ interface RootState {
 }
 
 const TenantAdminLayout: React.FC<TenantAdminLayoutProps> = ({ children }) => {
-
-
-
-    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
-    const { background, text, main } = useSelector((state: RootState) => state.theme)
-
+    const icons = [
+        {
+            icon: RxDashboard,
+            name: 'Dashboard',
+            link: '/dashboard'
+        },
+        {
+            icon: PiBuildings,
+            name: 'Branch',
+            link: '/dashboard/branches'
+        },
+        {
+            icon: LuUsers,
+            name: 'User',
+            link: '/dashboard/users'
+        },
+        {
+            icon: SiCashapp,
+            name: 'Subscription',
+            link: '/dashboard/subscription-details'
+        }
+    ]
 
     return (
-        <div className="flex h-screen ">
-            {/* Overlay */}
-            {sidebarOpen && (
-                <div
-                    className={`fixed inset-0 z-20 transition-opacity ${background} opacity-50 lg:hidden`}
-                    onClick={() => setSidebarOpen(false)}
-                ></div>
-            )}
-
-            <Sidebar sidebarOpen={sidebarOpen} />
-
-            <div className="flex flex-col flex-1 overflow-hidden">
-                <Header setSidebarOpen={setSidebarOpen} />
-                <div className={`h-screen ${main} overflow-auto flex justify-center`}>
-
-                    {children}
+        <>
+            <div className="md:flex hidden ">
+                <Sidebar icons={icons} />
+                <div className="w-full">
+                    <Appbar icons={icons} />
+                    <ScrollArea className="h-[calc(100vh-3.5rem)] ">
+                        {/* body goes here */}
+                        {children}
+                    </ScrollArea>
                 </div>
             </div>
-        </div>
+            <div className="md:hidden">
+                <MobileNavbar icons={icons} />
+                <ScrollArea className="h-[calc(100vh-3.5rem)] ">
+                    {/* body goes here */}
+                    {children}
+                </ScrollArea>
+
+            </div>
+        </>
     );
 };
-
 export default TenantAdminLayout;

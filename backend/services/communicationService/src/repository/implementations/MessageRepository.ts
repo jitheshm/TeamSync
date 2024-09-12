@@ -3,13 +3,14 @@ import mongoose, { ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import IMessage from "../../entities/MessageEntity";
 import { IMessageRepository } from "../interfaces/IMessageRepository";
+import { injectable } from "inversify";
 
 
 
 
 
 
-
+@injectable()
 export default class MessageRepository implements IMessageRepository {
 
     async create(dbId: string, data: IMessage) {

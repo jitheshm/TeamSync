@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Cookies from 'js-cookie';
-import { verifyToken } from '@/api/authService/auth';
 import { verify } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
 import Loading from '../Loading/Loading';
@@ -34,22 +33,7 @@ function Auth({ children }: AuthProps) {
         if (verified) {
             setLoading(false)
         } else {
-            // const token = Cookies.get('team-sync-user-token')
-            // if (token) {
-            //     verifyToken(token).then((data) => {
-            //         dispatch(verify({ name: data.user }))
-            //         setLoading(false)
-
-            //     }).catch((error) => {
-            //         console.log(error);
-            //         router.push('/login')
-
-
-
-            //     })
-            // } else {
-            //     router.push('/login')
-            // }
+            
             router.push('/login')
         }
     }, [verified])

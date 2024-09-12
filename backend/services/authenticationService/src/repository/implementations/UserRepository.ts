@@ -1,9 +1,11 @@
 import { Document } from "mongoose";
 import { IUsers } from "../../entities/UserEntity";
-import CustomError from "../../utils/CustomError";
 import switchDb from "../../utils/switchDb";
 import { IUserRepository } from "../interface/IUserRepository";
+import { injectable } from "inversify";
+import { CustomError } from "teamsync-common";
 
+@injectable()
 export default class UserRepository implements IUserRepository {
 
     async create(user: Partial<IUsers>): Promise<IUsers & Document> {
@@ -92,7 +94,7 @@ export default class UserRepository implements IUserRepository {
                     }
                 }
             ]).exec()
-            
+
             return userdata[0]
 
         } catch (error) {
@@ -106,8 +108,9 @@ export default class UserRepository implements IUserRepository {
 
     async updateUser(data: Partial<IUsers & Document>): Promise<IUsers & Document | null> {
         try {
-            const userModel = switchDb(`${process.env.SERVICE}_main`, 'users')
-            return await userModel.findOneAndUpdate({ email: data.email }, data, { new: true })
+            const userModel = switchDb<IUsers>(`${process.env.SERVICE}_main`, 'users')
+            const res = await userModel.findOneAndUpdate({ email: data.email }, data, { new: true })
+            return res
         } catch (error) {
             console.log('Error in UserRepository updateUser method');
 

@@ -1,14 +1,18 @@
-// src/services/implementations/UserService.ts
+
 
 import { IUserService } from "../interfaces/IUserService";
 import { IUserRepository } from "../../repository/interfaces/IUserRepository";
 import { IUsers } from "../../entities/UserEntity";
 import { Document } from "mongoose";
+import { inject, injectable } from "inversify";
 
+@injectable()
 export class UserService implements IUserService {
     private userRepository: IUserRepository;
 
-    constructor(userRepository: IUserRepository) {
+    constructor(
+        @inject("IUserRepository") userRepository: IUserRepository
+    ) {
         this.userRepository = userRepository;
     }
 

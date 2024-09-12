@@ -1,22 +1,18 @@
 
 
+import { container } from "../../config/inversify/inversify"
 import IConsumer from "../../interfaces/IConsumer"
-import BranchConsumer from "./consumers/BranchConsumer"
-import MeetingConsumer from "./consumers/MeeetingConsumer"
-import OtpConsumer from "./consumers/OtpConsumer"
-import ProjectConsumer from "./consumers/ProjectConsumer"
-import TaskConsumer from "./consumers/TaskConsumer"
-import TenantUserConsumer from "./consumers/TenantUserConsumer"
-import TicketConsumer from "./consumers/TicketConsumer"
 
 export const connectConsumers = () => {
-    let otpConsumer: OtpConsumer = new OtpConsumer()
-    let branchConsumer: IConsumer = new BranchConsumer()
-    let tenantUserConsumer: IConsumer = new TenantUserConsumer()
-    let projectConsumer: IConsumer = new ProjectConsumer()
-    let meetingConsumer: IConsumer = new MeetingConsumer()
-    let ticketConsumer: IConsumer = new TicketConsumer()
-    let taskConsumer: IConsumer = new TaskConsumer()
+    const branchConsumer=container.get<IConsumer>("IBranchConsumer")
+    const meetingConsumer=container.get<IConsumer>("IMeetingConsumer")
+    const otpConsumer=container.get<IConsumer>("IOtpConsumer")
+    const projectConsumer=container.get<IConsumer>("IProjectConsumer")
+    const taskConsumer=container.get<IConsumer>("ITaskConsumer")
+    const tenantUserConsumer=container.get<IConsumer>("ITenantUserConsumer")
+    const ticketConsumer=container.get<IConsumer>("ITicketConsumer")
+
+
 
     otpConsumer.consume()
     branchConsumer.consume()

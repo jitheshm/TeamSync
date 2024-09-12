@@ -1,6 +1,6 @@
 "use client"
 import { fetchSubscription } from '@/api/subscriptionService/subscription';
-import Empty from '@/components/Empty/Empty';
+import Empty from '@/components/common/Empty';
 import { logout } from '@/features/admin/adminSlice';
 import { ThemeState } from '@/features/theme/themeSlice';
 import { IUserDetails } from '@/interfaces/User';

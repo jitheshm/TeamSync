@@ -4,5 +4,5 @@ export default interface IChats{
     name?: string;
     group_id?: string;
     type: string;
-    members: mongoose.Schema.Types.ObjectId[];
+    members: mongoose.Types.ObjectId[];
 }

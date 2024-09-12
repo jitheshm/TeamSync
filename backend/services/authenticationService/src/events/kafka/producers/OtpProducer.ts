@@ -1,6 +1,6 @@
 import { Producer } from "kafkajs";
 import { IOtp } from "../../../entities/OtpEntity";
-import IProducer from "../../../interfaces/IProducer";
+import { IProducer } from "teamsync-common";
 
 export default class OtpProducer implements IProducer<IOtp> {
     private producer: Producer;

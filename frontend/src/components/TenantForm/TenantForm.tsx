@@ -109,7 +109,7 @@ const TenantForm: React.FC<{ planId: string }> = ({ planId }) => {
                 console.log(data);
                 // router.push('/');
                 const response = await subscription(data.tenantId, planId)
-                setClientSecret(response.latest_invoice.payment_intent.client_secret)
+                setClientSecret(response.subscription.latest_invoice.payment_intent.client_secret)
                 setPaymentForm(true)
 
             } catch (error: any) {

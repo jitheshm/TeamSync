@@ -4,39 +4,41 @@ import { ITenantUserRepository } from "../../repository/interfaces/ITenantUserRe
 import { ITenantService } from "../interfaces/ITenantService";
 import IDecodedUser from "../../interfaces/IDecodeUser";
 import { ITenantUsers } from "../../entities/TenantUserEntity";
+import { CustomError, UnauthorizedError } from "teamsync-common";
+import { inject, injectable } from "inversify";
 
 
 
-interface TenantUserServiceProps {
-    tenantUserRepository: ITenantUserRepository;
-    tenantService?: ITenantService;
-
-}
+@injectable()
 export default class TenantUserService implements ITenantUserService {
     private tenantUserRepository: ITenantUserRepository;
     private tenantService?: ITenantService;
 
-    constructor({ tenantUserRepository, tenantService }: TenantUserServiceProps) {
+    constructor(
+        @inject("ITenantUserRepository") tenantUserRepository: ITenantUserRepository,
+        @inject("ITenantService") tenantService: ITenantService
+
+    ) {
         this.tenantUserRepository = tenantUserRepository;
         this.tenantService = tenantService;
     }
 
     async getAvailableTenantUsers(user: IDecodedUser, role: string | undefined): Promise<(ITenantUsers & Document)[]> {
         if (!user.decode?.tenantId) {
-            throw new Error("Tenant ID not found");
+            throw new CustomError("Tenant Id not found", 400)
         }
 
         const tenant = await this.tenantService?.getTenantById(user.decode.tenantId);
         if (!tenant) {
-            throw new Error("Tenant not found");
+            throw new CustomError("Tenant not found", 404);
         }
 
         if (user.decode.role !== 'Tenant_Admin' && user.decode.role !== 'Manager') {
-            throw new Error("Unauthorized");
+            throw new UnauthorizedError()
         }
 
         if (user.decode.role === 'Manager' && (role === 'Manager' || !role)) {
-            throw new Error("Unauthorized");
+            throw new UnauthorizedError()
         }
 
         return await this.tenantUserRepository.fetchAvailableTenantUsers(

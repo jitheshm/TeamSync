@@ -1,4 +1,4 @@
-
+import 'reflect-metadata';
 import express, { Application } from 'express';
 import dotenv from 'dotenv';
 import logger from 'morgan';
@@ -7,6 +7,8 @@ import router from './routes/router';
 import connect from './config/db/connect';
 import { connectConsumers } from './events/kafka/consumerStart';
 import fileUpload from 'express-fileupload';
+import { errorHandler } from 'teamsync-common';
+
 //For env File 
 dotenv.config();
 
@@ -19,9 +21,10 @@ app.use(fileUpload());
 connect().then(() => {
   connectConsumers()
 
-}) //connect to db
+}) //connect to db 
 
 app.use('/', router)
+app.use(errorHandler)
 
 
 

@@ -1,40 +1,39 @@
 
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import IConsumer from "../../../interfaces/IConsumer";
-import SubscriptionRepository from "../../../repository/implementations/SubscriptionRepository";
-
-
-
+import { inject, injectable } from "inversify";
+import { IConsumer, IKafkaConnection } from "teamsync-common";
+import ISubscriptionService from "../../../services/interfaces/ISubscriptionService";
+@injectable()
 export default class SubscriptionConsumer implements IConsumer {
+    private kafkaConnection: IKafkaConnection
+    private subscriptionService: ISubscriptionService
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ISubscriptionService") subscriptionService: ISubscriptionService,
+        
+    ) {
+        this.kafkaConnection = kafkaConnection
+        this.subscriptionService = subscriptionService
+    }
 
     async consume() {
         try {
-            let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_sub_group`)
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_sub_group`)
             await consumer.subscribe({ topic: 'sub-events', fromBeginning: true })
             await consumer.run({
-                eachMessage: async ({ topic, partition, message }) => {
+                eachMessage: async ({ message }) => {
                     console.log("iam new sub consumer");
-                    let subscriptionRepository = new SubscriptionRepository()
-                    let data = message.value?.toString()
+                    const data = message.value?.toString()
                     console.log(data);
                     console.log("iam new sub consumer");
 
                     if (data) {
-                        let dataObj = JSON.parse(data)
+                        const dataObj = JSON.parse(data)
                         console.log(data)
                         const origin = message.headers?.origin?.toString();
 
                         if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
-
-                                    await subscriptionRepository.create(dataObj.data)
-                                    break;
-                                case 'update':
-                                    await subscriptionRepository.update(dataObj.data)
-                                    break;
-                            }
+                            this.subscriptionService.handleSubscriptionEvents(dataObj)
                         }
 
                     }

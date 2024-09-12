@@ -1,38 +1,41 @@
 
-import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import IConsumer from "../../../interfaces/IConsumer";
-import TenantRepository from "../../../repository/implementations/TenantRepository";
+import { inject, injectable } from "inversify";
+import { IConsumer, IKafkaConnection } from "teamsync-common";
+import ITenantService from "../../../services/interfaces/ITenantService";
 
 
-
+@injectable()
 export default class TenantConsumer implements IConsumer {
+
+    private kafkaConnection: IKafkaConnection
+    private tenantService: ITenantService
+
+    constructor(
+        @inject("IKafkaConnection") kafkaConnection: IKafkaConnection,
+        @inject("ITenantService") tenantService: ITenantService
+    ) {
+        this.kafkaConnection = kafkaConnection
+        this.tenantService = tenantService
+    }
 
     async consume() {
         try {
-            let kafkaConnection = new KafkaConnection()
-            let consumer = await kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenants_group`)
+            const consumer = await this.kafkaConnection.getConsumerInstance(`${process.env.SERVICE}_tenants_group`)
             await consumer.subscribe({ topic: 'tenants-events', fromBeginning: true })
             await consumer.run({
-                eachMessage: async ({ topic, partition, message }) => {
+                eachMessage: async ({ message }) => {
                     console.log("iam new tenant consumer");
-                    let tenantRepository = new TenantRepository()
-                    let data = message.value?.toString()
+                    const data = message.value?.toString()
                     console.log(data);
                     console.log("iam new tenant consumer>>>>>>>>>>>>>>>");
 
                     if (data) {
-                        let dataObj = JSON.parse(data)
+                        const dataObj = JSON.parse(data)
                         console.log(data)
                         const origin = message.headers?.origin?.toString();
 
                         if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
-
-                                    await tenantRepository.create(dataObj.data)
-                                    break;
-                                
-                            }
+                            this.tenantService.handleTenantEvents(dataObj)
                         }
 
                     }

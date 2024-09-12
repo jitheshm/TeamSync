@@ -1,8 +1,9 @@
+import { injectable } from "inversify";
 import { IOtp } from "../../entities/OtpEntity";
 import switchDb from "../../utils/switchDb";
 import { IOtpRepository } from "../interface/IOtpRepository";
 
-
+@injectable()
 export default class OtpRepository implements IOtpRepository {
 
     async create(otpObj: IOtp, email: string) {

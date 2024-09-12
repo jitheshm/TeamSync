@@ -3,12 +3,13 @@ import mongoose, { ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import IChats from "../../entities/ChatEntity";
 import { IChatRepository } from "../interfaces/IChatRepository";
+import { injectable } from "inversify";
 
 
 
 
 
-
+@injectable()
 export default class ChatRepository implements IChatRepository {
 
     async create(dbId: string, data: IChats) {

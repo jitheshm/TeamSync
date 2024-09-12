@@ -1,16 +1,21 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { checkSchema } from "express-validator";
 import adminLoginValidator from "../../validators/adminLoginValidator";
-import adminLoginController from "../../controllers/v1/adminLoginController";
-import adminAuth from "../../middlewares/adminAuth";
-import admintokenVerifyController from "../../controllers/v1/admintokenVerifyController";
-import adminNewTokenController from "../../controllers/v1/adminNewTokenController";
+import IAdminController from "../../controllers/v1/interfaces/IAdminController";
+import { container } from "../../config/inversify/inversify";
+import formValidation from "../../middlewares/formValidation";
 
 
 const router = Router()
-router.post('/login', checkSchema(adminLoginValidator()), adminLoginController)
-router.get('/token/verify', adminAuth, admintokenVerifyController)
-router.post('/token/new', adminNewTokenController);
+
+const adminController = container.get<IAdminController>("IAdminController");
+
+
+router.post('/login', checkSchema(adminLoginValidator()), formValidation,
+    (req: Request, res: Response, next: NextFunction) => adminController.login(req, res, next))
+
+router.post('/token/new', 
+    (req:Request,res:Response,next:NextFunction)=>adminController.newToken(req,res,next));
 
 
 

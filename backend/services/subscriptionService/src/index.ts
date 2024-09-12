@@ -1,4 +1,4 @@
-
+import 'reflect-metadata';
 import express, { Application } from 'express';
 import dotenv from 'dotenv';
 import logger from 'morgan';
@@ -7,6 +7,7 @@ import cors from 'cors'
 import connect from './config/db/connect';
 import router from './routes/router';
 import { connectConsumers } from './events/kafka/consumerStart';
+import { errorHandler } from 'teamsync-common';
 // import { connectConsumers } from './events/kafka/consumerStart';
 //For env File 
 dotenv.config();
@@ -23,6 +24,7 @@ connectConsumers()
 }) //connect to db
   
 app.use('/', router)
+app.use(errorHandler)
  
 
 

@@ -1,12 +1,16 @@
 import { Document } from "mongoose";
 import { ISubscriptionService } from "../interfaces/ISubscriptionService";
 import { ISubscriptionRepository } from "../../repository/interfaces/ISubscriptionRepository";
+import { inject, injectable } from "inversify";
 
+@injectable()
 
 export default class SubscriptionService implements ISubscriptionService {
     private subscriptionRepository: ISubscriptionRepository;
 
-    constructor(subscriptionRepository: ISubscriptionRepository) {
+    constructor(
+        @inject("ISubscriptionRepository") subscriptionRepository: ISubscriptionRepository
+    ) {
         this.subscriptionRepository = subscriptionRepository;
     }
 

@@ -1,11 +1,20 @@
 
+import { IConsumer } from "teamsync-common";
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
-import IConsumer from "../../../interfaces/IConsumer";
 import SubscriptionRepository from "../../../repository/implementations/SubscriptionRepository";
+import { ISubscriptionService } from "../../../services/interfaces/ISubscriptionService";
+import { inject, injectable } from "inversify";
 
 
-
+@injectable()
 export default class SubscriptionConsumer implements IConsumer {
+    private subscriptionService: ISubscriptionService
+
+    constructor(
+        @inject("ISubscriptionService") subscriptionService: ISubscriptionService
+    ) {
+        this.subscriptionService = subscriptionService
+    }
 
     async consume() {
         try {
@@ -26,15 +35,8 @@ export default class SubscriptionConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
 
-                                    await subscriptionRepository.create(dataObj.data)
-                                    break;
-                                case 'update':
-                                    await subscriptionRepository.update(dataObj.data)
-                                    break;
-                            }
+                            this.subscriptionService.handleKafkaEvent(dataObj.eventType, dataObj.data)
                         }
 
                     }

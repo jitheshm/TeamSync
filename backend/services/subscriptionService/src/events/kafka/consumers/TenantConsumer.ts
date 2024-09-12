@@ -1,11 +1,19 @@
 
+import { inject, injectable } from "inversify";
 import { KafkaConnection } from "../../../config/kafka/KafkaConnection";
 import IConsumer from "../../../interfaces/IConsumer";
 import TenantRepository from "../../../repository/implementations/TenantRepository";
+import { ITenantService } from "../../../services/interfaces/ITenantService";
 
 
-
+@injectable()
 export default class TenantConsumer implements IConsumer {
+    private tenantService: ITenantService
+    constructor(
+        @inject("ITenantService") tenantService: ITenantService
+    ) {
+        this.tenantService = tenantService
+    }
 
     async consume() {
         try {
@@ -26,13 +34,8 @@ export default class TenantConsumer implements IConsumer {
                         const origin = message.headers?.origin?.toString();
 
                         if (origin != process.env.SERVICE) {
-                            switch (dataObj.eventType) {
-                                case 'create':
+                            this.tenantService.handleKafkaEvent(dataObj.eventType, dataObj.data)
 
-                                    await tenantRepository.create(dataObj.data)
-                                    break;
-                                
-                            }
                         }
 
                     }

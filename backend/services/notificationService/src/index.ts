@@ -1,4 +1,4 @@
-
+import 'reflect-metadata';
 import express, { Application } from 'express';
 import dotenv from 'dotenv';
 import logger from 'morgan';

@@ -1,30 +1,28 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import Login from '@/components/AdminPanel/Login'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 import { verify } from '@/features/admin/adminSlice'
-import { verifyAdminToken } from '@/api/authService/auth'
 import Loading from '@/components/Loading/Loading'
+
+interface AdminState {
+    verified: boolean
+}
+
+interface RootState {
+    admin: AdminState
+}
+
 function Page() {
     const [loading, setLoading] = useState(true)
     const dispatch = useDispatch()
     const router = useRouter()
+    const { verified } = useSelector((state: RootState) => state.admin)
     useEffect(() => {
-        const token = Cookies.get('team-sync-token')
-        if (token) {
-            verifyAdminToken(token).then(() => {
-                dispatch(verify())
-                router.push('/admin/dashboard')
-
-            }).catch((error: any) => {
-                console.log(error);
-
-                setLoading(false)
-                Cookies.remove('team-sync-token')
-
-            })
+        if (verified) {
+            router.push('/admin/dashboard')
         } else {
             setLoading(false)
         }
@@ -33,7 +31,7 @@ function Page() {
     return (
         <>
             {
-                loading ? <Loading background='bg-dark'/> :
+                loading ? <Loading background='bg-dark' /> :
                     <Login />
             }
         </>

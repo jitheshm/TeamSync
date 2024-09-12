@@ -4,11 +4,12 @@ import mongoose, { Mongoose, ObjectId } from "mongoose";
 import switchDb from "../../utils/switchDb";
 import ISubscriptions from "../../entities/SubscriptionEntity";
 import { ISubscriptionRepository } from "../interfaces/ISubscriptionRepository";
+import { injectable } from "inversify";
 
 
 
 
-
+@injectable()
 export default class SubscriptionRepository implements ISubscriptionRepository {
 
     async create(data: ISubscriptions) {
