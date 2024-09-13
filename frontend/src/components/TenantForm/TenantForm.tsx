@@ -142,35 +142,35 @@ const TenantForm: React.FC<{ planId: string }> = ({ planId }) => {
                             <div className="sm:col-span-3">
                                 <label htmlFor="company_name" className="block text-sm font-medium leading-6 text-gray-900">Company name</label>
                                 <div className="mt-2">
-                                    <input type="text" name="company_name" id="company_name" autoComplete="given-name" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.company_name} onChange={handleChange} />
+                                    <input type="text" name="company_name" id="company_name" autoComplete="given-name" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm bg-white ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.company_name} onChange={handleChange} />
                                     {errors.company_name && <span className="text-red-600 text-sm">{errors.company_name._errors[0]}</span>}
                                 </div>
                             </div>
                             <div className="sm:col-span-3">
                                 <label htmlFor="company_type" className="block text-sm font-medium leading-6 text-gray-900">Company type</label>
                                 <div className="mt-2">
-                                    <input type="text" name="company_type" id="company_type" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.company_type} onChange={handleChange} />
+                                    <input type="text" name="company_type" id="company_type" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.company_type} onChange={handleChange} />
                                     {errors.company_type && <span className="text-red-600 text-sm">{errors.company_type._errors[0]}</span>}
                                 </div>
                             </div>
                             <div className="sm:col-span-3">
                                 <label htmlFor="domain" className="block text-sm font-medium leading-6 text-gray-900">Company domain</label>
                                 <div className="mt-2">
-                                    <input type="text" name="domain" id="domain" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.domain || ''} onChange={handleChange} />
+                                    <input type="text" name="domain" id="domain" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.domain || ''} onChange={handleChange} />
                                     {errors.domain && <span className="text-red-600 text-sm">{errors.domain._errors[0]}</span>}
                                 </div>
                             </div>
                             <div className="sm:col-span-3">
                                 <label htmlFor="phone_no" className="block text-sm font-medium leading-6 text-gray-900">Phone Number</label>
                                 <div className="mt-2">
-                                    <input type="text" name="phone_no" id="phone_no" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.phone_no} onChange={handleChange} />
+                                    <input type="text" name="phone_no" id="phone_no" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.phone_no} onChange={handleChange} />
                                     {errors.phone_no && <span className="text-red-600 text-sm">{errors.phone_no._errors[0]}</span>}
                                 </div>
                             </div>
                             <div className="sm:col-span-2">
                                 <label htmlFor="address.country" className="block text-sm font-medium leading-6 text-gray-900">Country</label>
                                 <div className="mt-2">
-                                    <select id="address.country" name="address.country" autoComplete="country-name" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6" value={formData.address.country} onChange={handleChange}>
+                                    <select id="address.country" name="address.country" autoComplete="country-name" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6" value={formData.address.country} onChange={handleChange}>
                                         <option value={'United States'}>United States</option>
                                         <option value={'India'}>India</option>
                                     </select>
@@ -180,35 +180,35 @@ const TenantForm: React.FC<{ planId: string }> = ({ planId }) => {
                             <div className="sm:col-span-2">
                                 <label htmlFor="address.street" className="block text-sm font-medium leading-6 text-gray-900">Street</label>
                                 <div className="mt-2">
-                                    <input type="text" name="address.street" id="address.street" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.street} onChange={handleChange} />
+                                    <input type="text" name="address.street" id="address.street" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.street} onChange={handleChange} />
                                     {errors.address?.street && <span className="text-red-600 text-sm">{errors.address.street._errors[0]}</span>}
                                 </div>
                             </div>
                             <div className="sm:col-span-2">
                                 <label htmlFor="address.building_no" className="block text-sm font-medium leading-6 text-gray-900">Building Number</label>
                                 <div className="mt-2">
-                                    <input type="text" name="address.building_no" id="address.building_no" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.building_no} onChange={handleChange} />
+                                    <input type="text" name="address.building_no" id="address.building_no" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.building_no} onChange={handleChange} />
                                     {errors.address?.building_no && <span className="text-red-600 text-sm">{errors.address.building_no._errors[0]}</span>}
                                 </div>
                             </div>
                             <div className="sm:col-span-2">
                                 <label htmlFor="address.city" className="block text-sm font-medium leading-6 text-gray-900">City</label>
                                 <div className="mt-2">
-                                    <input type="text" name="address.city" id="address.city" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.city} onChange={handleChange} />
+                                    <input type="text" name="address.city" id="address.city" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.city} onChange={handleChange} />
                                     {errors.address?.city && <span className="text-red-600 text-sm">{errors.address.city._errors[0]}</span>}
                                 </div>
                             </div>
                             <div className="sm:col-span-2">
                                 <label htmlFor="address.state" className="block text-sm font-medium leading-6 text-gray-900">State / Province</label>
                                 <div className="mt-2">
-                                    <input type="text" name="address.state" id="address.state" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.state} onChange={handleChange} />
+                                    <input type="text" name="address.state" id="address.state" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.state} onChange={handleChange} />
                                     {errors.address?.state && <span className="text-red-600 text-sm">{errors.address.state._errors[0]}</span>}
                                 </div>
                             </div>
                             <div className="sm:col-span-2">
                                 <label htmlFor="address.postal_code" className="block text-sm font-medium leading-6 text-gray-900">ZIP / Postal code</label>
                                 <div className="mt-2">
-                                    <input type="text" name="address.postal_code" id="address.postal_code" autoComplete="postal-code" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.postal_code} onChange={handleChange} />
+                                    <input type="text" name="address.postal_code" id="address.postal_code" autoComplete="postal-code" className="bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" value={formData.address.postal_code} onChange={handleChange} />
                                     {errors.address?.postal_code && <span className="text-red-600 text-sm">{errors.address.postal_code._errors[0]}</span>}
                                 </div>
                             </div>
