@@ -8,9 +8,11 @@ import Appbar from '../common/Appbar';
 import { ScrollArea } from '../ui/scroll-area';
 import MobileNavbar from '../common/MobileNavbar';
 import { PiBuildings } from "react-icons/pi";
-import { LuUsers } from 'react-icons/lu';
+import { LuCrown, LuUsers } from 'react-icons/lu';
 import { SiCashapp } from "react-icons/si";
 import Sidebar from '../common/Sidebar';
+import { MdAccountBalance } from "react-icons/md";
+import { BsCash } from "react-icons/bs";
 
 interface TenantAdminLayoutProps {
     children: React.ReactNode;
@@ -38,9 +40,19 @@ const TenantAdminLayout: React.FC<TenantAdminLayoutProps> = ({ children }) => {
             link: '/dashboard/users'
         },
         {
-            icon: SiCashapp,
+            icon: LuCrown,
             name: 'Subscription',
             link: '/dashboard/subscription-details'
+        },
+        {
+            icon: MdAccountBalance,
+            name: 'Tenant',
+            link: '/dashboard/tenant'
+        },
+        {
+            icon: BsCash,
+            name: 'Transactions',
+            link: '/dashboard/transaction'
         }
     ]
 

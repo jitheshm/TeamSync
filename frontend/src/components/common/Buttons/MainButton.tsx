@@ -1,9 +1,20 @@
 import React from 'react'
 import { Button } from "@/components/ui/button"
 
-function MainButton({name}:{name:string}) {
+interface MainButtonProps {
+  name: string;
+  onClick?: () => void;
+  className?: string
+}
+
+function MainButton({ name, onClick, className }: MainButtonProps) {
   return (
-    <Button className='bg-primary text-white'>{name}</Button>
+    <Button
+      className={`bg-primary text-white ${className}`}
+      onClick={onClick ? onClick : undefined}
+    >
+      {name}
+    </Button>
   )
 }
 

@@ -8,8 +8,9 @@ import { ISubscriptionDetails, ITenants, ITransaction } from '@/interfaces/subsc
 import Swal from 'sweetalert2'
 import { errorModal } from '@/utils/alerts/errorAlert'
 import Payment from '../Stripe/Payment'
-import Details from './Details'
 import TransactionTable from './TransactionTable'
+import MainButton from './Buttons/MainButton'
+import { SelectComponent } from './Buttons/Select'
 
 
 interface IPlans {
@@ -22,7 +23,6 @@ interface IPlans {
 function SubscriptionDetails() {
 
     const [data, setData] = useState<ISubscriptionDetails | null>(null)
-    const [transaction, setTransaction] = useState<ITransaction[]>([])
     const [error, setError] = useState<string | null>(null)
     const [plans, setPlans] = useState<IPlans[]>([])
     const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
@@ -38,7 +38,6 @@ function SubscriptionDetails() {
             console.log(res);
 
             setData(res.data)
-            setTransaction(res.data.transactions)
             setSelectedPlan(res.data.plan_id)
         }).catch((err) => {
             if (err.response.status === 401) {
@@ -87,9 +86,9 @@ function SubscriptionDetails() {
 
     }
 
-    const handlePlanChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handlePlanChange = (value: string) => {
 
-        setSelectedPlan(event.target.value);
+        setSelectedPlan(value);
 
     }
 
@@ -148,78 +147,161 @@ function SubscriptionDetails() {
             }
         })
     }
-    if (data) {
 
-        var { transactions, tenant, plan, ...subDetails } = data
-        subDetails.plan_id = plan.name
-
-    }
 
     return (
         <>
-            <div className='mt-10 text-end mr-20'>
-                {data && data.status !== 'cancelled' && data.status != 'pending' && data.status != 'failed' && (
-                    <>
-                        <button
-                            onClick={handleCancelSubscription}
+            <div className='p-4 lg:p-0'>
 
-                            className='mt-5 px-5 py-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600 disabled:bg-red-300'
-                        >
-                            Cancel Subscription
-                        </button>
-                        <select
-                            value={selectedPlan ?? ''}
-                            onChange={handlePlanChange}
-                            className='ml-5 px-4 py-2 border rounded text-gray-950'
-                            disabled={plans[plans.length - 1]?.stripe_plan_id === data.plan_id || data.status === 'canceled'}
-                        >
-                            {plans.map(plan => (
-                                <option key={plan.stripe_plan_id} value={plan.stripe_plan_id}>{plan.name}</option>
-                            ))}
-                        </select>
-                        <button
-                            onClick={handleUpdatePlan}
-                            disabled={plans[plans.length - 1]?.stripe_plan_id === data.plan_id || data.status === 'canceled'}
 
-                            className='ml-2 px-5 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 disabled:bg-blue-300'
-                        >
-                            Update Plan
-                        </button>
-                    </>
-                )}
                 {
-                    data && (data.status === 'pending' || data.status === 'failed') && (
-                        <>
-                            <button
-                                onClick={handlePaymentRetry}
+                    data &&
+                    <>
+                        <div className="md:px-16 mt-10">
+                            {/* <p>Company Details</p>
+                        <Details data={data?.tenant as ITenants} /> */}
+                            <div className='text-center'>
+                                <p className='font-semibold'>Subscription Details</p>
+                            </div>
 
-                                className='mt-5 px-5 py-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600 disabled:bg-red-300'
-                            >
-                                Retry Payment
-                            </button>
-                        </>
-                    )
+                            <div className="mt-3 mb-8 md:border border-border p-5 rounded-lg w-full">
+                                <div className=" flex flex-wrap justify-between md:gap-0 gap-5">
+                                    <div className="w-full md:w-6/12 lg:w-4/12 flex flex-col gap-5">
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Subscription Id</p>
+                                            <p>{data.subscription_id}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Plan Name</p>
+                                            <p>{data.plan.name}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Invoice Id</p>
+                                            <p>{data.stripe_latest_invoice}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Renewal Date</p>
+                                            <p>{new Date(data.renewal_date).toLocaleDateString()}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Status</p>
+                                            <p>{data.status}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="w-full md:w-6/12 lg:w-4/12 flex flex-col gap-5">
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Payment Method</p>
+                                            <p>{data.payment_method}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Bill Cycle</p>
+                                            <p>{data.plan.bill_cycle}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Price</p>
+                                            <p>{data.plan.price}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Currency</p>
+                                            <p>{data.plan.currency}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Start Date</p>
+                                            <p>{new Date(data.start_date).toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+
+
+                                    <div className="w-full md:w-6/12 lg:w-4/12 flex flex-col gap-5">
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Max Branches</p>
+                                            <p>{data.plan.features.branches}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Meeting Limit</p>
+                                            <p>{data.plan.features.meetings}</p>
+                                        </div>
+                                        <div>
+                                            <p className="dark:text-gray-400 text-gray-500">Support</p>
+                                            <p>{data.plan.features.support}</p>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            {
+                                clientSecret && (
+                                    <Payment clientSecret={clientSecret} theme={"night"} />
+                                )
+                            }
+                        </div>
+                    </>
                 }
-                {error && <p className='text-red-500'>{error}</p>}
-            </div>
 
-            {
-                data &&
-                <>
-                    <div className="md:px-16">
-                        <p>Company Details</p>
-                        <Details data={data?.tenant as ITenants} />
-                        <p>Subscription Details</p>
-                        <Details data={subDetails!} />
-                        <TransactionTable transactions={transaction} />
-                        {
-                            clientSecret && (
-                                <Payment clientSecret={clientSecret} theme={"night"} />
-                            )
-                        }
-                    </div>
-                </>
-            }
+                <div className='md:px-16 mt-10 text-end  flex gap-10 flex-wrap-reverse '>
+                    {data && data.status !== 'cancelled' && data.status != 'pending' && data.status != 'failed' && (
+                        <>
+                            <MainButton
+                                onClick={handleCancelSubscription}
+                                name='Cancel Subscription'
+                                className='bg-red-700 hover:bg-red-600 text-white'
+
+                            />
+                            {
+                                (plans[plans.length - 1]?.stripe_plan_id != data.plan_id || data.status != 'canceled') &&
+                                <div className='flex gap-5 flex-wrap'>
+                                    <SelectComponent
+                                        placeholder=''
+                                        active={selectedPlan!}
+                                        options={plans.map((plan) => ({ name: plan.name, value: plan.stripe_plan_id }))}
+                                        handleValueChange={handlePlanChange}
+                                    />
+
+
+                                    <MainButton
+                                        onClick={handleUpdatePlan}
+                                        // disabled={}
+                                        className={`${data.plan_id != selectedPlan ? '' : 'invisible'}`}
+                                        name='Update Plan'
+                                    />
+
+                                </div>
+                            }
+
+                        </>
+                    )}
+                    {
+                        data && (data.status === 'pending' || data.status === 'failed') && (
+                            <>
+                                <button
+                                    onClick={handlePaymentRetry}
+
+                                    className='mt-5 px-5 py-2 bg-red-500 text-white rounded cursor-pointer hover:bg-red-600 disabled:bg-red-300'
+                                >
+                                    Retry Payment
+                                </button>
+                            </>
+                        )
+                    }
+                    {error && <p className='text-red-500'>{error}</p>}
+                </div>
+            </div>
         </>
     )
 }

@@ -1,8 +1,29 @@
+"use client"
+import { fetchSubscriptionForUser } from '@/api/subscriptionService/subscription';
+import { logout } from '@/features/user/userSlice';
 import { ITransaction } from '@/interfaces/subscription';
 import { Pagination, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
-import React from 'react'
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux';
 
-function TransactionTable({ transactions }: { transactions: ITransaction[] }) {
+function TransactionTable() {
+    const [transactions, setTransactions] = useState<ITransaction[]>([])
+    const dispatch = useDispatch()
+    const router = useRouter()
+
+    useEffect(() => {
+        fetchSubscriptionForUser().then((res) => {
+            console.log(res);
+
+            setTransactions(res.data.transactions)
+        }).catch((err) => {
+            if (err.response.status === 401) {
+                dispatch(logout());
+                router.push('/login');
+            }
+        });
+    }, [])
     return (
         <>
             <div className='p-5'>
