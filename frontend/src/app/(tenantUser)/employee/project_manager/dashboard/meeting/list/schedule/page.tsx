@@ -1,4 +1,4 @@
-import MeetingTable from '@/components/TenantUserPanel/Tables/MeetingTable'
+import MeetingTable from '@/components/common/MeetingTable'
 import React from 'react'
 
 function page() {

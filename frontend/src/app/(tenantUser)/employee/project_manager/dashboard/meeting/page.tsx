@@ -1,8 +1,8 @@
 "use client"
-import MeetingForm from '@/components/Meeting/MeetingForm'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { nanoid } from 'nanoid'
+import MeetingLanding from '@/components/common/MeetingLanding'
 
 function Page() {
 
@@ -24,7 +24,7 @@ function Page() {
         router.push(`/employee/project_manager/dashboard/meeting/schedule`)
     }
     return (
-        <MeetingForm handleListMeetings={handleListMeetings} handleJoinRoom={handleJoinRoom} onRoomChange={onRoomChange} handleScheduleMeeting={handleScheduleMeeting} />
+        <MeetingLanding handleListMeetings={handleListMeetings} handleJoinRoom={handleJoinRoom} onRoomChange={onRoomChange} handleScheduleMeeting={handleScheduleMeeting} />
     )
 }
 

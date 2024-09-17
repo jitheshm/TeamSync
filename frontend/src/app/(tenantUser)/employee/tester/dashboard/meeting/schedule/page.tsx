@@ -1,9 +1,9 @@
-import ScheduleMeetingForm from '@/components/Meeting/Schedule'
+import ScheduleMeetingForm from '@/components/common/Forms/ScheduleMeetingForm'
 import React from 'react'
 
 function page() {
     return (
-        <ScheduleMeetingForm Homeurl='/employee/tester/dashboard/meeting'/>
+        <ScheduleMeetingForm Homeurl='/employee/tester/dashboard/meeting' />
     )
 }
 
