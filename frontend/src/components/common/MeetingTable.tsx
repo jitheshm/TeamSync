@@ -72,58 +72,66 @@ const MeetingTable = () => {
     return (
         <>
             <div className='p-5'>
-                <div className='my-5 flex justify-between items-center'>
-                    <p>
-                        All Meetings
-                    </p>
-                    <div>
-                        <Input placeholder='Search Meeting' onChange={(e) => setSearch(e.target.value)} value={search} />
+                <div className='my-5 flex flex-wrap gap-5 justify-between items-center'>
+                    <div className='w-full text-center md:text-start'>
+
+                        <p>
+                            All Meetings
+                        </p>
+                    </div>
+                    <div className='flex flex-wrap justify-center gap-5 items-center w-full '>
+
+                        <div>
+                            <Input placeholder='Search Meeting' onChange={(e) => setSearch(e.target.value)} value={search} />
+                        </div>
                     </div>
 
                 </div>
-                <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
-                    <TableHeader>
-                        <TableColumn >No</TableColumn>
-                        <TableColumn >Title</TableColumn>
-                        <TableColumn >Date</TableColumn>
-                        <TableColumn >Time</TableColumn>
-                        <TableColumn align="center">Link</TableColumn>
-                    </TableHeader>
-                    {
-                        !loading && meetings.length > 0 ? (
-                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
-                                {meetings.map((meeting, index) => {
+                <div className='w-[90vw] mx-2 overflow-x-scroll md:w-full md:overflow-hidden'>
+                    <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
+                        <TableHeader>
+                            <TableColumn >No</TableColumn>
+                            <TableColumn >Title</TableColumn>
+                            <TableColumn >Date</TableColumn>
+                            <TableColumn >Time</TableColumn>
+                            <TableColumn align="center">Link</TableColumn>
+                        </TableHeader>
+                        {
+                            !loading && meetings.length > 0 ? (
+                                <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
+                                    {meetings.map((meeting, index) => {
 
-                                    return (
-                                        <TableRow key={index}>
-                                            <TableCell>
-                                                {page*10-10+index + 1}
-                                            </TableCell>
-                                            <TableCell >
-                                                {meeting.meetingTitle}
-                                            </TableCell>
-                                            <TableCell >
-                                                {new Date(meeting.meetingDate).toLocaleDateString()}
-                                            </TableCell>
-                                            <TableCell >
-                                                {meeting.meetingTime}
-                                            </TableCell>
+                                        return (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    {page * 10 - 10 + index + 1}
+                                                </TableCell>
+                                                <TableCell >
+                                                    {meeting.meetingTitle}
+                                                </TableCell>
+                                                <TableCell >
+                                                    {new Date(meeting.meetingDate).toLocaleDateString()}
+                                                </TableCell>
+                                                <TableCell >
+                                                    {meeting.meetingTime}
+                                                </TableCell>
 
-                                            <TableCell >
-                                                <div className="relative flex items-center justify-center gap-2">
-                                                    <Link href={`${url}/${meeting.meetingLink}`}>
-                                                        <MainButton name='Join here' />
-                                                    </Link>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        ) :
-                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
-                    }
-                </Table>
+                                                <TableCell >
+                                                    <div className="relative flex items-center justify-center gap-2">
+                                                        <Link href={`${url}/${meeting.meetingLink}`}>
+                                                            <MainButton name='Join here' />
+                                                        </Link>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            ) :
+                                <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
+                        }
+                    </Table>
+                </div>
                 {
                     !loading && total > 0 && <div className='flex justify-center mt-2 h-1/6'>
 

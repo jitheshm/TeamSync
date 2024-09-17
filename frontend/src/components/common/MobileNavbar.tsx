@@ -46,7 +46,7 @@ function MobileNavbar({ icons }: { icons: Icon[] }) {
              
                 <div
                     ref={menuRef}
-                    className={`fixed top-0 left-0 h-screen z-10 w-9/12 bg-secondarysurface rounded-tr-3xl shadow-xl transform transition-transform duration-300 ${menuOption ? 'translate-x-0' : '-translate-x-full'
+                    className={`fixed top-0 left-0 h-screen z-50 w-9/12 bg-secondarysurface rounded-tr-3xl shadow-xl transform transition-transform duration-300 ${menuOption ? 'translate-x-0' : '-translate-x-full'
                         }`}
                 >
                     <div className='flex gap-7 m-8'>

@@ -42,20 +42,20 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string; role: str
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            setDebouncedSearch(search);  
+            setDebouncedSearch(search);
         }, 500);
 
         return () => {
-            clearTimeout(handler); 
+            clearTimeout(handler);
         };
     }, [search]);
 
-    
+
     useEffect(() => {
         setPage(1);
     }, [debouncedSearch]);
 
-    
+
     useEffect(() => {
         setLoading(true);
         fetchAllTaskTickets(projectId, taskId, debouncedSearch, page, limit).then((result: any) => {
@@ -114,96 +114,105 @@ const TicketTable = ({ projectId, role, taskId }: { projectId: string; role: str
     return (
         <>
             <div className='px-5'>
-                <div className='my-5 flex justify-between items-center'>
-                    <p>Ticket List</p>
-                    <div>
-                        <Input placeholder='Search Users' onChange={(e) => setSearch(e.target.value)} value={search} />
+                <div className='my-5 flex flex-wrap gap-5 justify-between items-center'>
+                    <div className='w-full text-center md:text-start'>
+
+                        <p>Ticket List</p>
                     </div>
-                    <div>
-                        {role === 'Project_Manager' && (
-                            <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${taskId}/tickets/create`} className='w-full text-end md:w-auto'>
-                                <MainButton name='Create New Ticket' />
-                            </Link>)
-                        }
+                    <div className='flex flex-wrap justify-center gap-5 items-center w-full '>
+
+                        <div>
+                            <Input placeholder='Search Users' onChange={(e) => setSearch(e.target.value)} value={search} />
+                        </div>
+                        <div>
+                            {role === 'Project_Manager' && (
+                                <Link href={`/employee/project_manager/dashboard/projects/${projectId}/tasks/${taskId}/tickets/create`} className='w-full text-end md:w-auto'>
+                                    <MainButton name='Create New Ticket' />
+                                </Link>)
+                            }
+                        </div>
                     </div>
                 </div>
-                <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
-                    <TableHeader>
-                        <TableColumn>Title</TableColumn>
-                        <TableColumn>Created At</TableColumn>
-                        <TableColumn>Status</TableColumn>
-                        <TableColumn align="center">Actions</TableColumn>
-                    </TableHeader>
-                    {
-                        !loading && tickets.length > 0 ? (
-                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
-                                {tickets.map((ticket, index) => {
-                                    const initial = ticket.title.charAt(0).toUpperCase();
-                                    const { bgColor, textFont } = getColorForLetter(initial);
-                                    return (
-                                        <TableRow key={index}>
-                                            <TableCell>
-                                                <User
-                                                    avatarProps={{
-                                                        radius: "lg",
-                                                        style: {
-                                                            fontSize: "20px",
-                                                            backgroundColor: bgColor,
-                                                            color: textFont,
-                                                            fontWeight: 'bold'
-                                                        },
-                                                        name: initial
-                                                    }}
-                                                    name={ticket.title}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-col">
-                                                    <p className="text-bold text-sm capitalize">{new Date(ticket.created_at).toLocaleDateString()}</p>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <SelectComponent
-                                                    placeholder='Select a status'
-                                                    active={ticket?.status as string}
-                                                    options={options}
-                                                    handleValueChange={(value) => handleStatusChange(ticket?._id!, value)}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="relative flex items-center justify-center gap-2">
-                                                    <Tooltip content="Details">
-                                                        <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                                                            <MoreButton>
-                                                                {
-                                                                    role === 'Tester' ? <>
-                                                                        <Link href={`/employee/tester/dashboard/projects/${ticket.projects._id}/tasks/${ticket.tasks._id}/tickets/${ticket._id}`}>
-                                                                            <DropdownMenuItem>View Details</DropdownMenuItem>
-                                                                        </Link>
-                                                                        <Link href={`/employee/tester/dashboard/projects/${ticket.projects._id}/tasks/${ticket.tasks._id}/tickets/${ticket._id}/edit`}>
-                                                                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                                        </Link>
-                                                                        <DropdownMenuItem onClick={() => handleDelete(ticket._id)}>
-                                                                            Delete
-                                                                        </DropdownMenuItem>
-                                                                    </> :
-                                                                        <Link href={`/employee/developer/dashboard/projects/${ticket.projects._id}/tasks/${ticket.tasks._id}/tickets/${ticket._id}`}>
-                                                                            <DropdownMenuItem>View Details</DropdownMenuItem>
-                                                                        </Link>
-                                                                }
-                                                            </MoreButton>
-                                                        </span>
-                                                    </Tooltip>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        ) :
-                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
-                    }
-                </Table>
+                <div className='w-[90vw] mx-2 overflow-x-scroll md:w-full md:overflow-hidden'>
+
+                    <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
+                        <TableHeader>
+                            <TableColumn>Title</TableColumn>
+                            <TableColumn>Created At</TableColumn>
+                            <TableColumn>Status</TableColumn>
+                            <TableColumn align="center">Actions</TableColumn>
+                        </TableHeader>
+                        {
+                            !loading && tickets.length > 0 ? (
+                                <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
+                                    {tickets.map((ticket, index) => {
+                                        const initial = ticket.title.charAt(0).toUpperCase();
+                                        const { bgColor, textFont } = getColorForLetter(initial);
+                                        return (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    <User
+                                                        avatarProps={{
+                                                            radius: "lg",
+                                                            style: {
+                                                                fontSize: "20px",
+                                                                backgroundColor: bgColor,
+                                                                color: textFont,
+                                                                fontWeight: 'bold'
+                                                            },
+                                                            name: initial
+                                                        }}
+                                                        name={ticket.title}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex flex-col">
+                                                        <p className="text-bold text-sm capitalize">{new Date(ticket.created_at).toLocaleDateString()}</p>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <SelectComponent
+                                                        placeholder='Select a status'
+                                                        active={ticket?.status as string}
+                                                        options={options}
+                                                        handleValueChange={(value) => handleStatusChange(ticket?._id!, value)}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="relative flex items-center justify-center gap-2">
+                                                        <Tooltip content="Details">
+                                                            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                                                                <MoreButton>
+                                                                    {
+                                                                        role === 'Tester' ? <>
+                                                                            <Link href={`/employee/tester/dashboard/projects/${ticket.projects._id}/tasks/${ticket.tasks._id}/tickets/${ticket._id}`}>
+                                                                                <DropdownMenuItem>View Details</DropdownMenuItem>
+                                                                            </Link>
+                                                                            <Link href={`/employee/tester/dashboard/projects/${ticket.projects._id}/tasks/${ticket.tasks._id}/tickets/${ticket._id}/edit`}>
+                                                                                <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                                            </Link>
+                                                                            <DropdownMenuItem onClick={() => handleDelete(ticket._id)}>
+                                                                                Delete
+                                                                            </DropdownMenuItem>
+                                                                        </> :
+                                                                            <Link href={`/employee/developer/dashboard/projects/${ticket.projects._id}/tasks/${ticket.tasks._id}/tickets/${ticket._id}`}>
+                                                                                <DropdownMenuItem>View Details</DropdownMenuItem>
+                                                                            </Link>
+                                                                    }
+                                                                </MoreButton>
+                                                            </span>
+                                                        </Tooltip>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            ) :
+                                <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
+                        }
+                    </Table>
+                </div>
                 {
                     !loading && total > 0 && <div className='flex justify-center mt-2 h-1/6'>
                         <Pagination total={Math.ceil(total / limit)} initialPage={page} color="success" onChange={handlePageChange} />
