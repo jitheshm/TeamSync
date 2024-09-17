@@ -28,60 +28,65 @@ function TransactionTable() {
         <>
             <div className='p-5'>
                 <div className='my-5 flex justify-between items-center'>
-                    <p>
-                        All Transactions
-                    </p>
+                    <div className='w-full text-center md:text-start'>
+                        <p>
+                            All Transactions
+                        </p>
+                    </div>
 
                 </div>
-                <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
-                    <TableHeader>
-                        <TableColumn >Transaction Id</TableColumn>
-                        <TableColumn >Amount</TableColumn>
-                        <TableColumn >Status</TableColumn>
-                        <TableColumn >Date</TableColumn>
-                    </TableHeader>
-                    {
-                        transactions.length > 0 ? (
-                            <TableBody>
-                                {transactions.sort((a, b) => {
-                                    const dateA = new Date(a.date).getTime();
-                                    const dateB = new Date(b.date).getTime();
+                <div className='w-[90vw] mx-2 sm:p-10 overflow-x-scroll md:w-full md:overflow-hidden'>
 
-                                    // Sort in descending order
-                                    return dateB - dateA;
+                    <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
+                        <TableHeader>
+                            <TableColumn >Transaction Id</TableColumn>
+                            <TableColumn >Amount</TableColumn>
+                            <TableColumn >Status</TableColumn>
+                            <TableColumn >Date</TableColumn>
+                        </TableHeader>
+                        {
+                            transactions.length > 0 ? (
+                                <TableBody>
+                                    {transactions.sort((a, b) => {
+                                        const dateA = new Date(a.date).getTime();
+                                        const dateB = new Date(b.date).getTime();
 
-                                }).map((transaction, index) => {
+                                        // Sort in descending order
+                                        return dateB - dateA;
 
-                                    return (
-                                        < TableRow key={index} >
-                                            <TableCell>
-                                                {transaction.transaction_id}
-                                            </TableCell>
-                                            <TableCell >
+                                    }).map((transaction, index) => {
 
-                                                {transaction.amount}
+                                        return (
+                                            < TableRow key={index} >
+                                                <TableCell>
+                                                    {transaction.transaction_id}
+                                                </TableCell>
+                                                <TableCell >
 
-                                            </TableCell>
-                                            <TableCell >
+                                                    {transaction.amount}
 
-                                                {transaction.status}
+                                                </TableCell>
+                                                <TableCell >
 
-                                            </TableCell>
-                                            <TableCell >
+                                                    {transaction.status}
 
-                                                {new Date(transaction.date).toLocaleDateString()}
+                                                </TableCell>
+                                                <TableCell >
 
-                                            </TableCell>
+                                                    {new Date(transaction.date).toLocaleDateString()}
+
+                                                </TableCell>
 
 
-                                        </TableRow >
-                                    );
-                                })}
-                            </TableBody>
-                        ) :
-                            <TableBody emptyContent={"No data found."}>{[]}</TableBody>
-                    }
-                </Table>
+                                            </TableRow >
+                                        );
+                                    })}
+                                </TableBody>
+                            ) :
+                                <TableBody emptyContent={"No data found."}>{[]}</TableBody>
+                        }
+                    </Table>
+                </div>
                 {/* {
                      total > 0 && <div className='flex justify-center mt-2 h-1/6'>
 

@@ -69,72 +69,78 @@ const BranchTable: React.FC = () => {
     };
     return (
         <>
-            <div className='p-5'>
-                <div className='my-5 flex justify-between items-center'>
-                    <p>
-                        All Branches
-                    </p>
-                    <div>
-                        <Input placeholder='Search Users' onChange={handleSearchChange} value={searchTerm} />
+            <div className='w-full'>
+                <div className='my-5 mx-10 flex flex-wrap justify-between gap-5 items-center'>
+                    <div className='w-full text-center md:text-start'>
+                        <p>
+                            All Branches
+                        </p>
                     </div>
+                    <div className='flex flex-wrap justify-center gap-5 items-center w-full '>
+                        <div>
+                            <Input placeholder='Search Users' onChange={handleSearchChange} value={searchTerm} />
+                        </div>
 
-                    <div>
-                        {
-                            <Link href='/dashboard/branches/create' className='w-full text-end md:w-auto'>
-                                <MainButton name='Add Branch' />
-                            </Link>
-                        }
+                        <div>
+                            {
+                                <Link href='/dashboard/branches/create' className='w-full text-end md:w-auto'>
+                                    <MainButton name='Add Branch' />
+                                </Link>
+                            }
+                        </div>
                     </div>
                 </div>
-                <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
-                    <TableHeader>
-                        <TableColumn >ID</TableColumn>
-                        <TableColumn >Location</TableColumn>
-                        <TableColumn align="center">Actions</TableColumn>
-                    </TableHeader>
-                    {
-                        !loading && branches.length > 0 ? (
-                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
-                                {branches.map((branch, index) => {
+                <div className='w-screen mx-2 sm:p-10 overflow-x-scroll md:w-full md:overflow-hidden'>
+                    <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
+                        <TableHeader>
+                            <TableColumn >ID</TableColumn>
+                            <TableColumn >Location</TableColumn>
+                            <TableColumn align="center">Actions</TableColumn>
+                        </TableHeader>
+                        {
+                            !loading && branches.length > 0 ? (
+                                <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
+                                    {branches.map((branch, index) => {
 
-                                    return (
-                                        <TableRow key={index}>
-                                            <TableCell>
-                                                {branch.branch_id}
-                                            </TableCell>
-                                            <TableCell >
+                                        return (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    {branch.branch_id}
+                                                </TableCell>
+                                                <TableCell >
 
-                                                {branch.location}
+                                                    {branch.location}
 
-                                            </TableCell>
+                                                </TableCell>
 
-                                            <TableCell >
-                                                <div className="relative flex items-center justify-center gap-2">
-                                                    <Tooltip content="Details">
-                                                        <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                                                            <MoreButton>
+                                                <TableCell >
+                                                    <div className="relative flex items-center justify-center gap-2">
+                                                        <Tooltip content="Details">
+                                                            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                                                                <MoreButton>
 
-                                                                <Link href={`/dashboard/branches/${branch._id}/edit`}>
-                                                                    <DropdownMenuItem>
-                                                                        Edit
+                                                                    <Link href={`/dashboard/branches/${branch._id}/edit`}>
+                                                                        <DropdownMenuItem>
+                                                                            Edit
+                                                                        </DropdownMenuItem>
+                                                                    </Link>
+                                                                    <DropdownMenuItem onClick={() => handleDelete(branch._id)}>
+                                                                        Delete
                                                                     </DropdownMenuItem>
-                                                                </Link>
-                                                                <DropdownMenuItem onClick={() => handleDelete(branch._id)}>
-                                                                    Delete
-                                                                </DropdownMenuItem>
-                                                            </MoreButton>
-                                                        </span>
-                                                    </Tooltip>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        ) :
-                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
-                    }
-                </Table>
+                                                                </MoreButton>
+                                                            </span>
+                                                        </Tooltip>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            ) :
+                                <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
+                        }
+                    </Table>
+                </div>
                 {
                     !loading && total > 0 && <div className='flex justify-center mt-2 h-1/6'>
 
