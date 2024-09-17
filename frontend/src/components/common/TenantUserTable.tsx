@@ -66,9 +66,9 @@ function TenantUserTable({ admin = false, options }: { admin: boolean, options: 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             setDebouncedSearch(search);
-        }, 500);  
+        }, 500);
 
-        return () => clearTimeout(delayDebounceFn);  
+        return () => clearTimeout(delayDebounceFn);
     }, [search]);
 
     useEffect(() => {
@@ -113,93 +113,99 @@ function TenantUserTable({ admin = false, options }: { admin: boolean, options: 
 
     return (
         <>
-            <div>
-                <div className='my-5 flex justify-between items-center'>
-                    <p>All Users</p>
-                    <div>
-                        <Input placeholder='Search Users' onChange={(e) => setSearch(e.target.value)} value={search} />
+            <div className='w-full'>
+                <div className='my-5 mx-10 flex flex-wrap justify-between gap-5 items-center'>
+                    <div className='w-full text-center md:text-start'>
+                        <p >All Users</p>
                     </div>
-                    <div>
-                        <SelectComponent placeholder='Select a User' active={role} options={options} handleValueChange={handleSelectChange} />
-                    </div>
-                    <div>
-                        <Link href={admin ? '/dashboard/users/register' : '/employee/manager/dashboard/users/register'} className='w-full text-end md:w-auto'>
-                            <MainButton name='Add User' />
-                        </Link>
+                    <div className='flex flex-wrap justify-center gap-5 items-center w-full '>
+                        <div>
+                            <Input placeholder='Search Users' onChange={(e) => setSearch(e.target.value)} value={search} />
+                        </div>
+                        <div>
+                            <SelectComponent placeholder='Select a User' active={role} options={options} handleValueChange={handleSelectChange} />
+                        </div>
+                        <div>
+                            <Link href={admin ? '/dashboard/users/register' : '/employee/manager/dashboard/users/register'} className='w-full text-end md:w-auto'>
+                                <MainButton name='Add User' />
+                            </Link>
+                        </div>
                     </div>
                 </div>
-                <Table removeWrapper aria-label="Example static table with custom cells" className='bg-background md:p-10 rounded-lg md:border md:border-border'>
-                    <TableHeader>
-                        <TableColumn>Name</TableColumn>
-                        <TableColumn>Email</TableColumn>
-                        <TableColumn>Branch</TableColumn>
-                        <TableColumn>Role</TableColumn>
-                        <TableColumn align="center">Actions</TableColumn>
-                    </TableHeader>
-                    {
-                        !loading && users.length > 0 ? (
-                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
-                                {users.map((user, index) => {
-                                    const initial = user.name.charAt(0).toUpperCase();
-                                    const { bgColor, textFont } = getColorForLetter(initial);
+                <div className='w-screen mx-2 overflow-x-scroll md:w-full md:overflow-hidden'>
+                    <Table removeWrapper className='bg-background md:p-10 rounded-lg md:border md:border-border'>
+                        <TableHeader>
+                            <TableColumn>Name</TableColumn>
+                            <TableColumn>Email</TableColumn>
+                            <TableColumn>Branch</TableColumn>
+                            <TableColumn>Role</TableColumn>
+                            <TableColumn align="center">Actions</TableColumn>
+                        </TableHeader>
+                        {
+                            !loading && users.length > 0 ? (
+                                <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />}>
+                                    {users.map((user, index) => {
+                                        const initial = user.name.charAt(0).toUpperCase();
+                                        const { bgColor, textFont } = getColorForLetter(initial);
 
-                                    return (
-                                        <TableRow key={index}>
-                                            <TableCell>
-                                                <User
-                                                    avatarProps={{
-                                                        radius: "lg",
-                                                        style: {
-                                                            fontSize: "20px",
-                                                            backgroundColor: bgColor,
-                                                            color: textFont,
-                                                            fontWeight: 'bold'
-                                                        },
-                                                        name: initial
-                                                    }}
-                                                    name={user.name}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-col">
-                                                    <p className="text-bold text-sm capitalize">{user.email}</p>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-col">
-                                                    <p className="text-bold text-sm capitalize">{user.branch_location}</p>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex flex-col">
-                                                    <p className="text-bold text-sm capitalize">{user.role}</p>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="relative flex items-center justify-center gap-2">
-                                                    <Tooltip content="More">
-                                                        <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                                                            <MoreButton>
-                                                                <Link href={admin ? `/dashboard/users/${user._id}/edit` : `/employee/manager/dashboard/users/${user._id}/edit`}>
-                                                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                                </Link>
-                                                                <DropdownMenuItem onClick={() => handleDelete(user.branch_id, user._id, user.role)}>
-                                                                    Delete
-                                                                </DropdownMenuItem>
-                                                            </MoreButton>
-                                                        </span>
-                                                    </Tooltip>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        ) : (
-                            <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
-                        )
-                    }
-                </Table>
+                                        return (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    <User
+                                                        avatarProps={{
+                                                            radius: "lg",
+                                                            style: {
+                                                                fontSize: "20px",
+                                                                backgroundColor: bgColor,
+                                                                color: textFont,
+                                                                fontWeight: 'bold'
+                                                            },
+                                                            name: initial
+                                                        }}
+                                                        name={user.name}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="">
+                                                        <p className="text-bold text-sm capitalize">{user.email}</p>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="">
+                                                        <p className="text-bold text-sm capitalize">{user.branch_location}</p>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="">
+                                                        <p className="text-bold text-sm capitalize">{user.role}</p>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="relative flex items-center justify-center gap-2">
+                                                        <Tooltip content="More">
+                                                            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                                                                <MoreButton>
+                                                                    <Link href={admin ? `/dashboard/users/${user._id}/edit` : `/employee/manager/dashboard/users/${user._id}/edit`}>
+                                                                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                                    </Link>
+                                                                    <DropdownMenuItem onClick={() => handleDelete(user.branch_id, user._id, user.role)}>
+                                                                        Delete
+                                                                    </DropdownMenuItem>
+                                                                </MoreButton>
+                                                            </span>
+                                                        </Tooltip>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            ) : (
+                                <TableBody isLoading={loading} loadingContent={<Spinner label="Loading..." />} emptyContent={"No data found."}>{[]}</TableBody>
+                            )
+                        }
+                    </Table>
+                </div>
                 {
                     !loading && total > 0 && <div className='flex justify-center mt-2 h-1/6'>
                         <Pagination total={Math.ceil(total / limit)} initialPage={page} color="success" onChange={handlePageChange} />

@@ -20,7 +20,7 @@ function page() {
   ]
   return (
     // <TenantUsersTable admin={false}/>
-    <div className='md:p-10 p-5'>
+    <div className='md:p-10'>
 
       <TenantUserTable admin={false} options={options} />
     </div>
