@@ -24,6 +24,7 @@ export class MeetingController implements IMeetingController {
             dataObj.scheduledBy = new mongoose.Types.ObjectId(req.user?.decode?.id as string)
             dataObj.meetingLink = nanoid()
             await this.meetingService.createMeeting(req.user?.decode?.tenantId as string, req.body);
+            res.status(201).json({ message: "Meeting Scheduled Successfully"});
 
         } catch (error) {
             console.log(error);
