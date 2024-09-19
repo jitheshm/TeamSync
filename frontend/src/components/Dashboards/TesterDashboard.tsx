@@ -89,7 +89,7 @@ function TesterDashboard() {
             id: index,
             value: ele.count,
             label: ele.status,
-            color: ele.status === 'pending' ? 'red' : ele.status === 'resolved' ? 'orange' : 'green'
+            color: ele.status === 'pending' ? 'red' : ele.status !== 'resolved' ? 'orange' : 'green'
         }));
 
 

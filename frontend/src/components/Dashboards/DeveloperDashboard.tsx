@@ -2,12 +2,12 @@
 import { ThemeState } from '@/features/theme/themeSlice';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import TaskCard from '../Cards/TaskCard';
 import { fetchTaskStats, fetchTicketStats } from '@/api/projectService/project';
 import { logout } from '@/features/user/userSlice';
 import { useRouter } from 'next/navigation';
 import PieCharts from '../Charts/PieChart';
 import { PieValueType } from '@mui/x-charts/models';
+import StatsCard from '../common/Cards/StatsCard';
 
 
 interface TaskStats {
@@ -89,28 +89,21 @@ function DeveloperDashboard() {
             id: index,
             value: ele.count,
             label: ele.status,
-            color: ele.status === 'pending' ? 'red' : ele.status === 'resolved' ? 'orange' : 'green'
+            color: ele.status === 'pending' ? 'red' : ele.status !== 'resolved' ? 'orange' : 'green'
         }));
 
     const { background, text, main, dark } = useSelector((state: RootState) => state.theme);
 
     return (
-        <div className='w-full '>
-            <div className={`${background} min-h-64 w-11/12 md:w-8/12 mx-auto mt-10 rounded-md flex items-center justify-around flex-wrap px-20 py-10 gap-10`}>
-
-                <TaskCard count={total} title='Total Task' grd1='from-[#0A325A]' grd2='to-[#1D5BA9]' />
-
-                <TaskCard count={pending} title='Pending Task' grd1='from-[#371B1B]' grd2='to-[#A93333]' />
-                <TaskCard count={progress} title='Progress Task' grd1='from-[#5a2e0a]' grd2='to-[#a95c1d]' />
-                <TaskCard count={testing} title='Testing Task' grd1='from-[#0E341B]' grd2='to-[#32824D]' />
-
-
-
-
+        <div>
+            <div className='min-h-64 w-12/12 md:w-12/12 mx-auto mt-5 rounded-md flex items-center justify-around flex-wrap px-10 md:px-20 py-10 gap-10'>
+                <StatsCard count={total} title='Total Task' className='border border-blue-500 md:w-3/12 lg:w-2/12 w-full sm:w-4/12 ' />
+                <StatsCard count={pending} title='Pending Task' className='border border-red-500 md:w-3/12 lg:w-2/12 w-full sm:w-4/12' />
+                <StatsCard count={progress} title='Progress Task' className='border border-yellow-500 md:w-3/12 lg:w-2/12 w-full sm:w-4/12' />
+                <StatsCard count={testing} title='Testing Task' className='border border-green-500 md:w-3/12 lg:w-2/12 w-full sm:w-4/12' />
             </div>
-
             <div className='mx-auto   text-white md:w-[400px]'>
-                <div className='text-center my-24'>
+                <div className='text-center my-10'>
                     <p className='font-bold text-2xl'>Overall Ticket Stats</p>
                 </div>
                 {
@@ -118,8 +111,6 @@ function DeveloperDashboard() {
                 }
 
             </div>
-
-
         </div>
     )
 }
