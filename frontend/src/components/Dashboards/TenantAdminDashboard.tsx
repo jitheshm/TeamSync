@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import Cards from '../TenantUserPanel/Cards/Cards'
 import Barchart from '../Charts/Barchart'
 import Empty from '../common/Empty'
+import { CarouselComponent } from '../common/Carousel'
 
 function TenantAdminDashboard() {
     const [projects, setProjects] = useState<IProjects[]>([])
@@ -50,28 +51,23 @@ function TenantAdminDashboard() {
 
 
     return (
-        <div className='w-full '>
+        <div className=''> 
             <div className='mt-10' >
                 <p className='font-bold text-2xl text-center'>Recent Projects</p>
             </div>
             {
                 projects.length > 0 ?
-                    <Slider>
-                        {
-
-                            projects.map((project) => (
-                                <Cards data={project} key={project._id} />
-                            ))
-                        }
-                    </Slider>
+                    <div className='mx-auto flex w-fit mt-3'>
+                        <CarouselComponent projects={projects} />
+                    </div>
                     :
-                    <Empty/>
+                    <Empty />
             }
-            <div className='w-5/12 mx-auto mt-24'>
+            <div className='md:w-5/12 mx-auto mt-24'>
                 <p className='font-bold text-2xl text-center'> Projects Count</p>
                 {
-                    
-                    dataValues.length === 0 ? <Empty/> :
+
+                    dataValues.length === 0 ? <Empty /> :
 
                         <Barchart dataValues={dataValues} dataNames={dataNames} />
                 }

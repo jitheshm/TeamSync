@@ -19,7 +19,7 @@ export function CarouselComponent({ projects }: { projects: any }) {
         >
             <CarouselContent>
                 {projects.map((data, index) => (
-                    <CarouselItem key={index} className="w-fit md:basis-1/2  ">
+                    <CarouselItem key={index} className="w-fit md:basis-1/2 pl-0 md:pl-4 ">
                         <div className="p-1  m-auto">
                             <Card className="bg-transparent w-fit m-auto">
                                 <CardContent className=" p-0">

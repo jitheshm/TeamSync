@@ -70,7 +70,7 @@ const Barchart: React.FC<BarchartProps> = ({ dataValues, dataNames }) => {
     return (
         <div>
             <div id="chart">
-                <ReactApexChart options={options} series={series} type="bar" height={350} />
+                <ReactApexChart options={options} series={series} type="bar" height={350} width={350}/>
             </div>
         </div>
     );
