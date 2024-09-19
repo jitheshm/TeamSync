@@ -1,6 +1,6 @@
 import {adminInstance, userInstance as instance} from "@/axios";
 import { RegisterFormData } from "@/components/AdminPanel/Forms/UserForm";
-import { TenantRegisterFormData } from "@/components/Forms/UserForm";
+import { TenantRegisterFormData } from "@/components/common/Forms/AdminPanelUserForm";
 import { SignupFormData } from "@/components/Login/SignUp";
 import Cookies from 'js-cookie'
 

@@ -11,8 +11,8 @@ import { SelectComponent } from './Buttons/Select';
 import { logout } from '@/features/user/userSlice';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { ITask } from '../TenantUserPanel/Tables/TaskTable';
 import { getColorForLetter } from '@/utils/dpColor';
+import { ITask } from '@/interfaces/Task';
 
 const TaskDetails = ({ projectId, taskId, role }: { projectId: string, taskId: string, role: string }) => {
 

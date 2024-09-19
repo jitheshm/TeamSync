@@ -1,7 +1,6 @@
 import {userInstance as instance} from "@/axios"
-import { ProjectFormData } from "@/components/TenantUserPanel/Forms/ProjectForm"
-import { TaskFormData } from "@/components/TenantUserPanel/Forms/TaskForm"
-import { TicketFormData } from "@/components/TenantUserPanel/Forms/TicketForm"
+import { ProjectFormData } from "@/components/common/Forms/ProjectForm"
+import { TaskFormData } from "@/components/common/Forms/TaskForm"
 import Cookies from 'js-cookie'
 import { string } from "zod"
 

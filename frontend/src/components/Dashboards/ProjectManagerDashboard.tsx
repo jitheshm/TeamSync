@@ -1,7 +1,5 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import Slider from '../TenantUserPanel/Slider/Slider'
-import Cards from '../TenantUserPanel/Cards/Cards'
 import { fetchProjectsstats, fetchRecentPMProjects, fetchRecentProjects, fetchTaskStats } from '@/api/projectService/project'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '@/features/user/userSlice'

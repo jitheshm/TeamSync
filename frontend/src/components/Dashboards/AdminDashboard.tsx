@@ -3,11 +3,12 @@ import { ThemeState } from '@/features/theme/themeSlice';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import TaskCard from '../Cards/TaskCard';
+// import TaskCard from '../Cards/TaskCard';
 import { fetchProfit, popularPlan } from '@/api/subscriptionService/subscription';
 import { logout } from '@/features/user/userSlice';
 import { fetchUsersCount } from '@/api/userService/user';
 import DonutChart from '../Charts/DonutChart';
+import StatsCard from '../common/Cards/StatsCard';
 
 interface ProfitResponse {
     data: {
@@ -86,8 +87,8 @@ function AdminDashboard() {
             <div
                 className={`${background} min-h-64 w-11/12 md:w-6/12 mx-auto mt-10 rounded-md flex items-center justify-around flex-wrap px-20 py-10 gap-10`}
             >
-                <TaskCard count={profit} title="Revenue" grd1="from-[#0A325A]" grd2="to-[#1D5BA9]" />
-                <TaskCard count={usersCount} title="Users Count" grd1="from-[#0A325A]" grd2="to-[#1D5BA9]" />
+                <StatsCard count={profit} title="Revenue" />
+                <StatsCard count={usersCount} title="Users Count"  />
             </div>
             <div>
                 <div>

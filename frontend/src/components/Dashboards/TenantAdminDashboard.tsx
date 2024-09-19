@@ -1,12 +1,10 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import Slider from '../TenantUserPanel/Slider/Slider'
 import { IProjects } from '@/interfaces/Project'
 import { fetchBranchProjectCount, fetchTenantRecentProjects } from '@/api/projectService/project'
 import { useDispatch } from 'react-redux'
 import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
-import Cards from '../TenantUserPanel/Cards/Cards'
 import Barchart from '../Charts/Barchart'
 import Empty from '../common/Empty'
 import { CarouselComponent } from '../common/Carousel'

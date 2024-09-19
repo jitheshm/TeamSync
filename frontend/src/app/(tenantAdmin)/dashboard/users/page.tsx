@@ -1,5 +1,3 @@
-import TenantUsersTable from '@/components/Tables/TenantUsersTable'
-import { SelectComponent } from '@/components/common/Buttons/Select'
 import TenantUserTable from '@/components/common/TenantUserTable'
 import React from 'react'
 
