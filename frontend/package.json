@@ -37,6 +37,7 @@
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "embla-carousel-react": "^8.3.0",
     "firebase": "^10.12.2",
     "font-color-contrast": "^11.1.0",
     "framer-motion": "^11.3.30",

@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import { IProjects } from '@/interfaces/Project'
 import PieCharts from '../Charts/PieChart'
 import { PieValueType } from '@mui/x-charts/models'
+import { CarouselComponent } from '../common/Carousel'
 
 interface ProjectStat {
     count: number;
@@ -55,17 +56,31 @@ function TenantManagerDashboard() {
         }));
 
     return (
-        <div className='w-full '>
+        // <div className='w-full '>
+        //     <div className='mt-10' >
+        //         <p className='font-bold text-2xl text-center'>Recent Projects</p>
+        //     </div>
+        //     <Slider>
+        //         {
+        //             projects.map((project) => (
+        //                 <Cards data={project} key={project._id} />
+        //             ))
+        //         }
+        //     </Slider>
+        //     <div className='mx-auto   text-white md:w-[400px]'>
+        //         <div className='text-center my-24'>
+        //             <p className='font-bold text-2xl'>Overall Project Stats</p>
+        //         </div>
+        //         <PieCharts data={data} />
+        //     </div>
+        // </div>
+        <div >
             <div className='mt-10' >
                 <p className='font-bold text-2xl text-center'>Recent Projects</p>
             </div>
-            <Slider>
-                {
-                    projects.map((project) => (
-                        <Cards data={project} key={project._id} />
-                    ))
-                }
-            </Slider>
+            <div className='mx-auto flex w-fit mt-3'>
+                <CarouselComponent projects={projects} />
+            </div>
             <div className='mx-auto   text-white md:w-[400px]'>
                 <div className='text-center my-24'>
                     <p className='font-bold text-2xl'>Overall Project Stats</p>
