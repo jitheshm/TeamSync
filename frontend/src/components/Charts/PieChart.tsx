@@ -1,12 +1,17 @@
 import * as React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { PieValueType } from '@mui/x-charts/models';
+import { useTheme } from 'next-themes';
 
 interface PieChartsProps {
     data: PieValueType[];
 }
 
 function PieCharts({ data }: PieChartsProps) {
+
+    const { theme, setTheme } = useTheme()
+    const labelColor = theme === 'dark' ? 'white' : 'black'; // Set label color based on theme
+
     return (
         <PieChart
             series={[
@@ -14,16 +19,12 @@ function PieCharts({ data }: PieChartsProps) {
                     data,
                 },
             ]}
-           
             height={200}
-            className='text-white mx-auto '
-            
+            className="mx-auto"
             slotProps={{
                 legend: {
-
                     labelStyle: {
-                        fill: 'white',
-                        
+                        fill: labelColor, 
                     },
                 },
             }}
