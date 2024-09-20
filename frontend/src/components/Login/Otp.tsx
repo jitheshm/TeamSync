@@ -143,8 +143,8 @@ const Otp: React.FC<Partial<OtpProps>> = ({ setOtpVisible, setPasswordPage, emai
                     </div>
                     <div>
                         <form onSubmit={handleSubmit}>
-                            <div className="flex flex-col space-y-16">
-                                <div className="flex flex-row items-center justify-between mx-auto w-full max-w-sm gap-3">
+                            <div className="flex flex-col space-y-16 px-12">
+                                <div className="flex flex-row items-center justify-between mx-auto w-full max-w-sm gap-2">
                                     {[1, 2, 3, 4, 5, 6].map((index) => (
                                         <div key={index} className="w-16 h-16">
                                             <input
