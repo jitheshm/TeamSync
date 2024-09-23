@@ -38,7 +38,7 @@ function LandingComponent() {
     return (
         <>
             <ScrollArea onScrollCapture={fn} className="h-[calc(100vh_-_4rem)]">
-                <div className='hidden md:block fixed left-1/2 right-1/2 z-10'>
+                <div className='hidden md:block fixed left-1/2 right-1/2 top-0 z-10'>
                     <FlotingNavbar />
                 </div>
                 <Hero />
