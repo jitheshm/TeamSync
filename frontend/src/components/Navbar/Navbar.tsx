@@ -6,6 +6,7 @@ import { logout, verify } from '@/features/user/userSlice'
 import Link from 'next/link'
 import MobileNav from './MobileNav'
 import { useRouter } from 'next/navigation'
+import { Button } from '../ui/button'
 
 interface UserState {
     name: string
@@ -33,14 +34,14 @@ function Navbar() {
     }
 
     return (
-        <header className="absolute inset-x-0 top-0 z-50 backdrop-blur-md bg-white/30">
+        <header className="  inset-x-0 top-0 z-50 backdrop-blur-md ">
             <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex-1 gap-3">
                     <a href="/" className="-m-1.5 p-1.5">
-                        <span className="sr-only">TeamSync</span>
-                        <img className="h-8 w-auto" src="/logo.png" alt='TeamSync' />
+                        <span className="sr-only text-white">TeamSync</span>
+                        <img className="h-7 w-auto" src="/logo.png" alt='TeamSync' />
                     </a>
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap text-black">TeamSync</span>
+                    <span className="self-center text-xl font-medium whitespace-nowrap text-White">TeamSync</span>
                 </div>
                 <div className="flex lg:hidden">
                     <button type="button" className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700" onClick={() => setMobileNav(true)}>
@@ -50,15 +51,10 @@ function Navbar() {
                         </svg>
                     </button>
                 </div>
-                <div className="hidden lg:flex lg:gap-x-12">
-                    <Link href="/#home" className="text-sm font-semibold leading-6 text-gray-900">Home</Link>
-                    <Link href="/#features" className="text-sm font-semibold leading-6 text-gray-900">Features</Link>
-                    <Link href="/#plans" className="text-sm font-semibold leading-6 text-gray-900">Plans</Link>
-                    <Link href="/#follow" className="text-sm font-semibold leading-6 text-gray-900">Follow Us</Link>
-                </div>
+
                 <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                     {
-                        verified ? tenantId ? <Link href={'/dashboard/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Dashboard</Link> :
+                        verified ? tenantId ? <Link href={'/dashboard/'} ><Button>Dashboard</Button></Link> :
                             <>
                                 <Link href={'/subscription-plans/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Choose a plan</Link>
                                 <button onClick={handleLogout} type="button" className="mx-10 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Logout</button>

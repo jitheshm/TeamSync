@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import { FloatingDock } from "../ui/floating-dock";
 
-export function Navbar() {
+export function FlotingNavbar() {
   const links = [
     {
       title: "Home",

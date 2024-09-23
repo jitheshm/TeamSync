@@ -17,7 +17,7 @@ function Price() {
             <div className='w-fit border border-border mx-auto rounded-3xl py-1 px-5 mt-32 mb-10'>
                 <p>Pricing</p>
             </div>
-            <div className='my-5 flex flex-wrap justify-around md:w-11/12 gap-4 md:gap-0 mx-auto'>
+            <div className='my-5 flex flex-wrap justify-around md:w-11/12 gap-4 lg:gap-0 mx-auto'>
                 {
                     plans.map((plan) => {
                         return (

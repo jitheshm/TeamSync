@@ -10,7 +10,9 @@ import LandingComponent from "@/components/LandingN/LandingComponent";
 
 export default function Home() {
   return (
-    <LandingComponent/>
+    <UserLayout>
+      <LandingComponent />
+    </UserLayout>
     // <UserLayout>
     //   <Hero />
     //   <Main />
