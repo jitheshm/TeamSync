@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Cookies from 'js-cookie'
-
+import { motion } from 'framer-motion'
 
 interface UserState {
   name: string
@@ -22,57 +22,46 @@ function MobileNav({ setMobileNav }: { setMobileNav: React.Dispatch<React.SetSta
   const router = useRouter()
 
   const handleLogout = () => {
-      dispatch(logout())
-      // dispatch(adminLogout())
-      Cookies.remove('team-sync-token')
-      localStorage.removeItem('team-sync-refresh-token');
-      router.push('/login')
+    dispatch(logout())
+    // dispatch(adminLogout())
+    Cookies.remove('team-sync-token')
+    localStorage.removeItem('team-sync-refresh-token');
+    router.push('/login')
 
   }
   return (
-    <div className="lg:hidden" role="dialog" aria-modal="true">
-      {/* Background backdrop, show/hide based on slide-over state. */}
-      <div className="fixed inset-0 z-50" />
-      <div className="fixed top-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-        <div className="flex items-center justify-between">
-          <div className="flex lg:flex-1 gap-3">
-            <a href="/" className="-m-1.5 p-1.5">
-              <span className="sr-only ">TeamSync</span>
-              <img className="h-8 w-auto" src="/logo.png" alt='TeamSync' />
+ 
+<motion.div
+      className="md:hidden fixed z-50 w-full"
+      role="dialog"
+      aria-modal="true"
+      initial={{ opacity: 0, y: -50 }} // Fade in from top
+      animate={{ opacity: 1, y: 0 }}  // Final state (fully visible and in place)
+      exit={{ opacity: 0, y: -50 }}   // Exit state (fade out upwards)
+      transition={{ duration: 0.3 }}  // Animation duration
+    >
+    <div className="md:hidden fixed  z-50 bg-neutral-800 w-11/12 left-1/2 transform -translate-x-1/2 rounded-xl p-6" role="dialog" aria-modal="true">
+      <Link href={'/'}><div className='mb-3'>Home</div></Link>
+      <Link href={'/#product'}><div className='mb-3'>Product</div></Link>
+      <Link href={'/#features'}><div className='mb-3'>Features</div></Link>
+      <Link href={'/#pricing'}><div className='mb-3'>Pricing</div></Link>
+      <Link href={'/#reviews'}><div className='mb-3'>Reviews</div></Link>
+      <Link href={'/#contact'}><div className='mb-3'>Contact us</div></Link>
+      <div className="py-6">
+        {
+          verified ? tenantId ?
 
-            </a>
-            <span className="self-center text-2xl font-semibold whitespace-nowrap text-black">TeamSync</span>
-          </div>
-          <button type="button" className="-m-2.5 rounded-md p-2.5 text-gray-700" onClick={() => setMobileNav(false)}>
-            <span className="sr-only">Close menu</span>
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        <div className="mt-6 flow-root">
-          <div className="-my-6 divide-y divide-gray-500/10">
-            <div className="space-y-2 py-6">
-              <a href="/#home" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Home</a>
-              <a href="/#features" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Features</a>
-              <a href="/#plans" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Plans</a>
-              <a href="/#follow" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Follow Us</a>
-            </div>
-            <div className="py-6">
-              {
-                verified ? tenantId ? <Link href={'/dashboard/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Dashboard</Link> :
-                  <>
-                    <Link href={'/subscription-plans/'} className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Choose a plan</Link>
-                    <button onClick={handleLogout} type="button" className="mx-10 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2  dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Logout</button>
-                  </>
-
-                  : <Link href="/login" className="text-sm font-semibold leading-6 text-gray-900">Log in <span aria-hidden="true">→</span></Link>
-              }
-            </div>
-          </div>
-        </div>
+            <Link href={'/dashboard/'} className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold t shadow-sm ">Dashboard</Link>
+            :
+            <>
+              <Link href={'/subscription-plans/'} className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold  shadow-sm ">Choose a plan</Link>
+              <button onClick={handleLogout} type="button" className="text-sm font-semibold leading-6 text-gray-100">Logout</button>
+            </>
+            : <Link href="/login" className="text-sm font-semibold leading-6 text-gray-100">Log in <span aria-hidden="true">→</span></Link>
+        }
       </div>
     </div>
+    </motion.div>
   )
 }
 
