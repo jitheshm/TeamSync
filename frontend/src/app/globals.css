@@ -64,6 +64,7 @@
     --text-color: 0 0% 100%;
     --selection-text: 0 0 0;
     --selection-background: 0 0 100%;
+    
   }
 }
 
@@ -79,3 +80,4 @@
     /* This should be included in the body rule */
   }
 }
+

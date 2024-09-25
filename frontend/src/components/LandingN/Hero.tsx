@@ -22,7 +22,7 @@ function Hero() {
 
             </div>
             <div className=' col-span-12 lg:col-span-6 flex items-center justify-center'>
-                <div className='border border-border rounded-2xl h-4/6 w-11/12 relative ' >
+                <div className='bg-gradient-to-br from-black via-black  to-black border border-border rounded-2xl h-4/6 w-11/12 relative shadow-[0_1px_10px_rgba(255,255,255,0.1),0_3px_15px_rgba(255,255,255,0.05)] transform hover:scale-105 transition-transform duration-300 overflow-hidden' >
                     <div className="absolute inset-0" style={{
                         backgroundImage: `
                        linear-gradient(to right, rgba(75, 85, 99, 0.1) 1px, transparent 1px),
