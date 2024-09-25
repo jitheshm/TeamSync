@@ -4,7 +4,16 @@ import React from 'react'
 
 function PriceCard({ plan }: { plan: IPlan }) {
     return (
-        <div className='lg:w-3/12 w-11/12   border border-border rounded-2xl p-5'>
+        <div className='lg:w-3/12 w-11/12   border border-border rounded-2xl p-5 relative overflow-hidden'>
+                        <svg
+                className="absolute inset-0 -z-10 w-full h-full"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                 preserveAspectRatio="none"
+            >
+                <rect width={100} height={100} x={0} y={0} fill="black" />
+                <polygon points="0,100 100,50 100,100" fill="white" />
+            </svg>
             <div>
                 <p className='text-xl'>
                     {plan.name}

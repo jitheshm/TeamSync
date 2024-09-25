@@ -11,27 +11,31 @@ function Features() {
 
             <FeatureCardBase>
                 <FeatureCard
+                    index={1}
                     title='Simple Dashboard'
                     description='Empower your choices with insights derived from our real-time data streams.'
                     image="/landing/dashboard.png"
                 />
                 <FeatureCard
+                    index={2}
                     title='Project Management'
                     description='Empower your choices with insights derived from our real-time data streams.'
                     image="/landing/project.png"
                 />
                 <FeatureCard
+                    index={3}
                     title='Chatting'
                     description='Empower your choices with insights derived from our real-time data streams.'
                     image="/landing/chat.png"
                 />
                 <FeatureCard
+                    index={4}
                     title='Project Management'
                     description='Empower your choices with insights derived from our real-time data streams.'
                     image="/landing/project.png"
                 />
 
-                
+
 
             </FeatureCardBase>
         </div>
