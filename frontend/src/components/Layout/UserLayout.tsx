@@ -21,7 +21,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
             }}
             className="relative h-screen"
         >
-            <div className="absolute inset-0 bg-black bg-opacity-90 pointer-events-none" />
+            <div className="absolute inset-0 bg-black bg-opacity-95 pointer-events-none" />
             <div className="z-10 relative">
                 <Navbar />
                 {React.cloneElement(child, { setScrollY })} {/* Pass the setScrollY function */}

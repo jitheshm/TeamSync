@@ -105,83 +105,82 @@ const SignUp: React.FC<SignUpProps> = ({ setOtpPage, setEmail }) => {
     };
 
     return (
-        <div className="w-3/4 mt-16 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
-            <form className="space-y-6" onSubmit={handleSubmit}>
-                <h5 className="text-xl font-medium text-gray-900 dark:text-dark text-center">Sign up to our platform</h5>
+        <div className="w-3/4 p-4   backdrop-blur-sm shadow-lg  border border-gray-700 rounded-lg  sm:p-6 md:p-8">
+            <form className="space-y-4" onSubmit={handleSubmit}>
+                <h5 className="text-xl font-medium  text-center">Sign up to our platform</h5>
                 {errors.general && <p className="text-red-500 text-xs mt-1 text-center">{errors.general}</p>}
                 <div>
-                    <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">First Name</label>
                     <input
                         type="text"
                         id="first_name"
                         name="first_name"
                         value={formData.first_name}
                         onChange={handleChange}
-                        className={`bg-gray-50 border ${errors.first_name ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
+                        className={`bg-transparent border ${errors.first_name ? 'border-red-500' : 'border-gray-300'}  text-sm rounded-lg block w-full p-2 `}
                         placeholder="First Name"
                     />
                     {errors.first_name && <p className="text-red-500 text-xs mt-1">{errors.first_name}</p>}
                 </div>
                 <div>
-                    <label htmlFor="last_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Last Name</label>
                     <input
                         type="text"
                         id="last_name"
                         name="last_name"
                         value={formData.last_name}
                         onChange={handleChange}
-                        className={`bg-gray-50 border ${errors.last_name ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
+                        className={`bg-transparent border ${errors.last_name ? 'border-red-500' : 'border-gray-300'}  text-sm rounded-lg block w-full p-2 `}
                         placeholder="Last Name"
                     />
                     {errors.last_name && <p className="text-red-500 text-xs mt-1">{errors.last_name}</p>}
                 </div>
                 <div>
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Email</label>
+                    
                     <input
                         type="email"
                         id="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className={`bg-gray-50 border ${errors.email ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
-                        placeholder="name@company.com"
+                        className={`bg-transparent border ${errors.email ? 'border-red-500' : 'border-gray-300'}  text-sm rounded-lg block w-full p-2 `}
+                        
+                        placeholder="Company Email"
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>
                 <div>
-                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Password</label>
                     <input
                         type="password"
                         id="password"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className={`bg-gray-50 border ${errors.password ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
-                        placeholder="••••••••"
+                        className={`bg-transparent border ${errors.password ? 'border-red-500' : 'border-gray-300'}  text-sm rounded-lg block w-full p-2 `}
+                        
+                        placeholder="Password"
                     />
                     {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                 </div>
                 <div>
-                    <label htmlFor="confirm_password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Confirm Password</label>
                     <input
                         type="password"
                         id="confirm_password"
                         name="confirm_password"
                         value={formData.confirm_password}
                         onChange={handleChange}
-                        className={`bg-gray-50 border ${errors.confirm_password ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
-                        placeholder="••••••••"
+                        className={`bg-transparent border ${errors.confirm_password ? 'border-red-500' : 'border-gray-300'}  text-sm rounded-lg block w-full p-2 `}
+                        
+                        placeholder="Confirm Password"
                     />
                     {errors.confirm_password && <p className="text-red-500 text-xs mt-1">{errors.confirm_password}</p>}
                 </div>
                 <button
                     type="submit"
-                    className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="w-full bg-gradient-to-r from-[#628EFF] to-[#580475] font-medium rounded-lg text-sm px-5 py-2.5 text-center "
                 >
                     Create account
                 </button>
                 <div className="text-sm font-medium text-gray-500 dark:text-dark-300 text-center">
-                    Have an account? <Link href={'/login'} className="text-blue-700 hover:underline dark:text-blue-500">Login</Link>
+                    Have an account? <Link href={'/login'} className="text-white">Login</Link>
                 </div>
             </form>
         </div>

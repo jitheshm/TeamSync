@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 import Link from 'next/link';
 import firebase from '@/config/firebase';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { FcGoogle } from "react-icons/fc";
 
 const loginSchema = z.object({
     email: z.string().trim().min(1, "Email is required").email("Invalid email format"),
@@ -116,25 +117,25 @@ const Login: React.FC = () => {
     }
 
     return (
-        <div className="w-3/4 p-4 mt-10 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
-            <form className="space-y-6" onSubmit={handleSubmit}>
-                <h5 className="text-xl font-medium text-gray-900 dark:text-dark text-center">Sign in to our platform</h5>
+        <div className="w-3/4 p-4 mt-4  backdrop-blur-sm shadow-lg  border border-gray-700 rounded-lg  sm:p-6 md:p-8">
+            <form className="space-y-4" onSubmit={handleSubmit}>
+                <h5 className="text-xl font-medium  text-center">Sign in to our platform</h5>
                 {errors.general && <p className="text-red-500 text-xs mt-1 text-center">{errors.general}</p>}
                 <div>
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Your email</label>
+                    <label htmlFor="email" className="block mb-2 text-sm font-medium ">Your email</label>
                     <input
                         type="email"
                         id="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className={`bg-gray-50 border ${errors.email ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
+                        className={`bg-transparent border ${errors.email ? 'border-red-500' : 'border-gray-300'}  text-sm rounded-lg block w-full p-2 `}
                         placeholder="name@company.com"
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email._errors[0]}</p>}
                 </div>
                 <div>
-                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Your password</label>
+                    <label htmlFor="password" className="block mb-2 text-sm font-medium ">Your password</label>
                     <input
                         type="password"
                         id="password"
@@ -142,25 +143,26 @@ const Login: React.FC = () => {
                         value={formData.password}
                         onChange={handleChange}
                         placeholder="••••••••"
-                        className={`bg-gray-50 border ${errors.password ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
+                        className={`bg-transparent border ${errors.password ? 'border-red-500' : 'border-gray-300'}  text-sm rounded-lg block w-full p-2 `}
                     />
                     {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password._errors[0]}</p>}
                 </div>
                 <button
                     type="submit"
-                    className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="w-full bg-gradient-to-r from-[#628EFF] to-[#580475] font-medium rounded-lg text-sm px-5 py-2.5 text-center "
                 >
                     Login to your account
                 </button>
-                <div className="text-sm font-medium text-gray-500 dark:text-dark-300 text-center">
-                    <Link href={'/forgot-password'} className="text-blue-700 hover:underline dark:text-blue-500">Forgot Password?</Link>
+                <div className="text-sm font-medium text-center">
+                    <Link href={'/forgot-password'} >Forgot Password?</Link>
                 </div>
                 <hr />
                 <div className='text-center'>
-                    <i onClick={signInWithGoogle} className="fab fa-google" style={{ color: "#000000", fontSize: "25px" }} />
+                    
+                    <FcGoogle onClick={signInWithGoogle} className='flex mx-auto hover:cursor-pointer' size={35}/>
                 </div>
-                <div className="text-sm font-medium text-gray-500 dark:text-dark-300 text-center">
-                    Not registered? <Link href={'/signup'} className="text-blue-700 hover:underline dark:text-blue-500">Create account</Link>
+                <div className="text-sm font-medium  text-gray-500 text-center">
+                    Not registered? <Link href={'/signup'} className=" text-white">Create account</Link>
                 </div>
             </form>
         </div>
