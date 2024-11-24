@@ -83,7 +83,7 @@ export default function CheckoutForm({ clientSecret }: CheckoutFormProps) {
   }
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-lg mx-auto p-6  shadow-md rounded-lg bg-[#1a1919]">
       <h2 className="text-2xl font-semibold mb-4 text-center">Complete Your Payment</h2>
       <form id="payment-form" onSubmit={handleSubmit} className="space-y-4">
         <PaymentElement id="payment-element" options={paymentElementOptions} />

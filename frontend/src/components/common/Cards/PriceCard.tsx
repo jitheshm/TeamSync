@@ -2,14 +2,14 @@ import { IPlan } from '@/interfaces/subscription'
 import Link from 'next/link'
 import React from 'react'
 
-function PriceCard({ plan }: { plan: IPlan }) {
+function PriceCard({ plan, children }: { plan: IPlan, children?: React.ReactElement }) {
     return (
         <div className='lg:w-3/12 w-11/12   border border-border rounded-2xl p-5 relative overflow-hidden'>
-                        <svg
+            <svg
                 className="absolute inset-0 -z-10 w-full h-full"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 100 100"
-                 preserveAspectRatio="none"
+                preserveAspectRatio="none"
             >
                 <rect width={100} height={100} x={0} y={0} fill="black" />
                 <polygon points="0,100 100,50 100,100" fill="white" />
@@ -50,7 +50,11 @@ function PriceCard({ plan }: { plan: IPlan }) {
                 </ul>
             </div>
             <div className='text-center my-10'>
-                <Link href={'/signup'} className="text-white bg-primary font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 mt-10 text-center">Sign up now</Link>
+                {children ?
+                    children :
+                    <Link href={'#'} className="text-white bg-primary font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 mt-10 text-center">Know more</Link>
+                }
+
 
             </div>
         </div>

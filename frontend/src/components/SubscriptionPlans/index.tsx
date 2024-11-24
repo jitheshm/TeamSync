@@ -1,10 +1,14 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import PriceCard from './PriceCard'
+// import PriceCard from './PriceCard'
 import { fetchAvailablePlans, fetchPlans } from '@/api/subscriptionService/subscription'
 import { logout } from '@/features/user/userSlice'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
+import PriceCard from '../common/Cards/PriceCard'
+import { ScrollArea } from '../ui/scroll-area'
+import Link from 'next/link'
+import { IPlan } from '@/interfaces/subscription'
 
 function Index() {
     const [plans, setPlans] = useState([])
@@ -21,27 +25,34 @@ function Index() {
             }
         })
     }, [])
-    
+
     return (
-        <div className="bg-white min-h-screen text-gray-950 pt-16">
-            <div>
-                <h2 className="text-3xl font-bold tracki text-center mt-12 sm:text-5xl ">Pricing</h2>
-                <p className="max-w-3xl mx-auto mt-4 text-xl text-center ">Get started on our popular plan and upgrade when you are
-                    ready.</p>
-            </div>
-            <div className="mt-24 container space-y-12 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-x-8 mx-auto">
+        <div className=" text-gray-100  ">
+            <ScrollArea className="h-[calc(100vh_-_4rem)]">
+                <div className='my-10'>
+                    <div>
+                        <h2 className="text-xl font-bold tracki text-center mt-12 sm:text-5xl ">Pricing</h2>
+                        <p className="max-w-xl mx-auto mt-4 text-xl text-center ">Get started on our popular plan and upgrade when you are
+                            ready.</p>
+                    </div>
+                    <div className="my-5 flex flex-wrap justify-around md:w-11/12 gap-4 lg:gap-0 mx-auto ">
 
-                {
-                    plans.map((ele, index) => {
-                        return (
-                            <PriceCard plan={ele} key={index} />
-                        )
-                    })
-                }
+                        {
+                            plans.map((ele:IPlan, index) => {
+                                return (
+                                    <PriceCard plan={ele} key={index} >
+                                        <Link className="bg-emerald-500 text-white  hover:bg-emerald-600  block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium mt-32" href={`/tenant-registration/${ele.stripe_plan_id}`}>Select</Link>
+                                    </PriceCard>
+                                    // <PriceCard plan={ele} key={index} />
+                                )
+                            })
+                        }
 
 
 
-            </div>
+                    </div>
+                </div>
+            </ScrollArea>
         </div>
 
 

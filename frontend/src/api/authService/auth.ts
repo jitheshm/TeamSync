@@ -3,8 +3,9 @@ import { AdminFormValues } from "@/components/AdminPanel/Login";
 import { ForgotPasswordFormData } from "@/components/Login/ForgotPassword";
 import { LoginFormData } from "@/components/Login/Login";
 import { ResetFormData } from "@/components/Login/NewPassword";
-import { OtpFormData } from "@/components/Login/Otp";
+// import { OtpFormData } from "@/components/Login/Otp";
 import { LoginFormValues } from "@/components/TenantUserPanel/Login/Login";
+import { OtpFormData } from "@/components/TenantUserPanel/Login/Otp";
 import { APIURL } from "@/constants/constant";
 import axios from "axios";
 import Cookies from 'js-cookie';
@@ -29,9 +30,9 @@ export const forgetPassword = async (formData: ForgotPasswordFormData) => {
     }
 }
 
-export const verifyOtp = async (formData: OtpFormData, email: string, context: string) => {
+export const verifyOtp = async (otp: string, email: string, context: string) => {
     try {
-        const otp = `${formData.otp1}${formData.otp2}${formData.otp3}${formData.otp4}${formData.otp5}${formData.otp6}`
+
         const response = await instance.post('/auth-service/v1/verify-otp', { email, otp, context: context })
         return response.data
     } catch (error) {

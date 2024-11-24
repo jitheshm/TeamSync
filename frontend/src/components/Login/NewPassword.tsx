@@ -75,12 +75,12 @@ function NewPassword() {
   };
 
   return (
-    <div className="w-3/4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
+    <div className="w-3/4 p-4 mt-4  backdrop-blur-sm shadow-lg  md:border border-gray-700 rounded-lg  sm:p-6 md:p-8">
       <form className="space-y-6" onSubmit={handleSubmit}>
-        <h5 className="text-xl font-medium text-gray-900 dark:text-dark text-center">Create new password</h5>
+        <h5 className="text-xl font-medium text-gray-100 dark:text-dark text-center">Create new password</h5>
         {errors.general && <p className="text-red-500 text-xs mt-1 text-center">{errors.general}</p>}
         <div>
-          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">New Password</label>
+          <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-100 dark:text-dark">New Password</label>
           <input
             type="password"
             name="new_password"
@@ -88,7 +88,7 @@ function NewPassword() {
             value={formData.new_password}
             onChange={handleChange}
             placeholder="••••••••"
-            className={`bg-gray-50 border ${errors.new_password ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
+            className={`bg-transparent border ${errors.new_password ? 'border-red-500' : 'border-gray-300'} text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
             required
           />
           {errors.new_password && (
@@ -97,7 +97,7 @@ function NewPassword() {
         </div>
 
         <div>
-          <label htmlFor="confirm_password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Confirm Password</label>
+          <label htmlFor="confirm_password" className="block mb-2 text-sm font-medium text-gray-100 dark:text-dark">Confirm Password</label>
           <input
             type="password"
             name="confirm_password"
@@ -105,7 +105,7 @@ function NewPassword() {
             value={formData.confirm_password}
             onChange={handleChange}
             placeholder="••••••••"
-            className={`bg-gray-50 border ${errors.confirm_password ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
+            className={`bg-transparent border ${errors.confirm_password ? 'border-red-500' : 'border-gray-300'} text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
             required
           />
           {errors.confirm_password && (

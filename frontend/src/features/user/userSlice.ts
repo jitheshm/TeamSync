@@ -22,7 +22,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    verify: (state, action: PayloadAction<{ name: string, tenantId: string | null, role: string ,id:string}>) => {
+    verify: (state, action: PayloadAction<{ name: string, tenantId: string | null, role: string, id: string }>) => {
       state.name = action.payload.name;
       state.tenantId = action.payload.tenantId ?? '';
       state.id = action.payload.id ?? '';

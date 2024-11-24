@@ -6,6 +6,7 @@ import Auth from '@/components/Auth/Auth'
 import Loading from '@/components/Loading/Loading'
 import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface UserState {
   name: string
@@ -41,7 +42,9 @@ function Page() {
       {
         loading ? <Loading /> :
 
-          <SubscriptionPlans />
+          
+            <SubscriptionPlans />
+          
 
       }
     </UserLayout>

@@ -70,27 +70,27 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ setEmail, setOtpVisible
     };
 
     return (
-        <div className="w-3/4  p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8">
+        <div className="w-3/4 p-4   backdrop-blur-sm shadow-lg  md:border border-gray-700 rounded-lg  sm:p-6 md:p-8">
             <form className="space-y-6" onSubmit={handleSubmit}>
-                <h5 className="text-xl font-medium text-gray-900 dark:text-dark text-center">Forgot Password?</h5>
+                <h5 className="text-xl font-medium  text-center">Forgot Password?</h5>
                 {errors.general && <p className="text-red-500 text-xs mt-1 text-center">{errors.general}</p>}
                 <div>
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">Your email</label>
+                    <label htmlFor="email" className="block mb-2 text-sm font-medium ">Your email</label>
                     <input
                         type="email"
                         name="email"
                         id="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className={`bg-gray-50 border ${errors.email ? 'border-red-500' : 'border-gray-300'} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:border-gray-500 dark:placeholder-gray-400 dark:text-dark`}
+                        className={`bg-transparent border ${errors.email ? 'border-red-500' : 'border-gray-300'}  text-sm rounded-lg block w-full p-2 `}
                         placeholder="name@company.com"
                         required
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email._errors[0]}</p>}
                 </div>
-                <button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Send OTP</button>
+                <button type="submit" className="w-full bg-gradient-to-r from-[#628EFF] to-[#580475] font-medium rounded-lg text-sm px-5 py-2.5 text-center ">Send OTP</button>
                 <div className="text-sm font-medium text-gray-500 dark:text-dark-300 text-center">
-                    Not registered? <Link href="/signup" className="text-blue-700 hover:underline dark:text-blue-500">Create account</Link>
+                    Not registered? <Link href="/signup" className="text-white">Create account</Link>
                 </div>
             </form>
         </div>

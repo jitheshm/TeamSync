@@ -7,10 +7,10 @@ function Page() {
     return (
 
         <UserLayout>
-            <Auth>
+            {/* <Auth> */}
 
                 <PaymentSuccess />
-            </Auth>
+            {/* </Auth> */}
         </UserLayout>
 
     )
