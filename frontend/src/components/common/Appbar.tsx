@@ -21,7 +21,7 @@ function Appbar({icons}:{icons:{
             <div className='grid place-items-center'>
                 <h1 className='text-2xl font-bold text-center'>{heading}</h1>
             </div>
-            <div className='flex items-center gap-3'>
+            {/* <div className='flex items-center gap-3'>
                 <div>
                     <ThemeButton />
 
@@ -29,7 +29,7 @@ function Appbar({icons}:{icons:{
                 <div className='w-8 h-8'>
                     <Avathar />
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
