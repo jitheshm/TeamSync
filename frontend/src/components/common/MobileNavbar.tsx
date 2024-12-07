@@ -55,7 +55,7 @@ function MobileNavbar({ icons }: { icons: Icon[] }) {
                         </div>
                         <div className='flex flex-col'>
                             <span>Jithesh M</span>
-                            <Link href={'/'} className='text-xs text-blue-700'>Update profile</Link>
+                            {/* <Link href={'/'} className='text-xs text-blue-700'>Update profile</Link> */}
                         </div>
                     </div>
                     <hr className='border-b-0 border-border mt-5' />
@@ -74,7 +74,7 @@ function MobileNavbar({ icons }: { icons: Icon[] }) {
                     <hr className='border-b-0 border-border mt-5' />
                     <div className='w-11/12 mx-auto p-5 flex flex-col gap-5'>
                         <div className='flex items-center'>
-                            <ThemeButton />
+                            {/* <ThemeButton /> */}
                         </div>
                     </div>
                 </div>
