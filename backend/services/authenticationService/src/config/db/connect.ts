@@ -6,7 +6,7 @@ export default async () => {
         console.log("db connection started");  
         if (process.env.MONGODB_URL) {
             
-            
+            mongoose.set('bufferCommands', false);
             dbInstance = await mongoose.connect(process.env.MONGODB_URL)
             // console.log(dbInstance);
             
